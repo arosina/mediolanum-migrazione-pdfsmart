@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="Copernico" connectionCacheReference="CEPE">
+
+<Access name="ultimoProgressivoVariazioni" type="DAOQueryAccess" queryType="1"
+        OutputCommandDataModel="com.atosorigin.wfem.types.IntegerType">
+	<Query>
+		SELECT MAX(CLI_ELETTR_N_PROGR)
+		FROM 
+			INR_CLI_ELETTR A 
+		WHERE 
+			A.AGE_C_AGE = <p>codAgente</p> AND
+			A.ASSGNCLIAGE_C_POTZLE = <p>codPotenziale</p> AND
+			A.STATO_CLI_ELETTR_C_STATO in ('2', '3')
+	</Query>
+</Access>
+
+<Access name="pdfVariazione" type="DAOTableAccess" tableName="CEPE_PDF_CONTRATTI"> 
+   <Bindings>
+     <Parameter propertyName="codiceVariazione"	dbColumnName="DISP_C_DISP"	primaryKey="true"/>
+	 <Parameter propertyName="pdfFile"  		dbColumnName="PDF"			fileTypeDataPart="image"/>
+ 	 <Parameter propertyName="pdfFile"			dbColumnName="PDF_CT"		fileTypeDataPart="contentType"/>
+   </Bindings>  
+</Access>
+
+</DAO-Object>

@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="PdfAsStream" connectionCacheReference="CEPE">
+
+<Access name="loadPdfIdFromCode" type="DAOQueryAccess" queryType="0"
+		OutputCommandDataModel="prgm.pdfwebforms.publisher.model.PdfAnagModel">
+ <Query>
+	select 	PDF_ID, CODE, DESCR
+	from 	PDF_ANAG 
+	where 	CODE = ?
+	union
+	select 	ID_MODULO, CODICE_MODULO, DESCRIZIONE
+	from 	CEPE_CATM_MODULO 
+	where 	CODICE_MODULO = ?
+ </Query> 
+ <Input>
+	<Parameter propertyName="pdfCode"/>
+	<Parameter propertyName="pdfCode"/>
+ </Input> 
+ <Output>
+	<Parameter propertyName="pdfId"/>
+	<Parameter propertyName="pdfCode"/>
+	<Parameter propertyName="pdfDescr"/>
+ </Output> 
+</Access> 
+
+<Access name="loadPdfIdFromMomCode" type="DAOQueryAccess" queryType="0"
+		OutputCommandDataModel="prgm.pdfwebforms.publisher.model.PdfAnagModel">
+ <Query>
+	select 	PDF_ID, CODE, DESCR
+	from 	PDF_ANAG 
+	where 	MOM_CODE = ?
+ </Query> 
+ <Input>
+	<Parameter propertyName="pdfCode"/>
+ </Input> 
+ <Output>
+	<Parameter propertyName="pdfId"/>
+	<Parameter propertyName="pdfCode"/>
+	<Parameter propertyName="pdfDescr"/>
+ </Output> 
+</Access> 
+
+<Access name="loadCurrentPubblicationId" type="DAOQueryAccess" queryType="0">
+ <Query>
+	select  (select A.CODE from PDF_ANAG A where A.PDF_ID = P.PDF_ID) as pdfCode
+	,		(select A.MOM_CODE from PDF_ANAG A where A.PDF_ID = P.PDF_ID) as pdfMomCode
+	,		P.MOM_VERSION
+	,		P.PUBLICATION_ID 
+	from 	PDF_PUBLICATION P 
+	where 	(P.IS_ARCHIVED is null or P.IS_ARCHIVED = 'N') 
+	and 	P.PDF_ID = ? 
+	and 	P.START_DATE &lt;= getdate() 
+	having 	P.START_DATE = max(P.START_DATE) and P.PUBLISH_TIME = max(P.PUBLISH_TIME)
+ </Query>
+ <Input>
+	<Parameter propertyName="pdfId"/>
+ </Input> 
+ <Output>
+	<Parameter propertyName="pdfCode"/>
+	<Parameter propertyName="pdfMomCode"/>
+	<Parameter propertyName="pdfMomVersion"/>
+	<Parameter propertyName="pdfPublicationId"/>
+ </Output> 
+</Access> 
+
+<Access name="isPdfAsFacsimile" type="DAOQueryAccess" queryType="0"
+		OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType">
+ <Query>
+	select 	DOWNLOAD_AS_FACSIMILE
+	from 	PDF_ANAG 
+	where 	PDF_ID = ?
+ </Query> 
+ <Input>
+	<Parameter propertyName="pdfId"/>
+ </Input> 
+</Access> 
+
+<Access name="blobPdfPubblicato" type="DAOQueryAccess" queryType="0">
+ <Query>
+	select 	P.CONTENT
+	,		P.EDITION
+	,		A.NUM_COPIE
+	,		A.TESTO_COPIA_1
+	,		A.TESTO_COPIA_2
+	,		A.TESTO_COPIA_3
+	,		A.TESTO_COPIA_4
+	from 	PDF_PUBLICATION P, PDF_ANAG A 
+	where 	P.PDF_ID = ?
+	and		P.PUBLICATION_ID = ?
+	and		A.PDF_ID = P.PDF_ID
+ </Query> 
+ <Input>
+	<Parameter propertyName="pdfAnag_pdfId"/>
+	<Parameter propertyName="pdfAnag_pdfPublicationId"/>
+ </Input> 
+ <Output>
+	<Parameter propertyName="pdfContent"/>
+	<Parameter propertyName="pdfAnag_pdfEdition"/>
+	<Parameter propertyName="pdfAnag_pdfNumCopie"/>
+	<Parameter propertyName="pdfAnag_pdfTestoCopia1"/>
+	<Parameter propertyName="pdfAnag_pdfTestoCopia2"/>
+	<Parameter propertyName="pdfAnag_pdfTestoCopia3"/>
+	<Parameter propertyName="pdfAnag_pdfTestoCopia4"/>
+ </Output> 
+</Access>
+
+<Access name="blobPdfCatalogo" type="DAOTableAccess" tableName="CEPE_CATM_MODULO_ALLEGATO">
+   <Bindings>
+		 <Parameter propertyName="pdfId" 		dbColumnName="ID_MODULO"  primaryKey="true"/>
+	   	 <Parameter propertyName="pdfContent"	dbColumnName="MODULO_ALLEGATO_FILE_NAME"  		 	fileTypeDataPart="fileName"/>
+		 <Parameter propertyName="pdfContent"	dbColumnName="MODULO_ALLEGATO"						fileTypeDataPart="image"/>
+   </Bindings>
+</Access>
+
+<Access name="getFilenetGuid" type="DAOQueryAccess" queryType="0">
+ <Query>
+	select 	FILENET_GUID
+	from 	PDF_INSTANCE
+	where 	PDF_INSTANCE_ID = ?
+ </Query> 
+ <Input>
+	<Parameter propertyName="pdfInstanceId"/>
+ </Input> 
+ <Output>
+	<Parameter propertyName="pdfFilenetGuid"/>
+ </Output> 
+</Access> 
+
+<Access name="getUrlFilenetFromGuid" type="DAOOSBAccess" serviceName="bmed-be-osb-filenet-prj/proxy/PS_FileNet" operationName="searchObject">
+<Input>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:fil="http://www.example.org/FileNet/">
+		   <soapenv:Header/>
+		   <soapenv:Body>
+		      <fil:searchObjectRequest>
+				<LinkFormat append="attributeValue='E'"></LinkFormat>
+				<Index append="name='ID' operator='='" attrs="pdfFilenetGuid@attributeValue"/>
+		      </fil:searchObjectRequest>
+		   </soapenv:Body>
+		</soapenv:Envelope>	
+	]]>
+</Input>
+<Output>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+		   <soap:Body xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+		      <searchObjectResponse>
+		         <Response>
+		            <ReturnCode></ReturnCode>
+		            <ReturnValue>
+		               <Object>
+		                  <Link>
+		                     <attributeValue propertyName="pdfFilenetUrl"></attributeValue>
+		                  </Link>
+		               </Object>
+		            </ReturnValue>
+		         </Response>
+		      </searchObjectResponse>
+		   </soap:Body>
+		</soapenv:Envelope>
+	]]>
+</Output>
+</Access>	
+
+<Access name="getContentFilenetFromGuid" type="DAOOSBAccess" serviceName="bmed-be-osb-filenet-prj/proxy/PS_FileNet" operationName="getDocumentContent">
+<Input>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:fil="http://www.example.org/FileNet/">
+		   <soapenv:Header/>
+		   <soapenv:Body>
+		      <fil:getDocumentContent>
+		        <ObjectStore append="value='CED088'"/>
+		        <ObjectClass append="value='DOCUMENTOGENERICO'"/>
+		 	    <Index append="name='ID' operator='='" attrs="pdfFilenetGuid@value"/>
+		      </fil:getDocumentContent>
+		   </soapenv:Body>
+		</soapenv:Envelope>	
+	]]>
+</Input>
+<Output>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+		   <soapenv:Header/>
+		   <soap:Body xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+		      <fil:getDocumentContentResponse xmlns:fil="http://www.example.org/FileNet/">
+		         <fil:ReturnValue>
+		            <fil:DocContent propertyName="pdfFilenetBase64"></fil:DocContent>
+		         </fil:ReturnValue>
+		      </fil:getDocumentContentResponse>
+		   </soap:Body>
+		</soapenv:Envelope>	
+	]]>
+</Output>
+</Access>	
+
+<Access name="get_SEQ_BRCODE_MOD_BarcodeValue" type="DAOQueryAccess" queryType="0" connectionCacheReference="DBAZ_SOGG"
+		OutputCommandDataModel="com.atosorigin.wfem.types.StringType">
+ <Query>
+	select to_char(cll.SEQ_BRCODE_MOD.nextval) from dual
+ </Query> 
+</Access> 
+
+</DAO-Object>

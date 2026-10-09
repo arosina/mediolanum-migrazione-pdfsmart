@@ -1,0 +1,62 @@
+<%!
+public String htmlElencoBUOtpBasket(Template t, PdfModel model) {
+	StringBuilder res = new StringBuilder();
+	
+	CodDescDataList dl = model.getPdfAnag().getCodDescDataList("pdfCodLineaBusiness");
+	if(dl == null)
+		return "";
+	
+	res.append("<col width='*'><col width='5%'>");
+	for(int i=0;i<dl.getCodDescCount();i++) {
+		String htmlDispo = htmlElencoDispoBUOtpBasket(t, model, dl.getCodDesc(i).getCod());
+		if(htmlDispo.length() > 0) {
+			res.append("<tr>");
+			res.append("<td colspan='2' style='padding-bottom:5px;'>"+dl.getCodDesc(i).getDescr()+"</td>");
+			res.append("</tr>");
+			res.append(htmlDispo);
+		}
+	}
+	String htmlDispo = htmlElencoDispoBUOtpBasket(t, model, "");
+	if(htmlDispo.length() > 0) {
+		res.append("<tr>");
+		res.append("<td colspan='2' style='padding-bottom:5px;'>n.a.</td>");
+		res.append("</tr>");
+		res.append(htmlDispo);
+	}
+	return res.toString();
+}
+
+public String htmlElencoDispoBUOtpBasket(Template t, PdfModel model, String codLineaBusiness) {
+	StringBuilder res = new StringBuilder();
+	for(BasketElement be : model.getBasket().getBasketElements()){
+		
+		if(!be.getDispoPdf().mainPdfAnag().getPdfCodLineaBusiness().equals(codLineaBusiness))
+			continue;
+		
+		String title = be.getDispoPdf().getPdfData().getPdfTitle().isNull()?be.getDispoPdf().mainPdfAnag().getPdfDescr().toString():be.getDispoPdf().getPdfData().getPdfTitle().toString();
+		String imp = "";
+		DoubleType importo = (be.getDispoPdf().mainPdfData().read(PdfPredefinedFields.IMPORTO)==null ? new DoubleType():new DoubleType(be.getDispoPdf().mainPdfData().read(PdfPredefinedFields.IMPORTO).toString()));
+		if(importo != null && !importo.isNull())
+			imp = " - "+importo+" &euro;";
+		String codProd = "";
+		for(int i=0;i<be.getDispoPdf().getPdfAnags().size();i++){
+			PdfAnagModel pdfDettAnag = (PdfAnagModel)be.getDispoPdf().getPdfAnags().get(i);
+			if(pdfDettAnag.getPdfMomCode().isNull())
+				continue;
+			if(be.getDispoPdf().getPdfAnags().size() > 1)
+				codProd += "pdfs"+i+"_pdfCode="+pdfDettAnag.getPdfMomCode()+"&";
+			else
+				codProd += "pdfCode="+pdfDettAnag.getPdfMomCode()+"&";
+		}
+		if(codProd.length() > 0)
+			codProd = codProd.substring(0, codProd.length()-1);
+		
+		res.append("<tr>");
+		res.append("<td valign='top' style='font-size: 10px;'>-&nbsp;"+title+imp+"</td>");
+		res.append("<td valign='top' align='right'><img alt='' src='"+t.getWebApp()+"/images/pdf.gif' codProd='"+codProd+"' style='cursor:pointer;' onclick='openCatalogPdf(this);'></td>");
+		res.append("</tr>");
+		
+	}
+	return res.toString();
+}
+%>

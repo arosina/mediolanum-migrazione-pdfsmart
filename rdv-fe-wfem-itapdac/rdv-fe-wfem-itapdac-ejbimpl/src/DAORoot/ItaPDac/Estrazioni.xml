@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DAO-Object name="Estrazioni" connectionCacheReference="CEPE">
+
+<CodDescriptions>
+
+<CodDesc name="UfficiLavorazioneRicercaDac" tableName="CEPE_PT_UFFICIO" 
+			 codColumnName="PT_UFFICIO_N_UFFICIO" descrColumnName="PT_UFFICIO_X_UFFICIO"
+			 whereCondition="PT_UFFICIO_F_VALIDITA = 'S' and PT_UFFICIO_N_UFFICIO != 1"
+			 orderBy="upper(PT_UFFICIO_X_UFFICIO)"/>
+
+<CodDesc name="OperazioniProdotto" tableName="CEPE_PT_RETEP_OPERAZIONE O, CEPE_PT_RETEP_PRODOPER PO"
+			 codColumnName="O.PT_OPERAZIONE_N_PT_OPERAZIONE" descrColumnName="O.PT_OPERAZIONE_X_PT_OPERAZIONE" 
+			 whereCondition="PO.PT_PRODOTTO_N_PT_PRODOTTO = isnull(?, PO.PT_PRODOTTO_N_PT_PRODOTTO) and O.PT_OPERAZIONE_N_PT_OPERAZIONE != 0 and PO.PT_OPERAZIONE_N_PT_OPERAZIONE = O.PT_OPERAZIONE_N_PT_OPERAZIONE"
+			 validityWhereCondition="PO.PT_PRODOTTO_N_PT_PRODOTTO = isnull(?, PO.PT_PRODOTTO_N_PT_PRODOTTO) and O.PT_OPERAZIONE_N_PT_OPERAZIONE != 0 and PO.PT_OPERAZIONE_N_PT_OPERAZIONE = O.PT_OPERAZIONE_N_PT_OPERAZIONE and O.PT_OPERAZIONE_F_VALIDITA = 'S' and (PO.PT_PRODOPER_F_VALIDITA is null or PO.PT_PRODOPER_F_VALIDITA = 'S')"
+			 orderBy="upper(O.PT_OPERAZIONE_X_PT_OPERAZIONE)">
+	     <WhereFields>
+	        <Parameter propertyName="codProdotto"/>
+	     </WhereFields>
+	     <ValidityFields>
+	        <Parameter propertyName="codProdotto"/>
+	     </ValidityFields>
+     </CodDesc>
+
+	<CodDesc name="Prodotti" tableName="CEPE_PT_RETEP_PRODOTTO" 
+			 codColumnName="PT_PRODOTTO_N_PT_PRODOTTO" descrColumnName="PT_PRODOTTO_X_PT_PRODOTTO" 
+			 whereCondition="PT_PRODOTTO_N_PT_PRODOTTO != 0"
+			 validityWhereCondition="PT_PRODOTTO_N_PT_PRODOTTO != 0 and PT_PRODOTTO_F_VALIDITA = 'S'"
+			 orderBy="upper(PT_PRODOTTO_X_PT_PRODOTTO)"/>
+<!-- Ticket: 1008920 -->
+<CodDesc name="StatoPrit" tableName="CEPE_PT_STATO"
+		 codColumnName="PT_STATO_N_STATO" descrColumnName="PT_STATO_X_COMPLETA"
+		 whereCondition="PT_STATO_F_VALIDITA = 'S'"/>
+
+<CodDesc name="TipologiaPrit" tableName="CEPE_PT_TIPOPRIT"
+		 codColumnName="PT_TIPOPRIT_N_TIPOPRIT" descrColumnName="PT_TIPOPRIT_X_TIPOPRIT"
+		 whereCondition="PT_TIPOPRIT_F_VALIDITA = 'S'"/>
+
+</CodDescriptions>
+
+<!-- Ticket: 1008920 -->
+<Access name="outputReportSintesi" type="DAOQueryAccess" queryType="0"
+		OutputCommandDataModel="prgm.ita.p.dac.estrazioni.model.PritInviatiInSedeOutputModel">
+	<Query>
+		select
+				 PROD.PT_PRODOTTO_X_PT_PRODOTTO PRODOTTO
+				, PROD.PT_PRODOTTO_X_PT_PRODOTTO  DESC_PRODOTTO
+				, OP.PT_OPERAZIONE_X_PT_OPERAZIONE OPERAZIONE
+				, OP.PT_OPERAZIONE_X_PT_OPERAZIONE DESC_OPERAZIONE
+				,	sum(case
+						when datepart (dd, T.PT_TESTATA_D_DALAVORARE) = datepart (dd, convert(datetime, ?)) then 1 else 0
+					end) GG1
+				,	sum(case
+						when datepart (dd, T.PT_TESTATA_D_DALAVORARE) = datepart (dd, DATEADD(dd, 1, convert(datetime, ?))) then 1 else 0
+					end) GG2
+				,	sum(case
+						when datepart (dd, T.PT_TESTATA_D_DALAVORARE) = datepart (dd, DATEADD(dd, 2, convert(datetime, ?))) then 1 else 0
+					end) GG3
+				,	sum(case
+						when datepart (dd, T.PT_TESTATA_D_DALAVORARE) = datepart (dd, DATEADD(dd, 3, convert(datetime, ?))) then 1 else 0
+					end) GG4
+				,	sum(case
+						when datepart (dd, T.PT_TESTATA_D_DALAVORARE) = datepart (dd, DATEADD(dd, 4, convert(datetime, ?))) then 1 else 0
+					end) GG5
+				,	sum(case
+						when datepart (dd, T.PT_TESTATA_D_DALAVORARE) = datepart (dd, DATEADD(dd, 5, convert(datetime, ?))) then 1 else 0
+					end) GG6
+				,	sum(case
+						when datepart (dd, T.PT_TESTATA_D_DALAVORARE) = datepart (dd, DATEADD(dd, 6, convert(datetime, ?))) then 1 else 0
+					end) GG7
+		from 		
+				CEPE_PT_TESTATA T
+		,		CEPE_PT_PRIT LEG
+		,		CEPE_PT_DETTAGLIO D
+		,		CEPE_PT_RETEP_OPERAZIONE OP
+		,		CEPE_PT_RETEP_PRODOTTO PROD
+		where		
+				LEG.PT_TESTATA_N_PROGR = T.PT_TESTATA_N_PROGR
+		and		D.PT_DETTAGLIO_N_PROGR = LEG.PT_DETTAGLIO_N_PROGR
+		and		D.PT_PRODOTTO_N_PRODOTTO = PROD.PT_PRODOTTO_N_PT_PRODOTTO
+		and		D.PT_OPERAZIONE_N_OPERAZIONE = OP.PT_OPERAZIONE_N_PT_OPERAZIONE
+		and		T.PT_TIPOPRIT_N_TIPOPRIT = ?   
+		and		T.PT_STATO_N_STATO = ? 		
+		and		T.PT_TESTATA_D_DALAVORARE between convert(datetime, ?) AND DATEADD(dd,7, convert(datetime, ?))
+		group by PT_PRODOTTO_X_PT_PRODOTTO, PT_OPERAZIONE_X_PT_OPERAZIONE
+		order by PROD.PT_PRODOTTO_X_PT_PRODOTTO, OP.PT_OPERAZIONE_X_PT_OPERAZIONE 
+   	</Query>
+   	<Input>
+   		<Parameter propertyName="dataDal"/>
+   		<Parameter propertyName="dataDal"/>
+   		<Parameter propertyName="dataDal"/>
+   		<Parameter propertyName="dataDal"/>
+   		<Parameter propertyName="dataDal"/>
+   		<Parameter propertyName="dataDal"/>
+   		<Parameter propertyName="dataDal"/>
+   		<Parameter propertyName="tipologiaPrit"/>
+   		<Parameter propertyName="statoPrit"/>
+   		<Parameter propertyName="dataDal"/>
+   		<Parameter propertyName="dataDal"/>
+   	</Input>
+	<Output>
+		<Parameter propertyName="tipoProdotto"/>
+		<Parameter propertyName="descProdotto"/>
+		<Parameter propertyName="tipoOperazione"/>
+		<Parameter propertyName="descOperazione"/>
+		<Parameter propertyName="gg1"/>
+		<Parameter propertyName="gg2"/>
+		<Parameter propertyName="gg3"/>
+		<Parameter propertyName="gg4"/>
+		<Parameter propertyName="gg5"/>
+		<Parameter propertyName="gg6"/>
+		<Parameter propertyName="gg7"/>
+	</Output>
+</Access>
+
+<Access name="outputReportDettaglio" type="DAOQueryAccess" queryType="0" OutputCommandDataModel="prgm.ita.p.dac.estrazioni.model.DettaglioDocRicevutiDacModel">
+	<Query>	
+		SELECT  
+				T.PT_TESTATA_N_PROGR AS CODICE_PRIT,
+				T2.PT_TESTATA_D_SPUNTA  AS DATA_SPUNTA,
+				T.PT_TESTATA_D_DALAVORARE AS DATA_INVIO_IN_SEDE,
+				D.PT_DETTAGLIO_X_BARCODE  AS BARCODE,
+				D.CODIFCLIMEDL_C_CLI_MEDL AS COD_CLIENTE,
+				D.PT_DETTAGLIO_X_CLI_COGN + ' ' + D.PT_DETTAGLIO_X_CLI_NOME AS COGN_CLIENTE,
+				D.PT_DETTAGLIO_X_CLI_NOME AS NOME_CLIENTE,
+				T.AGE_C_AGE AS COD_AGENTE,
+				AG.AGE_M_COGN_AGE + ' ' + AG.AGE_M_NOME_AGE AS COGN_AGENTE,
+				AG.AGE_M_NOME_AGE AS NOME_AGENTE,
+				AG.AGZPI_C_AGZ AS COD_AGENZIA,
+				D.PT_PRODOTTO_N_PRODOTTO AS PRODOTTO,
+				prod.PT_PRODOTTO_X_PT_PRODOTTO  AS DESC_PRODOTTO,
+				D.PT_OPERAZIONE_N_OPERAZIONE AS OPERAZIONE,
+				op.PT_OPERAZIONE_X_PT_OPERAZIONE  AS DESC_OPERAZIONE
+		FROM  
+        		CEPE_PT_TESTATA T
+		,		CEPE_PT_TESTATA2 T2
+		,		CEPE_PT_PRIT LEG
+		,		CEPE_PT_DETTAGLIO D
+		,		CEPE_PT_RETEP_PRODOTTO prod
+		,		CEPE_PT_RETEP_OPERAZIONE op
+		,		INR_AGENTI AG
+		where		
+				T2.PT_TESTATA_N_PROGR= T.PT_TESTATA_N_PROGR
+		and		LEG.PT_TESTATA_N_PROGR = T.PT_TESTATA_N_PROGR
+		and		D.PT_DETTAGLIO_N_PROGR = LEG.PT_DETTAGLIO_N_PROGR
+		and    	D.PT_PRODOTTO_N_PRODOTTO=prod.PT_PRODOTTO_N_PT_PRODOTTO
+		and     D.PT_OPERAZIONE_N_OPERAZIONE= op.PT_OPERAZIONE_N_PT_OPERAZIONE
+		and		AG.AGE_C_AGE = T.AGE_C_AGE
+		and		T.PT_TESTATA_D_DALAVORARE	between convert(datetime, ?) AND DATEADD(dd,7, convert(datetime, ?))
+		and		T.PT_TIPOPRIT_N_TIPOPRIT = ?   
+		and		T.PT_STATO_N_STATO = ? 	
+		order by
+				PT_TESTATA_D_DALAVORARE
+	</Query>
+   	<Input>
+   		<Parameter propertyName="dataDal"/>
+   		<Parameter propertyName="dataDal"/>
+   		<Parameter propertyName="tipologiaPrit"/>
+   		<Parameter propertyName="statoPrit"/>
+   	</Input>
+<Output>
+		<Parameter propertyName="codPrit"/>
+		<Parameter propertyName="dataSpunta"/>
+		<Parameter propertyName="dataInvioInSede"/>
+		<Parameter propertyName="barCode"/>
+		<Parameter propertyName="codCliente"/>
+		<Parameter propertyName="cognomeCliente"/>
+		<Parameter propertyName="nomeCliente"/>
+		<Parameter propertyName="codAgente"/>
+		<Parameter propertyName="nominativoAgente"/>
+		<Parameter propertyName="nomeAgente"/>
+		<Parameter propertyName="codAgenzia"/>
+		<Parameter propertyName="codProdotto"/>
+		<Parameter propertyName="descProdotto"/>
+		<Parameter propertyName="codOperazione"/>
+		<Parameter propertyName="descOperazione"/>
+	</Output>
+</Access>
+<!-- Ticket: 1008920 Fine -->
+
+<Access name="getTotaleSpuntato" type="DAOQueryAccess" queryType="1" OutputCommandDataModel="prgm.ita.p.dac.estrazioni.model.ServiceModel"
+			connectionCacheReference="IQ_PRIT">
+	<Query>	
+		select		UFF.PT_UFFICIO_X_UFFICIO			as	'Service'
+,		count(*)					as	'Numero Documenti'
+from 		
+		dba.CEPE_PT_TESTATA T
+,		dba.CEPE_PT_TESTATA2 T2
+,		dba.CEPE_PT_PRIT LEG
+,		dba.CEPE_PT_DETTAGLIO D
+,		dba.CEPE_PT_UFFICIO UFF
+
+where		
+		UFF.PT_UFFICIO_N_UFFICIO = T2.PT_TESTATA_N_UFFICIO_LAV	/* ufficio che prende in lavorazione */
+and		T2.PT_TESTATA_N_PROGR= T.PT_TESTATA_N_PROGR
+and		LEG.PT_TESTATA_N_PROGR = T.PT_TESTATA_N_PROGR
+and		D.PT_DETTAGLIO_N_PROGR = LEG.PT_DETTAGLIO_N_PROGR
+and		T.PT_TIPOPRIT_N_TIPOPRIT = 1
+and		T.PT_STATO_N_STATO = 4 
+and		T.PT_ESITO_N_ESITO != 4 
+and		D.PT_STATODETT_N_STATODETT = 4
+and		T.PT_TESTATA_D_CAMBIOSTATO
+	<IfNull propertyName="dataFine">
+		between convert(datetime, <p>dataInizio</p>) AND DATEADD(dd,1, convert(datetime, <p>dataInizio</p>))
+	</IfNull>
+	<IfNotNull propertyName="dataFine">
+		between convert(datetime, <p>dataInizio</p>) AND DATEADD(dd,1, convert(datetime, <p>dataFine</p>))
+	</IfNotNull>
+	<IfNotNull propertyName="codProdotto">
+		and D.PT_PRODOTTO_N_PRODOTTO = <p>codProdotto</p>
+	</IfNotNull>
+	<IfNotNull propertyName="codOperazione">
+	        and D.PT_OPERAZIONE_N_OPERAZIONE = <p>codOperazione</p>
+	</IfNotNull>
+group by UFF.PT_UFFICIO_X_UFFICIO
+	</Query>
+	<Output>
+		<Parameter propertyName="service"/>
+		<Parameter propertyName="totDocumenti"/>
+	</Output>
+</Access>
+
+<Access name="getDettagli" type="DAOQueryAccess" queryType="1" OutputCommandDataModel="prgm.ita.p.dac.estrazioni.model.DettaglioModel"
+	connectionCacheReference="IQ_PRIT">
+	<Query>	
+	SELECT  
+	UFF.PT_UFFICIO_X_UFFICIO AS SERVICE,
+	T.PT_TESTATA_N_PROGR AS CODICE_PRIT,
+	T2.PT_TESTATA_D_SPUNTA  AS DATA_SPUNTA,
+	D.PT_DETTAGLIO_X_BARCODE  AS BARCODE,
+	D.CODIFCLIMEDL_C_CLI_MEDL AS COD_CLIENTE,
+	D.PT_DETTAGLIO_X_CLI_COGN AS COGN_CLIENTE,
+	D.PT_DETTAGLIO_X_CLI_NOME AS NOME_CLIENTE,
+	T.AGE_C_AGE AS COD_AGENTE,
+	AG.AGE_M_COGN_AGE AS COGN_AGENTE,
+	AG.AGE_M_NOME_AGE AS NOME_AGENTE,
+	AG.AGZPI_C_AGZ AS COD_AGENZIA,
+	D.PT_PRODOTTO_N_PRODOTTO AS PRODOTTO,
+	prod.PT_PRODOTTO_X_PT_PRODOTTO  AS DESC_PRODOTTO,
+	D.PT_OPERAZIONE_N_OPERAZIONE AS OPERAZIONE,
+	op.PT_OPERAZIONE_X_PT_OPERAZIONE  AS DESC_OPERAZIONE,
+	case FIL.COD_DIVISIONE
+		when null then null
+		else right('0000000000' + FIL.COD_DIVISIONE, 10)
+	end AS COD_DIVIS,
+	convert(varchar(50), null) AS COGN_DIVISION,
+	convert(varchar(50), null) AS NOME_DIVISION,
+	convert(varchar(10), null) AS COD_REGION,
+	convert(varchar(50), null) AS COGN_REGION,
+	convert(varchar(50), null) AS NOME_REGION
+into #tmp
+FROM  
+        dba.CEPE_PT_TESTATA T
+,		dba.CEPE_PT_TESTATA2 T2
+,		dba.CEPE_PT_PRIT LEG
+,		dba.CEPE_PT_DETTAGLIO D
+,		dba.CEPE_PT_UFFICIO UFF
+,		dba.CEPE_PT_RETEP_PRODOTTO prod
+,		dba.CEPE_PT_RETEP_OPERAZIONE op
+,		dba.ARC_FILIALE FIL
+,		dba.INR_AGENTI AG
+where		
+		UFF.PT_UFFICIO_N_UFFICIO = T2.PT_TESTATA_N_UFFICIO_LAV	/* ufficio che prende in lavorazione */
+and		T2.PT_TESTATA_N_PROGR= T.PT_TESTATA_N_PROGR
+and		LEG.PT_TESTATA_N_PROGR = T.PT_TESTATA_N_PROGR
+and		D.PT_DETTAGLIO_N_PROGR = LEG.PT_DETTAGLIO_N_PROGR
+and		T.PT_TIPOPRIT_N_TIPOPRIT = 1
+and		T.PT_STATO_N_STATO = 4 
+and		T.PT_ESITO_N_ESITO != 4 /*si accettano solo doc accettati, modificati e aggiunti*/
+and		D.PT_STATODETT_N_STATODETT = 4 /* stato lavorato*/
+and    		D.PT_PRODOTTO_N_PRODOTTO=prod.PT_PRODOTTO_N_PT_PRODOTTO
+and     	D.PT_OPERAZIONE_N_OPERAZIONE= op.PT_OPERAZIONE_N_PT_OPERAZIONE
+AND		AG.AGE_C_AGE = T.AGE_C_AGE
+AND     	FIL.COD_FILIALE = AG.AGE_C_POLO
+and		T.PT_TESTATA_D_CAMBIOSTATO    
+		<IfNull propertyName="dataFine">
+			between convert(datetime, <p>dataInizio</p>) AND DATEADD(dd,1, convert(datetime, <p>dataInizio</p>))
+		</IfNull>
+		<IfNotNull propertyName="dataFine">
+			between convert(datetime, <p>dataInizio</p>) AND DATEADD(dd,1, convert(datetime, <p>dataFine</p>))
+		</IfNotNull>
+<IfNotNull propertyName="codProdotto">
+	and D.PT_PRODOTTO_N_PRODOTTO = <p>codProdotto</p>
+</IfNotNull>
+<IfNotNull propertyName="codOperazione">
+	and D.PT_OPERAZIONE_N_OPERAZIONE = <p>codOperazione</p>
+</IfNotNull>
+
+
+update #tmp
+set
+	COGN_DIVISION = AG1.AGE_M_COGN_AGE,
+	NOME_DIVISION = AG1.AGE_M_NOME_AGE,
+	COD_REGION = RUO.AGE_COORD_KEY_C,
+	COGN_REGION = AG2.AGE_M_COGN_AGE,
+	NOME_REGION = AG2.AGE_M_NOME_AGE
+from
+	#tmp tmp
+,	dba.V_HT_AGE_COMM_RUOLI RUO
+,	dba.INR_AGENTI AG1
+,	dba.INR_AGENTI AG2
+where
+	AG1.AGE_C_AGE = tmp.COD_DIVIS
+and	RUO.AGE_KEY_C = tmp.COD_DIVIS
+AND 	RUO.DESCR_TIPO_RUOLO = 'REGIONAL'
+AND     AG2.AGE_C_AGE = RUO.AGE_COORD_KEY_C
+
+SELECT  
+	SERVICE,
+	CODICE_PRIT,
+	DATA_SPUNTA,
+	BARCODE,
+	COD_CLIENTE,
+	COGN_CLIENTE,
+	NOME_CLIENTE,
+	COD_AGENTE,
+	COGN_AGENTE,
+	NOME_AGENTE,
+	COD_AGENZIA,
+	PRODOTTO,
+	DESC_PRODOTTO,
+	OPERAZIONE,
+	DESC_OPERAZIONE,
+	COD_DIVIS,
+	COGN_DIVISION,
+	NOME_DIVISION,
+	COD_REGION,
+	COGN_REGION,
+	NOME_REGION
+from #tmp
+order by SERVICE, DATA_SPUNTA
+
+drop table #tmp
+	</Query>
+	<Output>
+		<Parameter propertyName="service"/>
+		<Parameter propertyName="codPrit"/>
+		<Parameter propertyName="dataSpunta"/>
+		<Parameter propertyName="barcode"/>
+		<Parameter propertyName="codCliente"/>
+		<Parameter propertyName="cognomeCliente"/>
+		<Parameter propertyName="nomeCliente"/>
+		<Parameter propertyName="codAgente"/>
+		<Parameter propertyName="cognomeAgente"/>
+		<Parameter propertyName="nomeAgente"/>
+		<Parameter propertyName="codAgenzia"/>
+		<Parameter propertyName="codProdotto"/>
+		<Parameter propertyName="descPrdotto"/>
+		<Parameter propertyName="codOperazione"/>
+		<Parameter propertyName="descOperazione"/>
+		<Parameter propertyName="codDivision"/>
+		<Parameter propertyName="cognomeDivision"/>
+		<Parameter propertyName="nomeDivision"/>
+		<Parameter propertyName="codRegion"/>
+		<Parameter propertyName="cognomeRegion"/>
+		<Parameter propertyName="nomeRegion"/>
+	</Output>
+</Access>
+
+<Access name="conteggio" type="DAOQueryAccess" queryType="1" OutputCommandDataModel="prgm.ita.p.dac.estrazioni.model.ConteggioModel"
+			connectionCacheReference="IQ_PRIT">
+	<Query>	
+	SELECT COUNT(distinct t.PT_TESTATA_N_PROGR) as COUNT_DAC, COUNT(*) as COUNT_DOC
+		FROM 
+			DBA.CEPE_PT_TESTATA t,
+			DBA.CEPE_PT_PRIT leg,
+			DBA.CEPE_PT_DETTAGLIO dett
+		WHERE 
+			leg.PT_TESTATA_N_PROGR = t.PT_TESTATA_N_PROGR
+		AND		dett.PT_DETTAGLIO_N_PROGR = leg.PT_DETTAGLIO_N_PROGR
+		AND dett.PT_ESITODETT_N_ESITODETT in (1,2,3)
+		AND t.PT_TESTATA_N_UFFICIO_DEST = <p>ufficio</p>
+		AND t.PT_STATO_N_STATO = 4
+		AND PT_TESTATA_D_CAMBIOSTATO between <p>dataInizio</p> and dateadd(dd, 1, <p>dataFine</p>)
+	<IfNotNull propertyName="codProdotto">
+		and dett.PT_PRODOTTO_N_PRODOTTO = <p>codProdotto</p>
+	</IfNotNull>
+	<IfNotNull propertyName="codOperazione">
+		and dett.PT_OPERAZIONE_N_OPERAZIONE = <p>codOperazione</p>
+	</IfNotNull>
+		</Query>
+		<Output>
+			<Parameter propertyName="numeroDAC"/>
+			<Parameter propertyName="numeroDoc"/>
+		</Output>
+</Access>
+<Access name="getDettagliConteggioDocumentiRicDAC" type="DAOQueryAccess" queryType="1" OutputCommandDataModel="prgm.ita.p.dac.estrazioni.model.DettaglioDocRicevutiDacModel"
+	connectionCacheReference="IQ_PRIT">
+	<Query>
+		SELECT 
+			 uff.PT_UFFICIO_X_UFFICIO AS SERVICE
+			,t.PT_TESTATA_N_PROGR  as  CODICE_PRIT
+			,t2.PT_TESTATA_D_SPUNTA  AS DATA_SPUNTA
+			,det.PT_DETTAGLIO_X_BARCODE  AS BARCODE
+			,det.CODIFCLIMEDL_C_CLI_MEDL AS COD_CLIENTE
+			,det.PT_DETTAGLIO_X_CLI_COGN AS COGN_CLIENTE
+			,det.PT_DETTAGLIO_X_CLI_NOME AS NOME_CLIENTE
+			,t.AGE_C_AGE AS COD_AGENTE
+			,(ag.AGE_M_COGN_AGE+' '+ag.AGE_M_NOME_AGE) AS NOMINATIVO
+			,ag.AGZPI_C_AGZ AS COD_AGENZIA
+			,det.PT_PRODOTTO_N_PRODOTTO AS PRODOTTO
+			,prod.PT_PRODOTTO_X_PT_PRODOTTO  AS DESC_PRODOTTO
+			,det.PT_OPERAZIONE_N_OPERAZIONE AS OPERAZIONE
+			,op.PT_OPERAZIONE_X_PT_OPERAZIONE  AS DESC_OPERAZIONE
+		FROM 
+			DBA.CEPE_PT_TESTATA t,
+			DBA.CEPE_PT_PRIT leg,
+			DBA.CEPE_PT_DETTAGLIO det  ,
+			DBA.CEPE_PT_UFFICIO uff ,
+			DBA.INR_AGENTI ag  ,
+			DBA.CEPE_PT_RETEP_PRODOTTO prod  ,
+			DBA.CEPE_PT_RETEP_OPERAZIONE op   ,
+			DBA.CEPE_PT_TESTATA2 t2
+		WHERE 
+			leg.PT_TESTATA_N_PROGR = t.PT_TESTATA_N_PROGR
+			AND		det.PT_DETTAGLIO_N_PROGR = leg.PT_DETTAGLIO_N_PROGR
+			AND det.PT_ESITODETT_N_ESITODETT in (1,2,3)
+			AND t.PT_TESTATA_N_UFFICIO_DEST = <p>ufficio</p>
+			AND t.PT_STATO_N_STATO = 4
+			AND t.PT_UFFICIO_N_UFFICIO=uff.PT_UFFICIO_N_UFFICIO
+			AND t.AGE_C_AGE  = ag.AGE_C_AGE
+			AND det.PT_PRODOTTO_N_PRODOTTO = prod.PT_PRODOTTO_N_PT_PRODOTTO
+			AND det.PT_OPERAZIONE_N_OPERAZIONE = op.PT_OPERAZIONE_N_PT_OPERAZIONE
+			AND t2.PT_TESTATA_N_PROGR = t.PT_TESTATA_N_PROGR
+
+AND PT_TESTATA_D_CAMBIOSTATO between <p>dataInizio</p> and dateadd(dd, 1, <p>dataFine</p>)
+<IfNotNull propertyName="codProdotto">
+	and det.PT_PRODOTTO_N_PRODOTTO = <p>codProdotto</p>
+</IfNotNull>
+<IfNotNull propertyName="codOperazione">
+	and det.PT_OPERAZIONE_N_OPERAZIONE = <p>codOperazione</p>
+</IfNotNull>
+		
+	</Query>
+	<Output>
+	<Parameter propertyName="service"/>
+	<Parameter propertyName="codPrit"/>
+	<Parameter propertyName="dataSpunta"/>
+	<Parameter propertyName="barCode"/>
+	<Parameter propertyName="codCliente"/>
+	<Parameter propertyName="cognomeCliente"/>
+	<Parameter propertyName="nomeCliente"/>
+	<Parameter propertyName="codAgente"/>
+	<Parameter propertyName="nominativoAgente"/>
+	<Parameter propertyName="codAgenzia"/>
+	<Parameter propertyName="codProdotto"/>
+	<Parameter propertyName="descProdotto"/>
+	<Parameter propertyName="codOperazione"/>
+	<Parameter propertyName="descOperazione"/>
+	</Output>
+</Access>
+
+</DAO-Object>

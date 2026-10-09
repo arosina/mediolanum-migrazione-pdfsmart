@@ -1,0 +1,51 @@
+<table height="100%" width="100%">
+
+  <% if(model.getFilterTitle().length() > 0){ %>
+  	<tr>
+  		<td>
+	  		<table width="100%" style="background-color: white;">
+	  			<tr>
+			  		<td class="filterTitle"><%=model.getFilterTitle()%></td>
+	  			</tr>
+	  		</table>
+  		</td>
+  	</tr>
+  <% } %>
+  
+  <tr>
+  	<td id="pdfDraftListSortFormCont" style="display:none;">
+		<form name="pdfDraftListSortForm" method="post" action="call.wfem" style="display:none;">
+		<input type="hidden" name="wfemCmd" value="prgm.pdfwebforms.catalog.SortPdfDraftList.execute">
+		<input type="hidden" name="BrowserInstance" value="<%=request.getAttribute("BrowserInstance")%>">
+		<input type="hidden" name="pdfDraftListParams_orderField" value="<%=model.getPdfDraftListParams().getOrderField()%>">
+		<input type="hidden" name="pdfDraftListParams_orderType" value="<%=model.getPdfDraftListParams().getOrderType()%>">
+		</form>
+  	</td>
+  </tr>
+
+  <tr>
+    <td id="pdfDraftListGridCont" height="100%" align="center">
+    		<% 
+    			if(isSede){
+			  		cols = "cols='#pdfStatus,#pdfAnag_pdfCode,pdfInstanceId,pdfAnag_pdfDescr,agente,clienti,#pdfCompilationMode,pdfCreationTime,comandi' ";
+			  		dim = "colswidths='18%,*,*,*,14%,10%' ";
+    			}else{
+			  		cols = "cols='#pdfStatus,#pdfAnag_pdfCode,pdfInstanceId,pdfAnag_pdfDescr,clienti,#pdfCompilationMode,pdfCreationTime,comandi' ";
+			  		dim = "colswidths='18%,*,*,14%,10%' ";
+    			} 
+    		%>
+	        <%=template.grid("pdfDraftList",cols+dim+"height='100%' width='100%' "+
+	        									   "selection='none' "+
+	        									   "onnewcell='pdfDraftList.onNewCell(this);' "+
+	        									   "onnewheader='pdfDraftList.onNewHeader(this);' "+
+	        									   "sortable='false' "+
+	        									   "showbottomarea='false' "+
+	        									   "showcounter='false' "+
+	        									   "headerheight='40' "+
+	        									   "cellsnowrap='false' "+
+	        									   "title='Elenco moduli in bozza' "+
+	        									   "noRowsMsg='Nessun modulo in bozza' "+
+	     	  									   "decorator='prgm.pdfwebforms.catalog.PdfCatalog'")%>
+    </td>
+  </tr>
+</table>

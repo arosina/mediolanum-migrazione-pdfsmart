@@ -1,0 +1,222 @@
+<%
+	int saveModality = template.getModality();
+
+	boolean showTabsDocumento = false;
+	int documentHeight = 440;
+	if(model.getUfficio().equals(Costanti.UFFICIO_RETE)){
+		showTabsDocumento = true;
+		documentHeight = 360;
+	}
+	
+	modalityCampoElettronico = "";
+	if(documento.getUfficio().equals(Costanti.UFFICIO_RETE) && !documento.getCodInforeteEsterno().isNull())
+		modalityCampoElettronico = " modality='read' ";
+	
+	if(readonly)
+		template.setModality(Template.READ_MODALITY);
+	
+	String prefixBeforeIncludeDocumento = template.getLabelCodePrefix();
+	template.setLabelCodePrefix(docPrefixInclude);
+	
+	String classNameMandInputField = "";
+	String classNameMandOutputField = "";
+	if (template.isWlt()) {
+		classNameMandInputField = "mandInputFieldWlt";
+		classNameMandOutputField = "mandOutputFieldWlt";
+	} else {
+		classNameMandInputField = "mandInputField";
+		classNameMandOutputField = "mandOutputField";
+	}	
+%>
+<script>
+	var classNameMandInputField = "<%=classNameMandInputField%>";
+	var classNameMandOutputField = "<%=classNameMandOutputField%>";
+</script>
+
+<div id="documentoCont" style="position:relative;z-index:10;width:99%;">
+
+ <form id="firmeClienteForm" name="firmeClienteForm" method="post" action="call.wfem" target="firmeClienteIframe" style="display:none;">
+   <input type="hidden" name="wfemCmd" value="prgm.ita.p.dac.display.Firme.execute"></input>
+   <input type="hidden" name="BrowserInstance" value="<%=request.getAttribute("BrowserInstance")%>"></input>
+   <input type="hidden" name="isReadonly" value="<%=readonly%>"></input>
+   <input type="hidden" name="idDocumento" value="<%=documento.getIdDocumento()%>"></input>
+   <input type="hidden" name="codMediolanum" value="<%=documento.getCliente().getCodMediolanum()%>"></input>
+   <input type="hidden" name="cognome" value="<%=documento.getCliente().getCognome()%>"></input>
+   <input type="hidden" name="nome" value="<%=documento.getCliente().getNome()%>"></input>
+   <input type="hidden" name="contoSelezionato_numeroConto" value=""></input>
+   <%=model.htmlParams("","")%>
+ </form>
+ <form id="firmeAgenteForm" name="firmeAgenteForm" method="post" action="call.wfem" target="firmeAgenteIframe" style="display:none;">
+   <input type="hidden" name="wfemCmd" value="prgm.ita.p.dac.display.Firme.execute"></input>
+   <input type="hidden" name="BrowserInstance" value="<%=request.getAttribute("BrowserInstance")%>"></input>
+   <input type="hidden" name="isReadonly" value="<%=readonly%>"></input>
+   <input type="hidden" name="idDocumento" value="<%=documento.getIdDocumento()%>"></input>
+   <input type="hidden" name="codMediolanum" value="<%=documento.getAgente().getCodMediolanum()%>"></input>
+   <input type="hidden" name="nominativo" value="<%=documento.getAgente().getNominativo()%>"></input>
+   <input type="hidden" name="contoSelezionato_numeroConto" value=""></input>
+   <%=model.htmlParams("","")%>
+ </form>
+ <form name="datiReadDocumento" action="call.wfem" style="display:none;">
+  <input type="hidden" name="documento_isDocumentoAssegno" value="<%=documento.isDocumentoAssegno()%>"></input>
+  <input type="hidden" name="documento_readonlyMode" value="<%=readonly%>"></input>
+  <input type="hidden" name="documento_esito" value="<%=documento.getEsito()%>"></input>
+  <input type="hidden" name="documento_esitoFirmaCliente" value="<%=documento.getEsitoFirmaCliente()%>"></input>
+  <input type="hidden" name="documento_ufficio" value="<%=documento.getUfficio()%>"></input>
+  <input type="hidden" name="documento_tipoAlertAdeguatezza" value=""></input>
+  <input type="hidden" name="documento_showAlertBeneficiariNominativi" value=""></input>
+ </form>
+ <form id="documentoForm" name="documentoForm" method="post" action="call.wfem" style="margin:0;">
+   <script>
+   	docVisibile=<%=documento.isVisible()%>;
+   </script>
+   <input type="hidden" name="wfemCmd" value=""></input>
+   <input type="hidden" name="BrowserInstance" value="<%=request.getAttribute("BrowserInstance")%>"></input>
+   <input type="hidden" name="checkCodDescFields" value="false">
+   <input type="hidden" name="documento_idDocumento" value="<%=documento.getIdDocumento()%>"></input>
+   <input type="hidden" name="documento_idDac" value="<%=idDacCorrente%>"></input>
+   <input type="hidden" name="documento_absIndexMezzoPgSelezionato" value=""></input>
+   <input type="hidden" name="documento_nuovoOnInserisci" value="<%=documento.getNuovoOnInserisci()%>"></input>
+   <input type="hidden" id="documento_descrContratto" name="documento_descrContratto" value="<%=documento.getDescrContratto()%>"></input>
+   <input type="hidden" name="documento_esitoNew" value=""></input>
+   <input type="hidden" name="documento_esitoFirmaClienteNew" value=""></input>
+   <input type="hidden" name="documento_esitoFirmaAgenteNew" value=""></input>
+   <input type="hidden" name="documento_idDocModificato" value="<%=documento.getIdDocModificato()%>"></input>
+   <input type="hidden" name="documento_tabName" value="">
+   <%=model.htmlParams("documento","")%>
+
+   <% if(model.getDocumento().isVisible()){	%>
+
+   <%
+		template.savePrefix();
+		template.setPrefix("documento");
+		template.setLabelWidth("100");
+		String titleColor = "background-color:#1A458F;color:lightgrey;";
+		if(documento.getIdDocumento().isNull())
+			titleColor = "background-color:#7FD880;color:#1A458F;";
+   %>
+	
+	   <script>curDoc="<%=model.getDocumento().getIdDocumento()%>";</script>
+	  
+	   <table height="<%=documentHeight%>px" width="100%" class="text" cellpadding="0" cellspacing="0" style="border:solid 2px darkgray;background-color:#d0e4ef;">
+	
+	     <!-- Titolo (move) -->
+	     <tr>
+	      <td>
+	       <table id="docWindow" width="100%" style="<%=titleColor%>" cellpadding="0" cellspacing="0" >
+	         <tr style="height:25px;font-size:11;">
+			    <td id="docTitle" width="100%" onmousedown="startMove(event);" onmouseup="endMove(event);" onmousemove="move(event);">
+			    		&nbsp;<%if(documento.isStoricizzato()){%><b>STORICO:</b>&nbsp;<%}%><b><%=documento.getTitolo()%></b>
+			    </td>
+			    <td><img id="docAnchor" style="cursor:pointer;" onclick="setMoveable(true);" src="<%=template.getWebApp()%>/images/windowMove.png"></td>
+			    <td>&nbsp;<img src="<%=template.getWebApp()%>/images/windowClose.png" title="Chiudi dettaglio" style="cursor:pointer;" onclick="chiudiDocumento();">&nbsp;</td>
+	         </tr>
+	       </table>
+	      </td>
+	     </tr>
+		  
+		 <tr>
+		  <td align="center" height="100%">
+		  
+		    <!-- Inizio contenuto -->
+			<table width="100%" height="100%" cellpadding="0" cellspacing="0">
+			 
+			  <!-- Messaggi e esito modificato -->
+			  <% if(!readonly || (!documento.getUfficio().equals(Costanti.UFFICIO_RETE) && documento.getEsito().equals(Costanti.ESITO_DOC_MODIFICATO))){ %>
+				  <tr>
+				    <td align="center">
+				      <table width="100%" cellpadding="0" cellspacing="0">
+						  <tr>
+						      <td  width="100%" align="center" id="messaggiObject" style="padding-right: 5;">&nbsp;
+								<%=(documento.getErrorString().length() > 0 ? "<span class='text' style='font-size:10pt;background-color:red;color:white;'>&nbsp;"+documento.getErrorString()+"&nbsp;</span>" : "")%>
+								<%=(documento.getMessageString().length() > 0 ? "<span class='text' style='font-size:10pt;background-color:lightgreen;'>&nbsp;"+documento.getMessageString()+"&nbsp;</span>" : "")%>
+								<%=(documento.getMsgProdottoOperazioneNonPiuValidi().length() > 0 ? "<span class='text' style='font-size:10pt;background-color:red;color:white;'>&nbsp;Attenzione! "+documento.getMsgProdottoOperazioneNonPiuValidi()+"&nbsp;</span>" : "")%>
+								<% documento.setMsgProdottoOperazioneNonPiuValidi(""); %>
+						      </td>
+						      <td class="text" nowrap="nowrap" align="right" style="padding-top:3;padding-right:10;">
+						      <% if(!documento.getUfficio().equals(Costanti.UFFICIO_RETE) && documento.getEsito().equals(Costanti.ESITO_DOC_MODIFICATO)){ %>
+						      		Documento modificato. <span style="text-decoration:underline;cursor:pointer;" onclick="showDocRete('<%=documento.getIdDocumento()%>');">Clicca qui</span> per vedere l'originale
+						      <% } %>
+						      </td>
+						  </tr>
+				      </table>
+				    </td>
+				    <td></td>
+				  </tr>
+			  <% }else if(readonly && 
+			  			  documento.getUfficio().equals(Costanti.UFFICIO_RETE) &&
+			  			  com.atosorigin.wfem.controller.Configuration.getInstance().isOnlineEnvironment() && 
+			  			  documento.getEsito().equals(Costanti.ESITO_DOC_MODIFICATO)){ %>
+				  <tr>
+			  		<td class="text" nowrap="nowrap" align="right" style="padding-top:3;padding-right:10;">
+		      			Documento modificato. <span style="text-decoration:underline;cursor:pointer;" onclick="showDocRete('<%=documento.getIdDocumento()%>');">Clicca qui</span> per vedere l'originale
+		      		</td>
+		      		<td></td>
+				  </tr>
+			  <% }else{ // Un po di spazio %>
+				  <tr>
+				    <td colspan="2" style="height:5;"></td>
+				  </tr>
+			  <% } %>
+			  
+			  <tr>
+			  	<!-- TABBETTINI E DATI DOCUMENTO -->
+			    <td height="100%" width="100%" align="center" valign="top">
+			      <%@ include file="./DocumentoTabs.html"%>
+			    </td>
+			    
+				<!--  Toolbar -->
+			    <td height="100%" valign="top">
+	       	      <% if(!readonly){ %>
+			      <table width="100%">
+			        <tr>
+			          <td valign="top">
+		       	    	<%=documento.htmlToolbar(template)%>
+			          </td>
+			        </tr>
+			        <tr>
+			          <td align="center">
+				      	<table class="text" style="background-color:white;">
+				      	  <tr>
+				      	  <% if(documento.getFnc().equals(Costanti.FNC_SPUNTA)){ %>
+				      	    <td nowrap="nowrap">Campi da controllare</td>
+				      	  <% }else{ %>
+				      	    <td nowrap="nowrap">Campi obbligatori</td>
+				      	  <% } %>
+				      	    <td nowrap="nowrap" class="<%=classNameMandInputField%>" style="border: 1px solid gray;height:10px;width:10px;font-size:1;">&nbsp;</td>
+				      	  </tr>
+				      	</table>
+			          </td>
+			        </tr>
+			      </table>
+			    <% } %>
+			    </td>
+			    
+			  </tr>
+			  
+			  <!-- Spazio sotto -->
+			  <tr><td colspan="2" style="height:4;"></td></tr>
+			
+		    </table>
+		    <!-- Fine contenuto -->
+		    
+		  </td>
+		</tr>   
+	   </table>
+		
+	   <script>setMoveable(false);</script>
+	
+   <% }else{ %>
+   
+   	<script>curDoc="";</script>
+   
+   <% } %>
+		   
+ </form>
+	
+</div>
+<%	
+	template.restorePrefix();
+	template.setLabelCodePrefix(prefixBeforeIncludeDocumento); 
+
+	template.setModality(saveModality);
+%>

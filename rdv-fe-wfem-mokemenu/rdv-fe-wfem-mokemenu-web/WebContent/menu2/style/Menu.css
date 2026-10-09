@@ -1,0 +1,73 @@
+.text {
+	font-family: Arial;
+	font-size: 8pt;
+	color:#1A458F;
+}
+.grpSf {
+	background: #587BC4;
+	border-width: 1px;
+}
+.grpSelSf {
+	background: #C9D6EA;
+	border-width: 1px;
+}
+.grp {
+	background: #587BC4;
+	border-width: 1px;
+	font-family: Arial;
+	font-size: 10pt;
+	color:white;	
+	font-weight: bold;
+}
+.grpSel {
+	background: #C9D6EA;
+	border-width: 1px;
+	font-family: Arial;
+	font-size: 10pt;
+	color:#1A458F;
+	font-weight: bold;
+}
+.grpSep { 
+	border-top-style:none; 
+	border-bottom-style:none; 
+	border-left-style : thin; 
+	border-left-color : #F7FFFF;
+}
+.app {
+	background: #C9D6EA;
+	font-family: Arial;
+	font-size: 10pt;
+	color:#1A458F;
+}
+.appSel {
+	background: #1A458F;
+	font-family: Arial;
+	font-size: 10pt;
+	color: #C9D6EA;
+}
+.logout {
+	font-family: Arial;
+	font-size: 10pt;
+	color:#FFFFFF;
+	background:#587BC4;
+}
+.fnc {
+	background: #f0f0f0;
+	font-family: Arial;
+	font-size: 9pt;
+	color: #1A458F;
+}
+.fncSel {
+	background: #1A458F;
+	font-family: Arial;
+	font-size: 9pt;
+	color: #f0f0f0;
+}
+.infobox {
+	font-family: Arial;
+	font-size: 13pt;
+	font-weight: bold;
+	background: #ECF0F2;
+	color: #1A458F;
+	border: solid 1px #1A458F;
+}

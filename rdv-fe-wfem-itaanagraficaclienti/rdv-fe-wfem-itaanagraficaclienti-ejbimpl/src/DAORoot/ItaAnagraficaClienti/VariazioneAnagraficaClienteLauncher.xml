@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="VariazioneAnagraficaClienteLauncher" connectionCacheReference="DBAZ_SOGG">
+
+<Access name="loadDatiCliente" type="DAOQueryAccess" queryType="0" 
+		OutputCommandDataModel="com.atosorigin.wfem.command.MapCommandDataModel">
+	<Query>
+		select	CLI_C, CLI_F_SESSO, CLI_C_NATURA_GIURIDICA, CLI_X_CF, AGE_C_AGE 
+		from	CLL.V_CLI 
+		where	CLI_C = ?
+		and		rownum = 1
+	</Query>
+	<Input>
+		<Parameter propertyName="codMediolanum"/>
+	</Input>	
+	<Output>
+		<Parameter propertyName="codMediolanum"/>
+		<Parameter propertyName="sesso"/>
+		<Parameter propertyName="naturaGiuridica"/>
+		<Parameter propertyName="codiceFiscale"/>
+		<Parameter propertyName="codAgenteAssegnatario"/>
+	</Output>	
+</Access>
+
+<Access name="loadIsClienteAgente" type="DAOQueryAccess" queryType="0" connectionCacheReference="INR">
+	<Query>
+		select	case when count(*) > 0 then 'S' else 'N' end isClienteAgente
+		from	INR_AGENTI
+		where	AGE_X_CICLO_VITA = 'ATTIVO'
+		and		(AGE_X_CF_AGE = ? or CODIFCLIMEDL_C_CLI_MEDL = (select right('00000000000' + ?, 11)))
+	</Query>
+	<Input> 
+		<Parameter propertyName="codiceFiscale"/>
+		<Parameter propertyName="codMediolanum"/>
+    </Input> 
+	<Output>
+		<Parameter propertyName="isClienteAgente"/>
+	</Output>
+</Access>
+
+<Access name="loadNdgAgente" type="DAOQueryAccess" queryType="0" 
+        connectionCacheReference="INR" maxResultRows="1">
+	<Query>
+		select 	CODIFCLIMEDL_C_CLI_MEDL
+		from 	INR_AGENTI
+		where 	AGE_C_AGE = (select right('0000000000' + ?, 10)) 
+	</Query>
+	<Input>
+		<Parameter propertyName="codAgente"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="codMediolanum"/>
+	</Output>
+</Access>
+  
+<Access name="loadStatoCellulare" type="DAOQASAccess" serviceName="GEN-IB-GETSTATOCELL">
+   <Input>
+   	<![CDATA[
+			<OFX>
+				<SIGNONMSGSRQV1>
+					<SONRQ>
+						<USERID>9555559</USERID>
+						<USERPASS>6111116</USERPASS>
+						<GENUSERKEY>1</GENUSERKEY>
+						<APPID>INT</APPID>
+						<APPDATALIST>
+							<APPROOT>
+								<WHEREIS>
+									<HTTP_REFERER/>
+									<PATH_INFO/>
+									<REMOTE_ADDR>172.16.210.00</REMOTE_ADDR>
+								</WHEREIS>
+								<SESSION>
+									<PAGE/>
+									<OPERCODE/>
+									<ISOPER/>
+									<pPg/>
+									<DefaultPage/>
+								</SESSION>
+								<PINCONTROL>
+									<USERCODE>00000000000</USERCODE>
+									<PASSWORD/>
+									<POS1/>
+									<POS2/>
+									<PWDPOS1/>
+									<PWDPOS2/>
+								</PINCONTROL>
+							</APPROOT>
+						</APPDATALIST>
+					</SONRQ>
+				</SIGNONMSGSRQV1>
+				<GEN-IB-GETSTATOCELLQARCMSGSRQV1>
+					<CLIC propertyName="codMediolanum" appInfo="true"></CLIC>
+					<ISPORTALE>S</ISPORTALE>
+				</GEN-IB-GETSTATOCELLQARCMSGSRQV1>
+			</OFX>
+		]]>
+   </Input>
+   <Output>
+   	<![CDATA[
+			<OFX>
+				<GEN-IB-GETSTATOCELLQARCMSGSRSV1>
+					<STATO propertyName="statoCelluarePrimario"></STATO>
+				</GEN-IB-GETSTATOCELLQARCMSGSRSV1>
+			</OFX>			
+		]]>
+   </Output>
+</Access>
+
+<Access name="readStatoFirmaDigitale" type="DAOQASAccess" serviceName="GEN-FD-GESTIONESTATOFD">
+   <Input>
+   	<![CDATA[
+		   	<OFX>
+				<SIGNONMSGSRQV1>
+					<SONRQ>
+						<USERID>9555559</USERID>
+						<USERPASS>6111116</USERPASS>
+						<GENUSERKEY>1</GENUSERKEY>
+						<APPID>INT</APPID>
+						<APPDATALIST>
+							<APPROOT>
+								<WHEREIS>
+									<HTTP_REFERER/>
+									<PATH_INFO/>
+									<REMOTE_ADDR>172.16.210.00</REMOTE_ADDR>
+								</WHEREIS>
+								<SESSION>
+									<PAGE/>
+									<OPERCODE/>
+									<ISOPER/>
+									<pPg/>
+									<DefaultPage/>
+								</SESSION>
+								<PINCONTROL>
+									<USERCODE>00000000000</USERCODE>
+									<PASSWORD/>
+									<POS1/>
+									<POS2/>
+									<PWDPOS1/>
+									<PWDPOS2/>
+								</PINCONTROL>
+							</APPROOT>
+						</APPDATALIST>
+					</SONRQ>
+				</SIGNONMSGSRQV1>
+				<GEN-FD-GESTIONESTATOFDQARCMSGSRQV1>
+					<SUBJCOD propertyName="codMediolanum" appInfo="true"></SUBJCOD>
+					<OPERAZIONE>L</OPERAZIONE >
+				</GEN-FD-GESTIONESTATOFDQARCMSGSRQV1>
+			</OFX>
+		]]>
+   </Input>
+   <Output>
+   	<![CDATA[
+			<OFX>
+				<GEN-FD-GESTIONESTATOFDQARCMSGSRSV1>
+					<ESITO propertyName="esitoStatoFirmaDigitale"></ESITO>
+					<STATO propertyName="statoFirmaDigitale"></STATO>
+					<O_CODICE_FD propertyName="idCertificationAuthorityFirmaDigitale"></O_CODICE_FD>
+				</GEN-FD-GESTIONESTATOFDQARCMSGSRSV1>
+			</OFX>
+	]]>
+   </Output>
+</Access>
+
+<Access name="loadHaBancaDiretta" type="DAOQueryAccess" queryType="0">
+	<Query>
+		SELECT		case 
+						when (count(*) > 0) then 'S'
+						else 'N'
+					end 
+		FROM	    CLL.CONTR     CP
+		,			CLL.CONTRCLI  LCC
+		,           CLL.TABDECOD_RETE TR
+		WHERE		CP.PROD_C = LCC.PROD_C
+		AND			CP.CONTR_N = LCC.CONTR_N
+		AND			LCC.CONTRCLI_C_RUOLO_CONTR IN ('I','P','C')
+		AND         CP.PROD_C = 'BAN01'
+		AND         CP.CONTR_C_CAT = TR.COD_DOM
+		AND         TR.COD_TIPO_DOM = 'CATEGORIA_CC'
+		AND 	    LCC.CLI_C = ?
+	</Query>
+	<Input>
+		<Parameter propertyName="codMediolanum"/>
+	</Input>	
+	<Output>
+		<Parameter propertyName="haBancaDiretta"/>
+	</Output>	
+</Access>
+
+</DAO-Object>
+

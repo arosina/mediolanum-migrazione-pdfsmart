@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="PdfWebFormsPca">
+
+<Access name="collegaPcaAReportAdeguatezza" type="DAOOSBAccess"
+		serviceName="service/soggetto/posizionedispositiva/QuestionarioDemandsAndNeedsService/v1" operationName="collegaQuestionarioProdottoCompilatoDispositiva" markNillable="true">
+	<Input>
+		<![CDATA[
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://posizionedispositiva.soggetto.be.schema.bmed.it/QuestionarioDemandsAndNeeds/v1">
+				<soapenv:Header>
+			      <v1:requestHeader>
+			         <v1:idOperazione>
+			            <v1:codiceApplicazioneChiamante>PDFWF</v1:codiceApplicazioneChiamante>
+			            <v1:codiceOperazione/>
+			         </v1:idOperazione>
+			         <v1:idConversazione/>
+			         <v1:timeStamp propertyName="now"></v1:timeStamp>
+			         <v1:contestoChiamante>
+			            <v1:idApplicazioneChiamante>PDFWF</v1:idApplicazioneChiamante>
+			            <v1:canale/>
+			          	<v1:utente propertyName="utente"></v1:utente>
+			            <v1:ndgCliente/>
+			            <v1:numeroRapporto/>
+			         </v1:contestoChiamante>
+			         <v1:tipoOperazione>DISP</v1:tipoOperazione>
+			      </v1:requestHeader>
+				</soapenv:Header>
+				<soapenv:Body>
+					<v11:collegaQuestionarioProdottoCompilatoDispositivaRequest>
+						<v11:codiceQuestionarioCompilato propertyName="idPCA"></v11:codiceQuestionarioCompilato>
+						<v11:codiceDispositiva propertyName="idRDA"></v11:codiceDispositiva>
+					</v11:collegaQuestionarioProdottoCompilatoDispositivaRequest>
+				</soapenv:Body>
+			</soapenv:Envelope>
+		]]>
+	</Input>
+	<Output>
+		<![CDATA[
+			<S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/">
+				<S:Body>
+					<collegaQuestionarioProdottoCompilatoDispositivaResponse xmlns="http://posizionedispositiva.soggetto.be.schema.bmed.it/QuestionarioDemandsAndNeeds/v1" xmlns:ns2="http://common.schema.bmed.it/v1" xmlns:ns3="http://fault.common.schema.bmed.it/v1">
+						<esitoTecnico></esitoTecnico>
+					</collegaQuestionarioProdottoCompilatoDispositivaResponse>
+				</S:Body>
+			</S:Envelope>
+		]]>
+	</Output>
+</Access>
+
+</DAO-Object>

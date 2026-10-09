@@ -1,0 +1,755 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="PdfSignProcess" connectionCacheReference="CEPE">
+
+<Access name="loadCellulareAnagEffettivo" type="DAOQueryAccess" queryType="0" connectionCacheReference="DBAZ_SOGG">
+	<Query>
+		select  RECAPTELCLI_X_PREF_TEL,  
+				RECAPTELCLI_X_NUM_TEL
+		from 	CLL.V_RECAPTELCLI
+		where 	ASSGNCLIAGE_C_POTZLE = ?
+		and		TIPRECAPTEL_C_TIP_RECAP = '14'
+	</Query>
+	<Input>
+		<Parameter propertyName="codPotenziale"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="signData_prefissoCellulareAnag"/>
+		<Parameter propertyName="signData_numeroCellulareAnag"/>
+	</Output>
+</Access>
+
+<Access name="loadCellulareAnagCensito" type="DAOQueryAccess" queryType="0" connectionCacheReference="DBAZ_SOGG">
+	<Query>
+		select 	'C', 
+				RECAPTELCLI_X_PREF_TEL || RECAPTELCLI_X_NUM_TEL,
+				RECAPTELCLI_X_PREF_TEL,  
+				RECAPTELCLI_X_NUM_TEL
+		from 	cll.INR_RECAPTELCLI_ELETTR_REP
+		where 	ASSGNCLIAGE_C_POTZLE = ?
+		and		TIPRECAPTEL_C_TIP_RECAP = '14'
+	</Query>
+	<Input>
+		<Parameter propertyName="idCensimento"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="signData_statoCelluarePrimario"/>
+		<Parameter propertyName="signData_numeroCelluarePrimario"/>
+		<Parameter propertyName="signData_prefissoCellulareAnag"/>
+		<Parameter propertyName="signData_numeroCellulareAnag"/>
+	</Output>
+</Access>
+
+<Access name="loadStatoCellulare" type="DAOQASAccess" serviceName="GEN-IB-GETSTATOCELL">
+   <Input>
+   	<![CDATA[
+			<OFX>
+				<SIGNONMSGSRQV1>
+					<SONRQ>
+						<USERID>9555559</USERID>
+						<USERPASS>6111116</USERPASS>
+						<GENUSERKEY>1</GENUSERKEY>
+						<APPID>INT</APPID>
+						<APPDATALIST>
+							<APPROOT>
+								<WHEREIS>
+									<HTTP_REFERER/>
+									<PATH_INFO/>
+									<REMOTE_ADDR>172.16.210.00</REMOTE_ADDR>
+								</WHEREIS>
+								<SESSION>
+									<PAGE/>
+									<OPERCODE/>
+									<ISOPER/>
+									<pPg/>
+									<DefaultPage/>
+								</SESSION>
+								<PINCONTROL>
+									<USERCODE>00000000000</USERCODE>
+									<PASSWORD/>
+									<POS1/>
+									<POS2/>
+									<PWDPOS1/>
+									<PWDPOS2/>
+								</PINCONTROL>
+							</APPROOT>
+						</APPDATALIST>
+					</SONRQ>
+				</SIGNONMSGSRQV1>
+				<GEN-IB-GETSTATOCELLQARCMSGSRQV1>
+					<CLIC propertyName="ndg" appInfo="true"></CLIC>
+					<ISPORTALE>S</ISPORTALE>
+				</GEN-IB-GETSTATOCELLQARCMSGSRQV1>
+			</OFX>
+		]]>
+   </Input>
+   <Output>
+   	<![CDATA[
+			<OFX>
+				<GEN-IB-GETSTATOCELLQARCMSGSRSV1>
+					<STATO propertyName="signData_statoCelluarePrimario"></STATO>
+					<NUMPRI propertyName="signData_numeroCelluarePrimario"></NUMPRI>
+				</GEN-IB-GETSTATOCELLQARCMSGSRSV1>
+			</OFX>			
+		]]>
+   </Output>
+</Access>
+
+<Access name="readStatoFirmaDigitale" type="DAOQASAccess" serviceName="GEN-FD-GESTIONESTATOFD">
+   <Input>
+   	<![CDATA[
+		   	<OFX>
+				<SIGNONMSGSRQV1>
+					<SONRQ>
+						<USERID>9555559</USERID>
+						<USERPASS>6111116</USERPASS>
+						<GENUSERKEY>1</GENUSERKEY>
+						<APPID>INT</APPID>
+						<APPDATALIST>
+							<APPROOT>
+								<WHEREIS>
+									<HTTP_REFERER/>
+									<PATH_INFO/>
+									<REMOTE_ADDR>172.16.210.00</REMOTE_ADDR>
+								</WHEREIS>
+								<SESSION>
+									<PAGE/>
+									<OPERCODE/>
+									<ISOPER/>
+									<pPg/>
+									<DefaultPage/>
+								</SESSION>
+								<PINCONTROL>
+									<USERCODE>00000000000</USERCODE>
+									<PASSWORD/>
+									<POS1/>
+									<POS2/>
+									<PWDPOS1/>
+									<PWDPOS2/>
+								</PINCONTROL>
+							</APPROOT>
+						</APPDATALIST>
+					</SONRQ>
+				</SIGNONMSGSRQV1>
+				<GEN-FD-GESTIONESTATOFDQARCMSGSRQV1>
+					<SUBJCOD propertyName="subjCod" appInfo="true"></SUBJCOD>
+					<SUBJTYPE propertyName="subjType"></SUBJTYPE>
+					<OPERAZIONE>L</OPERAZIONE >
+				</GEN-FD-GESTIONESTATOFDQARCMSGSRQV1>
+			</OFX>
+		]]>
+   </Input>
+   <Output>
+   	<![CDATA[
+			<OFX>
+				<GEN-FD-GESTIONESTATOFDQARCMSGSRSV1>
+					<ESITO propertyName="signData_esitoChiamataServizio"></ESITO>
+					<STATO propertyName="signData_statoFirmaDigitale"></STATO>
+					<O_CODICE_FD propertyName="signData_idCertificationAuthority"></O_CODICE_FD>
+				</GEN-FD-GESTIONESTATOFDQARCMSGSRSV1>
+			</OFX>
+	]]>
+   </Output>
+</Access>
+
+<Access name="isAgenteClienteDiAltroAgente" type="DAOQueryAccess" queryType="0"
+        connectionCacheReference="INR"
+		OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType">
+	<Query>
+		select case when A.AGE_C_AGE != C.AGE_C_AGE then 'S' else 'N' end 
+		from INR_AGENTI A, INR_CODIFCLIMEDL C
+		where A.CODIFCLIMEDL_C_CLI_MEDL = C.CODIFCLIMEDL_C_CLI_MEDL
+		and A.AGE_C_AGE = ?
+	</Query>
+	<Input>
+		<Parameter propertyName="codAgente"/>
+	</Input>
+</Access>
+
+<Access name="getNdgFintoProspect" type="DAOQueryAccess" queryType="0" connectionCacheReference="DBAZ_SOGG"
+		OutputCommandDataModel="com.atosorigin.wfem.types.StringType">
+	<Query>
+		select 	A.CLI_C as CODIFCLIMEDL_C_CLI_MEDL
+		from 	CLL.V_CLI A 
+		where 	A.CLI_X_CF = ?
+		and		(A.CLI_F_SESSO in ('M','F') and (A.CLI_C_NATURA_GIURIDICA in ('FMM','FFF' ) or rtrim(ltrim(A.CLI_C_NATURA_GIURIDICA)) is null))
+		and 	(A.BLOCCO_C_BLOCCO != 'R' OR A.BLOCCO_C_BLOCCO IS NULL)
+	</Query>
+	<Input>
+		<Parameter propertyName="codFiscale"/>
+	</Input>
+</Access>
+
+<Access name="hasSoggettoContiBancaDiretta" type="DAOQueryAccess" queryType="0" connectionCacheReference="DBAZ_SOGG"  
+		OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType">
+	<Query>
+		select 	case when count(*) > 0 then 'S' else 'N' end
+		from    CLL.CONTRCLI CONTRCLI
+			    inner join CLL.CONTR CONTR
+                        on CONTRCLI.CONTR_N = CONTR.CONTR_N and CONTRCLI.PROD_C = CONTR.PROD_C
+                inner join CLL.TABDECOD_RETE TABRETE  
+                        on TABRETE.COD_TIPO_DOM = 'CATEGORIA_CC' and TABRETE.COD_DOM = CONTR.CONTR_C_CAT					  
+        WHERE 	CONTRCLI.CLI_C = ?       
+        AND   	CONTRCLI.CONTRCLI_C_RUOLO_CONTR IN ('I', 'P', 'C')  
+        AND   	CONTR.PROD_C = 'BAN01'
+		AND     CONTR.CONTR_D_ESTI = to_date('31/12/9999','dd/mm/yyyy')
+	</Query>
+	<Input>
+		<Parameter propertyName="ndg"/>
+	</Input>	
+</Access>
+
+<Access name="getUserProfile" type="DAOQASAccess" serviceName="IB-COM-GetUserProfile"
+		OutputCommandDataModel="com.atosorigin.wfem.command.MapCommandDataModel">
+   <Input>
+   	<![CDATA[
+		   	<OFX>
+				<SIGNONMSGSRQV1>
+					<SONRQ>
+						<USERID>9555559</USERID>
+						<USERPASS>6111116</USERPASS>
+						<GENUSERKEY>1</GENUSERKEY>
+						<APPID>INT</APPID>
+						<APPDATALIST>
+							<APPROOT>
+								<WHEREIS>
+									<HTTP_REFERER/>
+									<PATH_INFO/>
+									<REMOTE_ADDR>172.16.210.00</REMOTE_ADDR>
+								</WHEREIS>
+								<SESSION>
+									<PAGE/>
+									<OPERCODE/>
+									<ISOPER/>
+									<pPg/>
+									<DefaultPage/>
+								</SESSION>
+								<PINCONTROL>
+									<USERCODE>00000000000</USERCODE>
+									<PASSWORD/>
+									<POS1/>
+									<POS2/>
+									<PWDPOS1/>
+									<PWDPOS2/>
+								</PINCONTROL>
+							</APPROOT>
+						</APPDATALIST>
+					</SONRQ>
+				</SIGNONMSGSRQV1>
+				<IB-COM-GetUserProfileQARCMSGSRQV1>
+					<CodCli propertyName="ndg" appInfo="true"></CodCli>
+					<Timeout>60</Timeout>
+					<FLGFIRSTPIN>N</FLGFIRSTPIN>
+					<RESTYLING>N</RESTYLING>
+					<FirmaDigitale>S</FirmaDigitale>
+				</IB-COM-GetUserProfileQARCMSGSRQV1>
+			</OFX>
+		]]>
+   </Input>
+   <Output>
+   	<![CDATA[
+			<OFX>
+				<IB-COM-GetUserProfileQARCMSGSRSV1>
+					<Blocked1 propertyName="blocked1"></Blocked1>
+					<ErrNo propertyName="errNo"></ErrNo>
+				</IB-COM-GetUserProfileQARCMSGSRSV1>
+			</OFX>
+	]]>
+   </Output>
+</Access>
+
+<Access name="getBozzeMyFreedom" type="DAOOSBAccess" serviceName="mom-be-osb-gestionepratica-prj/proxy/PS_LavorazionePratica" operationName="ricercaPraticaRDV"
+		OutputCommandDataModel="com.atosorigin.wfem.command.MapCommandDataModel">
+   <Input>
+   		<![CDATA[
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:api="http://api.be.gestionepratica.mom.bmed.it/">
+			   <soapenv:Header/>
+			   <soapenv:Body>
+			      <api:ricercaPraticaRDV>
+			        <arg0>
+						<metadata>
+			               <familiBankerCode 	propertyName="codAgente"></familiBankerCode>
+			               <userId 				propertyName="codAgente"></userId> 
+			            </metadata>			      
+			            <codiceFb propertyName="codAgente"></codiceFb>
+			            <codiceCliente propertyName="codCliente"></codiceCliente>
+			            <modalitaRicercaRdv>BOZZE_CONTI_PER_SOGGETTO</modalitaRicercaRdv>
+			            <dtCreazPratDa propertyName="dataDa"></dtCreazPratDa>
+			            <dtCreazPratA propertyName="dataA"></dtCreazPratA>
+			         </arg0>
+			      </api:ricercaPraticaRDV>
+			   </soapenv:Body>
+			</soapenv:Envelope>
+		]]>
+   </Input>
+   <Output>
+   		<![CDATA[
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+			   <S:Body xmlns:S="http://schemas.xmlsoap.org/soap/envelope/">
+			      <ns2:ricercaPraticaRDVResponse xmlns:ns2="http://api.be.gestionepratica.mom.bmed.it/">
+			         <return>
+			            <results attrs="identvoPrat@identvoPrat">
+			            </results>   		
+	   		         </return>
+			      </ns2:ricercaPraticaRDVResponse>
+			   </S:Body>
+			</soapenv:Envelope>
+		]]>
+   </Output>
+</Access>
+
+<Access name="digitToTest" type="DAOQASAccess" serviceName="GEN-COM-GetDigitToTest">
+   <Input>
+   	<![CDATA[
+		   	<OFX>
+				<SIGNONMSGSRQV1>
+					<SONRQ>
+						<USERID>9555559</USERID>
+						<USERPASS>6111116</USERPASS>
+						<GENUSERKEY>1</GENUSERKEY>
+						<APPID>INT</APPID>
+						<APPDATALIST>
+							<APPROOT>
+								<WHEREIS>
+									<HTTP_REFERER/>
+									<PATH_INFO/>
+									<REMOTE_ADDR>172.16.210.00</REMOTE_ADDR>
+								</WHEREIS>
+								<SESSION>
+									<PAGE/>
+									<OPERCODE/>
+									<ISOPER/>
+									<pPg/>
+									<DefaultPage/>
+								</SESSION>
+								<PINCONTROL>
+									<USERCODE>00000000000</USERCODE>
+									<PASSWORD/>
+									<POS1/>
+									<POS2/>
+									<PWDPOS1/>
+									<PWDPOS2/>
+								</PINCONTROL>
+							</APPROOT>
+						</APPDATALIST>
+					</SONRQ>
+				</SIGNONMSGSRQV1>
+				<GEN-COM-GetDigitToTestQARCMSGSRQV1>
+					<Root>
+						<ISPORTALE>S</ISPORTALE>
+					</Root>
+				</GEN-COM-GetDigitToTestQARCMSGSRQV1>
+			</OFX>
+		]]>
+   </Input>
+   <Output>
+   	<![CDATA[
+			<OFX>
+				<GEN-COM-GetDigitToTestQARCMSGSRSV1>
+					<Root>
+						<Digit1 propertyName="signData_digit1DaChiedere"></Digit1>
+						<Digit2 propertyName="signData_digit2DaChiedere"></Digit2>
+					</Root>
+				</GEN-COM-GetDigitToTestQARCMSGSRSV1>
+			</OFX>
+	]]>
+   </Output>
+</Access>
+
+<Access name="generaNuovoPinProvvisorio" type="DAOQASAccess" serviceName="GEN-FD-GENERAPIN">
+   <Input>
+   	<![CDATA[
+		   	<OFX>
+				<SIGNONMSGSRQV1>
+					<SONRQ>
+						<USERID>9555559</USERID>
+						<USERPASS>6111116</USERPASS>
+						<GENUSERKEY>1</GENUSERKEY>
+						<APPID>INT</APPID>
+						<APPDATALIST>
+							<APPROOT>
+								<WHEREIS>
+									<HTTP_REFERER/>
+									<PATH_INFO/>
+									<REMOTE_ADDR>172.16.210.00</REMOTE_ADDR>
+								</WHEREIS>
+								<SESSION>
+									<PAGE/>
+									<OPERCODE/>
+									<ISOPER/>
+									<pPg/>
+									<DefaultPage/>
+								</SESSION>
+								<PINCONTROL>
+									<USERCODE>00000000000</USERCODE>
+									<PASSWORD/>
+									<POS1/>
+									<POS2/>
+									<PWDPOS1/>
+									<PWDPOS2/>
+								</PINCONTROL>
+							</APPROOT>
+						</APPDATALIST>
+					</SONRQ>
+				</SIGNONMSGSRQV1>
+				<GEN-FD-GENERAPINQARCMSGSRQV1>
+					<SUBJCOD propertyName="subjCod" appInfo="true"></SUBJCOD>
+					<SUBJTYPE propertyName="subjType"></SUBJTYPE>
+					<CELPREFIX propertyName="signData_prefissoCellulareAnag"></CELPREFIX >
+					<CELNUMBER propertyName="signData_numeroCellulareAnag"></CELNUMBER>
+					<TIPOPIN>1</TIPOPIN>
+				</GEN-FD-GENERAPINQARCMSGSRQV1>
+			</OFX>
+		]]>
+   </Input>
+   <Output>
+   	<![CDATA[
+			<OFX>
+				<GEN-FD-GENERAPINQARCMSGSRSV1>
+					<ESITO propertyName="signData_esitoChiamataServizio"></ESITO>
+					<MESSAGE propertyName="signData_messaggioChiamataServizio"></MESSAGE>
+				</GEN-FD-GENERAPINQARCMSGSRSV1>
+			</OFX>
+	]]>
+   </Output>
+</Access>
+
+<Access name="verificaPin" type="DAOQASAccess" serviceName="GEN-FD-VERIFICAPIN">
+   <Input>
+   	<![CDATA[
+		   	<OFX>
+				<SIGNONMSGSRQV1>
+					<SONRQ>
+						<USERID>9555559</USERID>
+						<USERPASS>6111116</USERPASS>
+						<GENUSERKEY>1</GENUSERKEY>
+						<APPID>INT</APPID>
+						<APPDATALIST>
+							<APPROOT>
+								<WHEREIS>
+									<HTTP_REFERER/>
+									<PATH_INFO/>
+									<REMOTE_ADDR>172.16.210.00</REMOTE_ADDR>
+								</WHEREIS>
+								<SESSION>
+									<PAGE/>
+									<OPERCODE/>
+									<ISOPER/>
+									<pPg/>
+									<DefaultPage/>
+								</SESSION>
+								<PINCONTROL>
+									<USERCODE>00000000000</USERCODE>
+									<PASSWORD/>
+									<POS1/>
+									<POS2/>
+									<PWDPOS1/>
+									<PWDPOS2/>
+								</PINCONTROL>
+							</APPROOT>
+						</APPDATALIST>
+					</SONRQ>
+				</SIGNONMSGSRQV1>
+				<GEN-FD-VERIFICAPINQARCMSGSRQV1>
+					<SUBJCOD propertyName="subjCod" appInfo="true"></SUBJCOD>
+					<SUBJTYPE propertyName="subjType"></SUBJTYPE>
+					<TIPOPIN>1</TIPOPIN>		
+					<VSESS></VSESS>
+					<PIN></PIN>
+					<CIFRA1 propertyName="signData_digit1DaChiedere"></CIFRA1>
+					<CIFRA2 propertyName="signData_digit2DaChiedere"></CIFRA2>
+					<VALORE1 propertyName="signData_digit1Digitato"></VALORE1>
+					<VALORE2 propertyName="signData_digit2Digitato"></VALORE2>
+				</GEN-FD-VERIFICAPINQARCMSGSRQV1>
+			</OFX>
+		]]>
+   </Input>
+   <Output>
+   	<![CDATA[
+			<OFX>
+				<GEN-FD-VERIFICAPINQARCMSGSRSV1>
+					<ESITO propertyName="signData_esitoChiamataServizio"></ESITO>
+					<MESSAGE propertyName="signData_messaggioChiamataServizio"></MESSAGE>
+					<CHIAVE propertyName="signData_chiaveVerificaPin"></CHIAVE>
+				</GEN-FD-VERIFICAPINQARCMSGSRSV1>
+			</OFX>
+	]]>
+   </Output>
+</Access>
+
+<Access name="generaOTP" type="DAOQASAccess" serviceName="GEN-FD-GENERAOTP">
+   <Input>
+   	<![CDATA[
+		   	<OFX>
+				<SIGNONMSGSRQV1>
+					<SONRQ>
+						<USERID>9555559</USERID>
+						<USERPASS>6111116</USERPASS>
+						<GENUSERKEY>1</GENUSERKEY>
+						<APPID>INT</APPID>
+						<APPDATALIST>
+							<APPROOT>
+								<WHEREIS>
+									<HTTP_REFERER/>
+									<PATH_INFO/>
+									<REMOTE_ADDR>172.16.210.00</REMOTE_ADDR>
+								</WHEREIS>
+								<SESSION>
+									<PAGE/>
+									<OPERCODE/>
+									<ISOPER/>
+									<pPg/>
+									<DefaultPage/>
+								</SESSION>
+								<PINCONTROL>
+									<USERCODE>00000000000</USERCODE>
+									<PASSWORD/>
+									<POS1/>
+									<POS2/>
+									<PWDPOS1/>
+									<PWDPOS2/>
+								</PINCONTROL>
+							</APPROOT>
+						</APPDATALIST>
+					</SONRQ>
+				</SIGNONMSGSRQV1>
+				<GEN-FD-GENERAOTPQARCMSGSRQV1>
+					<SUBJCOD propertyName="subjCodOTP" appInfo="true"></SUBJCOD>
+					<SUBJTYPE propertyName="subjTypeOTP"></SUBJTYPE>
+					<CELPREFIX propertyName="signData_prefissoCellulareAnag"></CELPREFIX >
+					<CELNUMBER propertyName="signData_numeroCellulareAnag"></CELNUMBER>
+				</GEN-FD-GENERAOTPQARCMSGSRQV1>
+			</OFX>
+		]]>
+   </Input>
+   <Output>
+   	<![CDATA[
+			<OFX>
+				<GEN-FD-GENERAOTPQARCMSGSRSV1>
+					<ESITO propertyName="signData_esitoChiamataServizio"></ESITO>
+					<MESSAGE propertyName="signData_messaggioChiamataServizio"></MESSAGE>
+					<VSESS propertyName="signData_otpGenerato"></VSESS>
+					<SERIALNUMBER propertyName="signData_otpSerialNumber"></SERIALNUMBER>
+				</GEN-FD-GENERAOTPQARCMSGSRSV1>
+			</OFX>
+	]]>
+   </Output>
+</Access>
+
+<Access name="verificaOtp" type="DAOQASAccess" serviceName="GEN-FD-VERIFICAPIN">
+   <Input>
+   	<![CDATA[
+		   	<OFX>
+				<SIGNONMSGSRQV1>
+					<SONRQ>
+						<USERID>9555559</USERID>
+						<USERPASS>6111116</USERPASS>
+						<GENUSERKEY>1</GENUSERKEY>
+						<APPID>INT</APPID>
+						<APPDATALIST>
+							<APPROOT>
+								<WHEREIS>
+									<HTTP_REFERER/>
+									<PATH_INFO/>
+									<REMOTE_ADDR>172.16.210.00</REMOTE_ADDR>
+								</WHEREIS>
+								<SESSION>
+									<PAGE/>
+									<OPERCODE/>
+									<ISOPER/>
+									<pPg/>
+									<DefaultPage/>
+								</SESSION>
+								<PINCONTROL>
+									<USERCODE>00000000000</USERCODE>
+									<PASSWORD/>
+									<POS1/>
+									<POS2/>
+									<PWDPOS1/>
+									<PWDPOS2/>
+								</PINCONTROL>
+							</APPROOT>
+						</APPDATALIST>
+					</SONRQ>
+				</SIGNONMSGSRQV1>
+				<GEN-FD-VERIFICAPINQARCMSGSRQV1>
+					<SUBJCOD propertyName="subjCodOTP" appInfo="true"></SUBJCOD>
+					<SUBJTYPE propertyName="subjTypeOTP"></SUBJTYPE>
+					<TIPOPIN>SMS</TIPOPIN>		
+					<VSESS propertyName="signData_otpGenerato"></VSESS>
+					<PIN propertyName="signData_otpDigitato"></PIN>
+				</GEN-FD-VERIFICAPINQARCMSGSRQV1>
+			</OFX>
+		]]>
+   </Input>
+   <Output>
+   	<![CDATA[
+			<OFX>
+				<GEN-FD-VERIFICAPINQARCMSGSRSV1>
+					<ESITO propertyName="signData_esitoChiamataServizio"></ESITO>
+					<MESSAGE propertyName="signData_messaggioChiamataServizio"></MESSAGE>
+					<CHIAVE propertyName="signData_chiaveVerificaPin"></CHIAVE>
+				</GEN-FD-VERIFICAPINQARCMSGSRSV1>
+			</OFX>
+	]]>
+   </Output>
+</Access>
+
+<Access name="loadDatiRAO" type="DAOQueryAccess" queryType="1">
+	<Query>
+		select top 1 DOMINIO as raoDominio, ALIAS as raoAlias, PIN as raoPin, 
+					 USERNAME as raoUsername, PASSWORD as raoPassword, OFFICE as raoOffice
+		from CEPE_CA_RAO
+	</Query>
+	<Output>
+		<Parameter propertyName="raoDominio"/>
+		<Parameter propertyName="raoAlias"/>
+		<Parameter propertyName="raoPin"/>
+		<Parameter propertyName="raoUsername"/>
+		<Parameter propertyName="raoPassword"/>
+		<Parameter propertyName="raoOffice"/>
+	</Output>
+</Access>
+
+<Access name="firmaWS" type="DAOOSBAccess" serviceName="FirmaDigitale/SignatureService_RDV" operationName="firmaCADES">
+   <Input>
+   		<![CDATA[
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:fir="http://firma.webservice.ncfr.infocert.it/">
+			   <soapenv:Header/>
+			   <soapenv:Body>
+			      <fir:firmaCADES>
+			         <documentoDaFirmare propertyName="xmlDaFirmare" toString="true"></documentoDaFirmare>
+			         <dominio propertyName="raoDominio"></dominio>
+			         <alias propertyName="raoAlias"></alias>
+			         <pin propertyName="raoPin"></pin>
+			         <otp></otp>
+			      </fir:firmaCADES>
+			   </soapenv:Body>
+			</soapenv:Envelope>
+		]]>
+   </Input>
+   <Output>
+   		<![CDATA[
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:fir="http://firma.webservice.ncfr.infocert.it/">
+			   <soapenv:Header/>
+			   <soapenv:Body>
+			      <fir:firmaCADESResponse>
+			         <return>
+            		   	<code></code>
+            			<documentoFirmato propertyName="xmlFirmato"></documentoFirmato>
+            			<message></message>
+            		  </return>
+			      </fir:firmaCADESResponse>
+			   </soapenv:Body>
+			</soapenv:Envelope>   		
+		]]>
+   </Output>
+</Access>
+
+<Access name="firmaContratto" type="DAOOSBAccess" serviceName="FirmaDigitale/SignatureService_RDV" operationName="firmaPADES">
+   <Input>
+   		<![CDATA[
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:fir="http://firma.webservice.ncfr.infocert.it/">
+			   <soapenv:Header/>
+			   <soapenv:Body>
+			      <fir:firmaPADES>
+			         <documentoDaFirmare propertyName="pdfContent64Base" toString="true"></documentoDaFirmare>
+			         <firmatari propertyName="xmlFirmato" toString="true"></firmatari>
+			      </fir:firmaPADES>
+			   </soapenv:Body>
+			</soapenv:Envelope>
+		]]>
+   </Input>
+   <Output>
+   		<![CDATA[
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:fir="http://firma.webservice.ncfr.infocert.it/">
+			   <soapenv:Header/>
+			   <soapenv:Body>
+			      <fir:firmaPADESResponse>
+			          <return>
+            		   	<code></code>
+            			<documentoFirmato propertyName="pdfContent64BaseSigned"></documentoFirmato>
+            			<message></message>
+            		  </return>
+			      </fir:firmaPADESResponse>
+			   </soapenv:Body>
+			</soapenv:Envelope>   		
+		]]>
+   </Output>
+</Access>
+
+<Access name="accodaMilestone" type="DAOOSBAccess" serviceName="canale-cliente-be-osb-gestoreMilestoneAccodatore-prj/PS/PS_WS_GestoreMilestoneAccodatore" operationName="accodaMilestone">
+   <Input>
+   		<![CDATA[
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://canale.cliente.milestone.accodatore.service.bmed.it/v1" xmlns:v3="http://common.schema.bmed.it/v3">
+			   <soapenv:Header>
+			      <v1:requestHeader>
+			         <v1:idOperazione>
+			            <v1:codiceApplicazioneChiamante>PDFWF</v1:codiceApplicazioneChiamante>
+			            <v1:codiceOperazione propertyName="uuid"></v1:codiceOperazione>
+			         </v1:idOperazione>
+			         <v1:idConversazione propertyName="uuid"></v1:idConversazione>
+			         <v1:timeStamp propertyName="timestamp"></v1:timeStamp>
+			         <v1:contestoChiamante>
+			            <v1:idApplicazioneChiamante>PDFWF</v1:idApplicazioneChiamante>
+			            <v1:canale>ITN</v1:canale>
+			         </v1:contestoChiamante>
+			      </v1:requestHeader>
+			   </soapenv:Header>
+			   <soapenv:Body>
+			      <v11:accodaMilestone>
+					<cod_cli propertyName="ndg"></cod_cli>
+					<cod_prodotto_padre propertyName="pdfCodProdottoMilestone"></cod_prodotto_padre>
+					<cod_tipo_operaz propertyName="pdfCodOperazioneMilestone"></cod_tipo_operaz>
+					<ide_origine propertyName="pdfInstanceId"></ide_origine>
+					<tipo_milestone>accettazioneCopernicoSmart</tipo_milestone>
+					<richiesta_milestone>creaMilestone</richiesta_milestone>
+					<cod_canale_operaz>P</cod_canale_operaz>
+					<profilo>209</profilo>				
+					<imp_operaz propertyName="importo"></imp_operaz>
+					<codGestore propertyName="descr"></codGestore>
+					<numUtenza propertyName="tag1"></numUtenza>
+					<nomeContribuente propertyName="tag2"></nomeContribuente>
+					<descTag4>Firma digitale</descTag4>
+					<descTag3 propertyName="vendente"></descTag3>
+			      </v11:accodaMilestone>
+			   </soapenv:Body>
+			</soapenv:Envelope>
+		]]>
+   </Input>
+   <Output>
+		<![CDATA[
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+			</soapenv:Envelope>
+		]]>
+   </Output>
+</Access>
+
+<Access name="loadTagMilestone" type="DAOQueryAccess" queryType="0" connectionCacheReference="SER_MIFID" maxResultRows="1">
+ <Query>
+	select  A.COD_TIPO_PROD_TMLN
+	,       A.COD_TIPO_OPERAZ_TMLN
+	,		(select tag.DES_TAG from SOGG_POSIZDISP.DETT_OPERZ_MILESTONE_TAG tag where tag.COD_TIPO_OPERAZ_TMLN=A.COD_TIPO_OPERAZ_TMLN and tag.PRG_TAG=1) as tag1
+	,		(select tag.DES_TAG from SOGG_POSIZDISP.DETT_OPERZ_MILESTONE_TAG tag where tag.COD_TIPO_OPERAZ_TMLN=A.COD_TIPO_OPERAZ_TMLN and tag.PRG_TAG=2) as tag2
+	from    SOGG_POSIZDISP.LEGM_TIPO_DISP_SIST_ORIG A
+	where 	A.GSTD_F_ESIST = 'S'
+	and		A.COD_TIPO_SIST_ORIG_DISP = 'PRT' 
+	and		A.COD_TIPO_PROD_TMLN is not null
+	and		A.COD_TIPO_OPERAZ_TMLN is not null
+	and		A.COD_PROD_SIST_ORIG = ? 
+	and 	A.COD_TIPO_OPERZ_PROD_SIST_ORIG = ?
+ </Query> 
+ <Input>
+	<Parameter propertyName="pdfCodProdottoPrit"/>
+	<Parameter propertyName="pdfCodOperazionePrit"/>
+ </Input>
+ <Output>
+	<Parameter propertyName="pdfCodProdottoMilestone" propertyType="IntegerType"/>
+	<Parameter propertyName="pdfCodOperazioneMilestone" propertyType="IntegerType"/>
+	<Parameter propertyName="tag1" propertyType="StringType"/>
+	<Parameter propertyName="tag2" propertyType="StringType"/>
+ </Output>
+</Access> 
+
+</DAO-Object>
+

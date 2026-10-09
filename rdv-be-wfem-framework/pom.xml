@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-15"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.atosorigin.wfem</groupId>
+    <artifactId>wfem-master-pom</artifactId>
+    <version>4.0.3</version>
+  </parent>
+  <artifactId>rdv-be-wfem-framework</artifactId>
+  <version>22.0.0-RC-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>rdv-be-wfem-framework</name>
+  <modules>
+    <module>rdv-be-wfem-framework-ejbimpl</module>
+    <module>rdv-be-wfem-framework-ear</module>
+  </modules>
+</project>

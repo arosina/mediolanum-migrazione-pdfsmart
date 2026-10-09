@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="PritMOM">
+
+<Access name="ricercaPritMOM" type="DAOOSBAccess" serviceName="mom-be-osb-accesso-prj/proxy/PS_Accesso_RDV" operationName="ricercaPritRete">
+   <Input>
+   		<![CDATA[
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:prit="http://prit.api.be.accesso.mom.bmed.it/">
+			   <soapenv:Header/>
+			   <soapenv:Body>
+			      <prit:ricercaPritRete>
+			      
+			         <arg0>
+			            <metadata>
+			               <familiBankerCode 	propertyName="userMOM"></familiBankerCode>
+			               <userId 				propertyName="userMOM"></userId> 
+			            </metadata>
+			            
+			            <codFb propertyName="userMOM" appInfo="true"></codFb>
+			            
+			            <codStato 		propertyName="parametri_stato"></codStato>
+			            <codEsito 		propertyName="parametri_esito"></codEsito>
+			            <dataInvioA		propertyName="parametri_dataFine"></dataInvioA>
+			            <dataInvioDa	propertyName="parametri_dataInizio"></dataInvioDa>
+			            <cognome 		propertyName="parametri_cognomeCliente"></cognome>
+			            <nome			propertyName="parametri_nomeCliente"></nome>
+			            <codContratto	propertyName="parametri_numeroContratto"></codContratto>
+			            
+            			<maxResults>51</maxResults>
+
+						<ordinamento> 
+               				<nomeColonna>datInvioSede</nomeColonna> 
+               				<ordinamento>DESC</ordinamento> 
+            			</ordinamento>
+			         </arg0>
+			         
+			      </prit:ricercaPritRete>
+			      
+			   </soapenv:Body>
+			</soapenv:Envelope>
+		]]>
+   </Input>
+   <Output>
+   		<![CDATA[
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:prit="http://prit.api.be.accesso.mom.bmed.it/">
+			   <soapenv:Header/>
+			   <soapenv:Body>
+			      <ricercaPritReteResponse>
+					<return>
+			            <results propertyName="elencoDac">
+			               <codPrit propertyName="idDac"></codPrit>
+			               <datInvioSede propertyName="dataOraEmissione"></datInvioSede>
+			               <datDiSpunta propertyName="dataOraCambioStato"></datDiSpunta>
+			               <domStatoPrit>
+			                  <codStatoPrit  propertyName="stato"></codStatoPrit>
+			                  <desStatoPrit  propertyName="descrStato"></desStatoPrit>
+			               </domStatoPrit>
+			               <anagEsitoPrit>
+			                  <identvoEsitoPrit propertyName="esito"></identvoEsitoPrit>
+			                  <desEsitoPrit 	propertyName="descrEsito"></desEsitoPrit>
+			               </anagEsitoPrit>
+			            </results>
+			         </return>
+			     </ricercaPritReteResponse>     
+			   </soapenv:Body>
+			</soapenv:Envelope>
+		]]>
+   </Output>
+</Access>
+
+<Access name="inviaPritMOM" type="DAOOSBAccess" serviceName="mom-be-osb-accesso-prj/proxy/PS_Accesso_RDV" operationName="salvaPrit"
+		OutputCommandDataModel="prgm.ita.p.dac.model.DacKeyModel">
+   <Input>
+   		<![CDATA[
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"  xmlns:prit="http://prit.api.be.accesso.mom.bmed.it/" > 
+            	<soapenv:Header></soapenv:Header> 
+                <soapenv:Body> 
+                	<prit:salvaPrit> 
+			      
+			         <arg0>
+			            <metadata>
+			               <channelCode>RDV</channelCode>
+			               <familiBankerCode 	propertyName="agenteRiferimento_codAgente"></familiBankerCode>
+			               <userId 				propertyName="userMOM"></userId>
+			            </metadata>
+			            
+			            <dettaglioPrit>
+			               <codAgenz 		propertyName="agenteRiferimento_codAgenzia"></codAgenz>
+			               <codAreaAgenz 	propertyName="agenteRiferimento_codArea"></codAreaAgenz>
+			               <codCapAgenz 	propertyName="agenteRiferimento_capAgenzia"></codCapAgenz>
+			               <codFb 			propertyName="agenteRiferimento_codAgente"></codFb>
+			               <codPrit 		propertyName="idDac" appInfo="true"></codPrit>
+			               <datInvioSede 	propertyName="dataOraEmissione"></datInvioSede>
+			               <denComuAgenz 	propertyName="agenteRiferimento_comuneAgenzia"></denComuAgenz>
+			               <denProvAgenz 	propertyName="agenteRiferimento_provAgenzia"></denProvAgenz>
+			               <desNoteAuthPrit propertyName="noteAutore"></desNoteAuthPrit>
+			               <indiAgenz 		propertyName="indirizzoAgenziaMOM"></indiAgenz>
+			               <numTelefAgenz 	propertyName="agenteRiferimento_telAgenzia"></numTelefAgenz>
+			               
+			               <domStatoPrit>
+			                  <codStatoPrit 	propertyName="stato"></codStatoPrit>
+			               </domStatoPrit>
+			               <domTipPrit>
+			                  <codTipPrit 		propertyName="tipoDac"></codTipPrit>
+			               </domTipPrit>
+			               <domTipSpedPrit>
+			                  <codTipSpedPrit 	propertyName="codTipoSpedizione"></codTipSpedPrit>
+			               </domTipSpedPrit>
+
+			               <dettPrits propertyName="documenti">
+			                  <codAggregatore 		propertyName="codAggregatore"></codAggregatore>
+			                  <codBrcodeDocu 		propertyName="barcode"></codBrcodeDocu>
+			                  <codClie 				propertyName="cliente_codMediolanum"></codClie>
+			                  <codDispEle			propertyName="codInforeteEsterno"></codDispEle>
+			                  <codFb 				propertyName="agente_codAgente"></codFb>
+			                  <codNdgClie 			propertyName="cliente_codMediolanum"></codNdgClie>
+			                  <codOperzDiRete 		propertyName="codOperazione"></codOperzDiRete>
+			                  <codPlicoPrit 		propertyName="contestoAggregatore"></codPlicoPrit>
+			                  <codProdDiRete 		propertyName="codProdotto"></codProdDiRete>
+			                  <codReportAdegza 		propertyName="idReportAdeguatezza"></codReportAdegza>
+			                  <codRigaPadrePag 		propertyName="datiAssegno_idDocumento"></codRigaPadrePag>
+			                  <codRigaPrit 			propertyName="idDocumento"></codRigaPrit>
+			                  <denCognClie 			propertyName="cliente_cognome"></denCognClie>
+			                  <denNomClie 			propertyName="cliente_nome"></denNomClie>
+			                  <desNoteRigaPrit 		propertyName="noteAutore"></desNoteRigaPrit>
+			                  <impSpesRigaPrit 		propertyName="spese"></impSpesRigaPrit>
+			                  <numContrOPol 		propertyName="numeroContratto"></numContrOPol>
+			                  
+							  <domStatoRigaPrit>
+							  	<codStatoRigaPrit 	propertyName="stato"></codStatoRigaPrit>
+							  </domStatoRigaPrit>                  
+			                  
+							  <codAttivtDergRete 	propertyName="idAttivitaAgevolazione"></codAttivtDergRete>
+							  <codDergCommssleRete	propertyName="idAgevolazione"></codDergCommssleRete>
+							  <codAmbitoDergRete	propertyName="tipoAgevolazione"></codAmbitoDergRete>
+                  	                  
+			                  <dettMezziPagmtPrits propertyName="mezziPagamento">
+			                     <dettTipPagmtRigaPrit>
+			                        <codTipPagmtDettPrit 	propertyName="codTipoPagamentoPerMOM"></codTipPagmtDettPrit>
+			                     </dettTipPagmtRigaPrit>
+			                     
+			                     <codBancaPagmt 			propertyName="banca"></codBancaPagmt>
+			                     <codValuPagmt 				propertyName="codDivisa"></codValuPagmt>
+			                     <impPagmtRigaPrit 			propertyName="importo"></impPagmtRigaPrit>
+			                     <numAssgPagmtRigaPrit 		propertyName="numAssegno"></numAssgPagmtRigaPrit>
+								 <codRigaDettPagmt 			propertyName="idDocumentoAssegno"></codRigaDettPagmt>
+								 <codRigaDettDocu 			propertyName="idDocumento"></codRigaDettDocu>
+			                  </dettMezziPagmtPrits>
+			                  
+			               </dettPrits>
+
+			            </dettaglioPrit>
+			         </arg0>
+
+			      </prit:salvaPrit>
+			   </soapenv:Body>
+			</soapenv:Envelope>
+		]]>
+   </Input>
+   <Output>
+   		<![CDATA[
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:prit="http://prit.api.be.accesso.mom.bmed.it/">
+			   <soapenv:Header/>
+			   <soapenv:Body>
+
+					<return>
+						<result>
+			               <codPrit	propertyName="idDac"></codPrit>
+			            </result>
+			         </return>
+
+			   </soapenv:Body>
+			</soapenv:Envelope>
+		]]>
+   </Output>
+</Access>
+
+<Access name="loadPritMOM" type="DAOOSBAccess" serviceName="mom-be-osb-accesso-prj/proxy/PS_Accesso_RDV" operationName="getDettaglio">
+   <Input>
+   		<![CDATA[
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:prit="http://prit.api.be.accesso.mom.bmed.it/">
+			   <soapenv:Header/>			   
+			   <soapenv:Body>
+			      <prit:getDettaglio>
+			      
+			         <arg0>
+			            <metadata>
+			               <familiBankerCode 	propertyName="userMOM"></familiBankerCode>
+			               <userId 				propertyName="userMOM"></userId> 
+			            </metadata>
+			            <codice propertyName="idDac" appInfo="true"></codice>
+			         </arg0>
+			         
+			      </prit:getDettaglio>
+			   </soapenv:Body>
+			</soapenv:Envelope>
+		]]>
+   </Input>
+   <Output>
+   		<![CDATA[
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:prit="http://prit.api.be.accesso.mom.bmed.it/">
+			   <soapenv:Header/>
+			   <soapenv:Body>
+				  <getDettaglioResponse>
+					<return>
+						<result>
+			               <codAgenz 			propertyName="agenteRiferimento_codAgenzia"></codAgenz>
+			               <codAreaAgenz 		propertyName="agenteRiferimento_codArea"></codAreaAgenz>
+			               <codCapAgenz 		propertyName="agenteRiferimento_capAgenzia"></codCapAgenz>
+			               <codFb 				propertyName="agenteRiferimento_codAgente"></codFb>
+			               <codPrit 			propertyName="idDac"></codPrit>
+			               <codUteSpunta 		propertyName="codUtenteSpunta"></codUteSpunta>
+			               <datDiSpunta 		propertyName="dataOraSpuntaDb"></datDiSpunta>
+			               <datInvioSede 		propertyName="dataOraEmissione"></datInvioSede>
+			               <denComuAgenz 		propertyName="agenteRiferimento_comuneAgenzia"></denComuAgenz>
+			               <denProvAgenz 		propertyName="agenteRiferimento_provAgenzia"></denProvAgenz>
+			               <desNoteAuthPrit 	propertyName="noteAutore"></desNoteAuthPrit>
+			               <desNoteOpertPrit 	propertyName="noteOperatore"></desNoteOpertPrit>
+			               <indiAgenz 			propertyName="agenteRiferimento_indirizzoAgenzia"></indiAgenz>
+			               <numTelefAgenz 		propertyName="agenteRiferimento_telAgenzia"></numTelefAgenz>
+
+			               <anagEsitoPrit>
+			                  <identvoEsitoPrit propertyName="esito"></identvoEsitoPrit>
+			                  <desEsitoPrit 	propertyName="descrEsito"></desEsitoPrit>
+			               </anagEsitoPrit>
+			               <domStatoPrit>
+			                  <codStatoPrit 	propertyName="stato"></codStatoPrit>
+			                  <desStatoPrit 	propertyName="descrStato"></desStatoPrit>
+			               </domStatoPrit>
+			               <domTipPrit>
+			                  <codTipPrit 		propertyName="tipoDac"></codTipPrit>
+			                  <desTipPrit></desTipPrit>
+			               </domTipPrit>
+			               <domTipSpedPrit>
+			                  <codTipSpedPrit 	propertyName="codTipoSpedizione"></codTipSpedPrit>
+			                  <desTipSpedPrit></desTipSpedPrit>
+			               </domTipSpedPrit>
+			               
+			               <dettPrits propertyName="documenti">
+			                  <codAggregatore 		propertyName="codAggregatore"></codAggregatore>
+                  			  <codBrcodeDocu 		propertyName="barcode"></codBrcodeDocu>
+			                  <codClie 				propertyName="cliente_codMediolanum"></codClie>
+			                  <codDispEle			propertyName="codInforeteEsterno"></codDispEle>
+			                  <codFb 				propertyName="agente_codAgente"></codFb>
+			                  <codNdgClie 			propertyName="cliente_codMediolanum"></codNdgClie>
+			                  <codOperzDiRete 		propertyName="codOperazione"></codOperzDiRete>
+			                  <codPlicoPrit 		propertyName="contestoAggregatore"></codPlicoPrit>
+			                  <codProdDiRete 		propertyName="codProdotto"></codProdDiRete>
+			                  <codReportAdegza 		propertyName="idReportAdeguatezza"></codReportAdegza>
+			                  <codRigaPadrePag 		propertyName="datiAssegno_idDocumento"></codRigaPadrePag>
+			                  <codRigaPrit 			propertyName="idDocumento"></codRigaPrit>
+			                  <denCognClie 			propertyName="cliente_cognome"></denCognClie>
+			                  <denNomClie 			propertyName="cliente_nome"></denNomClie>
+                  			  <desNoteOpertRigaPrit	propertyName="noteOperatore"></desNoteOpertRigaPrit>
+			                  <desNoteRigaPrit 		propertyName="noteAutore"></desNoteRigaPrit>
+			                  <impSpesRigaPrit	 	propertyName="spese"></impSpesRigaPrit>
+			                  <numContrOPol 		propertyName="numeroContratto"></numContrOPol>
+			                  
+			                  <dettEsitoRigaPrit>
+			                     <codEsitoRigaDettPrit 	propertyName="esito"></codEsitoRigaDettPrit>
+			                     <desEsitoRigaDettPrit	propertyName="descrEsito"></desEsitoRigaDettPrit>
+			                  </dettEsitoRigaPrit>
+			                  
+			                  <domEsitiContrlFirma>
+			                     <prgEsitoFirma	propertyName="esitoFirmaCliente"></prgEsitoFirma>
+			                     <desEsitoFirma></desEsitoFirma>
+			                  </domEsitiContrlFirma>
+
+							  <domStatoRigaPrit>
+							  	<codStatoRigaPrit 	propertyName="stato"></codStatoRigaPrit>
+							  	<desStatoRigaPrit 	propertyName="descrStato"></desStatoRigaPrit>
+							  </domStatoRigaPrit>
+
+			                  <dettMezziPagmtPrits propertyName="mezziPagamento">
+			                     <codBancaPagmt 			propertyName="banca"></codBancaPagmt>
+								 <codRigaDettDocu 			propertyName="idDocumento"></codRigaDettDocu>
+								 <codRigaDettPagmt 			propertyName="idDocumentoAssegno"></codRigaDettPagmt>
+			                     <codValuPagmt 				propertyName="codDivisa"></codValuPagmt>
+			                     <impPagmtRigaPrit 			propertyName="importo"></impPagmtRigaPrit>
+			                     <numAssgPagmtRigaPrit 		propertyName="numAssegno"></numAssgPagmtRigaPrit>
+			                     <prgMezziDiPagmtPrit 		propertyName="idMezzoPg"></prgMezziDiPagmtPrit>
+			                     
+			                     <dettTipPagmtRigaPrit>
+			                        <codTipPagmtDettPrit 	propertyName="codTipoPagamento"></codTipPagmtDettPrit>
+			                        <desTipPagmtDettPrit></desTipPagmtDettPrit>
+			                     </dettTipPagmtRigaPrit>
+			                  </dettMezziPagmtPrits>
+			                  
+			               </dettPrits>
+			            </result>
+			         </return>
+			   	</getDettaglioResponse>      
+			   </soapenv:Body>
+			</soapenv:Envelope>
+		]]>
+   </Output>
+</Access>
+
+<Access name="getIdUltimoPritMOM" type="DAOOSBAccess" serviceName="mom-be-osb-accesso-prj/proxy/PS_Accesso_RDV" operationName="getUltimoPritFb">
+   <Input>
+   		<![CDATA[
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:prit="http://prit.api.be.accesso.mom.bmed.it/">
+			   <soapenv:Header/>
+			   <soapenv:Body>
+			      <prit:getUltimoPritFb>
+			      
+			         <arg0>
+			            <metadata>
+			               <familiBankerCode 	propertyName="userMOM"></familiBankerCode>
+			               <userId 				propertyName="userMOM"></userId> 
+			            </metadata>
+			            <codice propertyName="userMOM" appInfo="true"></codice>
+			         </arg0>
+		             
+			      </prit:getUltimoPritFb>
+			   </soapenv:Body>
+			</soapenv:Envelope>
+		]]>
+   </Input>
+   <Output>
+   		<![CDATA[
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:prit="http://prit.api.be.accesso.mom.bmed.it/">
+			   <soapenv:Header/>
+			   <soapenv:Body>
+   				 <getUltimoPritFbResponse>
+					<return>
+						<result>
+			               <codPrit propertyName="idDac"></codPrit>
+			            </result>
+			         </return>
+			      </getUltimoPritFbResponse>   
+			   </soapenv:Body>
+			</soapenv:Envelope>
+		]]>
+   </Output>
+</Access>
+
+</DAO-Object>

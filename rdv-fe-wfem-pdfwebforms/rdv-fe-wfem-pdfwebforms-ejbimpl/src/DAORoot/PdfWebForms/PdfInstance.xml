@@ -1,0 +1,692 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="PdfInstance" connectionCacheReference="CEPE">
+
+<CodDescriptions>
+   <CodDesc refreshTime="0" name="PRIIPS_ORIZZONTE_TEMPORALE" tableName="CEPE_ADG_ORZ_TEMPORALE" codColumnName="ADG_N_ORZ_TEMP" descrColumnName="ADG_X_DESCRIZIONE"
+			validityWhereCondition="ADG_D_FINE_VAL is null" />			
+   <CodDesc refreshTime="0" name="PRIIPS_TOLLERANZA_VOLATILITA" tableName="CEPE_ADG_TLL_VOLATILITA" codColumnName="ADG_N_TLL_VOLAT" descrColumnName="ADG_X_DESCRIZIONE"
+			validityWhereCondition="ADG_D_FINE_VAL is null" />			
+</CodDescriptions>
+
+<Access name="loadPdfAnagData" type="DAOQueryAccess" queryType="1" maxResultRows="1">
+ <Query>
+	select 	top 1
+			P.EDITION
+	,		A.MOM_CODE
+	,		P.ACROFORM_VERSION
+	,		P.DRIVER_VERSION
+	,		P.MOM_VERSION
+	,		A.DESCR
+	,		A.COD_PRODOTTO_PRIT
+	,		A.COD_OPERAZIONE_PRIT
+	,		A.IS_STAMPA_ENABLED
+	,		A.IS_CARTA_LIBERA_ENABLED
+	,		A.IS_CARTA_CHIMICA_ENABLED
+	,		A.IS_FIRMA_DIGTALE_ENABLED
+	,		A.IS_COPERNICO_ENABLED
+	,		A.NUM_COPIE
+	,		A.TESTO_COPIA_1
+	,		A.TESTO_COPIA_2
+	,		A.TESTO_COPIA_3
+	,		A.TESTO_COPIA_4
+	,		(select count(PG.PDF_ID) from PDF_PAGE<IfEqual propertyName="isOnWork" propertyValue="true">_WORK</IfEqual> PG 
+			 where PG.PDF_ID = <p>pdfId</p> <IfEqual propertyName="isOnWork" propertyValue="false">and PG.PUBLICATION_ID = <p>pdfPublicationId</p></IfEqual>) as pdfNumPages
+	,		null as pdfCompilationExampleFileType
+	,		A.DRIVER_NAME
+	,		A.SIGN_ALL
+	,		A.EXT_LINK_ONSIGN_LABEL
+	,		A.EXT_LINK_ONSIGN_URL
+	,		A.EXT_LINK_AGG_ONSIGN_LABEL
+	,		A.EXT_LINK_AGG_ONSIGN_URL
+	,		A.IS_PROSPECT_ENABLED_ON_CLI1
+	,		A.IS_PROSPECT_ENABLED_ON_CLI2
+	,		A.IS_PROSPECT_ENABLED_ON_CLI3
+	,		A.IS_PROSPECT_ENABLED_ON_CLI4
+	,		A.IS_PROSPECT_ENABLED_ON_CLI5
+	,		A.IS_PROSPECT_ENABLED_ON_CLI6
+	,		A.IS_PROSPECT_ENABLED_ON_CLI7
+	,		A.IS_PROSPECT_ENABLED_ON_CLI8
+	,		A.IS_PROSPECT_ENABLED_ON_CLI9
+	,		A.IS_CONTROLLI_COMPLETI
+	,		A.AREA
+	,		A.HAS_PRIIPS
+	,		A.FAC_SIMILE_ON_PREVIEW
+	,		A.CALL_SRV_DISPOSITIVA_BMED
+	,		A.TIPO_PROCESSO_SEDE
+	,		A.TIPO_PROCESSO_SEDE
+	,		A.HAS_DATA_SOTTOSCRIZIONE_OGGI
+	,		A.NOTE_FB_COPERNICO
+	,		A.COD_LINEA_BUSINESS
+	,		A.COD_FASE_COMMERCIALE
+	,		A.HAS_PREFERENZE_IN_PRIIPS
+	,		A.ON_STOCK_PROC_QUEUE
+	,		HAS_CONTROLLO_AML_AVR
+	,		HAS_CONTROLLO_AML_PEP
+	,		HAS_CONTROLLO_SCAI
+	,		HAS_LAYER_COLLOC_A_DISTANZA
+	,		A.SOCIETA
+	from 	PDF_ANAG A, PDF_PUBLICATION<IfEqual propertyName="isOnWork" propertyValue="true">_WORK</IfEqual> P 
+	where 	A.PDF_ID = P.PDF_ID
+	and		P.PDF_ID = <p>pdfId</p>
+	<IfEqual propertyName="isOnWork" propertyValue="false">and P.PUBLICATION_ID = <p>pdfPublicationId</p></IfEqual> 
+ </Query> 
+ <Output>
+	<Parameter propertyName="pdfEdition"/>
+	<Parameter propertyName="pdfMomCode"/>
+	<Parameter propertyName="pdfAcroformVersion"/>
+	<Parameter propertyName="pdfDriverVersion"/>
+	<Parameter propertyName="pdfMomVersion"/>
+	<Parameter propertyName="pdfDescr"/>
+	<Parameter propertyName="pdfCodProdottoPrit"/>
+	<Parameter propertyName="pdfCodOperazionePrit"/>
+	<Parameter propertyName="pdfIsStampaEnabled"/>
+	<Parameter propertyName="pdfIsCartaLiberaEnabled"/>
+	<Parameter propertyName="pdfIsCartaChimicaEnabled"/>
+	<Parameter propertyName="pdfIsFirmaDigitaleEnabled"/>
+	<Parameter propertyName="pdfIsCopernicoEnabled"/>
+	<Parameter propertyName="pdfNumCopie"/>
+	<Parameter propertyName="pdfTestoCopia1"/>
+	<Parameter propertyName="pdfTestoCopia2"/>
+	<Parameter propertyName="pdfTestoCopia3"/>
+	<Parameter propertyName="pdfTestoCopia4"/>
+	<Parameter propertyName="pdfNumPages"/>
+	<Parameter propertyName="pdfCompilationExampleFileType"/>
+	<Parameter propertyName="pdfDriverName"/>
+	<Parameter propertyName="signAll"/>
+	<Parameter propertyName="externalLinkOnSignLabel"/>
+	<Parameter propertyName="externalLinkOnSignUrl"/>
+	<Parameter propertyName="externalLinkAggOnSignLabel"/>
+	<Parameter propertyName="externalLinkAggOnSignUrl"/>
+	<Parameter propertyName="isProspectEnabledOnCli1"/>
+	<Parameter propertyName="isProspectEnabledOnCli2"/>
+	<Parameter propertyName="isProspectEnabledOnCli3"/>
+	<Parameter propertyName="isProspectEnabledOnCli4"/>
+	<Parameter propertyName="isProspectEnabledOnCli5"/>
+	<Parameter propertyName="isProspectEnabledOnCli6"/>
+	<Parameter propertyName="isProspectEnabledOnCli7"/>
+	<Parameter propertyName="isProspectEnabledOnCli8"/>
+	<Parameter propertyName="isProspectEnabledOnCli9"/>
+	<Parameter propertyName="isControlliCompleti"/>
+	<Parameter propertyName="pdfArea"/>
+	<Parameter propertyName="tipoPriips"/>
+	<Parameter propertyName="facSimileOnPreview"/>
+	<Parameter propertyName="callSrvDispositivaBMED"/>
+	<Parameter propertyName="tipoProcessoSede"/>
+	<Parameter propertyName="tipoProcessoSedeInPdfAnag"/>
+	<Parameter propertyName="hasDataSottoscrizioneOggi"/>	
+	<Parameter propertyName="noteFbCopernico"/>		
+	<Parameter propertyName="pdfCodLineaBusiness"/>
+	<Parameter propertyName="pdfCodFaseCommerciale"/>
+	<Parameter propertyName="hasPreferenzeInPriips"/>
+	<Parameter propertyName="onStockProcessBatchQueue"/>
+	<Parameter propertyName="hasControlloAmlAVR"/>
+	<Parameter propertyName="hasControlloAmlPEP"/>
+	<Parameter propertyName="hasControlloSCAI"/>
+	<Parameter propertyName="pdfHasLayerCollocamentoADistanza"/>
+	<Parameter propertyName="societa"/>
+ </Output>
+</Access> 
+
+<Access name="getPdfInstanceId" type="DAOCallableAccess" store="sp_get_progressivi">
+   <Input>
+		<Parameter propertyName="resourceName" propertyType="StringType" propertyValue="PDF_INSTANCE"/>
+		<Parameter propertyName="#contextUserCode"/>
+		<Parameter propertyName="increment" propertyType="IntegerType" propertyValue="1"/>
+		<Parameter propertyName="pdfInstanceId"/>
+   </Input>
+   <Output>
+		<Parameter propertyName=""/>
+		<Parameter propertyName=""/>
+		<Parameter propertyName=""/>
+		<Parameter propertyName="pdfInstanceId"/>
+   </Output>
+</Access>
+
+<Access name="pdfInstance" type="DAOTableAccess" tableName="PDF_INSTANCE">
+   <Bindings>
+	<Parameter propertyName="pdfInstanceId" 				dbColumnName="PDF_INSTANCE_ID" 		primaryKey="true"/>
+	
+	<Parameter propertyName="pdfStatus"		 				dbColumnName="STATO"/>
+	<Parameter propertyName="pdfAnag_pdfId" 				dbColumnName="PDF_ID"/>
+	<Parameter propertyName="pdfAnag_pdfCode" 				dbColumnName="CODE"/>
+	<Parameter propertyName="pdfAnag_pdfPublicationId"		dbColumnName="PUBLICATION_ID"/>
+	<Parameter propertyName="originalPdfInstanceId" 		dbColumnName="ORIGINAL_PDF_INSTANCE_ID"	fieldType="2"/>
+
+	<Parameter propertyName="pdfDescr"						dbColumnName="DESCR"/>
+
+	<Parameter propertyName="pdfAnag_pdfCodProdottoPrit"	dbColumnName="COD_PRODOTTO_PRIT"/>
+	<Parameter propertyName="pdfAnag_pdfCodOperazionePrit"	dbColumnName="COD_OPERAZIONE_PRIT"/>
+	<Parameter propertyName="pdfAnag_pdfMomCode"			dbColumnName="MOM_CODE"/>
+	<Parameter propertyName="pdfAnag_pdfMomVersion"			dbColumnName="MOM_VERSION"/>
+	<Parameter propertyName="pdfAnag_pdfNumPages"			dbColumnName="NUM_PAGES"/>
+	<Parameter propertyName="pdfAnag_pdfNumCopie"			dbColumnName="NUM_COPIE"/>
+	<Parameter propertyName="pdfAnag_onStockProcessBatchQueue"	dbColumnName="ON_STOCK_PROC_QUEUE"/>
+
+	<Parameter propertyName="pdfEnvironment"				dbColumnName="ENVIRONMENT"/>
+	<Parameter propertyName="pdfBarcode"					dbColumnName="BARCODE"/>
+	<Parameter propertyName="pdfCompilationMode"		 	dbColumnName="MODALITA_DI_SOTTOSCRIZIONE"/>
+
+	<Parameter propertyName="codAgente" 	 				dbColumnName="COD_AGENTE"/>	 
+	<Parameter propertyName="codAgeImpersonato"				dbColumnName="COD_AGE_IMPERSONATO"/>
+	<Parameter propertyName="codRuoloImpersonato"			dbColumnName="COD_RUOLO_IMPERSONATO"/>
+	<Parameter propertyName="codAgeSupportante"				dbColumnName="COD_AGE_SUPPORTANTE"/>
+	
+	<Parameter propertyName="cli1_ndg" 	 					dbColumnName="CLI1_NDG"/>	 
+	<Parameter propertyName="cli1_idCensimento" 	 		dbColumnName="CLI1_ID_CENSIMENTO"/>
+	<Parameter propertyName="cli1_codPotenziale" 	 		dbColumnName="CLI1_ASSGNCLIAGE_C_POTZLE"/>
+	<Parameter propertyName="cli1_cognome" 	 				dbColumnName="CLI1_COGNOME"/>
+	<Parameter propertyName="cli1_nome" 	 				dbColumnName="CLI1_NOME"/>
+		 
+	<Parameter propertyName="cli2_ndg" 	 					dbColumnName="CLI2_NDG"/>	 
+	<Parameter propertyName="cli2_idCensimento" 		 	dbColumnName="CLI2_ID_CENSIMENTO"/>
+	<Parameter propertyName="cli2_codPotenziale" 		 	dbColumnName="CLI2_ASSGNCLIAGE_C_POTZLE"/>
+	<Parameter propertyName="cli2_cognome" 	 				dbColumnName="CLI2_COGNOME"/>
+	<Parameter propertyName="cli2_nome" 	 				dbColumnName="CLI2_NOME"/>
+		 
+	<Parameter propertyName="cli3_ndg" 	 					dbColumnName="CLI3_NDG"/>	 
+	<Parameter propertyName="cli3_idCensimento" 		 	dbColumnName="CLI3_ID_CENSIMENTO"/>	 
+	<Parameter propertyName="cli3_codPotenziale" 		 	dbColumnName="CLI3_ASSGNCLIAGE_C_POTZLE"/>
+	<Parameter propertyName="cli3_cognome" 	 				dbColumnName="CLI3_COGNOME"/>
+	<Parameter propertyName="cli3_nome" 	 				dbColumnName="CLI3_NOME"/>
+	 
+	<Parameter propertyName="cli4_ndg" 	 					dbColumnName="CLI4_NDG"/>	 
+	<Parameter propertyName="cli4_idCensimento" 		 	dbColumnName="CLI4_ID_CENSIMENTO"/>	 
+	<Parameter propertyName="cli4_codPotenziale" 		 	dbColumnName="CLI4_ASSGNCLIAGE_C_POTZLE"/>
+	<Parameter propertyName="cli4_cognome" 	 				dbColumnName="CLI4_COGNOME"/>
+	<Parameter propertyName="cli4_nome" 	 				dbColumnName="CLI4_NOME"/>
+	 
+	<Parameter propertyName="cli5_ndg" 	 					dbColumnName="CLI5_NDG"/>	 
+	<Parameter propertyName="cli5_idCensimento" 		 	dbColumnName="CLI5_ID_CENSIMENTO"/>	 
+	<Parameter propertyName="cli5_codPotenziale" 		 	dbColumnName="CLI5_ASSGNCLIAGE_C_POTZLE"/>
+	<Parameter propertyName="cli5_cognome" 	 				dbColumnName="CLI5_COGNOME"/>
+	<Parameter propertyName="cli5_nome" 	 				dbColumnName="CLI5_NOME"/>
+	 
+	<Parameter propertyName="cli6_ndg" 	 					dbColumnName="CLI6_NDG"/>	 
+	<Parameter propertyName="cli6_idCensimento" 		 	dbColumnName="CLI6_ID_CENSIMENTO"/>	 
+	<Parameter propertyName="cli6_codPotenziale" 		 	dbColumnName="CLI6_ASSGNCLIAGE_C_POTZLE"/>
+	<Parameter propertyName="cli6_cognome" 	 				dbColumnName="CLI6_COGNOME"/>
+	<Parameter propertyName="cli6_nome" 	 				dbColumnName="CLI6_NOME"/>
+	 
+	<Parameter propertyName="cli7_ndg" 	 					dbColumnName="CLI7_NDG"/>	 
+	<Parameter propertyName="cli7_idCensimento" 		 	dbColumnName="CLI7_ID_CENSIMENTO"/>	 
+	<Parameter propertyName="cli7_codPotenziale" 		 	dbColumnName="CLI7_ASSGNCLIAGE_C_POTZLE"/>
+	<Parameter propertyName="cli7_cognome" 	 				dbColumnName="CLI7_COGNOME"/>
+	<Parameter propertyName="cli7_nome" 	 				dbColumnName="CLI7_NOME"/>
+	 
+	<Parameter propertyName="cli8_ndg" 	 					dbColumnName="CLI8_NDG"/>	 
+	<Parameter propertyName="cli8_idCensimento" 		 	dbColumnName="CLI8_ID_CENSIMENTO"/>	 
+	<Parameter propertyName="cli8_codPotenziale" 		 	dbColumnName="CLI8_ASSGNCLIAGE_C_POTZLE"/>
+	<Parameter propertyName="cli8_cognome" 	 				dbColumnName="CLI8_COGNOME"/>
+	<Parameter propertyName="cli8_nome" 	 				dbColumnName="CLI8_NOME"/>
+	 
+	<Parameter propertyName="cli9_ndg" 	 					dbColumnName="CLI9_NDG"/>	 
+	<Parameter propertyName="cli9_idCensimento" 		 	dbColumnName="CLI9_ID_CENSIMENTO"/>	 
+	<Parameter propertyName="cli9_codPotenziale" 		 	dbColumnName="CLI9_ASSGNCLIAGE_C_POTZLE"/>
+	<Parameter propertyName="cli9_cognome" 	 				dbColumnName="CLI9_COGNOME"/>
+	<Parameter propertyName="cli9_nome" 	 				dbColumnName="CLI9_NOME"/>
+	 
+	<Parameter propertyName="pdfCreationUser" 	 			dbColumnName="CREATION_USER"/>	 
+	<Parameter propertyName="pdfCreationTime" 	 			dbColumnName="CREATION_TIME"/>	 
+	<Parameter propertyName="pdfLastModUser" 	 			dbColumnName="LASTMOD_USER"/>	 
+	<Parameter propertyName="pdfLastModTime" 	 			dbColumnName="LASTMOD_TIME"/>	 
+	<Parameter propertyName="pdfCompletionUser" 			dbColumnName="COMPLETION_USER"/>	 
+	<Parameter propertyName="pdfCompletionTime" 			dbColumnName="COMPLETION_TIME"/>	 
+
+	<Parameter propertyName="pdfCreationUserType" 			dbColumnName="CREATION_USERTYPE"/>	 
+
+	<Parameter propertyName="isSwitch"						dbColumnName="IS_SWITCH"/>
+	<Parameter propertyName="idCarrello"					dbColumnName="ID_CARRELLO"/>
+	<Parameter propertyName="idDispCarrello"				dbColumnName="ID_DISP_CARRELLO"/>
+	<Parameter propertyName="codProd"						dbColumnName="PROD_C_PROD"/>
+	
+	<Parameter propertyName="inBasket"						dbColumnName="IN_BASKET"/>
+	<Parameter propertyName="ordineCompilazioneBasket"		dbColumnName="ORDINE_COMPILAZIONE_BASKET"/>
+
+	<Parameter propertyName="externalEntityAppl"			dbColumnName="EXTERNAL_ENTITY_APPL"/>
+	<Parameter propertyName="externalEntityName"			dbColumnName="EXTERNAL_ENTITY_NAME"/>
+	<Parameter propertyName="externalEntityKey"				dbColumnName="EXTERNAL_ENTITY_KEY"/>
+	
+	<Parameter propertyName="idAgevolazione"						dbColumnName="ID_AGEVOLAZIONE"/>
+	<Parameter propertyName="codiceAgevolazione"					dbColumnName="CODICE_AGEVOLAZIONE"/>
+	<Parameter propertyName="importo"								dbColumnName="IMPORTO"/>
+	<Parameter propertyName="iban"									dbColumnName="IBAN"/>
+	<Parameter propertyName="numeroContratto"						dbColumnName="NUMERO_CONTRATTO"/>
+	<Parameter propertyName="numeroProposta"						dbColumnName="NUMERO_PROPOSTA"/>
+	<Parameter propertyName="tipoSupportoMaterialeContrattuale"		dbColumnName="TIPO_SUPPORTO_MATER_CONTR"/>
+	<Parameter propertyName="idReportAdeguatezza"					dbColumnName="ID_REPORT_ADEGUATEZZA"/>
+	<Parameter propertyName="numOrdineReportAdeguatezza"			dbColumnName="NUM_ORDINE_REPORT_ADEGUATEZZA"/>
+	<Parameter propertyName="idQuestionarioIdd"						dbColumnName="ID_QUESTIONARIO_IDD"/>
+	<Parameter propertyName="idRaccomandazioneIdd"					dbColumnName="ID_RACCOMANDAZIONE_IDD"/>
+	<Parameter propertyName="idSostituzione"						dbColumnName="ID_SOSTITUZIONE"/>
+	
+	<Parameter propertyName="codDispositivaBMED"					dbColumnName="COD_DISPOSITIVA_BMED"/>
+	<Parameter propertyName="idFileNAS"								dbColumnName="ID_FILE_NAS"/>
+	<Parameter propertyName="pdfsForMOM"							dbColumnName="PDFS_FOR_MOM"/>
+	 	 
+	<Parameter propertyName="pdfXmlData"  					dbColumnName="XML_DATA"/>
+   </Bindings>
+</Access>
+<Access name="pdfInstanceDett" type="DAOTableAccess" tableName="PDF_INSTANCE_DETT">
+   <Bindings>
+	<Parameter propertyName="pdfInstanceId" 				dbColumnName="PDF_INSTANCE_ID" 			primaryKey="true" 	foreignKey="pdfInstanceId"/>
+	<Parameter propertyName="pdfInstanceDettNum"			dbColumnName="PDF_INSTANCE_DETT_NUM" 	primaryKey="true"/>
+
+	<Parameter propertyName="pdfAnag_pdfId" 				dbColumnName="PDF_ID"/>
+	<Parameter propertyName="pdfAnag_pdfCode" 				dbColumnName="CODE"/>
+	<Parameter propertyName="pdfAnag_pdfPublicationId"		dbColumnName="PUBLICATION_ID"/>
+
+	<Parameter propertyName="pdfAnag_pdfDescr"				dbColumnName="DESCR"/>
+	<Parameter propertyName="pdfBarcode"					dbColumnName="BARCODE"/>
+
+	<Parameter propertyName="pdfAnag_pdfCodProdottoPrit"	dbColumnName="COD_PRODOTTO_PRIT"/>
+	<Parameter propertyName="pdfAnag_pdfCodOperazionePrit"	dbColumnName="COD_OPERAZIONE_PRIT"/>
+	<Parameter propertyName="pdfAnag_pdfMomCode"			dbColumnName="MOM_CODE"/>
+	<Parameter propertyName="pdfAnag_pdfMomVersion"			dbColumnName="MOM_VERSION"/>
+
+	<Parameter propertyName="pdfAnag_pdfNumPages"			dbColumnName="NUM_PAGES"/>
+	<Parameter propertyName="pdfAnag_pdfNumCopie"			dbColumnName="NUM_COPIE"/>
+
+	<Parameter propertyName="codDispositivaBMED"			dbColumnName="COD_DISPOSITIVA_BMED"/>
+   </Bindings>
+</Access>
+<Access name="pdfSrvDispositivaBmedData" type="DAOTableAccess" tableName="PDF_SRV_DISPOSITIVA_BMED_DATA">
+   <Bindings>
+	<Parameter propertyName="mainPdfInstanceId" 							dbColumnName="PDF_INSTANCE_ID" 			primaryKey="true" 	foreignKey="pdfInstanceId"/>
+	<Parameter propertyName="dispositivaResult_codiceOperazioneDispositiva"	dbColumnName="COD_DISPOSITIVA_BMED" 	primaryKey="true"/>
+
+	<Parameter propertyName="tipoDispositiva" 								dbColumnName="TIPO_DISPOSITIVA_BMED"/>
+	<Parameter propertyName="codiceBarcode" 								dbColumnName="BARCODE"/>
+	<Parameter propertyName="codiceOperazioneDispositivaSistemaOrigine"		dbColumnName="PDF_INSTANCE_ID_MOM"/>
+   </Bindings>
+</Access>
+
+<Access name="pdfTraceSaveAction" type="DAOTableAccess" tableName="PDF_ACTION_TRACE_LOG">
+   <Bindings>
+	<Parameter propertyName="pdfInstanceId" 		dbColumnName="PDF_INSTANCE_ID" 		primaryKey="true"/>   
+	<Parameter propertyName="mockActionCode" 		dbColumnName="ACTION_CODE"			primaryKey="true" propertyType="StringType" propertyValue="SAV"/>
+	<Parameter propertyName="pdfLastModUser"		dbColumnName="ACTION_USER"			primaryKey="true"/>
+	<Parameter propertyName="pdfLastModTime" 	 	dbColumnName="ACTION_TIME"/>	 
+	<Parameter propertyName="codRuoloImpersonato"	dbColumnName="COD_RUOLO_IMPERSONATO"/>
+   </Bindings>	
+</Access>
+
+<Access name="pdfTraceDeleteAction" type="DAOTableAccess" tableName="PDF_ACTION_TRACE_LOG">
+   <Bindings>
+	<Parameter propertyName="pdfInstanceId" 		dbColumnName="PDF_INSTANCE_ID" 		primaryKey="true"/>   
+	<Parameter propertyName="mockActionCode" 		dbColumnName="ACTION_CODE"			primaryKey="true" propertyType="StringType" propertyValue="DEL"/>
+	<Parameter propertyName="pdfLastModUser"		dbColumnName="ACTION_USER"			primaryKey="true"/>
+	<Parameter propertyName="pdfLastModTime" 	 	dbColumnName="ACTION_TIME"/>	 
+	<Parameter propertyName="codRuoloImpersonato"	dbColumnName="COD_RUOLO_IMPERSONATO"/>
+   </Bindings>	
+</Access>
+
+<Access name="loadBatchQueueFlags" type="DAOQueryAccess" queryType="0" maxResultRows="1">
+ <Query>
+	select 	ON_SIGNED_PROC_QUEUE
+	,		ON_POSTCOMPL_PROC_QUEUE
+	from 	PDF_INSTANCE
+	where 	PDF_INSTANCE_ID = ?
+ </Query> 
+ <Input>
+	<Parameter propertyName="pdfInstanceId"/>
+ </Input>
+ <Output>
+	<Parameter propertyName="putOnSignedProcessBatchQueue"/>
+	<Parameter propertyName="putOnPostCompletionProcessBatchQueue"/>
+ </Output>
+</Access> 
+
+<Access name="loadPdfInstanceContent" type="DAOQueryAccess" queryType="0" maxResultRows="1">
+ <Query>
+	select 	top 1 I.PDF_CONTENT
+	, 		I.CODE
+	, 		(select P.EDITION from PDF_PUBLICATION P where P.PDF_ID=I.PDF_ID and P.PUBLICATION_ID=I.PUBLICATION_ID) as pdfEdition
+	from 	PDF_INSTANCE I
+	where 	I.PDF_INSTANCE_ID = ?
+ </Query> 
+ <Input>
+	<Parameter propertyName="pdfInstanceId"/>
+ </Input> 
+ <Output>
+	<Parameter propertyName="pdfContent"/>
+	<Parameter propertyName="pdfAnag_pdfCode"/>
+	<Parameter propertyName="pdfAnag_pdfEdition"/>
+ </Output>
+</Access>
+
+<Access name="sendPdfInstance" type="DAOTableAccess" tableName="PDF_INSTANCE">
+   <Bindings>
+	<Parameter propertyName="pdfInstanceId"					dbColumnName="PDF_INSTANCE_ID" primaryKey="true"/>
+
+	<Parameter propertyName="pdfCompletionUser" 			dbColumnName="COMPLETION_USER"/>	 
+	<Parameter propertyName="pdfCompletionTime" 			dbColumnName="COMPLETION_TIME"/>	 
+	 	 
+	<Parameter propertyName="pdfStatus"		 				dbColumnName="STATO"/>
+	<Parameter propertyName="pdfCompilationMode"		 	dbColumnName="MODALITA_DI_SOTTOSCRIZIONE"/>
+	<Parameter propertyName="pdfAnag_pdfCodProdottoPrit"	dbColumnName="COD_PRODOTTO_PRIT"/>
+	<Parameter propertyName="pdfAnag_pdfCodOperazionePrit"	dbColumnName="COD_OPERAZIONE_PRIT"/>
+	<Parameter propertyName="pdfBarcode"					dbColumnName="BARCODE"/>
+	<Parameter propertyName="pdfContent"  					dbColumnName="PDF_CONTENT"/>
+	<Parameter propertyName="pdfXmlData"  					dbColumnName="XML_DATA"/>
+	<Parameter propertyName="idAgevolazione"				dbColumnName="ID_AGEVOLAZIONE"/>
+	<Parameter propertyName="codiceAgevolazione"			dbColumnName="CODICE_AGEVOLAZIONE"/>
+	<Parameter propertyName="idReportAdeguatezza"			dbColumnName="ID_REPORT_ADEGUATEZZA"/>
+	<Parameter propertyName="numOrdineReportAdeguatezza"	dbColumnName="NUM_ORDINE_REPORT_ADEGUATEZZA"/>
+	<Parameter propertyName="idQuestionarioIdd"				dbColumnName="ID_QUESTIONARIO_IDD"/>
+	<Parameter propertyName="idRaccomandazioneIdd"			dbColumnName="ID_RACCOMANDAZIONE_IDD"/>
+	<Parameter propertyName="idSostituzione"				dbColumnName="ID_SOSTITUZIONE"/>
+	<Parameter propertyName="isMultiPdf"  					dbColumnName="IS_MULTIPDF"/>
+	<Parameter propertyName="codDispositivaBMED"			dbColumnName="COD_DISPOSITIVA_BMED"/>
+	<Parameter propertyName="idFileNAS"						dbColumnName="ID_FILE_NAS"/>
+	<Parameter propertyName="pdfsForMOM"					dbColumnName="PDFS_FOR_MOM"/>
+	<Parameter propertyName="codAgeImpersonato"				dbColumnName="COD_AGE_IMPERSONATO"/>
+	<Parameter propertyName="codProd"						dbColumnName="PROD_C_PROD"/>
+	 	 	
+	<Parameter propertyName="putOnSignedProcessBatchQueue"  		dbColumnName="ON_SIGNED_PROC_QUEUE"/>
+	<Parameter propertyName="putOnPostCompletionProcessBatchQueue"  dbColumnName="ON_POSTCOMPL_PROC_QUEUE"/>
+	
+	<Parameter propertyName="flagWayout"  					dbColumnName="FLAG_WAYOUT"/>
+	<Parameter propertyName="isMop"		  					dbColumnName="IS_MOP"/>
+   </Bindings>
+</Access>
+<Access name="signPdfInstance" type="DAOTableAccess" tableName="PDF_INSTANCE">
+   <Bindings>
+	<Parameter propertyName="pdfInstanceId"					dbColumnName="PDF_INSTANCE_ID" primaryKey="true"/>
+
+	<Parameter propertyName="pdfCompletionUser" 			dbColumnName="COMPLETION_USER"/>	 
+	<Parameter propertyName="pdfCompletionTime" 			dbColumnName="COMPLETION_TIME"/>	 
+	 	 
+	<Parameter propertyName="pdfStatus"		 				dbColumnName="STATO"/>
+	<Parameter propertyName="pdfCompilationMode"		 	dbColumnName="MODALITA_DI_SOTTOSCRIZIONE"/>
+	<Parameter propertyName="pdfAnag_pdfCodProdottoPrit"	dbColumnName="COD_PRODOTTO_PRIT"/>
+	<Parameter propertyName="pdfAnag_pdfCodOperazionePrit"	dbColumnName="COD_OPERAZIONE_PRIT"/>
+	<Parameter propertyName="pdfBarcode"					dbColumnName="BARCODE"/>
+	<Parameter propertyName="pdfContent"  					dbColumnName="PDF_CONTENT"/>
+	<Parameter propertyName="pdfXmlData"  					dbColumnName="XML_DATA"/>
+	<Parameter propertyName="idAgevolazione"				dbColumnName="ID_AGEVOLAZIONE"/>
+	<Parameter propertyName="codiceAgevolazione"			dbColumnName="CODICE_AGEVOLAZIONE"/>
+	<Parameter propertyName="idReportAdeguatezza"			dbColumnName="ID_REPORT_ADEGUATEZZA"/>
+	<Parameter propertyName="numOrdineReportAdeguatezza"	dbColumnName="NUM_ORDINE_REPORT_ADEGUATEZZA"/>
+	<Parameter propertyName="idQuestionarioIdd"				dbColumnName="ID_QUESTIONARIO_IDD"/>
+	<Parameter propertyName="idRaccomandazioneIdd"			dbColumnName="ID_RACCOMANDAZIONE_IDD"/>
+	<Parameter propertyName="idSostituzione"				dbColumnName="ID_SOSTITUZIONE"/>
+	<Parameter propertyName="isMultiPdf"  					dbColumnName="IS_MULTIPDF"/>
+	<Parameter propertyName="codDispositivaBMED"			dbColumnName="COD_DISPOSITIVA_BMED"/>
+	<Parameter propertyName="idFileNAS"						dbColumnName="ID_FILE_NAS"/>
+	<Parameter propertyName="pdfsForMOM"					dbColumnName="PDFS_FOR_MOM"/>
+	<Parameter propertyName="codAgeImpersonato"				dbColumnName="COD_AGE_IMPERSONATO"/>
+	<Parameter propertyName="isFirmaADistanza"				dbColumnName="F_SOTT_FD_DISTANZA"/>
+	<Parameter propertyName="codProd"						dbColumnName="PROD_C_PROD"/>
+	 	 
+	<Parameter propertyName="putOnSignedProcessBatchQueue"  		dbColumnName="ON_SIGNED_PROC_QUEUE"/>
+	<Parameter propertyName="putOnPostCompletionProcessBatchQueue"  dbColumnName="ON_POSTCOMPL_PROC_QUEUE"/>	
+
+	<Parameter propertyName="isMop"		  					dbColumnName="IS_MOP"/>
+   </Bindings>
+</Access>
+<Access name="sendToCliPdfInstance" type="DAOTableAccess" tableName="PDF_INSTANCE">
+   <Bindings>
+	<Parameter propertyName="pdfInstanceId"					dbColumnName="PDF_INSTANCE_ID" primaryKey="true"/>
+
+	<Parameter propertyName="pdfAnag_pdfCodProdottoPrit"	dbColumnName="COD_PRODOTTO_PRIT"/>
+	<Parameter propertyName="pdfAnag_pdfCodOperazionePrit"	dbColumnName="COD_OPERAZIONE_PRIT"/>
+	<Parameter propertyName="pdfBarcode"					dbColumnName="BARCODE"/>
+	<Parameter propertyName="pdfContent"  					dbColumnName="PDF_CONTENT"/>
+	<Parameter propertyName="pdfXmlData"  					dbColumnName="XML_DATA"/>
+	<Parameter propertyName="idAgevolazione"				dbColumnName="ID_AGEVOLAZIONE"/>
+	<Parameter propertyName="codiceAgevolazione"			dbColumnName="CODICE_AGEVOLAZIONE"/>
+	<Parameter propertyName="idReportAdeguatezza"			dbColumnName="ID_REPORT_ADEGUATEZZA"/>
+	<Parameter propertyName="numOrdineReportAdeguatezza"	dbColumnName="NUM_ORDINE_REPORT_ADEGUATEZZA"/>
+	<Parameter propertyName="idQuestionarioIdd"				dbColumnName="ID_QUESTIONARIO_IDD"/>
+	<Parameter propertyName="idRaccomandazioneIdd"			dbColumnName="ID_RACCOMANDAZIONE_IDD"/>
+	<Parameter propertyName="idSostituzione"				dbColumnName="ID_SOSTITUZIONE"/>
+	<Parameter propertyName="isMultiPdf"  					dbColumnName="IS_MULTIPDF"/>
+	<Parameter propertyName="codDispositivaBMED"			dbColumnName="COD_DISPOSITIVA_BMED"/>
+	<Parameter propertyName="idFileNAS"						dbColumnName="ID_FILE_NAS"/>
+	<Parameter propertyName="pdfsForMOM"					dbColumnName="PDFS_FOR_MOM"/>
+	<Parameter propertyName="codAgeImpersonato"				dbColumnName="COD_AGE_IMPERSONATO"/>
+	<Parameter propertyName="isFirmaADistanza"				dbColumnName="F_SOTT_FD_DISTANZA"/>
+	<Parameter propertyName="codProd"						dbColumnName="PROD_C_PROD"/>
+	 	 
+	<Parameter propertyName="putOnSignedProcessBatchQueue"  		dbColumnName="ON_SIGNED_PROC_QUEUE"/>
+	<Parameter propertyName="putOnPostCompletionProcessBatchQueue"  dbColumnName="ON_POSTCOMPL_PROC_QUEUE"/>
+	<Parameter propertyName="putOnDeadEndProcessBatchQueue"  		dbColumnName="ON_DEAD_END_PROC_QUEUE"/>
+	
+	<Parameter propertyName="mockPdfTipoCopernico"					dbColumnName="TIPO_COPERNICO" propertyType="StringType"  propertyValue="S"/>
+   </Bindings>
+</Access>
+<Access name="freezeSendToCliPdfInstance" type="DAOTableAccess" tableName="PDF_INSTANCE">
+   <Bindings>
+	<Parameter propertyName="pdfInstanceId"					dbColumnName="PDF_INSTANCE_ID" primaryKey="true"/>
+
+	<Parameter propertyName="pdfCompletionUser" 			dbColumnName="COMPLETION_USER"/>	 
+	<Parameter propertyName="pdfCompletionTime" 			dbColumnName="COMPLETION_TIME"/>	 	 	 
+	<Parameter propertyName="pdfStatus"		 				dbColumnName="STATO"/>
+	<Parameter propertyName="pdfCompilationMode"		 	dbColumnName="MODALITA_DI_SOTTOSCRIZIONE"/>
+	<Parameter propertyName="pdfNoteFBCopernico"			dbColumnName="NOTE_FB_COPERNICO"/>
+   </Bindings>
+</Access>
+<Access name="freezeSendToCliBasket" type="DAOTableAccess" tableName="PDF_INSTANCE">
+   <Bindings>
+	<Parameter propertyName="idCarrello"					dbColumnName="ID_CARRELLO" primaryKey="true"/>
+	<Parameter propertyName="mockInBasket"					propertyType="StringType"  propertyValue="S"	dbColumnName="IN_BASKET" primaryKey="true"/>
+	<Parameter propertyName="mockPdfStatus"	 				propertyType="StringType"  propertyValue="01"	dbColumnName="STATO" 	 primaryKey="true"/>
+
+	<Parameter propertyName="pdfCompletionUser" 			dbColumnName="COMPLETION_USER"/>	 
+	<Parameter propertyName="pdfCompletionTime" 			dbColumnName="COMPLETION_TIME"/>	 	 	 
+	<Parameter propertyName="pdfStatus"		 				dbColumnName="STATO"/>
+	<Parameter propertyName="pdfCompilationMode"		 	dbColumnName="MODALITA_DI_SOTTOSCRIZIONE"/>
+	<Parameter propertyName="pdfNoteFBCopernico"			dbColumnName="NOTE_FB_COPERNICO"/>
+   </Bindings>
+</Access>
+<Access name="acceptPdfInstance" type="DAOTableAccess" tableName="PDF_INSTANCE">
+   <Bindings>
+	<Parameter propertyName="pdfInstanceId"					dbColumnName="PDF_INSTANCE_ID" primaryKey="true"/>
+
+	<Parameter propertyName="pdfCompletionTime" 			dbColumnName="COPERNICO_RESPONSE_TIME"/>	 
+	<Parameter propertyName="pdfStatus"		 				dbColumnName="STATO"/>
+	<Parameter propertyName="pdfAnag_pdfCodProdottoPrit"	dbColumnName="COD_PRODOTTO_PRIT"/>
+	<Parameter propertyName="pdfAnag_pdfCodOperazionePrit"	dbColumnName="COD_OPERAZIONE_PRIT"/>
+	<Parameter propertyName="pdfContent"  					dbColumnName="PDF_CONTENT"/>
+	<Parameter propertyName="pdfXmlData"  					dbColumnName="XML_DATA"/>
+	<Parameter propertyName="codDispositivaBMED"			dbColumnName="COD_DISPOSITIVA_BMED"/>
+	<Parameter propertyName="pdfsForMOM"					dbColumnName="PDFS_FOR_MOM"/>
+	<Parameter propertyName="sistemaClient"					dbColumnName="SISTEMA_CLIENT"/>
+
+	<Parameter propertyName="putOnSignedProcessBatchQueue"  		dbColumnName="ON_SIGNED_PROC_QUEUE"/>
+	<Parameter propertyName="putOnPostCompletionProcessBatchQueue"  dbColumnName="ON_POSTCOMPL_PROC_QUEUE"/>
+
+	<Parameter propertyName="isMop"		  					dbColumnName="IS_MOP"/>
+   </Bindings>
+</Access>
+
+<Access name="loadPdfInstanceCompletedData" type="DAOQueryAccess" queryType="0" maxResultRows="1">
+ <Query>
+	select 	top 1 ON_SIGNED_PROC_QUEUE
+	from 	PDF_INSTANCE
+	where 	PDF_INSTANCE_ID = ?
+ </Query> 
+ <Input>
+	<Parameter propertyName="pdfInstanceId"/>
+ </Input> 
+ <Output>
+	<Parameter propertyName="putOnSignedProcessBatchQueue"/>
+ </Output>
+</Access>
+
+<Access name="aggiornaDettOrdCarl" type="DAOTableAccess" tableName="SOGG_INFOSIMU.DETT_ORD_CARL" connectionCacheReference="DBAZ_SOGG">
+	<Bindings>
+		<Parameter propertyName="idCarrello"		dbColumnName="COD_CARL" 	primaryKey="true"/>
+		<Parameter propertyName="idDispCarrello"	dbColumnName="COD_ORD_CARL" primaryKey="true"/>
+		<Parameter propertyName="pdfInstanceId"		dbColumnName="DISP_C_DISP"/>
+	</Bindings>
+</Access>
+<Access name="aggiornaDettOrdCarlSemplt" type="DAOTableAccess" tableName="sogg_posizdisp.dett_bozza_disp_carl_semplt" connectionCacheReference="DBAZ_SOGG">
+	<Bindings>
+		<Parameter propertyName="idCarrello"				dbColumnName="cod_carl" 			primaryKey="true"/>
+		<Parameter propertyName="idDispCarrello"			dbColumnName="cod_bozza_disp_carl" 	primaryKey="true"/>
+		<Parameter propertyName="pdfInstanceId"				dbColumnName="cod_pdf_instance"/>
+		<Parameter propertyName="pdfCreationTime"			dbColumnName="gstd_d_ult_modf_record"/>
+		<Parameter propertyName="#contextUserCode"			dbColumnName="gstd_x_user"/>
+		<Parameter propertyName="mockGstdMNomUltModf" 		dbColumnName="gstd_m_nom_ult_modf" 	propertyType="StringType" propertyValue="PDF-CREATE"/>
+		<Parameter propertyName="mockGstdXTipModf" 			dbColumnName="gstd_x_tip_modf" 		propertyType="StringType" propertyValue="M"/>
+	</Bindings>
+</Access>
+<Access name="aggiornaDettOrdCarlSwitch" type="DAOTableAccess" tableName="SOGG_INFOSIMU.DETT_ORD_CARL" connectionCacheReference="DBAZ_SOGG">
+	<Bindings>
+		<Parameter propertyName="idCarrello"		dbColumnName="COD_CARL" 	primaryKey="true"/>
+		<Parameter propertyName="idDispCarrello"	dbColumnName="COD_ORD_CARL" primaryKey="true"/>
+		<Parameter propertyName="pdfInstanceId"		dbColumnName="DISP_C_DISP"/>
+		<Parameter propertyName="pdfInstanceId"		dbColumnName="SWITCH_C_SWITCH"/>
+	</Bindings>
+</Access>
+<Access name="aggiornaDettOrdCarlSwitchSemplt" type="DAOTableAccess" tableName="sogg_posizdisp.dett_bozza_disp_carl_semplt" connectionCacheReference="DBAZ_SOGG">
+	<Bindings>
+		<Parameter propertyName="idCarrello"				dbColumnName="cod_carl" 			primaryKey="true"/>
+		<Parameter propertyName="idDispCarrello"			dbColumnName="cod_bozza_disp_carl" 	primaryKey="true"/>
+		<Parameter propertyName="pdfInstanceId"				dbColumnName="cod_pdf_instance"/>
+		<Parameter propertyName="pdfCreationTime"			dbColumnName="gstd_d_ult_modf_record"/>
+		<Parameter propertyName="#contextUserCode"			dbColumnName="gstd_x_user"/>
+		<Parameter propertyName="mockGstdMNomUltModf" 		dbColumnName="gstd_m_nom_ult_modf" 	propertyType="StringType" propertyValue="PDF-CREATE"/>
+		<Parameter propertyName="mockGstdXTipModf" 			dbColumnName="gstd_x_tip_modf" 		propertyType="StringType" propertyValue="M"/>
+	</Bindings>
+</Access>
+
+<Access name="loadIdCarrelloPdfInstance" type="DAOQueryAccess" queryType="0">
+ <Query>
+	select 	ID_CARRELLO, 
+			ENVIRONMENT
+	from 	PDF_INSTANCE 
+	where 	PDF_INSTANCE_ID = ?
+ </Query> 
+ <Input>
+	<Parameter propertyName="pdfInstanceId"/>
+ </Input> 
+ <Output>
+	<Parameter propertyName="idCarrello"/>
+	<Parameter propertyName="pdfEnvironment"/>
+ </Output> 
+</Access> 
+
+<Access name="svuotaCodDisposizioneDettOrdCarl" type="DAOTableAccess" tableName="SOGG_INFOSIMU.DETT_ORD_CARL" connectionCacheReference="DBAZ_SOGG">
+	<Bindings>
+		<Parameter propertyName="pdfInstanceId"			dbColumnName="DISP_C_DISP" 		primaryKey="true"/>
+		<Parameter propertyName="idCarrello"			dbColumnName="COD_CARL" 		primaryKey="true"/>
+		<Parameter propertyName="emptyPdfInstanceId"	dbColumnName="DISP_C_DISP" propertyType="StringType" propertyValue=""/>
+		<Parameter propertyName="emptyPdfInstanceId"	dbColumnName="SWITCH_C_SWITCH" propertyType="StringType" propertyValue=""/>
+	</Bindings>
+</Access>
+<Access name="svuotaCodDisposizioneDettOrdCarlSemplt" type="DAOTableAccess" tableName="sogg_posizdisp.dett_bozza_disp_carl_semplt" connectionCacheReference="DBAZ_SOGG">
+	<Bindings>
+		<Parameter propertyName="pdfInstanceId"				dbColumnName="cod_pdf_instance" 	primaryKey="true"/>
+		<Parameter propertyName="idCarrello"				dbColumnName="cod_carl" 			primaryKey="true"/>
+		<Parameter propertyName="emptyPdfInstanceId"		dbColumnName="cod_pdf_instance" 	propertyType="StringType" propertyValue=""/>
+		<Parameter propertyName="pdfLastModTime"			dbColumnName="gstd_d_ult_modf_record"/>
+		<Parameter propertyName="#contextUserCode"			dbColumnName="gstd_x_user"/>
+		<Parameter propertyName="mockGstdMNomUltModf" 		dbColumnName="gstd_m_nom_ult_modf" 	propertyType="StringType" propertyValue="PDF-DELETE"/>
+		<Parameter propertyName="mockGstdXTipModf" 			dbColumnName="gstd_x_tip_modf" 		propertyType="StringType" propertyValue="M"/>		
+	</Bindings>
+</Access> 
+
+<Access name="isCodiceAgevolazioneGiaUtilizzato" type="DAOQueryAccess" queryType="1"  connectionCacheReference="CEPE"
+		OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType">
+	<Query>
+		select 	case when count(*) = 0 then 'N' else 'S' end 
+		from 	PDF_INSTANCE
+		where 	ID_AGEVOLAZIONE = <p>idAgevolazione</p>
+		and 	<c>prgm.pdfwebforms.model.PdfInstanceModel.CONDIZIONE_STATO_PDF_COMPLETATO_RETE</c>
+ 	</Query> 
+</Access>
+
+<Access name="isCodiceAgevolazioneBruciato" type="DAOQueryAccess" queryType="0"  connectionCacheReference="CEPE"
+		OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType">
+	<Query>
+		select 	case when count(*) = 0 then 'N' else 'S' end 
+		from 	CEPE_CRLEVE_MOV_DEROG_GEST ag, CEPE_CRLEVE_LOGATTIVITA log
+		where 	ag.ID_DEROGA = convert(numeric,?)
+		and		ag.ID_ATTIVITA = log.ID_ATTIVITA
+		and 	log.STATO = '12'
+ 	</Query> 
+ 	<Input>
+ 		<Parameter propertyName="idAgevolazione"/>
+ 	</Input>
+</Access>
+
+<Access name="loadIdAttivitaFromIdAgevolazione" type="DAOQueryAccess" queryType="0"
+		OutputCommandDataModel="com.atosorigin.wfem.types.IntegerType">
+	<Query>
+		select 	ID_ATTIVITA 
+		from 	CEPE_CRLEVE_MOV_DEROG_GEST 
+		where 	ID_DEROGA = convert(numeric,?)
+ 	</Query>
+ 	<Input>
+ 		<Parameter propertyName="idAgevolazione"/>
+ 	</Input>
+</Access>
+
+<Access name="bruciaAgevolazione" type="DAOTableAccess" tableName="CEPE_CRLEVE_LOGATTIVITA">
+	<Bindings>
+		<Parameter propertyName="idAttivita"		dbColumnName="ID_ATTIVITA" 	primaryKey="true"/>
+		<Parameter propertyName="statoBruciato"		dbColumnName="STATO" 		propertyType="StringType" propertyValue="12"/>
+	</Bindings>
+</Access> 
+
+<Access name="loadConcurrencyData" type="DAOQueryAccess" queryType="0">
+	<Query>
+		select top 1 STATO
+		,		isnull(LASTMOD_TIME,CREATION_TIME)
+		,		isnull(LASTMOD_USER,CREATION_USER)
+		from 	PDF_INSTANCE 
+		where PDF_INSTANCE_ID = ? 
+ 	</Query>
+ 	<Input>
+ 		<Parameter propertyName="pdfInstanceId"/>
+ 	</Input>
+ 	<Output>
+ 		<Parameter propertyName="stato"/>
+ 		<Parameter propertyName="dataOraUltimaModifica"/>
+ 		<Parameter propertyName="codUtenteUltimaModifica"/>
+ 	</Output>
+</Access>
+
+<Access name="concurrencyBasketData" type="DAOTableAccess" tableName="SOGG_INFOSIMU.ANAG_CARL" connectionCacheReference="DBAZ_SOGG">
+	<Bindings>
+		<Parameter propertyName="idCarrello"				dbColumnName="COD_CARL" primaryKey="true"/>
+		<Parameter propertyName="dataOraUltimaModifica"		dbColumnName="GSTD_D_ULT_MODF_RECORD"/>
+		<Parameter propertyName="codUtenteUltimaModifica"	dbColumnName="GSTD_X_USER"/>
+	</Bindings>
+</Access>
+<Access name="concurrencyBasketDataSemplt" type="DAOTableAccess" tableName="sogg_posizdisp.anag_carl_semplt" connectionCacheReference="DBAZ_SOGG">
+	<Bindings>
+		<Parameter propertyName="idCarrello"				dbColumnName="cod_carl" primaryKey="true"/>
+		<Parameter propertyName="dataOraUltimaModifica"		dbColumnName="gstd_d_ult_modf_record"/>
+		<Parameter propertyName="codUtenteUltimaModifica"	dbColumnName="gstd_x_user"/>
+		<Parameter propertyName="mockGstdMNomUltModf" 		dbColumnName="gstd_m_nom_ult_modf" 	propertyType="StringType" propertyValue="PDF-BSKCNCURCY"/>
+		<Parameter propertyName="mockGstdXTipModf" 			dbColumnName="gstd_x_tip_modf" 		propertyType="StringType" propertyValue="M"/>
+	</Bindings>
+</Access>
+
+<Access name="loadTipoProcessoSedeMOM" type="DAOQueryAccess" queryType="0" maxResultRows="1"
+ 		OutputCommandDataModel="com.atosorigin.wfem.types.StringType" connectionCacheReference="SER_MIFID">
+ <Query>
+	select 	COD_PROC_OPERTVO
+	from 	SOGG_POSIZDISP.LEGM_TIPO_DISP_SIST_ORIG
+	where 	GSTD_F_ESIST = 'S'
+	and		COD_TIPO_SIST_ORIG_DISP = 'PRT'
+	and 	COD_PROD_SIST_ORIG = ? 
+	and 	COD_TIPO_OPERZ_PROD_SIST_ORIG = ?
+ </Query> 
+ <Input>
+	<Parameter propertyName="codProdottoPrit"/>
+	<Parameter propertyName="codOperazionePrit"/>
+ </Input>
+</Access> 
+
+<Access name="deletePdfMomInstance" type="DAOTableAccess" tableName="PDF_MOM_INSTANCE">
+	<Bindings>
+		<Parameter propertyName="pdfInstanceId" dbColumnName="PDF_INSTANCE_ID" primaryKey="true"/>
+	</Bindings>
+</Access>
+
+</DAO-Object>

@@ -1,0 +1,112 @@
+<style>
+.dispotab th{
+	background-color:#E8EAF1;
+	height:35px;
+}
+.dispotab td{
+	border-bottom: solid 1px #E8EAF1;
+	height:50px;
+}
+</style>
+<div class="testo" style="width:100%;height:100%;display:grid;row-gap:5px;grid-template-columns:100%;grid-template-rows:auto 1fr auto auto auto auto;">
+
+	<div class="testoAzzurro" style="font-size: 20px;padding-top:10px;padding-bottom:10px;"><b>Riepilogo operazioni</b></div>
+
+	<div style="display:grid;grid-template-rows:1fr;">
+		<div style="height:100%;width:100%;position:relative;overflow-y:auto;">
+			<div style="position:absolute;left:0;top:0;width:100%;">
+			<table class="testo dispotab" style="width:100%;text-align:left;color:#192D6E;border-collapse:collapse;">
+				<tr>
+					<th>Tipologia prodotto</th>
+					<th>Operazione</th>
+					<th>Importo</th>
+					<th></th>
+				</tr>
+				<%
+					for(BasketElement be : model.getBasket().getBasketElements()){
+						String buDescr = be.getDispoPdf().mainPdfAnag().getDescValue("pdfCodLineaBusiness");
+						String title = be.getDispoPdf().getPdfData().getPdfTitle().isNull()?be.getDispoPdf().mainPdfAnag().getPdfDescr().toString():be.getDispoPdf().getPdfData().getPdfTitle().toString();
+						String imp = "";
+						DoubleType importo = (be.getDispoPdf().mainPdfData().read(PdfPredefinedFields.IMPORTO)==null ? new DoubleType():new DoubleType(be.getDispoPdf().mainPdfData().read(PdfPredefinedFields.IMPORTO).toString()));
+						if(importo != null && !importo.isNull())
+							imp = importo+" &euro;";
+						String codProd = "";
+						for(int i=0;i<be.getDispoPdf().getPdfAnags().size();i++){
+							PdfAnagModel pdfDettAnag = (PdfAnagModel)be.getDispoPdf().getPdfAnags().get(i);
+							if(pdfDettAnag.getPdfMomCode().isNull())
+								continue;
+							if(be.getDispoPdf().getPdfAnags().size() > 1)
+								codProd += "pdfs"+i+"_pdfCode="+pdfDettAnag.getPdfMomCode()+"&";
+							else
+								codProd += "pdfCode="+pdfDettAnag.getPdfMomCode()+"&";
+						}
+						if(codProd.length() > 0)
+							codProd = codProd.substring(0, codProd.length()-1);					
+				 %>
+				 	<tr>
+				 		<td><%=buDescr%></td>
+				 		<td><%=title%></td>
+				 		<td><%=imp%></td>
+				 		<td>
+							<div class="linkAperturaConIcona">								
+								<div><img alt="" src="<%=template.getWebApp()%>/images/visualizza_pdf.png"></div>
+								<div>
+									<span role="link" tabindex="-1" codProd='<%=codProd%>' style='cursor:pointer;' onclick='openCatalogPdf(this);'>
+										Fac simile documento
+									</span>
+								</div>
+							</div>
+				 		</td>
+				 	</tr>				 	
+				 <% } %>
+			</table>
+			</div>
+		</div>
+	</div>
+
+	<div>
+		Attenzione: con l'inserimento del codice OTP verrà confermata la sottoscrizione di tutti i contratti sopra indicati.
+		Prima di procedere assicurati di aver preso visione di tutte le clausole contrattuali.
+		Clicca il bottone "Indietro" per tornare alla visualizzazione dei moduli compilati.
+	</div>
+
+	<div>
+		Ti confermiamo che il perfezionamento dei singoli contratti è subordinato alle verifiche di sede e che
+		il mancato perfezionamento di uno dei contratti sottoscritti non causerà l'annullamento degli altri
+		contratti contenuti nella presente proposta.
+	</div>
+
+	<div class="testo" align="left" style="padding-top:20px;display:grid;row-gap:3px;">
+		<div height="30" style="color:#192D6E;padding-right:10px;">Inserisci la One Time Password che hai ricevuto sul numero di cellulare: <%=signData.getNumeroCelluarePrimario().toString().replace("_", "&nbsp;")%></div>
+		<div id="otpCont" height="40" style="padding-right:10px;">
+			<div>
+				<% boolean otpHasError = model.getPersonaCorrente().getSignData().getOtpDigitato().hasTypeErrors(); %>
+				<span style="color:#027BC2;font-weight:bold;"><%if(!signData.getOtpGenerato().isNull()){%><span id="otpPrefisso"><%=signData.getOtpGenerato()%></span> -<%}%></span>
+				<input tabindex="0" type="password" class="otpInput <%=otpHasError?"otpInputErr":""%>" 
+					name="personaCorrente_signData_otpDigitato" id="personaCorrente_signData_otpDigitato"
+			 		onchange="__fieldIntf.toUpper(this);" maxlength="6" autocomplete="off" 
+			 		style="width:160;font-weight:bold;"
+			 		ftype="StringType" value="<%=model.getPersonaCorrente().getSignData().getOtpDigitato()%>"
+				    spellcheck="false" autocorrect="on" autocomplete="off" data-semantics-role="text-field"
+				    <%=otpHasError?"aria-invalid='true'":""%>
+				    aria-describedby="otpDigitato-aria-label">
+			 	<script>__fieldIntf.initStringType('personaCorrente_signData_otpDigitato',null);</script>
+				<% if(otpHasError){ %>
+					<span id="otpErrorMsg" style="color:red;font-weight:bold;padding-left:30;"><%=model.getPersonaCorrente().getSignData().getOtpDigitato().getTypeErrors().get(0).toString()%></span>
+				<% } %>
+			</div>
+			<div style="display:none;" id="otpDigitato-aria-label">Inserisci la One Time Password che hai ricevuto sul numero di cellulare: <%=signData.getNumeroCelluarePrimario().toString().replace("_", " ")%>, con indicatore <%=signData.getOtpGenerato()%>.</div>
+		</div>
+		<div valign="top" style="height:25px;padding-right:10px;">
+			<span role="link" tabindex="0" style="color:#027BC2;text-decoration:underline;cursor:pointer;" onclick="richiediNuovoOtp();">
+				Se non hai ricevuto l'SMS richiedi un nuovo codice
+			</span>
+		</div>
+	</div>
+	
+	<div style="text-align: right;">
+		<div role="button" tabindex="0" class="normalButton whiteButton" style="display:inline-block;" onclick="doGotoPreview();">Indietro</div>
+		<div role="button" tabindex="0" class="normalButton" style="display:inline-block;" onclick="doVerificaOtp();">Conferma</div>
+	</div>
+
+</div>

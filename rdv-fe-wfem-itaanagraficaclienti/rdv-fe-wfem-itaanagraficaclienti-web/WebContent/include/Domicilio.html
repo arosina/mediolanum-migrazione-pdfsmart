@@ -1,0 +1,44 @@
+<!-------- DOMICILIO ------->
+<%
+   savModificabile = modificabile;   
+   savModality = template.getModality();
+   if(model.getIsEffettivo().booleanValue()){
+   	   modificabile = false;
+	   template.setModality(template.READ_MODALITY);
+   }
+%>
+<table height="100%" width="98%" cellpadding="0" cellspacing="0">  
+  <tr>
+     <td>
+      <fieldset style="border: none; border-top: solid 1px #1A458F;">
+	  <legend class="text" style="font-weight: bold; background-color: white;">
+	     &nbsp;<img src="<%=template.getWebApp()%>/images/section.gif">
+	     &nbsp;Indirizzo&nbsp;
+	  </legend>
+	    <table><tr><td style="height: 3px;"></td></tr></table>
+        <%template.setPrefix("domicilio_indirizzo");%>
+	    <%@ include file="../include/Indirizzo.html"%>
+	    <%template.restorePrefix();%>
+      </fieldset>
+     </td>
+  </tr>
+  <tr>
+     <td>
+      <fieldset style="border: none; border-top: solid 1px #1A458F;">
+	  <legend class="text" style="font-weight: bold; background-color: white;">
+	     &nbsp;<img src="<%=template.getWebApp()%>/images/section.gif">
+	     &nbsp;Telefono&nbsp;
+	  </legend>
+	    <table><tr><td style="height: 3px;"></td></tr></table>
+        <%template.setPrefix("domicilio_telefono");%>
+	    <%@ include file="../include/Telefono.html"%>
+	    <%template.restorePrefix();%>
+      </fieldset>
+     </td>
+  </tr>
+</table>
+<%
+   modificabile = savModificabile;
+   template.setModality(savModality);
+%>
+<!------------------------------------------->

@@ -1,0 +1,64 @@
+<% if(documento.isFaseDiSpunta() || !documento.getBarcode().isNull()){ %>
+	<table width="100%"cellpadding="0" cellspacing="0">
+	  <tr>
+	    <td style="width:50;"></td>
+	  
+	    <td align="center">
+	      <table cellpadding="0" cellspacing="0">
+	        <tr>
+	        
+	    	<% if(documento.isFaseDiSpunta()){ // Vedo barcode e cassetta %>
+	    		
+	    		<% if(documento.isGestoreBarcode()){ %>
+		    		<td><%=template.field("barcode","labelwidth='50' onchange='changeDoc();' labelstyle='font-weight:bold;' size='25'")%></td>
+	    		<% }else{ %>
+		    		<td><%=template.field("barcode","labelwidth='50' modality='read' labelstyle='font-weight:bold;' size='25'")%></td>
+	    		<% } %>
+	    		
+	    		<% if(documento.isCtrlCassette()){ %>
+		    	    <td>
+				        <table cellpadding="0" cellspacing="0" class="text">
+				          <tr>
+					    	<td><%=template.field("codCassetta","labelwidth='50' onchange='changeDoc();showImpostaCassettaPredefinita();'")%></td>
+					    	<% if(!readonly && !documento.isDocumentoAssegno()){ %>
+				    	  		<td id="impostaCassettaPredefinitaTd">
+				    	  				<span id="impostaCassettaPredefinitaSpan">&nbsp;&#9668;&nbsp;
+					    	  				<span onclick="impostaCassettaPredefinita();" 
+					    	  					  style="font-size:10;cursor:pointer;text-decoration:underline;">Imposta predef.</span>
+				    	  			    </span>
+				    	  		</td>
+			    	  	    <% } %>
+				          </tr>
+				        </table>
+		    	    </td>
+	    	    <% } %>
+	    	    
+			<% }else if(!documento.getBarcode().isNull()){ // Vedo solo il barcode %>
+			 
+	    		<td><%=template.field("barcode","labelwidth='50' modality='read' labelstyle='font-weight:bold;' size='25'")%></td>
+	    		<% if(documento.isCtrlCassette()){ %>
+		    		<td><%=template.field("codCassetta","labelwidth='50' modality='read'")%></td>
+	    		<% } %>
+	    		
+			<% } %>
+				        
+	        </tr>
+	      </table>
+	    </td>
+	    
+	    <td align="right">
+	      <table>
+	        <tr>
+    		<% if(!documento.getEsito().isNull()){ %>
+	    		<td class="label">Esito:</td><td class="value"><%=documento.getDescValue("esito")%></td>
+    		<% }else if(!documento.getIdDocumento().isNull() && !readonly && documento.isFaseDiSpunta()){ %>
+	    		<td class="text" style="color:red;"><b>Documento da esitare &#9658;&#9658;</b></td>
+    		<% } %>
+    		</tr>
+    	  </table>
+	    </td>
+	    
+	  </tr>
+	</table>
+	
+<% } %>

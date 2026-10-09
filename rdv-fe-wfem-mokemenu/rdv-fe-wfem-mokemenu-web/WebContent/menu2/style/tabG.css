@@ -1,0 +1,184 @@
+/*------ login ----------*/
+.text {
+	font-family: Arial;
+	font-size: 9pt;
+	color:#1A458F
+}
+.userPwdInput {
+	font-family: Arial;
+	font-size: 8pt;
+	color: #1A458F;
+	text-transform: uppercase;
+}
+
+.logonBG {
+	background-color:#C9D6EA;
+}
+
+.logonColor{
+	color:#1A458F;
+}
+
+.logonShoulder{
+	background-color:#f0f0f0;
+}
+
+
+/*- Menu Tabs G--------------------------- */
+#tabs {
+	float: left;	
+	width: 100%;
+	font-size: 93%;
+	border-bottom: 1px solid #587BC4;	
+}
+
+#tabs ul {
+	margin: 0;
+	padding: 5px 5px 0 10px;
+	list-style: none;
+}
+
+#tabs li {
+	display: inline;
+	margin: 0;
+	padding: 0;
+}
+
+#tabs a {
+	float: left;
+	background: url("../menu2/images/tableftG.gif") no-repeat left top;
+	margin: 0;
+	padding: 0 0 0 4px;
+	text-decoration: none;
+}
+
+#tabs a span {
+	float: left;
+	display: block;
+	background: url("../menu2/images/tabrightG.gif") no-repeat right top;
+	padding: 5px 15px 4px 6px;
+	margin: 0;
+	color: #FFF;
+}
+
+/* Commented Backslash Hack hides rule from IE5-Mac \*/
+#tabs a span {
+	float: none;
+}
+
+/* End IE5-Mac hack */
+#tabs a:hover span {
+	color: #FFF;
+}
+
+#tabs a:hover {
+	background-position: 0% -42px;
+}
+
+#tabs a:hover span {
+	background-position: 100% -42px;
+}
+
+#tabs #current a {
+	background-position: 0% -42px;
+}
+
+#tabs #current a span {
+	background-position: 100% -42px;
+}
+
+/*-----------------------------------*/
+
+.grp {
+	background: #587BC4;
+	border-width: 1px;
+	font-family: Arial;
+	font-size: 10pt;
+	color:white;	
+	font-weight: bold;
+}  
+
+.app {
+	background: #7DAFDB;
+	font-family: Arial;
+	font-size: 8pt;
+	color:#FFFFFF;
+}
+
+.appSel {
+	background: #1A458F;
+	font-family: Arial;
+	font-size: 8pt;
+	color: #C9D6EA;
+}
+
+.testataMenu {
+	font-family: Arial; 
+	font-size: 12px; 
+	color: #3C6C9C;
+}
+
+.fnc {
+	background: #f0f0f0;
+	font-family: Arial;
+	font-size: 8pt;
+	color: #1A458F;
+	
+}
+.fncSel {
+	background: #1A458F;
+	font-family: Arial;
+	font-size: 8pt;
+	color: #f0f0f0;
+}
+
+body {
+	scrollbar-face-color:#7DAFDB; 
+	scrollbar-track-color:#f0f0f0;
+	scrollbar-highlight-color:#7DAFDB;
+}	
+
+.shoulderMenu {
+	FILTER: progid:DXImageTransform.Microsoft.Fade(Overlap=0.25); 
+	width:176;
+	background-color:#f0f0f0;
+}
+
+.menuBox{
+	background: #f0f0f0;
+	border: 'solid 5px #C9D6EA';
+}
+
+#pathLabel {
+	font-family:Arial;
+	font-size:8pt;
+	color:	#3C6C9C;
+}
+/*-------prova menu atendina -----------*/
+
+#fncTable ul {
+	list-style: none;
+	margin: 0;
+	padding: 0 0 0 10 ;
+	}
+
+#fncTable img {
+    border: none;
+} 
+
+#fncTable li a {
+	height: 32px;
+ 	text-decoration: none;
+	}	
+	
+#fncTable li a:link, #fncTable li a:visited {
+	color: #333;
+	background:  url(../menu2/images/menu14.gif);
+	padding: 0px 0px 0px 0px;
+	}
+	
+#fncTable li a:hover, #fncTable li #current { {
+	color: #FFF;
+	background:  url(../menu2/images/menu14.gif) 0 -32px ; 
+	padding: 0px 0 0 0px;		
+	}

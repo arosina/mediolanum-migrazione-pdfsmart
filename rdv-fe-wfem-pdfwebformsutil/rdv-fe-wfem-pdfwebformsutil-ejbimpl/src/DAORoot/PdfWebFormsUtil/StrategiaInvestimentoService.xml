@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="StrategiaInvestimentoService">	
+<Access name="strategiaInvestimento" type="DAOOSBAccess" serviceName="Enterprise_service/soggetto/posizioneinformativa/StrategiaInvestimento/v1/inbound/PS_WS_StrategiaInvestimentoService_v1.0" operationName="getStrategiePerCliente" keepAttrs="true">
+	   <Input>
+		<![CDATA[
+		   <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://posizioneinformativa.soggetto.service.bmed.it/StrategiaInvestimento/v1">
+			   <soapenv:Header></soapenv:Header>
+			   <soapenv:Body>
+			      <v11:getStrategiePerCliente>
+			         <v11:metadata append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+			         <v11:codCliente propertyName="codCliente" ></v11:codCliente>				         		
+		         	 <v11:listaTipoStrategia>
+			            <v11:strategia>BC</v11:strategia>
+			            <v11:strategia>IIS</v11:strategia>
+			            <v11:strategia>DC</v11:strategia>
+			         </v11:listaTipoStrategia>						         		
+			      </v11:getStrategiePerCliente>		
+			   </soapenv:Body>		
+		  </soapenv:Envelope>
+		]]>
+	   </Input>
+	   <Output>
+		<![CDATA[
+		   <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+			   <soapenv:Header xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://posizioneinformativa.soggetto.service.bmed.it/StrategiaInvestimento/v1/"></soapenv:Header>		
+			   <soapenv:Body xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://posizioneinformativa.soggetto.service.bmed.it/StrategiaInvestimento/v1">		
+			      <v11:getStrategiePerClienteResponse>		
+			         <v11:results propertyName="listaStrategie">		
+			            <v11:tipoStrategia propertyName="tipoStrategia"></v11:tipoStrategia>		
+			            <v11:codServz propertyName="codServz" ></v11:codServz>		
+			            <v11:contrN propertyName="contrN"> </v11:contrN>		
+			            <v11:prodC propertyName="prodC"> </v11:prodC>		
+			            <v11:flgServzAttiv propertyName="flgServzAttiv" ></v11:flgServzAttiv>		
+			            <v11:contrNPoliz propertyName="contrNPoliz"></v11:contrNPoliz>		
+			         </v11:results>		
+			      </v11:getStrategiePerClienteResponse>		
+			   </soapenv:Body>		
+		   </soapenv:Envelope>
+		]]>
+	   </Output>
+	</Access>
+</DAO-Object>

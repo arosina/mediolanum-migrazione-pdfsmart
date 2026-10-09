@@ -1,0 +1,57 @@
+<table width="100%" height="90%">
+  <tr><td style="display:none;"><%@ include file="../../resources/include/DacColor.html"%></td></tr>
+  <tr>
+    <td align="center" height="100%" width="100%" style="padding: 8;">
+    <%
+   		cols = "cols='tipoDac,idDac,codUtenteIns,uffMittente,dataOraEmissione,uffDestinatario,"+
+   					 "dataOraLavorazione,uffLavorazione,stato,codUtenteLavorazione,"+
+				     "dataOraSpunta,uffSpunta,codUtenteSpunta' ";
+   		dim = "colswidths='2%,12%,*,*,*,*,*,*,*,*,*,*' ";
+    %>
+    <%=template.grid("storiaDocumento",cols+dim+
+    								  "width='100%' height='100%' gridwidth='1400' "+
+    								  "sortable='false' "+
+    								  "cellheight='25' "+
+    								  "selection='none' "+
+    								  "showbottomarea='false' "+
+    								  "title='Buste (Prit/Dac) con cui il documento &egrave; stato smistato. <span style=\"color:red;\">Attenzione: la storia del documento &egrave; aggiornata fino al 28/6/2013</span>' "+
+    								  "onnewcell='onNewCellStoriaDocumento(this);' "+
+    								  "counterwidth='0' "+
+    								  "")%>
+
+	</td>
+  </tr>
+  <tr>
+   <td align="center" id="legenda">
+	   	<table class="text"><tr>
+			<td><%=template.getProperty("tipoDac."+Costanti.TIPO_DAC_STANDARD)%></td><td style="border:solid 1px gray;background-color:<%=template.getProperty("bkTipoDac."+Costanti.TIPO_DAC_STANDARD)%>;width:15;">&nbsp;</td><td width="20"></td>
+			<td><%=template.getProperty("tipoDac."+Costanti.TIPO_DAC_PERCONTORETE)%></td><td style="border:solid 1px gray;background-color:<%=template.getProperty("bkTipoDac."+Costanti.TIPO_DAC_PERCONTORETE)%>;width:15;">&nbsp;</td><td width="20"></td>
+			<td><%=template.getProperty("tipoDac."+Costanti.TIPO_DAC_RACCOMANDATE)%></td><td style="border:solid 1px gray;background-color:<%=template.getProperty("bkTipoDac."+Costanti.TIPO_DAC_RACCOMANDATE)%>;width:15;">&nbsp;</td><td width="20"></td>
+			<td><%=template.getProperty("tipoDac."+Costanti.TIPO_DAC_CARTOLINE)%></td><td style="border:solid 1px gray;background-color:<%=template.getProperty("bkTipoDac."+Costanti.TIPO_DAC_CARTOLINE)%>;width:15;">&nbsp;</td><td width="20"></td>
+			<td><%=template.getProperty("tipoDac."+Costanti.TIPO_DAC_SEDE)%></td><td style="border:solid 1px gray;background-color:<%=template.getProperty("bkTipoDac."+Costanti.TIPO_DAC_SEDE)%>;width:15;">&nbsp;</td>
+	   	</tr></table>
+   </td>
+  </tr>
+  <% if(!documento.getUfficio().equals(Costanti.UFFICIO_RETE)){ %>
+  <tr>
+    <td align="center" height="100">
+    <%
+		cols = "cols='#idDocumento,#datiAssegno_importo,#datiAssegno_codDivisa,"+
+					 "barcode,codProdotto,numeroContratto,codOperazione,stato,ubicazione' ";
+		dim = "colswidths='12%,20%,12%,*,12%,12%' ";
+    %>
+    <%=template.grid("plicoDocumento_documenti",cols+dim+
+    									  	"width='100%' height='100%' "+
+    								  		"sortable='false' "+
+    								  		"selection='none' "+
+    								  		"showbottomarea='false' "+
+    								  		"norowsmsg='Il documento non &egrave; attualmente in un plico' "+
+    								  		"title='Plico attuale del documento' "+
+    								  		"onnewcell='onNewCellPlicoDocumento(this);' "+
+    								  		"counterwidth='0' "+
+    								  		"")%>
+
+	</td>
+  </tr>
+  <% } %>
+</table>

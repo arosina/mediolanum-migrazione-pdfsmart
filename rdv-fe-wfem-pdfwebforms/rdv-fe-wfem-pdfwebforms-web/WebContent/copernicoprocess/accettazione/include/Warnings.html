@@ -1,0 +1,19 @@
+<div class="modal-custom" id="infoModal" tabindex="-1" role="dialog" aria-modal="true">
+	<div class="modal-dialog modal-dialog-centered" >
+		<div class="modal-content">
+			<div class="modal-header">
+			  <h3 id="infoModalTitle" class="align-items-center d-flex flex-grow-1 justify-content-center mb-0 modal-title text-center">Informazioni sulla proposta</h3>
+			</div>
+			
+			<div id="infoModalDescription" class="modal-body">				
+				<% for(int i=0;i<model.getCommandWarnings().size();i++){ %>										
+					<p class="modal-paragraph">- <%=template.getProperty((CommandWarning)model.getCommandWarnings().get(i))%></p>
+				<% } %>
+			</div>
+			
+			<div class="modal-footer">
+			  <button type="button" role="button" class="btn btn-link modal-btn-close m-auto" onclick="doContinua();">Ho capito</button>
+			</div>
+		</div>
+	</div>
+</div>

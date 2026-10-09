@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="PdfBasketSemplt" connectionCacheReference="DBAZ_SOGG">
+
+<Access name="loadDispoBasket" type="DAOQueryAccess" queryType="0"
+	OutputCommandDataModel="prgm.pdfwebforms.model.PdfDataModel">
+	<Query>
+		select 	disp.cod_carl
+		,		disp.cod_bozza_disp_carl
+		,		disp.cod_pdf_instance
+		,		(select val_attrib from sogg_posizdisp.dett_appog_bozza_disp_carl_semplt idRacc where idRacc.cod_chiav_attrib='COD_RCMND' and idRacc.cod_bozza_disp_carl=disp.cod_bozza_disp_carl)
+		,		carl.cod_modal_ricz_docum
+		from 	sogg_posizdisp.dett_bozza_disp_carl_semplt disp 
+        	inner join sogg_posizdisp.anag_carl_semplt carl on carl.cod_carl=disp.cod_carl
+		where 	disp.cod_carl = ?
+		and		disp.gstd_f_esist = 'S'
+		and		carl.gstd_f_esist = 'S'
+		order by disp.prg_ordmto_disp
+	</Query>     
+	<Input>
+		<Parameter propertyName="idCarrello"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="idCarrello"/>
+		<Parameter propertyName="idDispCarrello"/>
+		<Parameter propertyName="pdfInstanceId"/>
+		<Parameter propertyName="idRaccomandazioneIdd"/>
+		<Parameter propertyName="priipsTipoSupportoMaterialeContrattuale"/>
+	</Output>
+</Access>
+
+<Access name="loadModuliDispoBasket" type="DAOQueryAccess" queryType="0"
+		OutputCommandDataModel="prgm.pdfwebforms.model.PdfDataModel">
+	<Query>
+		select 	prg_docum_disp_carl,
+				cod_mod_pdf_publisher
+		from 	sogg_posizdisp.dett_docum_bozza_disp_carl_semplt
+		where 	cod_bozza_disp_carl = ?
+		and		gstd_f_esist = 'S'
+		order by prg_ordmto_docum
+	</Query>     
+	<Input>
+		<Parameter propertyName="idDispCarrello"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="idDispModuloCarrello"/>
+		<Parameter propertyName="pdfCode"/>
+	</Output>
+</Access>
+
+<Access name="loadCampiModuloDispoBasket" type="DAOQueryAccess" queryType="0"
+	OutputCommandDataModel="prgm.pdfwebforms.carrello.CampoDispositivaCarrelloModel">
+	<Query>
+		select 	den_campo_docum
+		,		val_campo_docum
+		from 	sogg_posizdisp.dett_campo_docum_bozza_disp_carl_semplt
+		where 	cod_bozza_disp_carl = ?
+		and		prg_docum_disp_carl = ?
+		and		gstd_f_esist = 'S'
+	</Query>     
+	<Input>
+		<Parameter propertyName="idDispCarrello"/>
+		<Parameter propertyName="idDispModuloCarrello"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="fieldName"/>
+		<Parameter propertyName="fieldValue"/>
+	</Output>
+</Access>
+
+<Access name="leggiStatoPdf" type="DAOTableAccess" tableName="PDF_INSTANCE" connectionCacheReference="CEPE">
+	<Bindings>
+		<Parameter propertyName="pdfInstanceId" 	dbColumnName="PDF_INSTANCE_ID"	primaryKey="true"/>
+		<Parameter propertyName="pdfStatus" 		dbColumnName="STATO"/>
+	</Bindings>
+</Access>
+
+</DAO-Object>

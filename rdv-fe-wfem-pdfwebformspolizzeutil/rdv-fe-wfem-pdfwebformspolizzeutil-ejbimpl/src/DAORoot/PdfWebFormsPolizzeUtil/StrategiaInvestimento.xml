@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="StrategiaInvestimento">
+	<Access name="infoCompletamento" type="DAOOSBAccess"
+		serviceName="Enterprise_service/soggetto/posizioneinformativa/StrategiaInvestimento/v1/inbound/PS_WS_StrategiaInvestimentoService_v1.0"
+		operationName="infoCompletamento" markNillable="true" keepAttrs="true"
+		dataFormatter="prgm.pdfwebformsutil.drivers.dao.XmlFormatter">
+		<Input>
+		<![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://posizioneinformativa.soggetto.service.bmed.it/StrategiaInvestimento/v1">
+   <soapenv:Header>
+      
+   </soapenv:Header>
+   <soapenv:Body>
+      <v11:infoCompletamento>
+         <v11:metadata>
+            <v11:callerDataId>string</v11:callerDataId>
+            <v11:channelCode>string</v11:channelCode>
+            <v11:companyCode>string</v11:companyCode>
+            <v11:statusCode>3</v11:statusCode>
+            <v11:abiCode>string</v11:abiCode>
+            <v11:familiBankerCode>string</v11:familiBankerCode>
+            <v11:familyBanker>false</v11:familyBanker>
+            <v11:inputCommonDataVestion>string</v11:inputCommonDataVestion>
+            <v11:ip>string</v11:ip>
+            <v11:keyHole>true</v11:keyHole>
+            <v11:keylog>string</v11:keylog>
+            <v11:operatorCode>string</v11:operatorCode>
+            <v11:placeCode>string</v11:placeCode>
+            <v11:swift>string</v11:swift>
+            <v11:timeStamp>2013-11-23T15:44:07</v11:timeStamp>
+            <v11:userAgent>string</v11:userAgent>
+            <v11:userId>string</v11:userId>
+            <v11:userIdKeyHole>string</v11:userIdKeyHole>
+            <v11:utenteLoggato>string</v11:utenteLoggato>
+            <v11:versionBs>string</v11:versionBs>
+         </v11:metadata>
+         
+         <v11:input propertyName="infoCompletamentoInput">
+            <v11:codContratto propertyName="codContratto"></v11:codContratto>
+            <v11:codProdotto propertyName="codProdotto"></v11:codProdotto>
+   
+            <v11:codServizio></v11:codServizio>         
+            <v11:tipoServizio></v11:tipoServizio>
+         </v11:input>
+      </v11:infoCompletamento>
+   </soapenv:Body>
+</soapenv:Envelope>]]>
+		</Input>
+		<Output>
+		<![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://posizioneinformativa.soggetto.service.bmed.it/StrategiaInvestimento/v1">
+  
+		   <soapenv:Body>
+		      <v11:infoCompletamentoResponse>
+		        
+		         <v11:strategia >
+		            
+		            <v11:elencoStrategie propertyName="infoCompletamentoResponse">
+		               <v11:codProdotto propertyName="codProdotto"></v11:codProdotto>
+		               <v11:codContratto propertyName="codContratto"></v11:codContratto>
+		               <v11:codServizio propertyName="codServizio"></v11:codServizio>
+		               <v11:contrNPoliz propertyName="contrNPoliz"></v11:contrNPoliz>
+		               <v11:tipoServz propertyName="tipoServz"></v11:tipoServz>
+		               <v11:numRatePiano propertyName="numRatePiano"></v11:numRatePiano>
+		               <v11:numRateVersate propertyName="numRateVersate"></v11:numRateVersate>
+		               <v11:numRateResid propertyName="numRateResid"></v11:numRateResid>
+		               <v11:impoRataPiano propertyName="impoRataPiano"></v11:impoRataPiano>
+		               <v11:impTotPiano propertyName="impTotPiano"></v11:impTotPiano>
+		               <v11:impPianoVersato propertyName="impPianoVersato"></v11:impPianoVersato>
+		               <v11:impPianoResid propertyName="impPianoResid"></v11:impPianoResid>		               
+		               <v11:dettaglio propertyName="dettaglio">
+		                  <v11:codIsin propertyName="codIsin"></v11:codIsin>
+		                  <v11:ruoloFondo propertyName="ruoloFondo"></v11:ruoloFondo>
+		                  <v11:desFondoDettaglio propertyName="desFondoDettaglio"></v11:desFondoDettaglio>
+		                  <v11:impRataConvsProg propertyName="impRataConvsProg"></v11:impRataConvsProg>
+		                  <v11:progrMifid propertyName="progrMifid"></v11:progrMifid>
+		                  <v11:codNaturaFondo propertyName="codNaturaFondo"></v11:codNaturaFondo>
+		                  <v11:prcRipart propertyName="prcRipart"></v11:prcRipart>
+                  		  <v11:impPianoResid propertyName="impPianoResid"></v11:impPianoResid>
+		               </v11:dettaglio>
+		            </v11:elencoStrategie>
+		         </v11:strategia>
+		      </v11:infoCompletamentoResponse>
+		   </soapenv:Body>
+		</soapenv:Envelope>]]>
+		</Output>
+	</Access>
+</DAO-Object>

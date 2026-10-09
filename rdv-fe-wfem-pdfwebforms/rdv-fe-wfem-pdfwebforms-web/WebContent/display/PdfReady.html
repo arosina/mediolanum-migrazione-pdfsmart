@@ -1,0 +1,13 @@
+<script>
+var jsScrollYValue = <%=model.getScrollYValue().intValue()%>;
+var jsScrollXValue = <%=model.getScrollXValue().intValue()%>;
+var jsIsVenditaComeBmed = <%=model.isVenditaComeBmed()%>;
+</script>
+
+<link rel='stylesheet' type='text/css' href='<%=template.getWebApp()%>/style/Fonts.css'/>
+<link rel='stylesheet' type='text/css' href='<%=template.getWebApp()%>/style/Dialog.css'/>
+
+<script src="<%=template.getWebApp()%>/display/PdfAccessibility.js"></script>
+<script src="<%=template.getWebApp()%>/display/PdfReady.js"></script>
+
+<div id="mydialogoverlay" class="ui-widget-overlay" style="z-index:10000;display:none;"></div>

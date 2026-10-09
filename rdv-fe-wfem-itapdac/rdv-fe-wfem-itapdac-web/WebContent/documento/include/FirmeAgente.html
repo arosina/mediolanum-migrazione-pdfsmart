@@ -1,0 +1,34 @@
+<table width="100%" height="100%">
+  <tr>
+    <td align="center">
+		<table width="80%">
+		  <tr>
+		    <td width="20%" class="label"><b>Family Banker</b></td><td class="value"><b><%=documento.getAgente().getNominativoConCodMediolanum()%></b></td>
+		  </tr>
+	      <% if(!documento.getEsito().isNull()){ %>
+		      <% if(!documento.getEsitoFirmaAgente().isNull()){ %>
+			      <tr>
+			    	  <td colspan="2">
+			    	  	<table width="100%"><tr>
+					    	<td class="label">Esito:</td><td class="value"><%=prgm.ita.p.dac.facade.Esiti.getColoredDescrEsitoFirme(documento.getEsitoFirmaAgente().toString())%></td>
+					    	<td class="label">Eseguito da:</td><td class="value"><%=documento.getCodUtenteEsitoFirmaAgente()%></td>
+					    	<td class="label">Il:</td><td class="value"><%=documento.getDataOraEsitoFirmaAgente()%></td>
+				    	</tr></table>
+			    	  </td>
+			      </tr>
+		      <% }else if(documento.getHasControlloFirmeAgenteAttivo().booleanValue()){ %>
+				  <tr>
+				    <td colspan="2" align="right" class="text" style="color:red;"><b>Firma FB da esitare &#9658;&#9658;</b></td>
+				  </tr>
+		      <% } %>
+	      <% } %>
+		</table>	
+	</td>
+  </tr>
+  <tr><td><hr></td></tr>
+  <tr>
+    <td id="firmeAgenteCont" height="100%">
+	
+	</td>
+  </tr>
+</table>

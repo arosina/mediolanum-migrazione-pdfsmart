@@ -1,0 +1,1320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="Adeguatezza" connectionCacheReference="CEPE">
+
+	<!-- Servizi: GetNuovoQuestionario,GetQuestionario,CalcoloProfilo,GetElencoQuestionari -->
+	<Access name="GetQuestionario" type="DAOQueryAccess"
+		queryType="1"
+		InputCommandDataModel="prgm.cedacri.adeguatezza.model.InputGetQuestionarioModel"
+		OutputCommandDataModel="prgm.cedacri.adeguatezza.internal.TW00TBSKModel">
+		<Query>
+			SELECT *
+			FROM CEPE_TW00TBSK SK1
+			WHERE CEPE_TW00TBSK_N_CODISTI = 88
+			AND   CEPE_TW00TBSK_X_CODAPPL = 'SCHEDCLI'
+			<IfNotNull propertyName="ndgDoss">
+			AND   CEPE_TW00TBSK_X_NDGDOSS = <p>ndgDoss</p>
+			</IfNotNull>
+			<IfNotNull propertyName="ndgTemp">
+			AND   CEPE_TW00TBSK_X_NDGTEMP = <p>ndgTemp</p>
+			</IfNotNull>
+			AND   CEPE_TW00TBSK_N_DATSCHE = (
+			    SELECT MAX(CEPE_TW00TBSK_N_DATSCHE)
+			    FROM CEPE_TW00TBSK SK2
+			    WHERE CEPE_TW00TBSK_N_CODISTI = 88
+			    AND   CEPE_TW00TBSK_X_CODAPPL = 'SCHEDCLI'
+				<IfNotNull propertyName="ndgDoss">
+			    AND   SK2.CEPE_TW00TBSK_X_NDGDOSS = <p>ndgDoss</p>
+				</IfNotNull>
+				<IfNotNull propertyName="ndgTemp">
+			    AND   SK2.CEPE_TW00TBSK_X_NDGTEMP = <p>ndgTemp</p>
+				</IfNotNull>
+	            AND (CEPE_TW00TBSK_X_SEVALID = 'S')
+				AND ((CEPE_TW00TBSK_N_DFINVAL = 0) OR 
+				(CEPE_TW00TBSK_N_DFINVAL > (datepart(year,getdate()) * 10000 + datepart(month,getdate()) * 100 + datepart(day,getdate()) ) ) )
+				)
+            AND (CEPE_TW00TBSK_X_SEVALID = 'S')
+			ORDER BY CEPE_TW00TBSK_N_GIOSCHE DESC,
+			         CEPE_TW00TBSK_N_DATSCHE DESC
+		</Query>
+		<Output>
+			<Parameter propertyName="codisti" dbColumnName="CEPE_TW00TBSK_N_CODISTI" />
+			<Parameter propertyName="codappl" dbColumnName="CEPE_TW00TBSK_X_CODAPPL" />
+			<Parameter propertyName="ndgdoss" dbColumnName="CEPE_TW00TBSK_X_NDGDOSS" />
+			<Parameter propertyName="ndgtemp" dbColumnName="CEPE_TW00TBSK_X_NDGTEMP" />
+			<Parameter propertyName="dfinval" dbColumnName="CEPE_TW00TBSK_N_DFINVAL" />
+			<Parameter propertyName="giosche" dbColumnName="CEPE_TW00TBSK_N_GIOSCHE" />
+			<Parameter propertyName="datsche" dbColumnName="CEPE_TW00TBSK_N_DATSCHE" />
+			<Parameter propertyName="schedal" dbColumnName="CEPE_TW00TBSK_X_SCHEDAL" />
+			<Parameter propertyName="profilo" dbColumnName="CEPE_TW00TBSK_X_PROFILO" />
+			<Parameter propertyName="risclie" dbColumnName="CEPE_TW00TBSK_X_RISCLIE" />
+			<Parameter propertyName="espfina" dbColumnName="CEPE_TW00TBSK_X_ESPFINA" />
+			<Parameter propertyName="obbinve" dbColumnName="CEPE_TW00TBSK_X_OBBINVE" />
+			<Parameter propertyName="obbtemp" dbColumnName="CEPE_TW00TBSK_X_OBBTEMP" />
+			<Parameter propertyName="sitfina" dbColumnName="CEPE_TW00TBSK_X_SITFINA" />
+			<Parameter propertyName="flskcli" dbColumnName="CEPE_TW00TBSK_X_FLSKCLI" />
+			<Parameter propertyName="filoper" dbColumnName="CEPE_TW00TBSK_N_FILOPER" />
+			<Parameter propertyName="canvend" dbColumnName="CEPE_TW00TBSK_X_CANVEND" />
+			<Parameter propertyName="sevalid" dbColumnName="CEPE_TW00TBSK_X_SEVALID" />
+			<Parameter propertyName="release" dbColumnName="CEPE_TW00TBSK_N_RELEASE" />
+			<Parameter propertyName="numsche" dbColumnName="CEPE_TW00TBSK_X_NUMSCHE" />
+			<Parameter propertyName="cluster" dbColumnName="CEPE_TW00TBSK_X_CLUSTER" />
+			<Parameter propertyName="esigliq" dbColumnName="CEPE_TW00TBSK_X_ESIGLIQ" />
+			<Parameter propertyName="forzobt" dbColumnName="CEPE_TW00TBSK_X_OBBTEMP_FORZ" />
+			<Parameter propertyName="origobt" dbColumnName="CEPE_TW00TBSK_X_OBBTEMP_ORIG" />
+			<Parameter propertyName="origclu" dbColumnName="CEPE_TW00TBSK_X_CLUSTER_ORIG" />			
+		</Output>
+	</Access>
+
+	<!-- Servizi: GetNuovoQuestionario,GetQuestionario,CalcoloProfilo,GetElencoQuestionari -->
+	<Access name="GetQuestionarioRete" type="DAOQueryAccess"
+		queryType="1"
+		InputCommandDataModel="prgm.cedacri.adeguatezza.model.InputGetQuestionarioModel"
+		OutputCommandDataModel="prgm.cedacri.adeguatezza.internal.TW00TBSKModel">
+		<Query>
+			SELECT TOP 1 *
+			FROM CEPE_TW00TBSK SK1
+			WHERE CEPE_TW00TBSK_N_CODISTI = 88
+			AND   CEPE_TW00TBSK_X_CODAPPL = 'SCHEDCLI'
+			<IfNotNull propertyName="ndgDoss">
+			AND   CEPE_TW00TBSK_X_NDGDOSS = <p>ndgDoss</p>
+			</IfNotNull>
+			<IfNotNull propertyName="ndgTemp">
+			AND   CEPE_TW00TBSK_X_NDGTEMP = <p>ndgTemp</p>
+			</IfNotNull>
+			AND   CEPE_TW00TBSK_N_GIOSCHE IN (
+			    SELECT MAX(CEPE_TW00TBSK_N_GIOSCHE)
+			    FROM CEPE_TW00TBSK SK2
+			    WHERE CEPE_TW00TBSK_N_CODISTI = 88
+			    AND   CEPE_TW00TBSK_X_CODAPPL = 'SCHEDCLI'
+				<IfNotNull propertyName="ndgDoss">
+			    AND   SK2.CEPE_TW00TBSK_X_NDGDOSS = <p>ndgDoss</p>
+				</IfNotNull>
+				<IfNotNull propertyName="ndgTemp">
+			    AND   SK2.CEPE_TW00TBSK_X_NDGTEMP = <p>ndgTemp</p>
+				</IfNotNull>
+				AND ((CEPE_TW00TBSK_N_DFINVAL = 0) OR
+				     (CEPE_TW00TBSK_N_DFINVAL > (datepart(year,getdate()) * 10000 + datepart(month,getdate()) * 100 + datepart(day,getdate()) ) ) )
+				)
+			ORDER BY CEPE_TW00TBSK_N_GIOSCHE DESC,
+				     CEPE_TW00TBSK_N_DATSCHE DESC
+		</Query>
+		<Output>
+			<Parameter propertyName="codisti" dbColumnName="CEPE_TW00TBSK_N_CODISTI" />
+			<Parameter propertyName="codappl" dbColumnName="CEPE_TW00TBSK_X_CODAPPL" />
+			<Parameter propertyName="ndgdoss" dbColumnName="CEPE_TW00TBSK_X_NDGDOSS" />
+			<Parameter propertyName="ndgtemp" dbColumnName="CEPE_TW00TBSK_X_NDGTEMP" />
+			<Parameter propertyName="dfinval" dbColumnName="CEPE_TW00TBSK_N_DFINVAL" />
+			<Parameter propertyName="giosche" dbColumnName="CEPE_TW00TBSK_N_GIOSCHE" />
+			<Parameter propertyName="datsche" dbColumnName="CEPE_TW00TBSK_N_DATSCHE" />
+			<Parameter propertyName="schedal" dbColumnName="CEPE_TW00TBSK_X_SCHEDAL" />
+			<Parameter propertyName="profilo" dbColumnName="CEPE_TW00TBSK_X_PROFILO" />
+			<Parameter propertyName="risclie" dbColumnName="CEPE_TW00TBSK_X_RISCLIE" />
+			<Parameter propertyName="espfina" dbColumnName="CEPE_TW00TBSK_X_ESPFINA" />
+			<Parameter propertyName="obbinve" dbColumnName="CEPE_TW00TBSK_X_OBBINVE" />
+			<Parameter propertyName="obbtemp" dbColumnName="CEPE_TW00TBSK_X_OBBTEMP" />
+			<Parameter propertyName="sitfina" dbColumnName="CEPE_TW00TBSK_X_SITFINA" />
+			<Parameter propertyName="flskcli" dbColumnName="CEPE_TW00TBSK_X_FLSKCLI" />
+			<Parameter propertyName="filoper" dbColumnName="CEPE_TW00TBSK_N_FILOPER" />
+			<Parameter propertyName="canvend" dbColumnName="CEPE_TW00TBSK_X_CANVEND" />
+			<Parameter propertyName="sevalid" dbColumnName="CEPE_TW00TBSK_X_SEVALID" />
+			<Parameter propertyName="release" dbColumnName="CEPE_TW00TBSK_N_RELEASE" />
+			<Parameter propertyName="numsche" dbColumnName="CEPE_TW00TBSK_X_NUMSCHE" />
+			<Parameter propertyName="cluster" dbColumnName="CEPE_TW00TBSK_X_CLUSTER" />
+			<Parameter propertyName="esigliq" dbColumnName="CEPE_TW00TBSK_X_ESIGLIQ" />
+			<Parameter propertyName="forzobt" dbColumnName="CEPE_TW00TBSK_X_OBBTEMP_FORZ" />
+			<Parameter propertyName="origobt" dbColumnName="CEPE_TW00TBSK_X_OBBTEMP_ORIG" />
+			<Parameter propertyName="origclu" dbColumnName="CEPE_TW00TBSK_X_CLUSTER_ORIG" />	
+		</Output>
+	</Access>
+
+	<!-- Servizi: GetQuestionario, SalvaQuestionario -->
+	<Access name="GetQuestionarioUserKey" type="DAOQueryAccess"
+		queryType="1"
+		InputCommandDataModel="prgm.cedacri.adeguatezza.internal.UserKeyModel"
+		OutputCommandDataModel="prgm.cedacri.adeguatezza.internal.TW00TBSKModel">
+		<Query>
+			SELECT *
+			FROM CEPE_TW00TBSK SK1
+			WHERE CEPE_TW00TBSK_N_CODISTI = 88
+			AND   CEPE_TW00TBSK_X_CODAPPL = 'SCHEDCLI'
+			<IfNotNull propertyName="ndgDoss">
+			AND   CEPE_TW00TBSK_X_NDGDOSS = <p>ndgDoss</p>
+			</IfNotNull>
+			<IfNotNull propertyName="ndgTemp">
+			AND   CEPE_TW00TBSK_X_NDGTEMP = <p>ndgTemp</p>
+			</IfNotNull>
+			AND CEPE_TW00TBSK_N_DATSCHE = <p>userKey</p>
+		</Query>
+		<Output>
+			<Parameter propertyName="codisti" dbColumnName="CEPE_TW00TBSK_N_CODISTI" />
+			<Parameter propertyName="codappl" dbColumnName="CEPE_TW00TBSK_X_CODAPPL" />
+			<Parameter propertyName="ndgdoss" dbColumnName="CEPE_TW00TBSK_X_NDGDOSS" />
+			<Parameter propertyName="ndgtemp" dbColumnName="CEPE_TW00TBSK_X_NDGTEMP" />
+			<Parameter propertyName="dfinval" dbColumnName="CEPE_TW00TBSK_N_DFINVAL" />
+			<Parameter propertyName="giosche" dbColumnName="CEPE_TW00TBSK_N_GIOSCHE" />
+			<Parameter propertyName="datsche" dbColumnName="CEPE_TW00TBSK_N_DATSCHE" />
+			<Parameter propertyName="schedal" dbColumnName="CEPE_TW00TBSK_X_SCHEDAL" />
+			<Parameter propertyName="profilo" dbColumnName="CEPE_TW00TBSK_X_PROFILO" />
+			<Parameter propertyName="risclie" dbColumnName="CEPE_TW00TBSK_X_RISCLIE" />
+			<Parameter propertyName="espfina" dbColumnName="CEPE_TW00TBSK_X_ESPFINA" />
+			<Parameter propertyName="obbinve" dbColumnName="CEPE_TW00TBSK_X_OBBINVE" />
+			<Parameter propertyName="obbtemp" dbColumnName="CEPE_TW00TBSK_X_OBBTEMP" />
+			<Parameter propertyName="sitfina" dbColumnName="CEPE_TW00TBSK_X_SITFINA" />
+			<Parameter propertyName="flskcli" dbColumnName="CEPE_TW00TBSK_X_FLSKCLI" />
+			<Parameter propertyName="filoper" dbColumnName="CEPE_TW00TBSK_N_FILOPER" />
+			<Parameter propertyName="canvend" dbColumnName="CEPE_TW00TBSK_X_CANVEND" />
+			<Parameter propertyName="sevalid" dbColumnName="CEPE_TW00TBSK_X_SEVALID" />
+			<Parameter propertyName="release" dbColumnName="CEPE_TW00TBSK_N_RELEASE" />
+			<Parameter propertyName="numsche" dbColumnName="CEPE_TW00TBSK_X_NUMSCHE" />
+			<Parameter propertyName="cluster" dbColumnName="CEPE_TW00TBSK_X_CLUSTER" />
+			<Parameter propertyName="esigliq" dbColumnName="CEPE_TW00TBSK_X_ESIGLIQ" />
+			<Parameter propertyName="forzobt" dbColumnName="CEPE_TW00TBSK_X_OBBTEMP_FORZ" />
+			<Parameter propertyName="origobt" dbColumnName="CEPE_TW00TBSK_X_OBBTEMP_ORIG" />
+			<Parameter propertyName="origclu" dbColumnName="CEPE_TW00TBSK_X_CLUSTER_ORIG" />	
+		</Output>
+	</Access>
+
+	<!-- Servizi: GetNuovoQuestionario,GetQuestionario -->
+	<Access name="GetQuestionarioRisposte" type="DAOQueryAccess"
+		queryType="1"
+		InputCommandDataModel="prgm.cedacri.adeguatezza.internal.TW00TBSKModel"
+		OutputCommandDataModel="prgm.cedacri.adeguatezza.internal.RisposteCompilateModel">
+		<Query>
+			SELECT * FROM
+			(
+				SELECT 0 NUMDOMA,CEPE_TW00TBQK_X_SELRISP RISP
+				FROM CEPE_TW00TBQK QK1
+				WHERE CEPE_TW00TBQK_N_CODISTI = 88
+				AND   CEPE_TW00TBQK_X_CODAPPL = 'SCHEDCLI'
+				<IfNotNull propertyName="ndgdoss">
+				AND   CEPE_TW00TBQK_X_NDGDOSS = <p>ndgdoss</p>
+				</IfNotNull>
+				<IfNotNull propertyName="ndgtemp">
+				AND   CEPE_TW00TBQK_X_NDGTEMP = <p>ndgtemp</p>
+				</IfNotNull>
+				AND   CEPE_TW00TBQK_N_DATSCHE = <p>datsche</p>
+				AND CEPE_TW00TBQK_N_RELEASE = <p>release</p>
+				AND NOT (ISNULL(LTRIM(RTRIM(CEPE_TW00TBQK_X_SELRISP)),'') = '')
+				UNION ALL
+				SELECT CEPE_TW00TBQM_N_NUMDOMA NUMDOMA,CEPE_TW00TBQM_X_SELMULT RISP
+				FROM CEPE_TW00TBQM INNER JOIN CEPE_TW00TBQK QK1
+				ON  CEPE_TW00TBQK_N_CODISTI = CEPE_TW00TBQM_N_CODISTI
+				AND CEPE_TW00TBQK_X_NDGDOSS = CEPE_TW00TBQM_X_NDGDOSS
+				AND CEPE_TW00TBQK_X_NDGTEMP = CEPE_TW00TBQM_X_NDGTEMP
+				AND CEPE_TW00TBQK_N_DATSCHE = CEPE_TW00TBQM_N_DATSCHE
+				WHERE CEPE_TW00TBQK_N_CODISTI = 88
+				AND   CEPE_TW00TBQK_X_CODAPPL = 'SCHEDCLI'
+				<IfNotNull propertyName="ndgdoss">
+				AND   CEPE_TW00TBQK_X_NDGDOSS = <p>ndgdoss</p>
+				</IfNotNull>
+				<IfNotNull propertyName="ndgtemp">
+				AND   CEPE_TW00TBQK_X_NDGTEMP = <p>ndgtemp</p>
+				</IfNotNull>
+				AND   CEPE_TW00TBQK_N_DATSCHE = <p>datsche</p>
+				AND CEPE_TW00TBQK_N_RELEASE = <p>release</p>
+				AND NOT (ISNULL(LTRIM(RTRIM(CEPE_TW00TBQK_X_SELRISP)),'') = '')
+			) TABELLA
+			ORDER BY NUMDOMA DESC
+		</Query>
+		<Output>
+			<Parameter propertyName="numDoma" dbColumnName="NUMDOMA"/>
+			<Parameter propertyName="selRisp" dbColumnName="SELRISP"/>
+		</Output>
+	</Access>
+
+	<!-- Servizi: Non Usato -->
+	<Access name="GetQuestionarioRisposteUserKey" type="DAOQueryAccess"
+		queryType="1"
+		InputCommandDataModel="prgm.cedacri.adeguatezza.internal.TW00TBSKModel"
+		OutputCommandDataModel="prgm.cedacri.adeguatezza.internal.RisposteCompilateModel">
+		<Query>
+			SELECT * FROM
+			(
+				SELECT 0 NUMDOMA,CEPE_TW00TBQK_X_SELRISP RISP
+				FROM CEPE_TW00TBQK QK1
+				WHERE CEPE_TW00TBQK_N_CODISTI = 88
+				AND   CEPE_TW00TBQK_X_CODAPPL = 'SCHEDCLI'
+				<IfNotNull propertyName="ndgDoss">
+				AND   CEPE_TW00TBQK_X_NDGDOSS = <p>ndgDoss</p>
+				</IfNotNull>
+				<IfNotNull propertyName="ndgTemp">
+				AND   CEPE_TW00TBQK_X_NDGTEMP = <p>ndgTemp</p>
+				</IfNotNull>
+				AND CEPE_TW00TBQK_N_DATSCHE = <p>userKey</p>
+				AND CEPE_TW00TBQK_N_RELEASE = (
+				    SELECT MAX(CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE)
+				    FROM CEPE_TW00TBQD
+				    WHERE CEPE_TW00TBQD.CEPE_TW00TBQD_N_CODISTI = 88
+				    AND CEPE_TW00TBQD.CEPE_TW00TBQD_X_CODAPPL = 'SCHEDCLI'
+				)
+				AND NOT (ISNULL(LTRIM(RTRIM(CEPE_TW00TBQK_X_SELRISP)),'') = '')
+				AND NOT (ISNULL(LTRIM(RTRIM(CEPE_TW00TBQK_X_SEVALID)),'') = 'R')
+				UNION ALL
+				SELECT CEPE_TW00TBQM_N_NUMDOMA NUMDOMA,CEPE_TW00TBQM_X_SELMULT RISP
+				FROM CEPE_TW00TBQM INNER JOIN CEPE_TW00TBQK QK1
+				ON  CEPE_TW00TBQK_N_CODISTI = CEPE_TW00TBQM_N_CODISTI
+				AND CEPE_TW00TBQK_X_NDGDOSS = CEPE_TW00TBQM_X_NDGDOSS
+				AND CEPE_TW00TBQK_X_NDGTEMP = CEPE_TW00TBQM_X_NDGTEMP
+				AND CEPE_TW00TBQK_N_DFINVAL = CEPE_TW00TBQM_N_DFINVAL
+				AND CEPE_TW00TBQK_N_DATSCHE = CEPE_TW00TBQM_N_DATSCHE
+				WHERE CEPE_TW00TBQK_N_CODISTI = 88
+				AND   CEPE_TW00TBQK_X_CODAPPL = 'SCHEDCLI'
+				<IfNotNull propertyName="ndgDoss">
+				AND   CEPE_TW00TBQK_X_NDGDOSS = <p>ndgDoss</p>
+				</IfNotNull>
+				<IfNotNull propertyName="ndgTemp">
+				AND   CEPE_TW00TBQK_X_NDGTEMP = <p>ndgTemp</p>
+				</IfNotNull>
+				AND CEPE_TW00TBQK_N_DATSCHE = <p>userKey</p>
+				AND CEPE_TW00TBQK_N_RELEASE = (
+				    SELECT MAX(CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE)
+				    FROM CEPE_TW00TBQD
+				    WHERE CEPE_TW00TBQD.CEPE_TW00TBQD_N_CODISTI = 88
+				    AND CEPE_TW00TBQD.CEPE_TW00TBQD_X_CODAPPL = 'SCHEDCLI'
+				)
+				AND NOT (ISNULL(LTRIM(RTRIM(CEPE_TW00TBQK_X_SELRISP)),'') = '')
+				AND NOT (ISNULL(LTRIM(RTRIM(CEPE_TW00TBQK_X_SEVALID)),'') = 'R')
+			) TABELLA
+			ORDER BY NUMDOMA DESC
+		</Query>
+		<Output>
+			<Parameter propertyName="numDoma" dbColumnName="NUMDOMA"/>
+			<Parameter propertyName="selRisp" dbColumnName="SELRISP"/>
+		</Output>
+	</Access>
+
+	<!-- Servizi: Cache -->
+	<Access name="ElencoDomande" type="DAOQueryAccess"
+		queryType="1"
+		OutputCommandDataModel="prgm.cedacri.adeguatezza.model.ElementoQuestionarioModel">
+		<Query>
+			SELECT TIPELEM,NUMELEM,TESTELE,NUMSELE,'N' SELSELE FROM 
+			(
+				SELECT CEPE_TW00TBQC.CEPE_TW00TBQC_X_TIPFINC TIPELEM,
+				CEPE_TW00TBQC.CEPE_TW00TBQC_N_NUMDOMA NUMELEM,
+				CEPE_TW00TBQC.CEPE_TW00TBQC_X_TESTRIG TESTELE,
+				CEPE_TW00TBQC.CEPE_TW00TBQC_N_NUMEROP NUMSELE,
+				CEPE_TW00TBQC.CEPE_TW00TBQC_N_RELEASE VERSIONE
+				FROM CEPE_TW00TBQC
+				WHERE CEPE_TW00TBQC.CEPE_TW00TBQC_N_CODISTI = 88	
+				AND CEPE_TW00TBQC.CEPE_TW00TBQC_X_CODAPPL = 'SCHEDCLI'
+				UNION ALL
+				SELECT CASE WHEN CEPE_TW00TBQD.CEPE_TW00TBQD_X_RISMULT = 'S' THEN 'M' WHEN CEPE_TW00TBQD.CEPE_TW00TBQD_X_RISMULT = 'I' THEN 'I' ELSE 'D' END TIPELEM, 
+				CEPE_TW00TBQD.CEPE_TW00TBQD_N_NUMDOMA NUMELEM, 
+				CEPE_TW00TBQD.CEPE_TW00TBQD_X_TESTDOM TESTELE, 000 NUMSELE, 
+				CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE VERSIONE 
+				FROM CEPE_TW00TBQD 
+				WHERE CEPE_TW00TBQD.CEPE_TW00TBQD_N_CODISTI = 88 
+				AND CEPE_TW00TBQD.CEPE_TW00TBQD_X_CODAPPL = 'SCHEDCLI'
+				UNION ALL
+				SELECT 'R' TIPELEM, 
+				CEPE_TW00TBQR.CEPE_TW00TBQR_N_NUMDOMA NUMELEM,
+				CEPE_TW00TBQR.CEPE_TW00TBQR_X_TESTDOM TESTELE,
+				CEPE_TW00TBQR.CEPE_TW00TBQR_N_NUMRISP NUMSELE,
+				CEPE_TW00TBQR.CEPE_TW00TBQR_N_RELEASE VERSIONE
+				FROM CEPE_TW00TBQR	
+				WHERE CEPE_TW00TBQR.CEPE_TW00TBQR_N_CODISTI = 88
+				AND CEPE_TW00TBQR.CEPE_TW00TBQR_X_CODAPPL = 'SCHEDCLI'
+			)TAB
+			WHERE VERSIONE = (
+				SELECT MAX(CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE)
+				FROM CEPE_TW00TBQD
+				WHERE CEPE_TW00TBQD.CEPE_TW00TBQD_N_CODISTI = 88
+				AND CEPE_TW00TBQD.CEPE_TW00TBQD_X_CODAPPL = 'SCHEDCLI'
+				AND CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE &lt; 100
+			)
+			ORDER BY NUMELEM,
+			CASE TIPELEM 
+				WHEN 'A' THEN 0 
+				WHEN 'D' THEN 1 
+				WHEN 'M' THEN 1 
+				WHEN 'I' THEN 1
+				WHEN 'B' THEN 2 
+				WHEN 'C' THEN 2 
+				WHEN 'R' THEN 3 
+				WHEN 'P' THEN 4 
+			END,
+			NUMSELE
+		</Query>
+		<Output>
+			<Parameter propertyName="tipElem" dbColumnName="TIPELEM"/>
+			<Parameter propertyName="numElem" dbColumnName="NUMELEM" />
+			<Parameter propertyName="testEle" dbColumnName="TESTELE" />
+			<Parameter propertyName="numSele" dbColumnName="NUMSELE" />
+			<Parameter propertyName="selSele" dbColumnName="SELSELE" />
+		</Output>
+	</Access>  
+
+	<!-- Servizi: Cache -->
+	<Access name="ElencoDomandePG" type="DAOQueryAccess"
+		queryType="1"
+		OutputCommandDataModel="prgm.cedacri.adeguatezza.model.ElementoQuestionarioModel">
+		<Query>
+			SELECT TIPELEM,NUMELEM,TESTELE,NUMSELE,'N' SELSELE FROM 
+			(
+				SELECT CEPE_TW00TBQC.CEPE_TW00TBQC_X_TIPFINC TIPELEM,
+				CEPE_TW00TBQC.CEPE_TW00TBQC_N_NUMDOMA NUMELEM,
+				CEPE_TW00TBQC.CEPE_TW00TBQC_X_TESTRIG TESTELE,
+				CEPE_TW00TBQC.CEPE_TW00TBQC_N_NUMEROP NUMSELE,
+				CEPE_TW00TBQC.CEPE_TW00TBQC_N_RELEASE VERSIONE
+				FROM CEPE_TW00TBQC
+				WHERE CEPE_TW00TBQC.CEPE_TW00TBQC_N_CODISTI = 88	
+				AND CEPE_TW00TBQC.CEPE_TW00TBQC_X_CODAPPL = 'SCHEDCLI'
+				UNION ALL
+				SELECT CASE WHEN CEPE_TW00TBQD.CEPE_TW00TBQD_X_RISMULT = 'S' THEN 'M' WHEN CEPE_TW00TBQD.CEPE_TW00TBQD_X_RISMULT = 'I' THEN 'I' ELSE 'D' END TIPELEM, 
+				CEPE_TW00TBQD.CEPE_TW00TBQD_N_NUMDOMA NUMELEM, 
+				CEPE_TW00TBQD.CEPE_TW00TBQD_X_TESTDOM TESTELE, 000 NUMSELE, 
+				CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE VERSIONE 
+				FROM CEPE_TW00TBQD 
+				WHERE CEPE_TW00TBQD.CEPE_TW00TBQD_N_CODISTI = 88 
+				AND CEPE_TW00TBQD.CEPE_TW00TBQD_X_CODAPPL = 'SCHEDCLI'
+				UNION ALL
+				SELECT 'R' TIPELEM, 
+				CEPE_TW00TBQR.CEPE_TW00TBQR_N_NUMDOMA NUMELEM,
+				CEPE_TW00TBQR.CEPE_TW00TBQR_X_TESTDOM TESTELE,
+				CEPE_TW00TBQR.CEPE_TW00TBQR_N_NUMRISP NUMSELE,
+				CEPE_TW00TBQR.CEPE_TW00TBQR_N_RELEASE VERSIONE
+				FROM CEPE_TW00TBQR	
+				WHERE CEPE_TW00TBQR.CEPE_TW00TBQR_N_CODISTI = 88
+				AND CEPE_TW00TBQR.CEPE_TW00TBQR_X_CODAPPL = 'SCHEDCLI'
+			)TAB
+			WHERE VERSIONE = (
+				SELECT MAX(CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE)
+				FROM CEPE_TW00TBQD
+				WHERE CEPE_TW00TBQD.CEPE_TW00TBQD_N_CODISTI = 88
+				AND CEPE_TW00TBQD.CEPE_TW00TBQD_X_CODAPPL = 'SCHEDCLI'
+				AND CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE &gt; 100				
+			)
+			ORDER BY NUMELEM,
+			CASE TIPELEM 
+				WHEN 'A' THEN 0 
+				WHEN 'D' THEN 1 
+				WHEN 'M' THEN 1 
+				WHEN 'I' THEN 1
+				WHEN 'B' THEN 2 
+				WHEN 'C' THEN 2 
+				WHEN 'R' THEN 3 
+				WHEN 'P' THEN 4 
+			END,
+			NUMSELE
+		</Query>
+		<Output>
+			<Parameter propertyName="tipElem" dbColumnName="TIPELEM"/>
+			<Parameter propertyName="numElem" dbColumnName="NUMELEM" />
+			<Parameter propertyName="testEle" dbColumnName="TESTELE" />
+			<Parameter propertyName="numSele" dbColumnName="NUMSELE" />
+			<Parameter propertyName="selSele" dbColumnName="SELSELE" />
+		</Output>
+	</Access>  
+
+	<!-- Servizi: Non Usato -->
+	<Access name="SeQuestionarioCompilato" type="DAOQueryAccess"
+		queryType="1"
+		InputCommandDataModel="prgm.cedacri.adeguatezza.model.InputGetElencoQuestionariModel"
+		OutputCommandDataModel="prgm.cedacri.adeguatezza.model.OutputGetElencoQuestionariModel">
+		<Query>
+			SELECT 'S' SECOMPI
+			FROM CEPE_TW00TBQK QK1 INNER JOIN CEPE_TW00TBSK
+			ON  CEPE_TW00TBQK_N_CODISTI = CEPE_TW00TBSK_N_CODISTI
+			AND CEPE_TW00TBQK_X_NDGDOSS = CEPE_TW00TBSK_X_NDGDOSS
+			AND CEPE_TW00TBQK_X_NDGTEMP = CEPE_TW00TBSK_X_NDGTEMP
+			AND CEPE_TW00TBQK_N_DFINVAL = CEPE_TW00TBSK_N_DFINVAL
+			AND CEPE_TW00TBQK_N_DATSCHE = CEPE_TW00TBSK_N_DATSCHE
+			WHERE CEPE_TW00TBQK_N_CODISTI = 88
+			AND   CEPE_TW00TBQK_X_CODAPPL = 'SCHEDCLI'
+			<IfNotNull propertyName="ndgDoss">
+			AND   CEPE_TW00TBQK_X_NDGDOSS = <p>ndgDoss</p>
+			</IfNotNull>
+			<IfNotNull propertyName="ndgTemp">
+			AND   CEPE_TW00TBQK_X_NDGTEMP = <p>ndgTemp</p>
+			</IfNotNull>
+			AND   CEPE_TW00TBQK_N_DATSCHE IN (
+			    SELECT MAX(CEPE_TW00TBQK_N_DATSCHE)
+			    FROM CEPE_TW00TBQK QK2
+			    WHERE CEPE_TW00TBQK_N_CODISTI = 88
+			    AND   CEPE_TW00TBQK_X_CODAPPL = 'SCHEDCLI'
+			    <IfNotNull propertyName="ndgDoss">
+			    AND   QK2.CEPE_TW00TBQK_X_NDGDOSS = <p>ndgDoss</p>
+			    </IfNotNull>
+			    <IfNotNull propertyName="ndgTemp">
+			    AND   QK2.CEPE_TW00TBQK_X_NDGTEMP = <p>ndgTemp</p>
+			    </IfNotNull>
+			    AND   QK1.CEPE_TW00TBQK_N_CODISTI = QK2.CEPE_TW00TBQK_N_CODISTI
+			    AND   QK1.CEPE_TW00TBQK_X_CODAPPL = QK2.CEPE_TW00TBQK_X_CODAPPL
+			    AND   QK1.CEPE_TW00TBQK_N_DFINVAL = QK2.CEPE_TW00TBQK_N_DFINVAL
+			    AND   QK1.CEPE_TW00TBQK_X_NDGDOSS = QK2.CEPE_TW00TBQK_X_NDGDOSS
+			    AND   QK1.CEPE_TW00TBQK_X_NDGTEMP = QK2.CEPE_TW00TBQK_X_NDGTEMP
+			)
+			AND CEPE_TW00TBQK_N_RELEASE = (
+                SELECT MAX(CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE)
+                FROM CEPE_TW00TBQD
+                WHERE CEPE_TW00TBQD.CEPE_TW00TBQD_N_CODISTI = 88
+                AND CEPE_TW00TBQD.CEPE_TW00TBQD_X_CODAPPL = 'SCHEDCLI'
+            )
+            AND NOT (ISNULL(LTRIM(RTRIM(CEPE_TW00TBQK_X_SELRISP)),'') = '')
+            AND NOT (ISNULL(LTRIM(RTRIM(CEPE_TW00TBQK_X_SEVALID)),'') = 'R')
+		</Query>
+		<Output>
+			<Parameter propertyName="seCompi" dbColumnName="SECOMPI"/>
+		</Output>
+	</Access>
+
+	<!-- Servizi: GetElencoQuestionari -->
+	<Access name="ElencoStorico" type="DAOQueryAccess"
+		queryType="1"
+		InputCommandDataModel="prgm.cedacri.adeguatezza.model.InputGetElencoQuestionariModel"
+		OutputCommandDataModel="prgm.cedacri.adeguatezza.model.ElementoStoricoModel">
+		<Query>
+			SELECT CEPE_TW00TBSK_X_PROFILO PROFILO, 
+			CEPE_TW00TBSK_X_FLSKCLI SEBANCA,
+			RIGHT('0000'+RTRIM(LTRIM(STR(datepart(year,CEPE_TW00TBSK_N_DATSCHE)))),4) +
+			RIGHT('00'+RTRIM(LTRIM(STR(datepart(month,CEPE_TW00TBSK_N_DATSCHE)))),2) +
+			RIGHT('00'+RTRIM(LTRIM(STR(datepart(day,CEPE_TW00TBSK_N_DATSCHE)))),2) DATCOMP,
+			RIGHT('00'+RTRIM(LTRIM(STR(datepart(hour,CEPE_TW00TBSK_N_DATSCHE)))),2) +
+			RIGHT('00'+RTRIM(LTRIM(STR(datepart(minute,CEPE_TW00TBSK_N_DATSCHE)))),2) +
+			RIGHT('00'+RTRIM(LTRIM(STR(datepart(second,CEPE_TW00TBSK_N_DATSCHE)))),2) ORACOMP,
+			CEPE_TW00TBSK_X_CANVEND CANVEND,
+			RIGHT('00000'+LTRIM(RTRIM(STR(CEPE_TW00TBSK_N_FILOPER))),5) FILIALE,
+			RIGHT('0000'+RTRIM(LTRIM(STR(datepart(year,CEPE_TW00TBSK_N_DATSCHE)))),4) +
+			RIGHT('00'+RTRIM(LTRIM(STR(datepart(month,CEPE_TW00TBSK_N_DATSCHE)))),2) +
+			RIGHT('00'+RTRIM(LTRIM(STR(datepart(day,CEPE_TW00TBSK_N_DATSCHE)))),2) +
+			RIGHT('00'+RTRIM(LTRIM(STR(datepart(hour,CEPE_TW00TBSK_N_DATSCHE)))),2) +
+			RIGHT('00'+RTRIM(LTRIM(STR(datepart(minute,CEPE_TW00TBSK_N_DATSCHE)))),2) +
+			RIGHT('00'+RTRIM(LTRIM(STR(datepart(second,CEPE_TW00TBSK_N_DATSCHE)))),2) USERKEY,
+			CEPE_TW00TBSK_N_RELEASE VERSIONE,
+			CEPE_TW00TBSK_X_CLUSTER CLUSTER,
+			CEPE_TW00TBSK_N_DFINVAL DFINVAL,
+			CEPE_TW00TBSK_X_SEVALID SEVALID,
+			CEPE_TW00TBSK_X_ESIGLIQ ESIGLIQ,
+			CEPE_TW00TBSK_X_OBBTEMP_FORZ OBBTEMP_FORZ,
+			CEPE_TW00TBSK_X_OBBTEMP_ORIG OBBTEMP_ORIG,
+			CEPE_TW00TBSK_X_CLUSTER_ORIG CLUSTER_ORIG,
+			CEPE_TW00TBSK_X_ESPFINA,
+			CEPE_TW00TBSK_X_OBBINVE,
+			CEPE_TW00TBSK_X_OBBTEMP,
+			CEPE_TW00TBSK_X_SITFINA
+			FROM CEPE_TW00TBSK	
+			WHERE CEPE_TW00TBSK_N_CODISTI = 88
+			AND CEPE_TW00TBSK_X_CODAPPL = 'SCHEDCLI'
+			<IfNotNull propertyName="ndgDoss">
+			AND CEPE_TW00TBSK_X_NDGDOSS = <p>ndgDoss</p>
+			</IfNotNull>
+			<IfNotNull propertyName="ndgTemp">
+			AND CEPE_TW00TBSK_X_NDGTEMP = <p>ndgTemp</p>
+			</IfNotNull>
+			AND CEPE_TW00TBSK_X_SEVALID = 'S'
+			ORDER BY CEPE_TW00TBSK_N_GIOSCHE DESC,
+			<IfEqual propertyName="canVend" propertyValue="P">
+			CEPE_TW00TBSK_X_CANVEND DESC,
+			</IfEqual>
+			CEPE_TW00TBSK_N_DATSCHE DESC
+		</Query>
+		<Output>
+			<Parameter propertyName="profilo" dbColumnName="PROFILO"/>
+			<Parameter propertyName="seBanca" dbColumnName="SEBANCA" />
+			<Parameter propertyName="datComp" dbColumnName="DATCOMP" />
+			<Parameter propertyName="oraComp" dbColumnName="ORACOMP" />
+			<Parameter propertyName="canVend" dbColumnName="CANVEND" />
+			<Parameter propertyName="filiale" dbColumnName="FILIALE" />
+			<Parameter propertyName="userKey" dbColumnName="USERKEY" />
+			<Parameter propertyName="release" dbColumnName="VERSIONE" />
+			<Parameter propertyName="cluster" dbColumnName="CLUSTER" />			
+			<Parameter propertyName="dfinval" dbColumnName="DFINVAL" />			
+			<Parameter propertyName="seValid" dbColumnName="SEVALID" />
+			<Parameter propertyName="esigliq" dbColumnName="ESIGLIQ" />
+			<Parameter propertyName="forzobt" dbColumnName="OBBTEMP_FORZ" />
+			<Parameter propertyName="origobt" dbColumnName="OBBTEMP_ORIG" />
+			<Parameter propertyName="origclu" dbColumnName="CLUSTER_ORIG" />
+			<Parameter propertyName="espfina" dbColumnName="CEPE_TW00TBSK_X_ESPFINA" />
+			<Parameter propertyName="obbinve" dbColumnName="CEPE_TW00TBSK_X_OBBINVE" />
+			<Parameter propertyName="obbtemp" dbColumnName="CEPE_TW00TBSK_X_OBBTEMP" />
+			<Parameter propertyName="sitfina" dbColumnName="CEPE_TW00TBSK_X_SITFINA" />	
+		</Output>
+	</Access>
+
+	<!-- Servizi: Cache -->
+	<Access name="VerificaElencoRisposte" type="DAOQueryAccess"
+		queryType="1"
+		OutputCommandDataModel="prgm.cedacri.adeguatezza.model.ElementoQuestionarioRisposteModel">
+		<Query>
+		    SELECT CEPE_TW00TBQR_N_NUMDOMA NUMELEM,     
+		    CEPE_TW00TBQR_N_NUMRISP NUMSELE
+		    FROM CEPE_TW00TBQR      
+		    WHERE CEPE_TW00TBQR_N_CODISTI = 88                 
+		    AND CEPE_TW00TBQR_X_CODAPPL = 'SCHEDCLI'     
+		    AND CEPE_TW00TBQR_N_RELEASE = (                  
+		        SELECT MAX(CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE)
+		        FROM CEPE_TW00TBQD                  
+		        WHERE CEPE_TW00TBQD.CEPE_TW00TBQD_N_CODISTI = 88                  
+		        AND CEPE_TW00TBQD.CEPE_TW00TBQD_X_CODAPPL = 'SCHEDCLI'  
+				AND CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE &lt; 100		                    
+		    )    
+			ORDER BY CEPE_TW00TBQR_N_NUMDOMA,CEPE_TW00TBQR_N_NUMRISP
+		</Query>
+		<Output>
+			<Parameter propertyName="numElem" dbColumnName="NUMELEM" />
+			<Parameter propertyName="numSele" dbColumnName="NUMSELE" />
+		</Output>
+	</Access>  
+
+	<!-- Servizi: Cache -->
+	<Access name="VerificaElencoRispostePG" type="DAOQueryAccess"
+		queryType="1"
+		OutputCommandDataModel="prgm.cedacri.adeguatezza.model.ElementoQuestionarioRisposteModel">
+		<Query>
+		    SELECT CEPE_TW00TBQR_N_NUMDOMA NUMELEM,     
+		    CEPE_TW00TBQR_N_NUMRISP NUMSELE
+		    FROM CEPE_TW00TBQR      
+		    WHERE CEPE_TW00TBQR_N_CODISTI = 88                 
+		    AND CEPE_TW00TBQR_X_CODAPPL = 'SCHEDCLI'     
+		    AND CEPE_TW00TBQR_N_RELEASE = (                  
+		        SELECT MAX(CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE)
+		        FROM CEPE_TW00TBQD                  
+		        WHERE CEPE_TW00TBQD.CEPE_TW00TBQD_N_CODISTI = 88                  
+		        AND CEPE_TW00TBQD.CEPE_TW00TBQD_X_CODAPPL = 'SCHEDCLI'  
+				AND CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE &gt; 100		                    
+		    )    
+			ORDER BY CEPE_TW00TBQR_N_NUMDOMA,CEPE_TW00TBQR_N_NUMRISP
+		</Query>
+		<Output>
+			<Parameter propertyName="numElem" dbColumnName="NUMELEM" />
+			<Parameter propertyName="numSele" dbColumnName="NUMSELE" />
+		</Output>
+	</Access>  
+
+	<!-- Servizi: Cache -->
+	<Access name="VerificaElencoDomande" type="DAOQueryAccess"
+		queryType="1"
+		OutputCommandDataModel="prgm.cedacri.adeguatezza.internal.RisposteVerificaModel">
+		<Query>
+			SELECT CEPE_TW00TBQD_N_NUMDOMA NUMDOMA,
+			CASE CEPE_TW00TBQD_X_RISMULT WHEN 'S' THEN 'S' WHEN 'I' THEN 'I' ELSE 'N' END RISMULT,
+			'N' RISPOSTO
+			FROM CEPE_TW00TBQD
+			WHERE CEPE_TW00TBQD_N_CODISTI = 88
+			AND CEPE_TW00TBQD_X_CODAPPL = 'SCHEDCLI'
+			AND CEPE_TW00TBQD_N_RELEASE = (
+				SELECT MAX(CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE)
+				FROM CEPE_TW00TBQD                  
+				WHERE CEPE_TW00TBQD.CEPE_TW00TBQD_N_CODISTI = 88                  
+				AND CEPE_TW00TBQD.CEPE_TW00TBQD_X_CODAPPL = 'SCHEDCLI'
+				AND CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE &lt; 100		                    				             
+			) 
+			ORDER BY CEPE_TW00TBQD_N_NUMDOMA
+		</Query>
+		<Output>
+			<Parameter propertyName="numDoma" dbColumnName="NUMDOMA" />
+			<Parameter propertyName="risMult" dbColumnName="RISMULT" />
+			<Parameter propertyName="risposto" dbColumnName="RISPOSTO" />
+		</Output>
+	</Access>  
+
+	<!-- Servizi: Cache -->
+	<Access name="VerificaElencoDomandePG" type="DAOQueryAccess"
+		queryType="1"
+		OutputCommandDataModel="prgm.cedacri.adeguatezza.internal.RisposteVerificaModel">
+		<Query>
+			SELECT CEPE_TW00TBQD_N_NUMDOMA NUMDOMA,
+			CASE CEPE_TW00TBQD_X_RISMULT WHEN 'S' THEN 'S' WHEN 'I' THEN 'I' ELSE 'N' END RISMULT,
+			'N' RISPOSTO
+			FROM CEPE_TW00TBQD
+			WHERE CEPE_TW00TBQD_N_CODISTI = 88
+			AND CEPE_TW00TBQD_X_CODAPPL = 'SCHEDCLI'
+			AND CEPE_TW00TBQD_N_RELEASE = (
+				SELECT MAX(CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE)
+				FROM CEPE_TW00TBQD                  
+				WHERE CEPE_TW00TBQD.CEPE_TW00TBQD_N_CODISTI = 88                  
+				AND CEPE_TW00TBQD.CEPE_TW00TBQD_X_CODAPPL = 'SCHEDCLI'
+				AND CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE &gt; 100		                    				             
+			) 
+			ORDER BY CEPE_TW00TBQD_N_NUMDOMA
+		</Query>
+		<Output>
+			<Parameter propertyName="numDoma" dbColumnName="NUMDOMA" />
+			<Parameter propertyName="risMult" dbColumnName="RISMULT" />
+			<Parameter propertyName="risposto" dbColumnName="RISPOSTO" />
+		</Output>
+	</Access>  
+	<!-- Servizi: Cache -->
+	<Access name="ElencoPesi" type="DAOQueryAccess"
+		queryType="1"
+		OutputCommandDataModel="prgm.cedacri.adeguatezza.model.ElementoPesiModel">
+		<Query>
+			SELECT CEPE_TW00TBQP_N_NUMDOMA NUMDOMA,
+			CEPE_TW00TBQP_N_NUMRISP NUMRISP,
+			CEPE_TW00TBQP_X_DOMINIO DOMINIO,
+			CEPE_TW00TBQP_N_PESORIS PESORIS
+			FROM CEPE_TW00TBQP
+		    WHERE CEPE_TW00TBQP_N_CODISTI = 88
+		    AND CEPE_TW00TBQP_X_CODAPPL = 'SCHEDCLI'
+			AND CEPE_TW00TBQP_N_RELEASE = (
+			    SELECT MAX(CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE)
+			    FROM CEPE_TW00TBQD
+			    WHERE CEPE_TW00TBQD.CEPE_TW00TBQD_N_CODISTI = 88
+			    AND CEPE_TW00TBQD.CEPE_TW00TBQD_X_CODAPPL = 'SCHEDCLI'
+				AND CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE &lt; 100			    
+			)
+		</Query>
+		<Output>
+			<Parameter propertyName="numDoma" dbColumnName="NUMDOMA"/>
+			<Parameter propertyName="numRisp" dbColumnName="NUMRISP"/>
+			<Parameter propertyName="dominio" dbColumnName="DOMINIO"/>
+			<Parameter propertyName="pesoRis" dbColumnName="PESORIS"/>
+		</Output>
+	</Access>
+
+	<!-- Servizi: Cache -->
+	<Access name="ElencoPesiPG" type="DAOQueryAccess"
+		queryType="1"
+		OutputCommandDataModel="prgm.cedacri.adeguatezza.model.ElementoPesiModel">
+		<Query>
+			SELECT CEPE_TW00TBQP_N_NUMDOMA NUMDOMA,
+			CEPE_TW00TBQP_N_NUMRISP NUMRISP,
+			CEPE_TW00TBQP_X_DOMINIO DOMINIO,
+			CEPE_TW00TBQP_N_PESORIS PESORIS
+			FROM CEPE_TW00TBQP
+		    WHERE CEPE_TW00TBQP_N_CODISTI = 88
+		    AND CEPE_TW00TBQP_X_CODAPPL = 'SCHEDCLI'
+			AND CEPE_TW00TBQP_N_RELEASE = (
+			    SELECT MAX(CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE)
+			    FROM CEPE_TW00TBQD
+			    WHERE CEPE_TW00TBQD.CEPE_TW00TBQD_N_CODISTI = 88
+			    AND CEPE_TW00TBQD.CEPE_TW00TBQD_X_CODAPPL = 'SCHEDCLI'
+				AND CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE &gt; 100			    
+			)
+		</Query>
+		<Output>
+			<Parameter propertyName="numDoma" dbColumnName="NUMDOMA"/>
+			<Parameter propertyName="numRisp" dbColumnName="NUMRISP"/>
+			<Parameter propertyName="dominio" dbColumnName="DOMINIO"/>
+			<Parameter propertyName="pesoRis" dbColumnName="PESORIS"/>
+		</Output>
+	</Access>
+
+	<!-- Servizi: Cache -->
+	<Access name="ElencoPunteggi" type="DAOQueryAccess"
+		queryType="1"
+		OutputCommandDataModel="prgm.cedacri.adeguatezza.model.ElementoPunteggiModel">
+		<Query>
+			SELECT DISTINCT CEPE_TW00TBQP_X_DOMINIO DOMINIO,0 VALDOMI
+			FROM CEPE_TW00TBQP
+		    WHERE CEPE_TW00TBQP_N_CODISTI = 88
+		    AND CEPE_TW00TBQP_X_CODAPPL = 'SCHEDCLI'
+			AND CEPE_TW00TBQP_N_RELEASE = (
+			    SELECT MAX(CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE)
+			    FROM CEPE_TW00TBQD
+			    WHERE CEPE_TW00TBQD.CEPE_TW00TBQD_N_CODISTI = 88
+			    AND CEPE_TW00TBQD.CEPE_TW00TBQD_X_CODAPPL = 'SCHEDCLI'
+				AND CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE &lt; 100			    
+			)
+		</Query>
+		<Output>
+			<Parameter propertyName="dominio" dbColumnName="DOMINIO"/>
+			<Parameter propertyName="valDomi" dbColumnName="VALDOMI"/>
+		</Output>
+	</Access>
+
+	<!-- Servizi: Cache -->
+	<Access name="ElencoPunteggiPG" type="DAOQueryAccess"
+		queryType="1"
+		OutputCommandDataModel="prgm.cedacri.adeguatezza.model.ElementoPunteggiModel">
+		<Query>
+			SELECT DISTINCT CEPE_TW00TBQP_X_DOMINIO DOMINIO,0 VALDOMI
+			FROM CEPE_TW00TBQP
+		    WHERE CEPE_TW00TBQP_N_CODISTI = 88
+		    AND CEPE_TW00TBQP_X_CODAPPL = 'SCHEDCLI'
+			AND CEPE_TW00TBQP_N_RELEASE = (
+			    SELECT MAX(CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE)
+			    FROM CEPE_TW00TBQD
+			    WHERE CEPE_TW00TBQD.CEPE_TW00TBQD_N_CODISTI = 88
+			    AND CEPE_TW00TBQD.CEPE_TW00TBQD_X_CODAPPL = 'SCHEDCLI'
+				AND CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE &gt; 100			    
+			)
+		</Query>
+		<Output>
+			<Parameter propertyName="dominio" dbColumnName="DOMINIO"/>
+			<Parameter propertyName="valDomi" dbColumnName="VALDOMI"/>
+		</Output>
+	</Access>
+
+	<!-- Servizi: Cache -->
+	<Access name="ReleaseCorrente" type="DAOQueryAccess"
+		queryType="1"
+		OutputCommandDataModel="prgm.cedacri.adeguatezza.internal.IntegerModel">
+		<Query>
+        	SELECT MAX(CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE) VERSIONE
+            FROM CEPE_TW00TBQD
+            WHERE CEPE_TW00TBQD.CEPE_TW00TBQD_N_CODISTI = 88
+            AND CEPE_TW00TBQD.CEPE_TW00TBQD_X_CODAPPL = 'SCHEDCLI'
+			AND CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE &lt; 100			                
+		</Query>
+		<Output>
+			<Parameter propertyName="valore" dbColumnName="VERSIONE" />
+		</Output>
+	</Access>  
+
+	<!-- Servizi: Cache -->
+	<Access name="ReleaseCorrentePG" type="DAOQueryAccess"
+		queryType="1"
+		OutputCommandDataModel="prgm.cedacri.adeguatezza.internal.IntegerModel">
+		<Query>
+        	SELECT MAX(CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE) VERSIONE
+            FROM CEPE_TW00TBQD
+            WHERE CEPE_TW00TBQD.CEPE_TW00TBQD_N_CODISTI = 88
+            AND CEPE_TW00TBQD.CEPE_TW00TBQD_X_CODAPPL = 'SCHEDCLI'
+			AND CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE &gt; 100			                
+		</Query>
+		<Output>
+			<Parameter propertyName="valore" dbColumnName="VERSIONE" />
+		</Output>
+	</Access>  
+
+	<!-- Servizi: Cache -->
+	<Access name="DomandeMultiple" type="DAOQueryAccess"
+		queryType="1"
+		OutputCommandDataModel="prgm.cedacri.adeguatezza.model.ElementoQuestionarioRisposteModel">
+		<Query>
+			SELECT NUMELEM,COUNT(*) NUMRISP FROM 
+			(
+				SELECT CEPE_TW00TBQD.CEPE_TW00TBQD_N_NUMDOMA NUMELEM,
+                CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE VERSIONE
+				FROM CEPE_TW00TBQD INNER JOIN CEPE_TW00TBQR
+                ON CEPE_TW00TBQD_N_CODISTI = CEPE_TW00TBQR_N_CODISTI
+                AND CEPE_TW00TBQD_X_CODAPPL = CEPE_TW00TBQR_X_CODAPPL
+                AND CEPE_TW00TBQD_N_RELEASE = CEPE_TW00TBQR_N_RELEASE
+                AND CEPE_TW00TBQD_N_NUMDOMA = CEPE_TW00TBQR_N_NUMDOMA
+				WHERE CEPE_TW00TBQD.CEPE_TW00TBQD_X_RISMULT = 'S'
+                AND CEPE_TW00TBQD.CEPE_TW00TBQD_N_CODISTI = 88
+                AND CEPE_TW00TBQD.CEPE_TW00TBQD_X_CODAPPL = 'SCHEDCLI'
+			)TAB
+            WHERE VERSIONE = (
+                SELECT MAX(CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE)
+                FROM CEPE_TW00TBQD
+                WHERE CEPE_TW00TBQD.CEPE_TW00TBQD_N_CODISTI = 88
+                AND CEPE_TW00TBQD.CEPE_TW00TBQD_X_CODAPPL = 'SCHEDCLI'
+				AND CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE &lt; 100			                                
+            )
+            GROUP BY NUMELEM
+            ORDER BY NUMELEM
+   		</Query>
+		<Output>
+			<Parameter propertyName="numElem" dbColumnName="NUMELEM" />
+			<Parameter propertyName="numSele" dbColumnName="NUMRISP" />
+		</Output>
+	</Access>  
+
+	<!-- Servizi: Cache -->
+	<Access name="DomandeMultiplePG" type="DAOQueryAccess"
+		queryType="1"
+		OutputCommandDataModel="prgm.cedacri.adeguatezza.model.ElementoQuestionarioRisposteModel">
+		<Query>
+			SELECT NUMELEM,COUNT(*) NUMRISP FROM 
+			(
+				SELECT CEPE_TW00TBQD.CEPE_TW00TBQD_N_NUMDOMA NUMELEM,
+                CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE VERSIONE
+				FROM CEPE_TW00TBQD INNER JOIN CEPE_TW00TBQR
+                ON CEPE_TW00TBQD_N_CODISTI = CEPE_TW00TBQR_N_CODISTI
+                AND CEPE_TW00TBQD_X_CODAPPL = CEPE_TW00TBQR_X_CODAPPL
+                AND CEPE_TW00TBQD_N_RELEASE = CEPE_TW00TBQR_N_RELEASE
+                AND CEPE_TW00TBQD_N_NUMDOMA = CEPE_TW00TBQR_N_NUMDOMA
+				WHERE CEPE_TW00TBQD.CEPE_TW00TBQD_X_RISMULT = 'S'
+                AND CEPE_TW00TBQD.CEPE_TW00TBQD_N_CODISTI = 88
+                AND CEPE_TW00TBQD.CEPE_TW00TBQD_X_CODAPPL = 'SCHEDCLI'
+			)TAB
+            WHERE VERSIONE = (
+                SELECT MAX(CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE)
+                FROM CEPE_TW00TBQD
+                WHERE CEPE_TW00TBQD.CEPE_TW00TBQD_N_CODISTI = 88
+                AND CEPE_TW00TBQD.CEPE_TW00TBQD_X_CODAPPL = 'SCHEDCLI'
+				AND CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE &gt; 100			                                
+            )
+            GROUP BY NUMELEM
+            ORDER BY NUMELEM
+   		</Query>
+		<Output>
+			<Parameter propertyName="numElem" dbColumnName="NUMELEM" />
+			<Parameter propertyName="numSele" dbColumnName="NUMRISP" />
+		</Output>
+	</Access>  
+
+<!-- questionario importo -->
+	<!-- Servizi: Cache -->
+	<Access name="DomandeImporto" type="DAOQueryAccess"
+		queryType="1"
+		OutputCommandDataModel="prgm.cedacri.adeguatezza.model.ElementoQuestionarioRisposteModel">
+		<Query>
+			SELECT NUMELEM,COUNT(*) NUMRISP FROM 
+			(
+				SELECT CEPE_TW00TBQD.CEPE_TW00TBQD_N_NUMDOMA NUMELEM,
+                CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE VERSIONE
+				FROM CEPE_TW00TBQD INNER JOIN CEPE_TW00TBQR
+                ON CEPE_TW00TBQD_N_CODISTI = CEPE_TW00TBQR_N_CODISTI
+                AND CEPE_TW00TBQD_X_CODAPPL = CEPE_TW00TBQR_X_CODAPPL
+                AND CEPE_TW00TBQD_N_RELEASE = CEPE_TW00TBQR_N_RELEASE
+                AND CEPE_TW00TBQD_N_NUMDOMA = CEPE_TW00TBQR_N_NUMDOMA
+				WHERE CEPE_TW00TBQD.CEPE_TW00TBQD_X_RISMULT = 'I'
+                AND CEPE_TW00TBQD.CEPE_TW00TBQD_N_CODISTI = 88
+                AND CEPE_TW00TBQD.CEPE_TW00TBQD_X_CODAPPL = 'SCHEDCLI'
+				AND CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE &lt; 100
+			)TAB
+            WHERE VERSIONE = (
+                SELECT MAX(CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE)
+                FROM CEPE_TW00TBQD
+                WHERE CEPE_TW00TBQD.CEPE_TW00TBQD_N_CODISTI = 88
+                AND CEPE_TW00TBQD.CEPE_TW00TBQD_X_CODAPPL = 'SCHEDCLI'
+                AND CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE &lt; 100
+            )
+            GROUP BY NUMELEM
+            ORDER BY NUMELEM
+   		</Query>
+		<Output>
+			<Parameter propertyName="numElem" dbColumnName="NUMELEM" />
+			<Parameter propertyName="numSele" dbColumnName="NUMRISP" />
+		</Output>
+	</Access>  
+
+<!-- questionario importo -->
+	<!-- Servizi: Cache -->
+	<Access name="DomandeImportoPG" type="DAOQueryAccess"
+		queryType="1"
+		OutputCommandDataModel="prgm.cedacri.adeguatezza.model.ElementoQuestionarioRisposteModel">
+		<Query>
+			SELECT NUMELEM,COUNT(*) NUMRISP FROM 
+			(
+				SELECT CEPE_TW00TBQD.CEPE_TW00TBQD_N_NUMDOMA NUMELEM,
+                CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE VERSIONE
+				FROM CEPE_TW00TBQD INNER JOIN CEPE_TW00TBQR
+                ON CEPE_TW00TBQD_N_CODISTI = CEPE_TW00TBQR_N_CODISTI
+                AND CEPE_TW00TBQD_X_CODAPPL = CEPE_TW00TBQR_X_CODAPPL
+                AND CEPE_TW00TBQD_N_RELEASE = CEPE_TW00TBQR_N_RELEASE
+                AND CEPE_TW00TBQD_N_NUMDOMA = CEPE_TW00TBQR_N_NUMDOMA
+				WHERE CEPE_TW00TBQD.CEPE_TW00TBQD_X_RISMULT = 'I'
+                AND CEPE_TW00TBQD.CEPE_TW00TBQD_N_CODISTI = 88
+                AND CEPE_TW00TBQD.CEPE_TW00TBQD_X_CODAPPL = 'SCHEDCLI'
+			)TAB
+            WHERE VERSIONE = (
+                SELECT MAX(CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE)
+                FROM CEPE_TW00TBQD
+                WHERE CEPE_TW00TBQD.CEPE_TW00TBQD_N_CODISTI = 88
+                AND CEPE_TW00TBQD.CEPE_TW00TBQD_X_CODAPPL = 'SCHEDCLI'
+				AND CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE &gt; 100
+            )
+            GROUP BY NUMELEM
+            ORDER BY NUMELEM
+   		</Query>
+		<Output>
+			<Parameter propertyName="numElem" dbColumnName="NUMELEM" />
+			<Parameter propertyName="numSele" dbColumnName="NUMRISP" />
+		</Output>
+	</Access>  
+
+	<!-- Servizi: SalvaQuestionario -->
+	<Access name="InsertQuestionarioQK" type="DAOTableAccess" tableName="CEPE_TW00TBQK">
+		<Bindings>
+			<Parameter propertyName="codisti" dbColumnName="CEPE_TW00TBQK_N_CODISTI" primaryKey="true"/>
+			<Parameter propertyName="ndgdoss" dbColumnName="CEPE_TW00TBQK_X_NDGDOSS" primaryKey="true"/>
+			<Parameter propertyName="ndgtemp" dbColumnName="CEPE_TW00TBQK_X_NDGTEMP" primaryKey="true"/>
+			<Parameter propertyName="codappl" dbColumnName="CEPE_TW00TBQK_X_CODAPPL" primaryKey="true"/>
+			<Parameter propertyName="dfinval" dbColumnName="CEPE_TW00TBQK_N_DFINVAL" />
+			<Parameter propertyName="datsche" dbColumnName="CEPE_TW00TBQK_N_DATSCHE" primaryKey="true"/>
+			<Parameter propertyName="filoper" dbColumnName="CEPE_TW00TBQK_N_FILOPER" />
+			<Parameter propertyName="release" dbColumnName="CEPE_TW00TBQK_N_RELEASE" />
+			<Parameter propertyName="selrisp" dbColumnName="CEPE_TW00TBQK_X_SELRISP" />
+			<Parameter propertyName="canvend" dbColumnName="CEPE_TW00TBQK_X_CANVEND" />
+   		</Bindings>
+	</Access>
+
+	<!-- Servizi: SalvaQuestionario -->
+	<Access name="SalvaQuestionario" type="DAOTableAccess" tableName="CEPE_TW00TBQK">
+		<Bindings>
+			<Parameter propertyName="codisti" dbColumnName="CEPE_TW00TBQK_N_CODISTI" primaryKey="true"/>
+			<Parameter propertyName="ndgdoss" dbColumnName="CEPE_TW00TBQK_X_NDGDOSS" primaryKey="true"/>
+			<Parameter propertyName="ndgtemp" dbColumnName="CEPE_TW00TBQK_X_NDGTEMP" primaryKey="true"/>
+			<Parameter propertyName="codappl" dbColumnName="CEPE_TW00TBQK_X_CODAPPL" primaryKey="true"/>
+			<Parameter propertyName="dfinval" dbColumnName="CEPE_TW00TBQK_N_DFINVAL" />
+			<Parameter propertyName="datsche" dbColumnName="CEPE_TW00TBQK_N_DATSCHE" primaryKey="true"/>
+			<Parameter propertyName="filoper" dbColumnName="CEPE_TW00TBQK_N_FILOPER" />
+			<Parameter propertyName="release" dbColumnName="CEPE_TW00TBQK_N_RELEASE" />
+			<Parameter propertyName="selrisp" dbColumnName="CEPE_TW00TBQK_X_SELRISP" />
+			<Parameter propertyName="canvend" dbColumnName="CEPE_TW00TBQK_X_CANVEND" />
+   		</Bindings>
+	</Access>
+
+	<!-- Servizi: SalvaQuestionario -->
+	<Access name="InsertQuestionarioQM" type="DAOTableAccess" tableName="CEPE_TW00TBQM">
+		<Bindings>
+			<Parameter propertyName="codisti" dbColumnName="CEPE_TW00TBQM_N_CODISTI" primaryKey="true"/>
+			<Parameter propertyName="ndgdoss" dbColumnName="CEPE_TW00TBQM_X_NDGDOSS" primaryKey="true"/>
+			<Parameter propertyName="ndgtemp" dbColumnName="CEPE_TW00TBQM_X_NDGTEMP" primaryKey="true"/>
+			<Parameter propertyName="codappl" dbColumnName="CEPE_TW00TBQM_X_CODAPPL" primaryKey="true"/>
+			<Parameter propertyName="dfinval" dbColumnName="CEPE_TW00TBQM_N_DFINVAL" />
+			<Parameter propertyName="datsche" dbColumnName="CEPE_TW00TBQM_N_DATSCHE" primaryKey="true"/>
+			<Parameter propertyName="numdoma" dbColumnName="CEPE_TW00TBQM_N_NUMDOMA" primaryKey="true"/>
+			<Parameter propertyName="selmult" dbColumnName="CEPE_TW00TBQM_X_SELMULT" />
+   		</Bindings>
+	</Access>
+
+	<!-- Servizi: SalvaQuestionario -->
+	<Access name="InsertQuestionarioSK" type="DAOTableAccess" tableName="CEPE_TW00TBSK">
+		<Bindings>
+			<Parameter propertyName="codisti" dbColumnName="CEPE_TW00TBSK_N_CODISTI" primaryKey="true"/>
+			<Parameter propertyName="codappl" dbColumnName="CEPE_TW00TBSK_X_CODAPPL" primaryKey="true"/>
+			<Parameter propertyName="ndgdoss" dbColumnName="CEPE_TW00TBSK_X_NDGDOSS" primaryKey="true"/>
+			<Parameter propertyName="ndgtemp" dbColumnName="CEPE_TW00TBSK_X_NDGTEMP" primaryKey="true"/>
+			<Parameter propertyName="dfinval" dbColumnName="CEPE_TW00TBSK_N_DFINVAL" />
+			<Parameter propertyName="giosche" dbColumnName="CEPE_TW00TBSK_N_GIOSCHE" />
+			<Parameter propertyName="datsche" dbColumnName="CEPE_TW00TBSK_N_DATSCHE" primaryKey="true"/>
+			<Parameter propertyName="schedal" dbColumnName="CEPE_TW00TBSK_X_SCHEDAL" />
+			<Parameter propertyName="profilo" dbColumnName="CEPE_TW00TBSK_X_PROFILO" />
+			<Parameter propertyName="risclie" dbColumnName="CEPE_TW00TBSK_X_RISCLIE" />
+			<Parameter propertyName="espfina" dbColumnName="CEPE_TW00TBSK_X_ESPFINA" />
+			<Parameter propertyName="obbinve" dbColumnName="CEPE_TW00TBSK_X_OBBINVE" />
+			<Parameter propertyName="obbtemp" dbColumnName="CEPE_TW00TBSK_X_OBBTEMP" />
+			<Parameter propertyName="sitfina" dbColumnName="CEPE_TW00TBSK_X_SITFINA" />
+			<Parameter propertyName="flskcli" dbColumnName="CEPE_TW00TBSK_X_FLSKCLI" />
+			<Parameter propertyName="filoper" dbColumnName="CEPE_TW00TBSK_N_FILOPER" />
+			<Parameter propertyName="canvend" dbColumnName="CEPE_TW00TBSK_X_CANVEND" />
+			<Parameter propertyName="sevalid" dbColumnName="CEPE_TW00TBSK_X_SEVALID" />
+			<Parameter propertyName="release" dbColumnName="CEPE_TW00TBSK_N_RELEASE" />
+			<Parameter propertyName="numsche" dbColumnName="CEPE_TW00TBSK_X_NUMSCHE" />
+			<Parameter propertyName="cluster" dbColumnName="CEPE_TW00TBSK_X_CLUSTER" />	
+			<Parameter propertyName="esigliq" dbColumnName="CEPE_TW00TBSK_X_ESIGLIQ" />
+			<Parameter propertyName="forzobt" dbColumnName="CEPE_TW00TBSK_X_OBBTEMP_FORZ" />
+			<Parameter propertyName="origobt" dbColumnName="CEPE_TW00TBSK_X_OBBTEMP_ORIG" />
+			<Parameter propertyName="origclu" dbColumnName="CEPE_TW00TBSK_X_CLUSTER_ORIG" />					
+   		</Bindings>
+	</Access>
+
+	<!-- Servizi: CancellaQuestionario,SalvaQuestionario -->
+	<Access name="DeleteQuestionarioQK" type="DAOTableAccess" tableName="CEPE_TW00TBQK">
+		<Bindings>
+			<Parameter propertyName="codisti" dbColumnName="CEPE_TW00TBQK_N_CODISTI" primaryKey="true"/>
+			<Parameter propertyName="ndgdoss" dbColumnName="CEPE_TW00TBQK_X_NDGDOSS" primaryKey="true"/>
+			<Parameter propertyName="codappl" dbColumnName="CEPE_TW00TBQK_X_CODAPPL" primaryKey="true"/>
+			<Parameter propertyName="dfinval" dbColumnName="CEPE_TW00TBQK_N_DFINVAL" primaryKey="true"/>
+   		</Bindings>
+	</Access>
+	<!-- Servizi: CancellaQuestionario,SalvaQuestionario -->
+	<Access name="DeleteQuestionarioQKTemp" type="DAOTableAccess" tableName="CEPE_TW00TBQK">
+		<Bindings>
+			<Parameter propertyName="codisti" dbColumnName="CEPE_TW00TBQK_N_CODISTI" primaryKey="true"/>
+			<Parameter propertyName="ndgtemp" dbColumnName="CEPE_TW00TBQK_X_NDGTEMP" primaryKey="true"/>
+			<Parameter propertyName="codappl" dbColumnName="CEPE_TW00TBQK_X_CODAPPL" primaryKey="true"/>
+			<Parameter propertyName="dfinval" dbColumnName="CEPE_TW00TBQK_N_DFINVAL" primaryKey="true"/>
+   		</Bindings>
+	</Access>
+
+	<!-- Servizi: CancellaQuestionario,SalvaQuestionario -->
+	<Access name="DeleteQuestionarioQM" type="DAOTableAccess" tableName="CEPE_TW00TBQM">
+		<Bindings>
+			<Parameter propertyName="codisti" dbColumnName="CEPE_TW00TBQM_N_CODISTI" primaryKey="true"/>
+			<Parameter propertyName="ndgdoss" dbColumnName="CEPE_TW00TBQM_X_NDGDOSS" primaryKey="true"/>
+			<Parameter propertyName="codappl" dbColumnName="CEPE_TW00TBQM_X_CODAPPL" primaryKey="true"/>
+			<Parameter propertyName="dfinval" dbColumnName="CEPE_TW00TBQM_N_DFINVAL" primaryKey="true"/>
+   		</Bindings>
+	</Access>
+	<!-- Servizi: CancellaQuestionario,SalvaQuestionario -->
+	<Access name="DeleteQuestionarioQMTemp" type="DAOTableAccess" tableName="CEPE_TW00TBQM">
+		<Bindings>
+			<Parameter propertyName="codisti" dbColumnName="CEPE_TW00TBQM_N_CODISTI" primaryKey="true"/>
+			<Parameter propertyName="ndgtemp" dbColumnName="CEPE_TW00TBQM_X_NDGTEMP" primaryKey="true"/>
+			<Parameter propertyName="codappl" dbColumnName="CEPE_TW00TBQM_X_CODAPPL" primaryKey="true"/>
+			<Parameter propertyName="dfinval" dbColumnName="CEPE_TW00TBQM_N_DFINVAL" primaryKey="true"/>
+   		</Bindings>
+	</Access>
+
+	<!-- Servizi: CancellaQuestionario,SalvaQuestionario -->
+	<Access name="DeleteQuestionarioSK" type="DAOTableAccess" tableName="CEPE_TW00TBSK">
+		<Bindings>
+			<Parameter propertyName="codisti" dbColumnName="CEPE_TW00TBSK_N_CODISTI" primaryKey="true"/>
+			<Parameter propertyName="ndgdoss" dbColumnName="CEPE_TW00TBSK_X_NDGDOSS" primaryKey="true"/>
+			<Parameter propertyName="codappl" dbColumnName="CEPE_TW00TBSK_X_CODAPPL" primaryKey="true"/>
+			<Parameter propertyName="dfinval" dbColumnName="CEPE_TW00TBSK_N_DFINVAL" primaryKey="true"/>
+   		</Bindings>
+	</Access>
+	<!-- Servizi: CancellaQuestionario,SalvaQuestionario -->
+	<Access name="DeleteQuestionarioSKTemp" type="DAOTableAccess" tableName="CEPE_TW00TBSK">
+		<Bindings>
+			<Parameter propertyName="codisti" dbColumnName="CEPE_TW00TBSK_N_CODISTI" primaryKey="true"/>
+			<Parameter propertyName="ndgtemp" dbColumnName="CEPE_TW00TBSK_X_NDGTEMP" primaryKey="true"/>
+			<Parameter propertyName="codappl" dbColumnName="CEPE_TW00TBSK_X_CODAPPL" primaryKey="true"/>
+			<Parameter propertyName="dfinval" dbColumnName="CEPE_TW00TBSK_N_DFINVAL" primaryKey="true"/>
+   		</Bindings>
+	</Access>
+
+	<!-- Servizi: CalcoloProfilo,SalvaQuestionario -->
+	<Access name="GeneraProfilo" type="DAOQueryAccess"
+		queryType="1"
+		InputCommandDataModel="prgm.cedacri.adeguatezza.model.ElementoPunteggiModel"
+		OutputCommandDataModel="prgm.cedacri.adeguatezza.internal.StringModel">
+		<Query>
+			SELECT CEPE_TW00TBQG_X_RISULTA PROFILO
+			FROM CEPE_TW00TBQG
+			WHERE CEPE_TW00TBQG_N_CODISTI = 88
+			AND CEPE_TW00TBQG_X_CODAPPL = 'SCHEDCLI'
+			AND CEPE_TW00TBQG_N_RELEASE = (
+				SELECT MAX(CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE)
+				FROM CEPE_TW00TBQD
+				WHERE CEPE_TW00TBQD.CEPE_TW00TBQD_N_CODISTI = 88
+				AND CEPE_TW00TBQD.CEPE_TW00TBQD_X_CODAPPL = 'SCHEDCLI'
+				AND CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE &lt; 100
+			)
+			AND CEPE_TW00TBQG_X_DOMINIO = <p>dominio</p>
+			AND CEPE_TW00TBQG_N_VALMAXI = (
+			    SELECT MAX(CEPE_TW00TBQG_N_VALMAXI)
+			    FROM CEPE_TW00TBQG
+			    WHERE CEPE_TW00TBQG_N_CODISTI = 88
+			    AND CEPE_TW00TBQG_X_CODAPPL = 'SCHEDCLI'
+			    AND CEPE_TW00TBQG_N_RELEASE = (
+				    SELECT MAX(CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE)
+				    FROM CEPE_TW00TBQD
+				    WHERE CEPE_TW00TBQD.CEPE_TW00TBQD_N_CODISTI = 88
+				    AND CEPE_TW00TBQD.CEPE_TW00TBQD_X_CODAPPL = 'SCHEDCLI'
+					AND CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE &lt; 100
+			    )
+			    AND CEPE_TW00TBQG_X_DOMINIO = <p>dominio</p>
+			    AND CEPE_TW00TBQG_N_VALMAXI &lt;= <p>valDomi</p>
+			)
+		</Query>
+		<Output>
+			<Parameter propertyName="valore" dbColumnName="PROFILO"/>
+		</Output>
+	</Access>
+
+	<!-- Servizi: CalcoloProfilo,SalvaQuestionario -->
+	<Access name="GeneraProfiloPG" type="DAOQueryAccess"
+		queryType="1"
+		InputCommandDataModel="prgm.cedacri.adeguatezza.model.ElementoPunteggiModel"
+		OutputCommandDataModel="prgm.cedacri.adeguatezza.internal.StringModel">
+		<Query>
+			SELECT CEPE_TW00TBQG_X_RISULTA PROFILO
+			FROM CEPE_TW00TBQG
+			WHERE CEPE_TW00TBQG_N_CODISTI = 88
+			AND CEPE_TW00TBQG_X_CODAPPL = 'SCHEDCLI'
+			AND CEPE_TW00TBQG_N_RELEASE = (
+				SELECT MAX(CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE)
+				FROM CEPE_TW00TBQD
+				WHERE CEPE_TW00TBQD.CEPE_TW00TBQD_N_CODISTI = 88
+				AND CEPE_TW00TBQD.CEPE_TW00TBQD_X_CODAPPL = 'SCHEDCLI'
+				AND CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE &gt; 100
+			)
+			AND CEPE_TW00TBQG_X_DOMINIO = <p>dominio</p>
+			AND CEPE_TW00TBQG_N_VALMAXI = (
+			    SELECT MAX(CEPE_TW00TBQG_N_VALMAXI)
+			    FROM CEPE_TW00TBQG
+			    WHERE CEPE_TW00TBQG_N_CODISTI = 88
+			    AND CEPE_TW00TBQG_X_CODAPPL = 'SCHEDCLI'
+			    AND CEPE_TW00TBQG_N_RELEASE = (
+				    SELECT MAX(CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE)
+				    FROM CEPE_TW00TBQD
+				    WHERE CEPE_TW00TBQD.CEPE_TW00TBQD_N_CODISTI = 88
+				    AND CEPE_TW00TBQD.CEPE_TW00TBQD_X_CODAPPL = 'SCHEDCLI'
+					AND CEPE_TW00TBQD.CEPE_TW00TBQD_N_RELEASE &gt; 100				    
+			    )
+			    AND CEPE_TW00TBQG_X_DOMINIO = <p>dominio</p>
+			    AND CEPE_TW00TBQG_N_VALMAXI &lt;= <p>valDomi</p>
+			)
+		</Query>
+		<Output>
+			<Parameter propertyName="valore" dbColumnName="PROFILO"/>
+		</Output>
+	</Access>
+
+	<!-- Servizi: CalcoloProfilo,SalvaQuestionario -->
+	<Access name="GeneraProfiloDefault" type="DAOQueryAccess"
+		queryType="1"
+		InputCommandDataModel="prgm.cedacri.adeguatezza.internal.InputDefaultProfiloModel"
+		OutputCommandDataModel="prgm.cedacri.adeguatezza.internal.OutputDefaultProfiloModel">
+		<Query>
+		    SELECT CEPE_TW00TBTZ_X_CHIAVE CHIAVE,
+		    LEFT(CEPE_TW00TBTZ_X_DATI,3) PROFILO,
+		    RIGHT(LEFT(CEPE_TW00TBTZ_X_DATI, 6),3) OBBINVE,
+		    RIGHT(LEFT(CEPE_TW00TBTZ_X_DATI, 7),1) OBBTEMP,
+		    RIGHT(LEFT(CEPE_TW00TBTZ_X_DATI,10),3) SITFINA
+		    FROM CEPE_TW00TBTZ
+		    WHERE CONVERT(int,LEFT(CEPE_TW00TBTZ_X_CHIAVE,3)) &lt;= <p>eta</p>
+		    AND RIGHT(LEFT(CEPE_TW00TBTZ_X_CHIAVE,6),3) = <p>titStud</p>
+		    AND CEPE_TW00TBTZ_N_CODISTI = 88
+		    AND CEPE_TW00TBTZ_N_CODTABE = 135
+		    AND CEPE_TW00TBTZ_X_SEGUITO = '0'
+		    AND CEPE_TW00TBTZ_X_CHIAVE = (
+		        SELECT MAX(CEPE_TW00TBTZ_X_CHIAVE)
+		        FROM CEPE_TW00TBTZ
+		        WHERE CONVERT(int,LEFT(CEPE_TW00TBTZ_X_CHIAVE,3)) &lt;= <p>eta</p>
+		        AND RIGHT(LEFT(CEPE_TW00TBTZ_X_CHIAVE,6),3) = <p>titStud</p>
+		        AND CEPE_TW00TBTZ_N_CODISTI = 88
+		        AND CEPE_TW00TBTZ_N_CODTABE = 135
+		        AND CEPE_TW00TBTZ_X_SEGUITO = '0'
+		    )
+		</Query>
+		<Output>
+			<Parameter propertyName="chiave" dbColumnName="CHIAVE"/>
+			<Parameter propertyName="profilo" dbColumnName="PROFILO"/>
+			<Parameter propertyName="obbInve" dbColumnName="OBBINVE"/>
+			<Parameter propertyName="obbTemp" dbColumnName="OBBTEMP"/>
+			<Parameter propertyName="sitFina" dbColumnName="SITFINA"/>
+		</Output>
+	</Access>
+	
+	<!-- Servizi: Tutti -->
+	<Access name="userAccessLogRecord" type="DAOTableAccess" tableAccessType="0" tableName="PRGM_USER_ACCESS_LOGS" connectionCacheReference="PRGM">
+		<Bindings>
+			<Parameter propertyName="accessTime"       			dbColumnName="D_ACCESS" 	  	fieldType="0" primaryKey="true"/>
+			<Parameter propertyName="userCode" 	       			dbColumnName="C_USER" 	  	    fieldType="0" primaryKey="true"/>
+		   	<Parameter propertyName="countryCode"      			dbColumnName="C_COUNTRY" 		fieldType="0" />
+		   	<Parameter propertyName="channelCode"      			dbColumnName="C_CHANNEL" 		fieldType="0" />
+		   	<Parameter propertyName="organizationCode" 			dbColumnName="C_ORGANIZATION" 	fieldType="0" />
+		   	<Parameter propertyName="accessType"       			dbColumnName="A_ACCESS_TYPE" 	fieldType="0" />
+		   	<Parameter propertyName="accessResultCode"       	dbColumnName="N_ACCESS_RESULT" 	fieldType="0" />
+		   	<Parameter propertyName="description"      			dbColumnName="X_ACCESS" 		fieldType="0" />
+		   	<Parameter propertyName="logonUserCode"    			dbColumnName="C_LOGON_USER" 	fieldType="0" />
+		   	<Parameter propertyName="dataUserCode"     			dbColumnName="C_DATA_USER" 		fieldType="0" />
+		   	<Parameter propertyName="applicationCode"  			dbColumnName="C_APPLICATION" 	fieldType="0" />
+		   	<Parameter propertyName="functionCode"     			dbColumnName="P_FUNCTION" 		fieldType="0" />
+		   	<Parameter propertyName="commandCode"      			dbColumnName="P_COMMAND" 		fieldType="0" />
+		   	<Parameter propertyName="primaryRoleCode"  			dbColumnName="P_PRIMARY_ROLE" 	fieldType="0" />
+		   	<Parameter propertyName="additionalRolesCodeList"  	dbColumnName="X_ADD_ROLES_LIST" fieldType="0" />
+		   	<Parameter propertyName="fwGroupCode"      			dbColumnName="C_FW_GROUP" 		fieldType="0" />
+		   	<Parameter propertyName="startUrl"     	   			dbColumnName="X_START_URL" 		fieldType="0" />
+		   	<Parameter propertyName="clientIp"         			dbColumnName="X_CLIENT_IP" 		fieldType="0" />
+		   	<Parameter propertyName="replicationServer"         dbColumnName="SERVER_C_REPLICA"	fieldType="0" />
+	   </Bindings>
+	</Access>
+
+	<!-- Servizi: Cache -->
+	<Access name="CommandsCache" type="DAOQueryAccess"
+		queryType="1" connectionCacheReference="PRGM"
+		InputCommandDataModel="prgm.cedacri.adeguatezza.internal.StringModel"
+		OutputCommandDataModel="prgm.cedacri.adeguatezza.cache.PrgmCommands">
+		<Query>
+		  SELECT * FROM PRGM_COMMANDS WHERE C_APPLICATION = <p>valore</p>
+		</Query>
+		<Output>
+			<Parameter propertyName="commandCode"      	 dbColumnName="P_COMMAND" 	   />
+			<Parameter propertyName="serviceDescription" dbColumnName="X_CLASSNAME"	   />
+		   	<Parameter propertyName="commandDescription" dbColumnName="X_COMMAND" 	   />
+		   	<Parameter propertyName="applicationCode"  	 dbColumnName="C_APPLICATION"  />
+		   	<Parameter propertyName="functionCode"	 	 dbColumnName="P_FUNCTION"     />
+		   	<Parameter propertyName="flagTraceAccess"  	 dbColumnName="F_TRACE_ACCESS" />
+		   	<Parameter propertyName="aType"				 dbColumnName="A_TYPE"         />
+	   </Output>
+	</Access>
+	
+	<!-- Cache -->
+	<Access name="AdeguatezzaCache" type="DAOQueryAccess"
+		queryType="1"
+		InputCommandDataModel="prgm.cedacri.adeguatezza.internal.IntegerModel"
+		OutputCommandDataModel="prgm.cedacri.adeguatezza.internal.TW00TBTZModel">
+		<Query>
+		  SELECT * FROM CEPE_TW00TBTZ WHERE CEPE_TW00TBTZ_N_CODTABE = <p>valore</p>
+		</Query>
+		<Output>
+			<Parameter propertyName="codisti" dbColumnName="CEPE_TW00TBTZ_N_CODISTI" />
+			<Parameter propertyName="codtabe" dbColumnName="CEPE_TW00TBTZ_N_CODTABE" />
+		   	<Parameter propertyName="chiave"  dbColumnName="CEPE_TW00TBTZ_X_CHIAVE"  />
+		   	<Parameter propertyName="seguito" dbColumnName="CEPE_TW00TBTZ_X_SEGUITO" />
+		   	<Parameter propertyName="dati"	  dbColumnName="CEPE_TW00TBTZ_X_DATI"    />
+	   </Output>
+	</Access>
+	
+	<!-- Servizi: CtrlAdeguatezza -->
+	<Access name="ControlloFrequenza" type="DAOQueryAccess"
+		queryType="1"
+		InputCommandDataModel="prgm.cedacri.adeguatezza.internal.TW00TBO2Model"
+		OutputCommandDataModel="prgm.cedacri.adeguatezza.internal.TW00TBO2Model">
+		<Query>
+			SELECT *
+			FROM CEPE_TW00TBO2
+			WHERE CEPE_TW00TBO2_N_CODISTI = 88
+			<IfNotNull propertyName="ndgDoss">
+			AND   CEPE_TW00TBO2_X_NDGDOSS = <p>ndgDoss</p>
+			</IfNotNull>
+			<IfNotNull propertyName="ndgTemp">
+			AND   CEPE_TW00TBO2_X_NDGTEMP = <p>ndgTemp</p>
+			</IfNotNull>
+		</Query>
+		<Output>
+			<Parameter propertyName="codIsti"    dbColumnName="CEPE_TW00TBO2_N_CODISTI" />
+			<Parameter propertyName="ndgDoss"    dbColumnName="CEPE_TW00TBO2_X_NDGDOSS" />
+			<Parameter propertyName="ndgTemp"    dbColumnName="CEPE_TW00TBO2_X_NDGTEMP" />
+    		<Parameter propertyName="numOrditit" dbColumnName="CEPE_TW00TBO2_N_NUMORDI_TIT" />
+			<Parameter propertyName="totGiortit" dbColumnName="CEPE_TW00TBO2_N_TOTGIOR_TIT" />
+			<Parameter propertyName="totOrditit" dbColumnName="CEPE_TW00TBO2_N_TOTORDI_TIT" />
+			<Parameter propertyName="ordTrantit" dbColumnName="CEPE_TW00TBO2_N_ORDTRAN_TIT" />
+			<Parameter propertyName="numOrdifon" dbColumnName="CEPE_TW00TBO2_N_NUMORDI_FON" />
+			<Parameter propertyName="totGiorfon" dbColumnName="CEPE_TW00TBO2_N_TOTGIOR_FON" />
+			<Parameter propertyName="totOrdifon" dbColumnName="CEPE_TW00TBO2_N_TOTORDI_FON" />
+			<Parameter propertyName="ordTranfon" dbColumnName="CEPE_TW00TBO2_N_ORDTRAN_FON" />
+			<Parameter propertyName="numOrdiass" dbColumnName="CEPE_TW00TBO2_N_NUMORDI_ASS" />
+			<Parameter propertyName="totGiorass" dbColumnName="CEPE_TW00TBO2_N_TOTGIOR_ASS" />
+			<Parameter propertyName="totOrdiass" dbColumnName="CEPE_TW00TBO2_N_TOTORDI_ASS" />
+			<Parameter propertyName="ordTranass" dbColumnName="CEPE_TW00TBO2_N_ORDTRAN_ASS" />
+		</Output>
+	</Access>
+	
+	<!-- Servizi: GetTW00TBQK -->
+	<Access name="GetTW00TBQK" type="DAOQueryAccess"
+		queryType="1"
+		InputCommandDataModel="prgm.cedacri.adeguatezza.internal.UserKeyModel"
+		OutputCommandDataModel="prgm.cedacri.adeguatezza.internal.TW00TBQKModel">
+		<Query>
+			SELECT TOP 1 *
+			FROM CEPE_TW00TBQK
+			WHERE CEPE_TW00TBQK_N_CODISTI = 88
+			AND   CEPE_TW00TBQK_X_CODAPPL = 'SCHEDCLI'
+			<IfNotNull propertyName="ndgDoss">
+			AND   CEPE_TW00TBQK_X_NDGDOSS = <p>ndgDoss</p>
+			</IfNotNull>
+			<IfNotNull propertyName="ndgTemp">
+			AND   CEPE_TW00TBQK_X_NDGTEMP = <p>ndgTemp</p>
+			</IfNotNull>
+			AND   CEPE_TW00TBQK_N_DATSCHE = <p>userKey</p>
+			ORDER BY CEPE_TW00TBQK_N_DATSCHE DESC
+		</Query>
+		<Output>
+			<Parameter propertyName="codisti" dbColumnName="CEPE_TW00TBQK_N_CODISTI" />
+			<Parameter propertyName="ndgdoss" dbColumnName="CEPE_TW00TBQK_X_NDGDOSS" />
+			<Parameter propertyName="ndgtemp" dbColumnName="CEPE_TW00TBQK_X_NDGTEMP" />
+			<Parameter propertyName="codappl" dbColumnName="CEPE_TW00TBQK_X_CODAPPL" />
+			<Parameter propertyName="dfinval" dbColumnName="CEPE_TW00TBQK_N_DFINVAL" />
+			<Parameter propertyName="datsche" dbColumnName="CEPE_TW00TBQK_N_DATSCHE" />
+			<Parameter propertyName="filoper" dbColumnName="CEPE_TW00TBQK_N_FILOPER" />
+			<Parameter propertyName="release" dbColumnName="CEPE_TW00TBQK_N_RELEASE" />
+			<Parameter propertyName="selrisp" dbColumnName="CEPE_TW00TBQK_X_SELRISP" />
+			<Parameter propertyName="canvend" dbColumnName="CEPE_TW00TBQK_X_CANVEND" />
+		</Output>
+	</Access>
+	
+	<!-- Servizi: GetTW00TBQM -->
+	<Access name="GetTW00TBQM" type="DAOQueryAccess"
+		queryType="1"
+		InputCommandDataModel="prgm.cedacri.adeguatezza.internal.UserKeyModel"
+		OutputCommandDataModel="prgm.cedacri.adeguatezza.internal.TW00TBQMModel">
+		<Query>
+			SELECT TOP 1 *
+			FROM CEPE_TW00TBQM
+			WHERE CEPE_TW00TBQM_N_CODISTI = 88
+			AND   CEPE_TW00TBQM_X_CODAPPL = 'SCHEDCLI'
+			<IfNotNull propertyName="ndgDoss">
+			AND   CEPE_TW00TBQM_X_NDGDOSS = <p>ndgDoss</p>
+			</IfNotNull>
+			<IfNotNull propertyName="ndgTemp">
+			AND   CEPE_TW00TBQM_X_NDGTEMP = <p>ndgTemp</p>
+			</IfNotNull>
+			AND   CEPE_TW00TBQM_N_DATSCHE = <p>userKey</p>
+			ORDER BY CEPE_TW00TBQM_N_DATSCHE DESC, CEPE_TW00TBQM_N_NUMDOMA
+		</Query>
+		<Output>
+			<Parameter propertyName="codisti" dbColumnName="CEPE_TW00TBQM_N_CODISTI" />
+			<Parameter propertyName="ndgdoss" dbColumnName="CEPE_TW00TBQM_X_NDGDOSS" />
+			<Parameter propertyName="ndgtemp" dbColumnName="CEPE_TW00TBQM_X_NDGTEMP" />
+			<Parameter propertyName="codappl" dbColumnName="CEPE_TW00TBQM_X_CODAPPL" />
+			<Parameter propertyName="dfinval" dbColumnName="CEPE_TW00TBQM_N_DFINVAL" />
+			<Parameter propertyName="datsche" dbColumnName="CEPE_TW00TBQM_N_DATSCHE" />
+			<Parameter propertyName="numdoma" dbColumnName="CEPE_TW00TBQM_N_NUMDOMA" />
+			<Parameter propertyName="selmult" dbColumnName="CEPE_TW00TBQM_X_SELMULT" />
+		</Output>
+	</Access>
+
+</DAO-Object>

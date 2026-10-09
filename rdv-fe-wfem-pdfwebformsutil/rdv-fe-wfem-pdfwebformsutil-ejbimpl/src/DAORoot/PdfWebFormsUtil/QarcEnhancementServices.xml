@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="QarcEnhancementServices">	
+<Access name="ValorizzaVariabiliSessioneQarc" type="DAOOSBAccess" serviceName="/accessocanale-areatecnica-be-osb-gestionesessioneqarc-prj/PS/PS_QARCEnhancement" operationName="ValorizzaVariabiliSessioneQarc" 
+		contentType="application/soap+xml;charset=UTF-8;action=NuovaSessioneTecnica" markNillable="true" keepAttrs="true" dataFormatter="prgm.pdfwebformsutil.drivers.dao.XmlFormatter">
+	<Input>
+		<![CDATA[			
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:head="http://bmed.nmon/mw/header" xmlns:v1="http://QARCEnhancement.schema.bmed.it/v1">
+			   <soapenv:Header>
+			      <head:MWHeader>
+			         <head:webCookie propertyName="webCookie"></head:webCookie>
+			      </head:MWHeader>
+			   </soapenv:Header>
+			   <soapenv:Body>
+			      <v1:valorizzaVariabiliSessioneQarcRequest>
+			         <v1:elencoVariabili propertyName="elencoVariabili">
+			            <v1:variabile propertyName="variabile"></v1:variabile>
+			            <v1:valore propertyName="valore"></v1:valore>
+			         </v1:elencoVariabili>
+			      </v1:valorizzaVariabiliSessioneQarcRequest>
+			   </soapenv:Body>
+			</soapenv:Envelope>
+		]]>
+	</Input>
+	<Output>
+		<![CDATA[
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+			   <soapenv:Header xmlns:v1="http://QARCEnhancement.schema.bmed.it/v1" xmlns:head="http://bmed.nmon/mw/header">
+			      <head:MWHeader>
+			         <head:webCookie>VOLQK=QKEY=i36383035393435353130323230343734zDATA=i4C6F67676564496E3Dz</head:webCookie>
+			      </head:MWHeader>
+			   </soapenv:Header>
+			   <soapenv:Body>
+			      <v1:valorizzaVariabiliSessioneQarcResponse xmlns:v1="http://QARCEnhancement.schema.bmed.it/v1">
+			         <v1:esito propertyName="esito"></v1:esito>
+			      </v1:valorizzaVariabiliSessioneQarcResponse>
+			   </soapenv:Body>
+			</soapenv:Envelope>
+		]]>
+	</Output>
+</Access>
+</DAO-Object>

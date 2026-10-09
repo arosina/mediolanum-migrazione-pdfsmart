@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="DbJavaClasses" connectionCacheReference="PRGM">
+
+<CodDescriptions>
+   <CodDesc refreshTime="0" name="BACKUP_TIME" tableName="DB_JAVA_CLASSES_BACK" codColumnName="BACKUP_TIME_STRING" descrColumnName="BACKUP_TIME_STRING" 
+   		    whereCondition="CLASS_NAME=? order by BACKUP_TIME DESC">
+     <WhereFields>
+        <Parameter propertyName="nameOfClass"/>
+     </WhereFields>
+   </CodDesc>
+</CodDescriptions>
+
+<Access name="dbJavaProject" type="DAOTableAccess" tableName="DB_JAVA_PROJECTS">
+   <Bindings>
+	 <Parameter propertyName="projectName" 	dbColumnName="PROJECT_NAME" primaryKey="true"/>
+	 <Parameter propertyName="jarFiles"  	dbColumnName="JAR_FILES"/>
+   </Bindings>
+</Access>
+
+<Access name="dbJavaClass" type="DAOTableAccess" tableName="DB_JAVA_CLASSES">
+   <Bindings>
+	 <Parameter propertyName="nameOfClass" 			dbColumnName="CLASS_NAME"   primaryKey="true"/>
+	 <Parameter propertyName="projectName" 			dbColumnName="PROJECT_NAME" foreignKey="projectName"/>
+	 <Parameter propertyName="source"  				dbColumnName="SOURCE"/>
+	 <Parameter propertyName="bytecode"  			dbColumnName="BYTECODE"/>
+	 <Parameter propertyName="compilationTime"		dbColumnName="COMPILATION_TIME"/>
+	 <Parameter propertyName="enabled"  			dbColumnName="ENABLED"/>
+   </Bindings>
+</Access>
+
+<Access name="dbJavaClassBackup" type="DAOTableAccess" tableName="DB_JAVA_CLASSES_BACK">
+   <Bindings>
+	 <Parameter propertyName="nameOfClass" 			dbColumnName="CLASS_NAME" primaryKey="true" foreignKey="nameOfClass"/>
+	 <Parameter propertyName="projectName" 			dbColumnName="PROJECT_NAME"/>
+	 <Parameter propertyName="source"  				dbColumnName="SOURCE"/>
+	 <Parameter propertyName="backupTime"  			dbColumnName="BACKUP_TIME"/>
+	 <Parameter propertyName="backupTimeString"		dbColumnName="BACKUP_TIME_STRING" primaryKey="true"/>
+   </Bindings>
+</Access>
+
+<Access name="dbJavaClassCompilationTime" type="DAOQueryAccess" queryType="0" maxResultRows="1">
+	<Query> 
+		select COMPILATION_TIME, ENABLED
+		from  DB_JAVA_CLASSES
+		where CLASS_NAME = ?
+	</Query> 
+    <Input>
+		<Parameter propertyName="nameOfClass"/> 
+    </Input>
+    <Output>
+		<Parameter propertyName="compilationTime"/> 
+		<Parameter propertyName="enabled"/> 
+    </Output>
+</Access>  				
+
+<Access name="dbJavaClassBytecode" type="DAOTableAccess" tableName="DB_JAVA_CLASSES">
+   <Bindings>
+	 <Parameter propertyName="nameOfClass" 			dbColumnName="CLASS_NAME" primaryKey="true"/>
+	 <Parameter propertyName="bytecode"  			dbColumnName="BYTECODE"/>
+	 <Parameter propertyName="enabled"  			dbColumnName="ENABLED"/>
+   </Bindings>
+</Access>
+
+<Access name="dbJavaProjectList" type="DAOQueryAccess" queryType="0" 
+	    OutputCommandDataModel="com.atosorigin.wfem.dbjavaclasses.DbJavaProjectModel">
+	<Query>
+	  select PROJECT_NAME, JAR_FILES
+	  from DB_JAVA_PROJECTS
+	  order by PROJECT_NAME
+	</Query> 
+	<Output>
+	 <Parameter propertyName="projectName"/>
+	 <Parameter propertyName="jarFiles"/>
+	</Output> 
+</Access>  				
+
+<Access name="dbJavaProjectClassList" type="DAOQueryAccess" queryType="0"  
+		OutputCommandDataModel="com.atosorigin.wfem.dbjavaclasses.DbJavaClassModel">
+	<Query> 
+		select CLASS_NAME, ENABLED
+		from  DB_JAVA_CLASSES
+		where PROJECT_NAME = ?
+	</Query> 
+    <Input>
+		<Parameter propertyName="projectName"/> 
+    </Input>
+	<Output>
+	 <Parameter propertyName="nameOfClass"/>
+	 <Parameter propertyName="enabled"/>
+	</Output> 
+</Access>  				
+
+<Access name="dbJavaProjectExist" type="DAOQueryAccess" queryType="0"  
+		OutputCommandDataModel="com.atosorigin.wfem.types.IntegerType">
+	<Query> 
+		select count(*)
+		from  DB_JAVA_PROJECTS
+		where PROJECT_NAME = ?
+	</Query> 
+    <Input>
+		<Parameter propertyName="projectName"/> 
+    </Input>
+</Access>  				
+
+<Access name="dbJavaClassExist" type="DAOQueryAccess" queryType="0"  
+		OutputCommandDataModel="com.atosorigin.wfem.types.IntegerType">
+	<Query> 
+		select count(*)
+		from  DB_JAVA_CLASSES
+		where CLASS_NAME = ?
+	</Query> 
+    <Input>
+		<Parameter propertyName="nameOfClass"/> 
+    </Input>
+</Access>  				
+
+</DAO-Object>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="Nazione">	
+
+<Access name="nazioneAccess" type="DAOQueryAccess" queryType="1"	connectionCacheReference="SER_MIFID" 
+		OutputCommandDataModel="prgm.pdfwebformsutil.drivers.autocompletion.nazione.NazioneAutocompleteModel">
+	<Query>
+		SELECT 
+			DEN_NAZ			
+		FROM  
+			UTLY.DOM_NAZ	  
+		WHERE 
+			GSTD_F_ESIST = 'S'
+			AND DAT_FINE_VALID = to_date('31/12/9999','dd/mm/yyyy')
+			<IfNotNull propertyName="nazione">and upper(DEN_NAZ) like upper(<p>%nazione%</p>)</IfNotNull>
+	</Query> 
+	<Output>
+		<Parameter propertyName="nazione"/>	 
+	</Output> 
+</Access>
+
+</DAO-Object>

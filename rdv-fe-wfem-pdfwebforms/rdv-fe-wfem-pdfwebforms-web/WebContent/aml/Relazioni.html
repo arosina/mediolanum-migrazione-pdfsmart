@@ -1,0 +1,222 @@
+<% int globalSoggAccordionStatusIdx = 0; %>
+<table width="100%" height="100%" cellpadding="0" cellspacing="0" style="table-layout: fixed;">
+	<tr>
+		<td valign="top" style="border-right: solid 1px lightgray;">
+			<table width="100%" height="100%" cellpadding="0" cellspacing="0">
+				<tr>
+					<td class="testo" style="padding:20;"">
+						Nelle operazioni oggetto di proposta di seguito elencate compaiono soggetti terzi per i quali è necessario
+						indicare quale relazione intercorre con il cliente.<br>
+						I soggetti terzi possono essere:<br>
+						- Assicurati<br>
+						- Beneficiari caso vita e caso morte<br>
+						- Co-sottoscrittori<br>
+						- Mandanti<br>
+						- Terzi Pagatori<br>
+					</td>
+				</tr>
+				<tr>
+					<td height="100%">
+						<div id="elencoSinistraCont" style="position:relative;height:100%;width:100%;margin:0 auto;overflow:auto;">
+						<table width="100%" cellpadding="0" cellspacing="0">
+						<% for(int i=0;i<relazioni.getElencoDispositive().size();i++){
+							DispositivaAmlContainer dc = relazioni.getElencoDispositive().get(i);
+							String bordertop = i==0 ?"border-top:solid 1px lightgray;":"";
+						 %>
+						 	<tr>
+						 		<td class="dispo" style="padding:15;<%=bordertop%>border-left:solid 1px lightgray;border-bottom:solid 1px lightgray;">
+						 			<table width="100%">
+							 			<tr>
+							 				<td style="width:20;">&nbsp;</td>
+							 				<td class="dispo"><%=dc.title()%><br><span class="dispoPropContr"><%=dc.numPropostaContratto()%></span></td>
+							 			</tr>
+						 			</table>
+						 		</td>
+						 	</tr>
+						<% } %>
+						</table>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</td>
+		<td valign="top" style="width:50%;height:100%;">
+			<div id="elencoDestraCont" style="position:relative;height:100%;width:100%;margin:0 auto;overflow:auto;">
+			<table>
+				<tr>
+					<td><table class="testo">
+						<tr><td>
+							<b>Relazioni con il cliente <%=sottoscrittore.readNomeCognome()%></b>
+						</td></tr>
+						<tr><td>
+							Di seguito sono elencati i soggetti terzi per i quali è necessario indicare quale relazione intercorre con il cliente.<br>
+							I soggetti terzi possono essere: assicurati, beneficiari caso vita e caso morte, cosottoscrittori, mandanti, terzi pagatori.
+						</td></tr>
+					</table></td>
+					</td>
+				</tr>
+				<% for(int i=0;i<relazioni.getElencoSoggetti().size();i++){ 
+					SoggettoRelazioneModel sogg = (SoggettoRelazioneModel)relazioni.getElencoSoggetti().get(i);
+					if(!sogg.iSoggettoVisibileInAML())
+						continue;
+				 %>
+				<tr>
+					<td>
+						<table class="accordion" width="100%" onclick="openCloseAccordion(<%=globalSoggAccordionStatusIdx%>);">
+							<tr>
+								<td valign="middle" align="center" style="padding-top:10;width:25px;">
+									<div class="sublu<%=relazioni.isClose(globalSoggAccordionStatusIdx)?" giublu":""%>" id="accordionSoggetti<%=globalSoggAccordionStatusIdx%>"></div>
+								</td>
+								<td id="accordionTitle<%=globalSoggAccordionStatusIdx%>">
+									<%=Tools.capitalize(sogg.getNome().toString())%>&nbsp;<%=Tools.capitalize(sogg.getCognome().toString())%>
+									&nbsp;<%=relazioni.drawSoggIcons(sogg)%>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<table id="accordionSoggettiCont<%=globalSoggAccordionStatusIdx%>" class="testo" width="100%" style="table-layout:fixed;<%=relazioni.isClose(globalSoggAccordionStatusIdx)?"display:none;":""%>">							
+							<% if(sogg.getIsPersonaFisica().booleanValue()){ %>
+								<tr><td>Nome</td><td>Cognome</td></tr>
+								<tr><td class="inputField"><%=Tools.capitalize(sogg.getNome().toString())%></td><td class="inputField"><%=Tools.capitalize(sogg.getCognome().toString())%></td></tr>
+								<tr><td>Codice Cliente</td><td>Codice Fiscale</td></tr>
+								<tr><td class="inputField"><%=sogg.getNdg()%></td><td class="inputField"><%=sogg.getCodiceFiscalePartitaIva()%></td></tr>
+							<% }else{ %>
+								<tr><td>Codice Cliente</td><td>Ragione sociale</td></tr>
+								<tr><td class="inputField"><%=sogg.getNdg()%></td><td class="inputField"><%=Tools.capitalize(sogg.getCognome().toString())%></td></tr>
+								<tr><td>Partita Iva</td><td></td></tr>
+								<tr><td class="inputField"><%=sogg.getCodiceFiscalePartitaIva()%></td><td></td></tr>
+							<% } %>
+							<tr><td colspan="2">Che tipo di relazione intercorre con il cliente?</td></tr>
+							<tr><td colspan="2"><%=template.field("amlModel_relazioni_elencoSoggetti"+i+"_codTipoRelazioneContraente","onchange='onChangeTipoRelazioneContraente(this);' idx='"+i+"' style='width:100%;'"+(sogg.isRelazioneContraentePreselezionata()?" modality='read' title='Informazione non modificabile in quanto già fornita nei moduli di sottoscrizione'":""))%></td></tr>
+							<% if(sogg.getCodTipoRelazioneContraente().equals(SoggettoRelazioneModel.COD_TIPO_RELAZIONE_ALTRO)){ %>
+								<tr>
+									<td colspan="2">
+										<table width="100%">
+											<tr>
+												<td class="testo">Specificare il tipo di relazione</td>												
+											</tr>
+											<tr>
+												<td>
+													<%=template.field("amlModel_relazioni_elencoSoggetti"+i+"_descrTipoRelazioneContraente",
+														"onchange='onChangeDescrTipoRelazioneContraente(this,"+globalSoggAccordionStatusIdx+");' "+	
+														"placeholder='Dettagliare la relazione' "+					
+														(sogg.isRelazioneContraentePreselezionata()?" modality='read' title='Informazione non modificabile in quanto già fornita nei moduli di sottoscrizione' ":"")+								
+														"upper='false' type='all' style='width:100%;'")%></td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+							<% } %>
+							<% if(sogg.getCodTipoRelazioneContraente().equals(SoggettoRelazioneModel.COD_TIPO_RELAZIONE_AZIENDALE) || 
+							      sogg.getCodTipoRelazioneContraente().equals(SoggettoRelazioneModel.COD_TIPO_RELAZIONE_ALTRO)){ %>
+								<tr>
+									<td colspan="2">
+										<table width="100%">
+											<tr>
+												<td class="testo">Fornire maggiori informazioni sulla relazione</td>												
+											</tr>
+											<tr>
+												<td>
+													<%=template.field("amlModel_relazioni_elencoSoggetti"+i+"_informazioniRelazioneContraente",
+														"onchange='onChangeInformazioniRelazioneContraente(this,"+globalSoggAccordionStatusIdx+");' "+
+														"placeholder='Fornire maggiori informazioni' "+
+														"rows='2' upper='false' type='all' style='width:100%;'")%></td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+							<% } %>
+							<!-- MOTIVAZIONE PRESENZA TERZO PAGATORE -->
+							<% if(sogg.getIsTerzoPagatore().booleanValue()){ %>
+								<tr>
+									<td colspan="2">
+										<table width="100%">
+											<tr>
+												<td class="testo" style="padding-bottom:5;">
+													Il soggetto risulta essere Terzo Pagatore di uno o più prodotti che fanno parte della proposta. Per motivi fiscali è necessario indicare la motivazione del pagamento e  
+													trasmettere separatamente in sede la documentazione che la comprova
+												</td>
+											</tr>
+											<tr>
+												<td class="testo">Motivazione Terzo Pagatore</td>
+											</tr>
+											<tr>
+												<td>
+													<table class="testo"><tr>
+														<td style="width:10px;padding-top:8px;"><%=template.field("amlModel_relazioni_elencoSoggetti"+i+"_tipoMotivazionePagamentoTerzoPagatore","modality='read' labelposition='nolabel' style='display:none;'")%></td>
+														<td>
+															<input type="radio" name="amlModel_relazioni_elencoSoggetti<%=i%>_tipoMotivazionePagamentoTerzoPagatore" 
+																   value="<%=SoggettoRelazioneModel.TIPO_MOTIVAZIONE_TERZO_PAGATORE_DONAZIONE%>"
+																   onchange="onChangeTipoMotivazioneTerzoPagatore(this);"
+																   <%=sogg.getTipoMotivazionePagamentoTerzoPagatore().equals(SoggettoRelazioneModel.TIPO_MOTIVAZIONE_TERZO_PAGATORE_DONAZIONE)?"checked":"" %>>
+														</td>														
+														<td>Atto di donazione</td>
+														<td style="width:30px;"></td>
+														<td>
+															<input type="radio" name="amlModel_relazioni_elencoSoggetti<%=i%>_tipoMotivazionePagamentoTerzoPagatore" 
+																   value="<%=SoggettoRelazioneModel.TIPO_MOTIVAZIONE_TERZO_PAGATORE_CORRISPETTIVO%>"
+																   onchange="onChangeTipoMotivazioneTerzoPagatore(this);"
+																   <%=sogg.getTipoMotivazionePagamentoTerzoPagatore().equals(SoggettoRelazioneModel.TIPO_MOTIVAZIONE_TERZO_PAGATORE_CORRISPETTIVO)?"checked":"" %>>
+														</td>
+														<td>Pagamento per corrispettivo</td>
+													</tr></table>
+												</td>
+											</tr>
+											<tr>
+												<td class="testo">Campo da compilare nel caso in cui non si disponga della documentazione che comprova la natura del pagamento</td>
+											</tr>
+											<tr>
+												<td>
+													<%=template.field("amlModel_relazioni_elencoSoggetti"+i+"_dettagliMotivazionePagamentoTerzoPagatore",
+														"placeholder='Fornire maggiori dettagli sul pagamento' "+
+														"rows='2' upper='false' type='all' style='width:100%;'")%>
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+							<% } %>
+							<!-- MOTIVAZIONE PRESENZA ASSICURATO -->
+							<% if(sogg.getIsAssicurato().booleanValue()){ %>
+								<tr>
+									<td colspan="2">
+										<table width="100%">
+											<tr>
+												<td class="testo" style="padding-bottom:5;">
+													Il soggetto risulta essere Assicurato di uno o più prodotti che fanno parte della proposta,
+													è necessario indicarne la motivazione
+												</td>
+											</tr>
+											<tr>
+												<td class="testo">Fornire la motivazione per la quale viene indicato un assicurato diverso dal cliente</td>
+											</tr>
+											<tr>
+												<td>
+													<%=template.field("amlModel_relazioni_elencoSoggetti"+i+"_motivazioneAssicuratoDiversoDaContraente",
+														"onchange='onChangeMotivazioneAssicuratoDiversoDaContraente(this,"+globalSoggAccordionStatusIdx+");' "+
+														"placeholder='Fornire la motivazione' "+
+														"rows='2' upper='false' type='all' style='width:100%;'")%>
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+							<% } %>
+						</table>
+					</td>
+				</tr>
+				<% globalSoggAccordionStatusIdx++; %>
+				<% } %>
+				
+				<% if(relazioni.hasSoggettiTerzi()){ %>
+					<%@ include file="./RelazioniSoggettiTerzi.html"%>
+				<% } %>		
+			</table>
+			</div>
+		</td>
+	</tr>
+</table>
+<script>setScrollPos();</script>

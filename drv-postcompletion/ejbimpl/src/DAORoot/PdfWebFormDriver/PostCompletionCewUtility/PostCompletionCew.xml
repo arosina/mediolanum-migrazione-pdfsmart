@@ -1,0 +1,185 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<DAO-Object name = "PostCompletionCew">
+	<Access name="loadAgevolazione" type="DAOQueryAccess" queryType="1"  connectionCacheReference="CEPE"
+			OutputCommandDataModel="prgm.pdfwebformsdrivers.postcompletioncewutility.model.AgevolazioneModel">
+		<Query>
+			select	ag.ID_ISTANZA
+			,       ag.TIPO_RICHIESTA
+			,		ag.CODICE_CONVENZIONE
+			,		ag.PCT_AGEV_RICHIESTA
+			,		ag.PIANO_VERSAMENTO
+			,		ag.PIC_PROGRAMMATO
+			,		ag.DOUBLE_CHANCE
+			,		ag.IMPORTO
+			,       ag.AGEV_COMM_PAC
+			from	CEPE_IST_NUM_ROSSO ag
+		 	where 		
+		 	<IfNotNull propertyName="idAgevolazione"> ag.ID_ISTANZA = <p>idAgevolazione</p></IfNotNull>
+		</Query> 
+		<Output>  
+			<Parameter propertyName="idAgevolazione"/>
+			<Parameter propertyName="tipoAgevolazione"/>
+			<Parameter propertyName="codiceConvenzione"/>
+			<Parameter propertyName="percentualeAgevolazione"/>
+			<Parameter propertyName="pianoVersamentoAgevolazione"/>
+			<Parameter propertyName="picProgrammatoAgevolazione"/>
+			<Parameter propertyName="doubleChanceAgevolazione"/>
+			<Parameter propertyName="importoAgevolazione"/>
+			<Parameter propertyName="agevolazioneCommissionalePac"/>
+		</Output> 
+	</Access>
+	<Access name="loadAgevolazioneDerogheAutomatiche" type="DAOQueryAccess" queryType="1"  
+		connectionCacheReference="IQ" OutputCommandDataModel="prgm.pdfwebformsdrivers.postcompletioncewutility.model.AgevolazioneModel">
+	<Query> 
+		SELECT 
+				B.CAMPAIGN_CD
+			,   'D'
+		FROM 
+			CAMPAIGN_CD A,
+			RETENTION_LEVE_RETE B
+		WHERE 
+			A.CODICE_CAMPAGNA = B.CAMPAIGN_CD
+			AND A.FLAG_VALIDITA = 'S'
+			<IfNotNull propertyName="idAgevolazione">
+				and A.CODICE_CAMPAGNA = <p>idAgevolazione</p>
+			</IfNotNull>
+	</Query> 
+		<Output>  
+		<Parameter propertyName="idAgevolazione"/>
+		<Parameter propertyName="tipoAgevolazione"/>  
+	</Output> 
+</Access>
+	<Access name="loadBanca" type="DAOQueryAccess" queryType="1"  connectionCacheReference="SER_MIFID"
+			OutputCommandDataModel="prgm.pdfwebformsdrivers.postcompletioncewutility.model.BancaModel">
+		<Query>
+			SELECT
+				ANASPORTE.ANABANCA_C_ABI
+			,   ANASPORTE.ANASPORTE_C_CAB
+			,	ANABANCA.ANABANCA_X_RAG
+			,	ANASPORTE.ANASPORTE_X_DESCR
+			,	ANASPORTE.ANASPORTE_X_IND
+			,	ANASPORTE.ANASPORTE_X_LOC
+			,	ANASPORTE.ANASPORTE_X_PROV
+			FROM
+				ANABANCA,
+				ANASPORTE
+			WHERE
+				ANASPORTE.ANABANCA_C_ABI = ANABANCA.ANABANCA_C_ABI
+			<IfNotNull  propertyName="codiceAbiIn"> AND ANASPORTE.ANABANCA_C_ABI LIKE <p>codiceAbiIn</p> </IfNotNull>
+			<IfNotNull  propertyName="codiceCabIn"> AND ANASPORTE.ANASPORTE_C_CAB LIKE <p>codiceCabIn</p></IfNotNull>
+		</Query> 
+		<Output>  
+			<Parameter propertyName="codiceAbi"/>
+			<Parameter propertyName="codiceCab"/>
+			<Parameter propertyName="ragioneSociale"/>
+			<Parameter propertyName="descrizioneSportello"/>
+			<Parameter propertyName="indirizzo"/>
+			<Parameter propertyName="localita"/>
+			<Parameter propertyName="provincia"/>
+		</Output> 
+	</Access>
+	<Access name="loadDatiAgente" type="DAOQueryAccess" queryType="1" OutputCommandDataModel="prgm.pdfwebformsdrivers.postcompletioncewutility.model.AgenteModel" connectionCacheReference="CEPE">
+		<Query>
+			select 
+				AGE_C_AGE, 
+				AGE_M_COGN_AGE, 
+				AGE_M_NOME_AGE, 
+				AGE_X_IND_EMAIL,
+				SERVER_C_REPLICA 
+			from 
+				INR_AGENTI 
+			where 
+				AGE_C_AGE = <p>codAgente</p>
+	</Query>   
+	<Output>
+		<Parameter propertyName="codice"/>
+		<Parameter propertyName="cognome"/>
+		<Parameter propertyName="nome"/>
+		<Parameter propertyName="email"/>
+		<Parameter propertyName="serverCReplica"/>
+	</Output>
+</Access>
+<Access name="loadPdf" type="DAOQueryAccess" queryType="1" OutputCommandDataModel="prgm.pdfwebformsdrivers.postcompletioncewutility.model.PdfInstancePostCompletionModel" connectionCacheReference="CEPE">
+		<Query>
+			select
+				CASE CREATION_USERTYPE WHEN 'RETE' THEN 'P' ELSE '' END,
+				CLI1_ASSGNCLIAGE_C_POTZLE,
+				CLI2_ASSGNCLIAGE_C_POTZLE,
+				CLI3_ASSGNCLIAGE_C_POTZLE,
+				STATO,
+				CLI1_COGNOME,
+				CLI1_NOME,
+				COMPLETION_TIME,
+				COD_AGENTE, 
+				COD_AGE_IMPERSONATO, 
+				COD_RUOLO_IMPERSONATO
+			from
+				PDF_INSTANCE 
+			where
+				PDF_INSTANCE_ID = <p>pdfId</p>
+	</Query>   
+	<Output>
+		<Parameter propertyName="codRete"/>
+		<Parameter propertyName="codPotenziale1"/>
+		<Parameter propertyName="codPotenziale2"/>
+		<Parameter propertyName="codPotenziale3"/>
+		<Parameter propertyName="stato"/>
+		<Parameter propertyName="cognome1"/>
+		<Parameter propertyName="nome1"/>
+		<Parameter propertyName="completionTime"/>
+		<Parameter propertyName="codAgente"/>
+		<Parameter propertyName="codAgenteImpersonato"/>
+		<Parameter propertyName="codRuoloImpersonato"/>
+	</Output>
+</Access>
+<Access name="loadCodiceComune" type="DAOQueryAccess" queryType="1" OutputCommandDataModel="prgm.pdfwebformsdrivers.postcompletioncewutility.model.ComuneModel" connectionCacheReference="SER_MIFID">
+		<Query>
+			select 
+				DISTINCT COMU_C_COMU
+			from 
+				CLL.V_COMU 
+			where 
+				upper(trim(COMU_X_DENOM_COMU)) = upper(trim(<p>descrizioneComune</p>))
+	</Query>   
+	<Output>
+		<Parameter propertyName="codiceComune"/>
+	</Output>
+</Access>
+<Access name="loadPdfContent" type="DAOQueryAccess" queryType="1" 
+		OutputCommandDataModel="com.atosorigin.wfem.types.ByteArrayType" connectionCacheReference="CEPE">
+		<Query>
+			select
+				PDF_CONTENT
+			from
+				PDF_INSTANCE 
+			where
+				PDF_INSTANCE_ID = <p>pdfId</p>
+	</Query>   
+</Access>
+<Access name="loadAgevolazioneNuoveDeroghe" type="DAOQueryAccess" queryType="1"  connectionCacheReference="CEPE"
+			OutputCommandDataModel="prgm.pdfwebformsdrivers.postcompletioncewutility.model.AgevolazioneModel">
+		<Query>
+			select	CODICE_CONV_SEDE
+			,       APPL_DEROGA
+			from	CEPE_CRLEVE_MOV_DEROG_GEST
+		 	where 		
+		 	<IfNotNull propertyName="idAgevolazione"> ID_DEROGA = CAST(<p>idAgevolazione</p> AS NUMERIC) </IfNotNull>
+		</Query> 
+		<Output>  
+			<Parameter propertyName="codiceAgevolazione"/>
+			<Parameter propertyName="agevolazioneCommissionalePac"/>
+		</Output> 
+	</Access>
+
+<Access name="loadCodPotenzialeSoggettoEffettivo" type="DAOQueryAccess" queryType="0" maxResultRows="1" connectionCacheReference="DBAZ_SOGG" OutputCommandDataModel="com.atosorigin.wfem.types.StringType">
+	<Query>
+		select 	COD_CLI_POTENZ
+		from 	CLL.CLI
+		where 	CLI_C = substr('00000000000' || ?,-11)
+	</Query>
+	<Input>
+		<Parameter propertyName="ndg"/>
+	</Input>
+</Access>
+
+</DAO-Object>

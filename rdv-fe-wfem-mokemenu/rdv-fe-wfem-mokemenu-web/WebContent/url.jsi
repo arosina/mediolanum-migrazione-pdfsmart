@@ -1,0 +1,15 @@
+<%
+	String webApp=null;
+	java.io.InputStream inputStream = this.getClass().getResourceAsStream("/appsproperties/mokemenu/Menu.properties");
+	if(inputStream != null){
+		java.util.Properties p = new java.util.Properties();
+		p.load(inputStream);
+		inputStream.close();
+		webApp = p.getProperty("prgmUrl");
+	}
+	if(webApp == null)
+		webApp = "prgm";
+
+	String titolo = "Sito operativo Inforete";
+%>
+<script>var webApp='<%=webApp%>';</script>

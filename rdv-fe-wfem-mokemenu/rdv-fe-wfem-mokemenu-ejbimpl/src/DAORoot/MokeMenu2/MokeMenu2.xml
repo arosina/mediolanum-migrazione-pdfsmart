@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="MokeMenu2" connectionCacheReference="PRGM">
+
+<CodDescriptions>
+  <CodDesc refreshTime="0" name="PROGETTI" tableName="MOKE_MENU" codColumnName="PROGETTO" descrColumnName="PROGETTO"
+   			whereCondition="1 = 1 order by upper(PROGETTO)" distinct="true"/>
+</CodDescriptions>
+
+<Access name="elencoComandi" type="DAOQueryAccess" queryType="0"
+		OutputCommandDataModel="moke.menu2.model.ComandoModel">
+ <Query>
+	select 	ID, PROGETTO, ATTORE, DESCRIZIONE, COMANDO
+	from 	MOKE_MENU
+	where 	PROGETTO = ?
+	order by ATTORE, DESCRIZIONE
+ </Query> 
+ <Input>
+	<Parameter propertyName="progetto"/>
+ </Input>
+ <Output>
+	<Parameter propertyName="id"/>
+	<Parameter propertyName="progetto"/>
+	<Parameter propertyName="attore"/>
+	<Parameter propertyName="descrizione"/>
+	<Parameter propertyName="comando"/>
+ </Output> 
+</Access> 
+
+<Access name="comandoEsiste" type="DAOQueryAccess" queryType="0"
+		OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType">
+ <Query>
+	select  case when count(*) = 0 then 'N' else 'S' end as ESISTE 
+	from 	MOKE_MENU
+	where 	PROGETTO = ? and ATTORE = ? and COMANDO = ?
+ </Query> 
+ <Input>
+	<Parameter propertyName="progetto"/>
+	<Parameter propertyName="attore"/>
+	<Parameter propertyName="comando"/>
+ </Input>
+</Access> 
+
+<Access name="comando" type="DAOTableAccess" tableName="MOKE_MENU" identityProperty="id">
+   <Bindings>
+	 <Parameter propertyName="id" 				 dbColumnName="ID" 		 primaryKey="true"/>
+	 <Parameter propertyName="progetto"			 dbColumnName="PROGETTO"/>
+	 <Parameter propertyName="comando" 			 dbColumnName="COMANDO"/>
+	 <Parameter propertyName="attore" 			 dbColumnName="ATTORE"/>
+	 <Parameter propertyName="descrizione"		 dbColumnName="DESCRIZIONE"/>
+   </Bindings>
+</Access>
+
+<Access name="conf" type="DAOTableAccess" tableName="MOKE_MENU_CONF">
+   <Bindings>
+	 <Parameter propertyName="remoteAddr"		 dbColumnName="REMOTE_ADDR" primaryKey="true"/>
+	 <Parameter propertyName="progetto"			 dbColumnName="PROGETTO"/>
+   </Bindings>
+</Access>
+
+<Access name="loadPortalPageCommand" type="DAOQueryAccess" queryType="0">
+ <Query>
+	select WFEM_COMMAND from MOKE_MENU_PORTALPAGES where PORTAL_PAGE_NAME = ?
+ </Query> 
+ <Input>
+	<Parameter propertyName="portalPageName"/>
+ </Input>
+ <Output>
+	<Parameter propertyName="wfemCommand"/>
+ </Output> 
+</Access> 
+
+</DAO-Object>

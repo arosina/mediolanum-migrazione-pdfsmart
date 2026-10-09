@@ -1,0 +1,36 @@
+<% if(documento.isDocumentoAssegno()){ %>
+	<table width="100%">
+	  <tr>
+	    <td style="padding: 5;">
+	       <%@ include file="./dati/DatiDettaglioAssegno.html"%>
+	    </td>
+	  </tr>
+	</table>
+<% }else{ %>
+	<table height="99%" width="100%">
+	  <tr>
+	    <td>
+	       <%@ include file="./dati/DatiDettaglio.html"%>
+	    </td>
+	  </tr>
+	  <tr>
+	    <td>
+	       <%@ include file="./dati/ClienteAgente.html"%>
+	    </td>
+	  </tr>
+      <%if(!tabMezzi){%>
+		  <tr>
+		    <td height="100%">
+		       <%@ include file="./dati/MezziPagamento.html"%>
+		    </td>
+		  </tr>
+	  <%}%>
+      <%if(showNote){%>
+	  <tr>
+	    <td>
+	       <%@ include file="./dati/Note.html"%>
+	    </td>
+	  </tr>
+	  <%}%>
+	</table>
+<% } %>

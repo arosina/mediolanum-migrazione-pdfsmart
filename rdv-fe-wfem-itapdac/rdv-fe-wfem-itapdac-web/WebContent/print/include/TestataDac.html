@@ -1,0 +1,115 @@
+<tr>
+	<td width="2%"></td>
+	<td width="3%"></td>
+	<td width="23%"></td>
+	<td width="17%"></td>
+	<td width="18%"></td>
+	<td width="5%"></td>
+	<td width="9%"></td>
+	<td width="9%"></td>
+	<td width="14%"></td>
+</tr>
+
+<tr>
+	<td colspan="9">
+
+		<table>
+		
+			<tr>
+				<td width="22%"></td>
+				<td width="18%"></td>
+				<td width="15%"></td>
+				<td width="20%"></td>
+				<td width="25%"></td>
+			</tr>
+			
+			<tr>
+				<td align="center" colspan="2"> <img src="#<%=dac.getIdDac()%>" width="280" height="60"/> </td>
+				<td>
+					<table>
+							<tr><td bgcolor="<%=lightGrayColor%>">INVIATO A <%=ufficioDestinatario.toUpperCase()%></td></tr>
+							<tr><td>&nbsp;<b><%=dac.getDataOraEmissione()%></b></td></tr>
+							<tr><td></td></tr>
+							<tr><td bgcolor="<%=lightGrayColor%>">STAMPATO IL</td></tr>
+							<tr><td>&nbsp;<b><%=com.atosorigin.wfem.util.Tools.now()%></b></td></tr>
+							<tr><td></td></tr>
+							<tr><td bgcolor="<%=lightGrayColor%>">DATA SPUNTA <%=ufficioDestinatario.toUpperCase()%></td></tr>
+							<tr><td>&nbsp;<b><%=dac.getStato().equals(Costanti.STATO_LAVORATA) ? dac.getDataOraCambioStato().toString() : ""%></b></td></tr>
+					</table>
+				</td>
+				<td>
+					<table>
+							<tr><td width="5%"></td><td width="10%"></td><td width="85%"></td></tr>
+							<tr><td colspan="3" align="center"> <B>MEZZO SPEDIZIONE/CONSEGNA</B> </td></tr>
+							<tr><td colspan="3"></td></tr>
+							<tr><td colspan="3"></td></tr>
+							<tr>
+								<td></td>
+								<td border=1><%=dac.getCodTipoSpedizione().equals(Costanti.MEZZO_SPEDIZIONE_CORRIERE) ? "X" : "" %></td>
+								<td align="left"> <font size="2"> CORRIERE </font> </td>
+							</tr>
+							<tr><td colspan="3"></td></tr>
+							<tr>
+								<td></td>
+								<td border=1><%=!dac.getCodTipoSpedizione().equals(Costanti.MEZZO_SPEDIZIONE_CORRIERE) ? "X" : "" %></td>
+								<td align="left"> <font size="2"> CONS. ALLO SPORTELLO </font> </td>
+							</tr>
+					</table>
+				</td>
+				<td align="center" border=1><font size="5" color="<%=grayColor%>">DATA RICEVIMENTO</font></td>
+			</tr>
+			
+			<tr><td colspan="5"></td></tr>
+			
+			<tr>
+				<td>
+					<table>
+						<tr><td width="33%"></td><td width="67%"></td></tr>
+						<tr>
+							<td bgcolor="<%=lightGrayColor%>" align="center">STATO</td>								
+							<td><b><%=stato%></b></td>
+						</tr>
+						<tr><td colspan="2"></td></tr>
+						<tr>
+							<td bgcolor="<%=lightGrayColor%>" align="center">DOVE</td>										
+							<td><b><%=dove%></b></td>
+						</tr>
+						<tr><td colspan="2"></td></tr>
+						<tr>
+							<td bgcolor="<%=lightGrayColor%>" align="center">ESITO</td>
+							<td ><b><%=esito%></b></td>
+						</tr>
+					</table>
+				</td>
+				<td>
+					<table>
+						<tr><td width="95%"></td><td width="5%"></td></tr>
+						<tr><td bgcolor="<%=lightGrayColor%>">AUTORE [<%=ufficioMittente.toUpperCase()%>]</td><td></td></tr>
+						<tr><td>&nbsp;<b><%=autore%></b></td><TD></TD></tr>
+						<tr><td colspan="2"></td></tr>
+						<% if(!isPromotore) {%>
+							<tr><td bgcolor="<%=lightGrayColor%>">OPERATORE [<%=ufficioDestinatario.toUpperCase()%>]</td><td></td></tr>
+							<tr><td>&nbsp;<b><%=operatore%></b></td><TD></TD></tr>
+						<% }else{%>
+							<tr><td>&nbsp;</td><td></td></tr>
+							<tr><td>&nbsp;</td><td></td></tr>
+						<% }%>
+					</table>
+				</td>
+				<td colspan="2">
+					<table>
+						<tr><td width="95%"></TD><TD width="5%"></td></tr>
+						<tr><td bgcolor="<%=lightGrayColor%>">NOTE AUTORE</td><td></td></tr>
+						<tr><td>&nbsp;<b><%=noteAutore%></b></td></tr>
+						<tr><td colspan="2"></TD></TR>
+						<tr><td bgcolor="<%=lightGrayColor%>">NOTE OPERATORE</td><td></td></tr>
+						<tr><td>&nbsp;<b><%=noteOperatore%></b></td><td></td></tr>
+					</table>
+				</td>
+				<td align="center" border="1"><font size="5" color="<%=grayColor%>">DATA SPEDIZIONE</font></td>
+			</tr>
+		
+		</table>
+
+	</td>
+</tr>

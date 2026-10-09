@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="NasStorage">
+
+<Access name="saveFile" type="DAOOSBAccess" serviceName="arch-be-osb-uploadMulticanale-prj/PS/file-upload" operationName="insertMedia">
+   <Input>
+   		<![CDATA[
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://UploadMulticanaleDomApp.service.bmed.it/v1" xmlns:v11="http://common.schema.bmed.it/v1">
+			   <soapenv:Body>
+			      <v1:insertMedia>
+			         <ecmFile>
+			            <channel>WFEM</channel>
+			            <destinationPath propertyName="destinationPath"></destinationPath>
+			            <nameApp propertyName="nameApp"></nameApp>
+			            <nameFile propertyName="nameFile"></nameFile>
+			            <source propertyName="source"></source>
+			            <type propertyName="type"></type>
+			            <userId propertyName="userId"></userId>
+			            <state>INSERTED</state>
+			         </ecmFile>
+			      </v1:insertMedia>
+			   </soapenv:Body>
+			</soapenv:Envelope>
+		]]>
+   </Input>
+   <Output>
+   		<![CDATA[
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://UploadMulticanaleDomApp.service.bmed.it/v1">
+			   <soapenv:Header/>
+			   <soapenv:Body>
+			      <v1:insertMediaResponse>
+			         <result>
+			            <idFile propertyName="idFile"></idFile>
+			         </result>
+			      </v1:insertMediaResponse>
+			   </soapenv:Body>
+			</soapenv:Envelope>
+		]]>
+   </Output>
+</Access>
+  				
+<Access name="readFile" type="DAOOSBAccess" serviceName="arch-be-osb-uploadMulticanale-prj/PS/file-upload" operationName="listMedia">
+   <Input>
+   		<![CDATA[
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://UploadMulticanaleDomApp.service.bmed.it/v1" xmlns:v11="http://common.schema.bmed.it/v1">
+			   <soapenv:Body>
+			      <v1:listMedia>
+			         <ecmFile>
+			            <idFile propertyName="idFile"></idFile>
+			         </ecmFile>
+			      </v1:listMedia>
+			   </soapenv:Body>
+			</soapenv:Envelope>
+		]]>
+   </Input>
+   <Output>
+   		<![CDATA[
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+			   <soapenv:Header/>
+			   <soapenv:Body xmlns:v1="http://UploadMulticanaleDomApp.service.bmed.it/v1" xmlns:v11="http://common.schema.bmed.it/v1">
+			      <v1:listMediaResponse>
+			         <result>
+			            <idFile propertyName="checkIdFile"></idFile>
+			            <destinationPath propertyName="destinationPath"></destinationPath>
+			            <nameFile propertyName="nameFile"></nameFile>
+			            <type propertyName="type"></type>
+			         </result>
+			      </v1:listMediaResponse>
+			   </soapenv:Body>
+			</soapenv:Envelope>
+		]]>
+   </Output>
+</Access>
+
+<Access name="deleteFile" type="DAOOSBAccess" serviceName="arch-be-osb-uploadMulticanale-prj/PS/file-upload" operationName="deleteFileNAS">
+   <Input>
+   		<![CDATA[
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://UploadMulticanaleDomApp.service.bmed.it/v1" xmlns:v11="http://common.schema.bmed.it/v1">
+			   <soapenv:Body>
+			      <v1:deleteFileNAS>
+			         <ecmFile>
+			            <idFile propertyName="idFile"></idFile>
+			         </ecmFile>
+			      </v1:deleteFileNAS>
+			   </soapenv:Body>
+			</soapenv:Envelope>   		
+		]]>
+   </Input>
+   <Output>
+   		<![CDATA[
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+			   <soapenv:Body xmlns:v1="http://UploadMulticanaleDomApp.service.bmed.it/v1" xmlns:v11="http://common.schema.bmed.it/v1">
+			      <v1:deleteFileNASResponse propertyName="deleteFileNASResponse"></v1:deleteFileNASResponse>
+			   </soapenv:Body>
+			</soapenv:Envelope>   		
+		]]>
+   </Output>
+</Access>
+
+</DAO-Object>

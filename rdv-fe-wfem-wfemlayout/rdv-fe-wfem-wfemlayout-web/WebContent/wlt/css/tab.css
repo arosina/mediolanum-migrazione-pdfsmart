@@ -1,0 +1,146 @@
+.vtabRow {
+	background: white;
+	border-bottom-color: #c8c8c8; 
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+}
+
+.vtab{
+	font-size: 8pt;
+	font-family: Arial;
+	font-weight: bold;
+	color: #1A458F;	
+	cursor: pointer;	
+	background: url(/wfemlayout/wlt/images/tab/vtab.png) 50% 50% repeat-x;
+
+	border: #c8c8c8 solid 1px;
+	border-bottom: none; 
+	
+	-moz-border-radius-topleft: 5px; 
+	-webkit-border-top-left-radius: 5px; 
+	border-top-left-radius: 5px; 
+	-moz-border-radius-topright: 5px; 
+	-webkit-border-top-right-radius: 5px; 
+	border-top-right-radius: 5px; 
+}
+
+.vtabContent{
+	padding-top: 5pt;
+	padding-right: 5pt;
+	padding-bottom: 5pt;
+	padding-left: 5pt;
+	background-color: #fbfbfb;
+}
+
+.htab{
+	white-space: nowrap;
+	font-family: Arial;
+	font-size: 8pt;
+	font-style: italic;
+	text-align:center;	
+	cursor: pointer;	
+
+	color: gray;
+	
+	background-color: inherit;
+	background-position: top left;
+	background-repeat: no-repeat;
+	background-image: url("/wfemlayout/wlt/images/tab/htab.gif");	
+	
+	border-right: 1px solid silver;
+	border-bottom: 1px solid silver;
+	padding-right: 5px;
+	padding-left: 5px;
+	padding-top: 1px;
+	padding-bottom: 3px;
+}
+
+.htabSelected{
+	white-space: nowrap;
+	font-family: Arial;
+	font-size: 9pt;
+	font-weight: bold;
+	text-align:center;	
+	cursor: default;
+	
+	color: #1A458F;
+	
+	background-color: inherit;
+	background-position: top left;
+	background-repeat: no-repeat;	
+	background-image: url("/wfemlayout/wlt/images/tab/htabselected.gif");	
+
+	border-right: 1px solid silver;
+	padding-right: 5px;
+	padding-left: 5px;
+	padding-top: 1px;
+	padding-bottom: 3px;
+}
+
+.htabErrors{
+	white-space: nowrap;
+	font-family: Arial;
+	font-size: 8pt;
+	font-style: italic;
+	text-align:center;	
+	cursor: pointer;	
+
+	color: red;
+	
+	background-color: inherit;
+	background-position: top left;
+	background-repeat: no-repeat;
+	background-image: url("/wfemlayout/wlt/images/tab/htab.gif");	
+	
+	border-right: 1px solid silver;
+	border-bottom: 1px solid silver;
+	padding-right: 5px;
+	padding-left: 5px;
+	padding-top: 1px;
+	padding-bottom: 3px;
+}
+
+.htabEvidence{
+	white-space: nowrap;
+	font-family: Arial;
+	font-size: 8pt;
+	font-style: italic;
+	text-align:center;	
+	cursor: pointer;	
+
+	color: gray;
+	
+	background-color: inherit;
+	background-position: top left;
+	background-repeat: no-repeat;
+	background-image: url("/wfemlayout/wlt/images/tab/htabevidence.gif");	
+	
+	border-right: 1px solid silver;
+	border-bottom: 1px solid silver;
+	padding-right: 5px;
+	padding-left: 5px;
+	padding-top: 1px;
+	padding-bottom: 3px;
+}
+
+.htabBottomBar{
+	white-space: nowrap;
+	width: 100%;
+	border-bottom-color: silver;
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+}
+
+.htabContent{
+	border-left: 1px solid silver; 
+	border-right: 1px solid silver; 
+	border-bottom: 1px solid silver;
+	
+	-moz-border-radius-bottomleft: 5px; 
+	-webkit-border-bottom-left-radius: 5px; 
+	border-bottom-left-radius: 5px; 
+	-moz-border-radius-bottomright: 5px; 
+	-webkit-border-bottom-right-radius: 5px; 
+	border-bottom-right-radius: 5px; 
+}
+

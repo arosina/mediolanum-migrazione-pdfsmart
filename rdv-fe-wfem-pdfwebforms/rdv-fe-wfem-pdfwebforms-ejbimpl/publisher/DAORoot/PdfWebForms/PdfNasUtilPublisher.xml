@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="PdfNasUtilPublisher" connectionCacheReference="CEPE">
+
+<Access name="pdfDaGestireMoveBlobToNas" type="DAOQueryAccess" queryType="1"
+		OutputCommandDataModel="prgm.pdfwebforms.model.PdfInstanceModel">
+ <Query>
+	select 	PDF_INSTANCE_ID
+	from 	PDF_INSTANCE
+	where 	PDF_CONTENT is not null
+	and 	COMPLETION_TIME &gt;= convert(varchar(8),<p>dataInizio</p>,112)
+	and 	COMPLETION_TIME &lt; convert(varchar(8),dateadd(dd,+1,<p>dataFine</p>),112)
+ </Query> 
+ <Output>
+	<Parameter propertyName="pdfInstanceId"/>
+ </Output> 
+</Access> 
+<Access name="loadPdfContent" type="DAOQueryAccess" queryType="0" maxResultRows="1">
+ <Query>
+	select 	top 1 PDF_CONTENT
+	from 	PDF_INSTANCE 
+	where 	PDF_INSTANCE_ID = ?
+ </Query> 
+ <Input>
+	<Parameter propertyName="pdfInstanceId"/>
+ </Input>
+ <Output>
+	<Parameter propertyName="pdfContent"/>
+ </Output>
+</Access> 
+
+<Access name="pdfDaGestireMoveNasToBlob" type="DAOQueryAccess" queryType="1"
+		OutputCommandDataModel="prgm.pdfwebforms.model.PdfInstanceModel">
+ <Query>
+	select 	PDF_INSTANCE_ID
+	from 	PDF_INSTANCE
+	where 	PDF_CONTENT is null
+	and 	COMPLETION_TIME &gt;= convert(varchar(8),<p>dataInizio</p>,112)
+	and 	COMPLETION_TIME &lt; convert(varchar(8),dateadd(dd,+1,<p>dataFine</p>),112)
+ </Query> 
+ <Output>
+	<Parameter propertyName="pdfInstanceId"/>
+ </Output> 
+</Access> 
+
+<Access name="updatePdfInstance" type="DAOTableAccess" tableName="PDF_INSTANCE">
+   <Bindings>
+	<Parameter propertyName="pdfInstanceId"					dbColumnName="PDF_INSTANCE_ID" primaryKey="true"/>
+	<Parameter propertyName="pdfContent"  					dbColumnName="PDF_CONTENT"/>
+   </Bindings>
+</Access>
+
+</DAO-Object>

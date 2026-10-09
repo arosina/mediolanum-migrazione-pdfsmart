@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="SmsSender">
+
+<Access name="sendSms" type="DAOOSBAccess" serviceName="utilities/utilities/GestoreInvioSms/GestoreInvioSms/v1" operationName="invioSms">
+   <Input>
+   		<![CDATA[
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://utilities.utilities.be.service.bmed.it/GestoreInvioSms/v1">
+			   <soapenv:Header/>
+			   <soapenv:Body>
+			      <v11:invioSmsRequest>
+					<v11:codiceCliente>00000000000</v11:codiceCliente>
+					<v11:progressivo></v11:progressivo>
+					<v11:idIstanza>0</v11:idIstanza>
+					<v11:destinatario propertyName="number" appInfo="true"></v11:destinatario>
+					<v11:smsType>260</v11:smsType>
+					<v11:priority>1</v11:priority>
+					<v11:carrier>2</v11:carrier>
+					<v11:ambiente propertyName="environment"></v11:ambiente>
+					<v11:smsRequestMess>
+						<v11:messaggioDaSalvare propertyName="message"></v11:messaggioDaSalvare>
+						<v11:messaggioDaInviare propertyName="message"></v11:messaggioDaInviare>
+					</v11:smsRequestMess>
+			      </v11:invioSmsRequest>
+			   </soapenv:Body>
+			</soapenv:Envelope>   		
+		]]>
+   </Input>
+   <Output>
+   		<![CDATA[
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+			   <soapenv:Body xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://utilities.utilities.be.service.bmed.it/GestoreInvioSms/v1">
+			      <v1:invioSmsResponse xmlns:v1="http://utilities.utilities.be.service.bmed.it/GestoreInvioSms/v1">
+			         <v1:SMSMTCODE propertyName="smsMtCode"></v1:SMSMTCODE>
+			      </v1:invioSmsResponse>
+			   </soapenv:Body>
+			</soapenv:Envelope>   		
+		]]>
+   </Output>
+</Access>
+
+</DAO-Object>

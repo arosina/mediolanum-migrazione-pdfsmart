@@ -1,0 +1,154 @@
+<!--------  RECAPITI ------->
+
+<table width="98%" cellpadding="0" cellspacing="0">
+
+  <!-- ********* INDIRIZZO EMAIL ******************** -->
+  <tr>
+  	<td>
+  		<table width="100%" class="text"><tr>
+  			<td><hr style="line-height:1px;width:5;color:#1A458F;"></td>
+  			<td style="white-space: nowrap;font-weight:bold;">&nbsp;<img src="<%=template.getWebApp()%>/images/section.gif">
+  					&nbsp;Indirizzi E-Mail&nbsp;
+  			</td>
+  			<td width="100%"><hr style="height:1px;width:100%;color:#1A458F;"></td>
+  		</tr></table>
+  	</td>
+  </tr>
+  <tr>
+     <td>
+	      <%template.setPrefix("recapiti");%>
+	       <table width="100%">
+	         <tr>
+			    <td style="width: 20px;"></td>
+			    <td style="<%=model.fch(template.getPrefix(),"email")%>">
+			       <table>
+					 <% if(model.getIsPersonaGiuridica().booleanValue()){ %>
+				         <tr>
+				           <td><%=template.field("emailPec","modality='read' size='50'")%></td>
+				         </tr>
+					 <% } %>
+			         <tr>
+			           <td><%=template.field("email","uppercase='false' size='50'")%></td>
+			           <% if(modificabile && !model.getIsPersonaGiuridica().booleanValue()){ %>
+				           <td valign="bottom">
+				              <input type="button" value="@" class="action" onclick="aggingiChiocciola();"></td>
+				           </td>
+				           <td class="text" valign="bottom">Usa questo pulsante, o la tastiera, per inserire il carattere @ nell'indirizzo e-mail</td>
+			           <% } %>
+			         </tr>
+			       </table>
+			    </td>
+			 </tr>
+		   </table>	  
+	      <%template.restorePrefix();%>
+     </td>
+  </tr>
+
+  <% if(modificabile && !model.getIsPersonaGiuridica().booleanValue()){ %>
+	<tr>
+	  	<td style="padding-top:10px;">
+	  		<table class="text" style="width:100%;"><tr>
+				<td style="width: 20px;"></td>
+				<td class="text">Attenzione! E' obbligatorio inserire o il numero cellulare o il telefono abitazione</td>
+	  		</tr></table>
+	  	</td>
+	</tr>
+  <% } %>
+  <!-- ********* TELEFONO CELLULARE ******************** -->
+  <tr>
+  	<td>
+  		<table width="100%" class="text"><tr>
+  			<td><hr style="line-height:1px;width:5;color:#1A458F;"></td>
+  			<td style="white-space: nowrap;font-weight:bold;">&nbsp;<img src="<%=template.getWebApp()%>/images/section.gif">
+			     &nbsp;Cellulare&nbsp;
+			</td>
+  			<td width="100%"><hr style="height:1px;width:100%;color:#1A458F;"></td>
+  		</tr></table>
+  	</td>
+  </tr>
+  <tr>
+     <td>
+	      <%template.setPrefix("recapiti_telefonoCellulare");%>
+		  <%@ include file="../include/Telefono.html"%>
+	      <%template.restorePrefix();%>
+     </td>
+  </tr>
+  
+  <!-- ********* TELEFONO RESIDENZA ******************** -->
+  <tr>
+  	<td>
+  		<table width="100%" class="text"><tr>
+  			<td><hr style="line-height:1px;width:5;color:#1A458F;"></td>
+  			<td style="white-space: nowrap;font-weight:bold;">&nbsp;<img src="<%=template.getWebApp()%>/images/section.gif">
+				     <% if(model.getIsDitta().booleanValue()){ %>
+					     &nbsp;Telefono Sede Legale&nbsp;
+				     <% }else{ %>
+					     &nbsp;Telefono Abitazione&nbsp;
+				     <% } %>
+			</td>
+  			<td width="100%"><hr style="height:1px;width:100%;color:#1A458F;"></td>
+  		</tr></table>
+  	</td>
+  </tr>
+  <tr>
+     <td>
+	      <%template.setPrefix("recapiti_telefonoResidenza");%>
+	      <%@ include file="../include/Telefono.html"%>
+	      <%template.restorePrefix();%>
+     </td>
+  </tr>
+ 
+  <!-- ********* TELEFONO FAX ******************** -->
+  <tr>
+  	<td>
+  		<table width="100%" class="text"><tr>
+  			<td><hr style="line-height:1px;width:5;color:#1A458F;"></td>
+  			<td style="white-space: nowrap;font-weight:bold;">&nbsp;<img src="<%=template.getWebApp()%>/images/section.gif">
+			     &nbsp;Fax&nbsp;
+			</td>
+  			<td width="100%"><hr style="height:1px;width:100%;color:#1A458F;"></td>
+  		</tr></table>
+  	</td>
+  </tr>
+  <tr>
+     <td>
+	      <%template.setPrefix("recapiti_telefonoFax");%>
+		  <%@ include file="../include/Telefono.html"%>
+	      <%template.restorePrefix();%>
+     </td>	 
+  </tr>
+  
+  <!-- ********* REPERIBILTA' ******************** -->
+  <tr>
+  	<td>
+  		<table width="100%" class="text"><tr>
+  			<td><hr style="line-height:1px;width:5;color:#1A458F;"></td>
+  			<td style="white-space: nowrap;font-weight:bold;">&nbsp;<img src="<%=template.getWebApp()%>/images/section.gif">
+			     &nbsp;Reperibilit&agrave&nbsp;
+			</td>
+  			<td width="100%"><hr style="height:1px;width:100%;color:#1A458F;"></td>
+  		</tr></table>
+  	</td>
+  </tr>
+  <tr>
+    <td>
+      <%template.setPrefix("recapiti_telefonoResidenza");%>
+      <table width="100%">
+         <tr>
+			    <td style="width: 20px;"></td>
+				<td style="<%=model.fch(template.getPrefix(),"reperibileOraDa")%>"><%=template.field("reperibileOraDa")%></td>
+				<td style="<%=model.fch(template.getPrefix(),"reperibileOraA")%>"><%=template.field("reperibileOraA")%></td>
+				<td style="<%=model.fch(template.getPrefix(),"note")%>"><%=template.field("note","maxlength='50' size='50'")%></td>
+				<td style="<%=model.fch(template.getPrefix(),"noteNonReperibilita")%>"><%=template.field("noteNonReperibilita","maxlength='50' size='50'")%></td>
+		  </tr>
+      </table>
+      <%template.restorePrefix();%>
+    </td>  
+  </tr>
+  
+  <tr><td style="height:5;"></td></tr>
+</table>
+
+<%template.restorePrefix();%>
+<!------------------------------------------->
+

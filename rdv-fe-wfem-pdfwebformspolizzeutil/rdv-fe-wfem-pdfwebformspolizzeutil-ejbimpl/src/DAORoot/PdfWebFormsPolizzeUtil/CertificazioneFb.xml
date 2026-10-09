@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="CertificazioneFb" connectionCacheReference="ARC">
+
+	<Access name="recuperaEsitoCertificazione" type="DAOQueryAccess" queryType="0"  OutputCommandDataModel="prgm.pdfwebformspolizzeutil.model.CertificazioneFbModel">
+		<Query>
+			SELECT STUD_ID,
+			ID_CERTIFICAZIONE, 
+			DT_COMPLETAMENTO,
+			COD_RETE,
+			USER_INS,
+			DT_INS,
+			USER_MOD,
+			DT_MOD,
+			FLG_ANNULLATO
+			FROM dbo.ARC_MCU_CERTIFICAZIONI_UTENTI
+			WHERE STUD_ID = ?
+			AND ID_CERTIFICAZIONE = ?			
+			AND FLG_ANNULLATO = 'N'
+		</Query>   
+		<Input>
+			 <Parameter propertyName="codAgente"/>
+			 <Parameter propertyName="certificazione"/>
+		</Input>
+		<Output>		
+		 	<Parameter propertyName="codAgente"/>
+			 <Parameter propertyName="certificazione"/>	
+			<Parameter propertyName="dataCompletamento"/>
+			<Parameter propertyName="codRete"/>
+			<Parameter propertyName="userIns"/>
+			<Parameter propertyName="dataInserimento"/>
+			<Parameter propertyName="userMod"/>
+			<Parameter propertyName="dataModifica"/>
+			<Parameter propertyName="flagAnnullato"/>			
+		</Output>
+	</Access>
+</DAO-Object>

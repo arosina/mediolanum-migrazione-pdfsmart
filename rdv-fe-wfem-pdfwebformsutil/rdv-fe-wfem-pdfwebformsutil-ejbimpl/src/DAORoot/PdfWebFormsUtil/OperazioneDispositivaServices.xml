@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="OperazioneDispositivaServices">	
+<Access name="creaCodiceOperazioneDispositivaBMED" type="DAOOSBAccess" serviceName="soggetto-posizioneDispositiva-be-osb-OperazioneDispositiva-prj/PS/PS_OperazioneDispositiva" operationName="creaCodiceOperazioneDispositivaBMED" 
+		keepAttrs="true" dataFormatter="prgm.pdfwebformsutil.drivers.dao.XmlFormatter">
+	<Input>
+		<![CDATA[			
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://OperazioneDispositivaBMED.be.schema.bmed.it/v1">   
+		   <soapenv:Body>
+		      <v11:creaCodiceOperazioneDispositivaBMED>
+		         <v11:metadata xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>                      
+		         <v11:metadatiOperazione>
+		            <v11:descrizione propertyName="descrizione"></v11:descrizione>
+		            <v11:canaleOperativo propertyName="canaleOperativo"></v11:canaleOperativo>
+		            <v11:modalitaRichiestaDispositiva propertyName="modalitaRichiestaDispositiva"></v11:modalitaRichiestaDispositiva>
+		            <v11:processoOperativo propertyName="processoOperativo"></v11:processoOperativo>
+		            <v11:codiceProcessoOperativo propertyName="codiceProcessoOperativo"></v11:codiceProcessoOperativo>
+		            <v11:modalitaFirma propertyName="modalitaFirma"></v11:modalitaFirma>
+		            <v11:operazionePadre propertyName="operazionePadre"></v11:operazionePadre>
+		         </v11:metadatiOperazione>
+		      </v11:creaCodiceOperazioneDispositivaBMED>
+		   </soapenv:Body>
+		</soapenv:Envelope>			
+		]]>
+	</Input>
+	<Output>
+		<![CDATA[
+			<S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/">
+			   <S:Body>
+			      <ns2:creaCodiceOperazioneDispositivaBMEDResponse xmlns:ns2="http://OperazioneDispositivaBMED.be.schema.bmed.it/v1">
+			         <ns2:result>
+			            <ns2:codiceOperazione propertyName="codiceOperazione"></ns2:codiceOperazione>
+			            <ns2:metadata>
+			               <ns2:abiCode/>
+			               <ns2:callerDataId/>
+			               <ns2:channelCode/>
+			               <ns2:companyCode/>
+			               <ns2:familiBankerCode/>
+			               <ns2:inputCommonDataVestion/>
+			               <ns2:ip/>
+			               <ns2:keylog/>
+			               <ns2:placeCode/>
+			               <ns2:statusCode>0</ns2:statusCode>
+			               <ns2:swift>MEDBITMM</ns2:swift>
+			               <ns2:userAgent/>
+			               <ns2:userId/>
+			               <ns2:versionBs/>
+			            </ns2:metadata>
+			            <ns2:metadatiOperazione>
+			               <ns2:canaleOperativo></ns2:canaleOperativo>
+			               <ns2:codiceProcessoOperativo></ns2:codiceProcessoOperativo>
+			               <ns2:descrizione></ns2:descrizione>
+			               <ns2:modalitaFirma></ns2:modalitaFirma>
+			               <ns2:modalitaRichiestaDispositiva></ns2:modalitaRichiestaDispositiva>
+			               <ns2:operazionePadre/>
+			               <ns2:processoOperativo></ns2:processoOperativo>
+			            </ns2:metadatiOperazione>
+			         </ns2:result>
+			      </ns2:creaCodiceOperazioneDispositivaBMEDResponse>
+			   </S:Body>
+			</S:Envelope>
+		]]>
+	</Output>
+</Access>
+</DAO-Object>

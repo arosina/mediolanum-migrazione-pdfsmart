@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="PdfCarrello" connectionCacheReference="DBAZ_SOGG">
+
+<Access name="loadDispositivaCarrello" type="DAOQueryAccess" queryType="0" maxResultRows="1">
+	<Query>
+		select 	PROD_C_PROD
+		,		CONTRATTO
+		,		COD_TIPO_ADES_FONDO
+		,		FLG_RIMBO_TOT
+		,		FLG_RIMBO_PROG_FONDO
+		,		IMP_PIANO_PAC
+		,		IMP_PREM_INIZ_PAC
+		,		COD_FREQ_PREMI_SUCVI
+		,		QTA_DURA_PREMI_SUCVI
+		,		COD_PIANO_PAC_ISIN
+		,		IMP_RATA
+		,		QTA_RATE
+		,		COD_ORD_CARL_ORIG
+		,		COD_OPERZ_ORD_CARL
+		,		FLG_RIPART_CONTR
+		,		FLG_RIALLOC_CAPIT_MATUR
+		,		FLG_VARZ_DAT_VALU
+		,		FLG_VARZ_CC
+		,		FLG_MODIF_RIVA_ISTAT
+		,		COD_TIPO_VARZ_STATO_SDD
+		,		NUM_ANNI_NUOVA_DURA_CONTR
+		,		IMP_AMPL_PREM_ANNUO
+		,		IMP_VERSMT_AGGIU
+		,		COD_TIPO_AMPL
+		,		COD_DAT_VALU_ADDEB		
+		from	SOGG_INFOSIMU.DETT_ORD_CARL
+		where	COD_CARL = ?
+		and		COD_ORD_CARL = ?
+		and		GSTD_F_ESIST = 'S'
+	</Query>   
+	<Input>
+		<Parameter propertyName="idCarrello"/>
+		<Parameter propertyName="idDispCarrello"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="codProdottoDispositiva"/>
+		<Parameter propertyName="numeroContratto"/>
+		<Parameter propertyName="tipoAdesione"/>
+		<Parameter propertyName="isRimborsoTotale"/>
+		<Parameter propertyName="isRimborsoProgrammato"/>
+		<Parameter propertyName="obiettivoInvestimentoPac"/>
+		<Parameter propertyName="versamentoInizialePac"/>
+		<Parameter propertyName="frequenzaVersamentiPac"/>
+		<Parameter propertyName="durataVersamentiPac"/>
+		<Parameter propertyName="codPianoPacFondiDiTerzi"/>
+		<Parameter propertyName="importoRata"/>
+		<Parameter propertyName="numeroRate"/>
+		<Parameter propertyName="idDispCollegataCarrello"/>
+		<Parameter propertyName="codTipoDispositiva"/>
+		<Parameter propertyName="isRipartizioneDaContratto"/>
+		<Parameter propertyName="isRiallocazioneCapitaleMaturato"/>
+		<Parameter propertyName="isVariazioneDataValuta"/>
+		<Parameter propertyName="isVariazioneCC"/>
+		<Parameter propertyName="isModificaRivalutazioneISTAT"/>
+		<Parameter propertyName="tipoVariazioneStatoSDD"/>
+		<Parameter propertyName="numAnniNuovaDurata"/>
+		<Parameter propertyName="importoAmpliamento"/>
+		<Parameter propertyName="importoVersamento"/>
+		<Parameter propertyName="tipoAmpliamento"/>
+		<Parameter propertyName="codDataValutaAddebito"/>		
+	</Output>
+</Access> 
+
+<Access name="loadSottoscrittoriCarrello" type="DAOQueryAccess" queryType="0"
+		OutputCommandDataModel="prgm.pdfwebforms.carrello.SottoscrittoreCarrelloModel">
+	<Query>
+		select 	CLI_C as codiceCliente
+		,		null as tipoVariazione
+		,		1 as ord
+		from	SOGG_INFOSIMU.ANAG_CARL
+		where	COD_CARL = ?	
+		
+		union all
+		
+		select 	CLI_C as codiceCliente
+		,		COD_TIPO_VARZ_INTEST as tipoVariazione
+		,		2 as ord
+		from	SOGG_INFOSIMU.LEGM_COINT_ORD
+		where	COD_CARL = ?
+		and		COD_ORD_CARL = ?
+		
+		order by ord asc
+	</Query>   
+	<Input>
+		<Parameter propertyName="idCarrello"/>
+		<Parameter propertyName="idCarrello"/>
+		<Parameter propertyName="idDispCarrello"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="codiceCliente"/>
+		<Parameter propertyName="tipoVariazione"/>
+	</Output>
+</Access> 
+
+<Access name="loadFondiDispositivaCarrello" type="DAOQueryAccess" queryType="0"
+		OutputCommandDataModel="prgm.pdfwebforms.carrello.FondoDispositivaCarrelloModel">
+	<Query>
+		select 	COD_PROD_MIFID
+		,		COD_PROD_ORIG
+		,		COD_OPERZ_PROD_ORIG
+		,		COD_DIVI
+		,		COD_SEGNO_IMP
+		,		IMP
+		,		COD_CATEG_FONDO
+		,		FLG_RIMBO_TOT
+		,		COD_TIPO_FONDO_BIGCH
+		,		IMP_INVEST_BIGCH
+		,		COD_TIPO_FONDO_IIS
+		,		IMP_INVEST_IIS
+		,		IMP_INVEST_DBCHANCE
+		,		IMP_VERSMT_TOT_PIANO
+		,		IMP_VERSMT_INIZ_PIANO
+		,		COD_FREQ_PIANO
+		,		QTA_RATE_PIANO
+		,		IMP_OPERZ_AGGIU
+		,		FLG_OPERZ_STANDLN
+		,		COD_TIPO_PROFL_INVEST_PARTZA
+		,		COD_TIPO_PROFL_INVEST_DEST
+		,		PRC_RIPART_FONDO	
+		,		COD_OPERZ_PROD_CARL
+		,		QTA_OPERZ_PROD_CARL
+		from	SOGG_INFOSIMU.DETT_OPERZ_PROD_CARL
+		where	COD_CARL = ?
+		and		COD_ORD_CARL = ?
+		and		GSTD_F_ESIST = 'S'
+		order by COD_OPERZ_CARL
+	</Query>   
+	<Input>
+		<Parameter propertyName="idCarrello"/>
+		<Parameter propertyName="idDispCarrello"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="progrCatalogoMifid"/>
+		<Parameter propertyName="codProdOrig"/>
+		<Parameter propertyName="codOperzProdOrig"/>
+		<Parameter propertyName="divisa"/>
+		<Parameter propertyName="segnoOperazione"/>
+		<Parameter propertyName="importoOperazione"/>
+		<Parameter propertyName="tipoProfiloFondo"/>
+		<Parameter propertyName="isRimborsoTotale"/>
+		<Parameter propertyName="destinazioneFondoBigChance"/>
+		<Parameter propertyName="importoInvestimentoBigChance"/>
+		<Parameter propertyName="destinazioneFondoIIS"/>
+		<Parameter propertyName="importoInvestimentoIIS"/>
+		<Parameter propertyName="importoInvestimentoDoubleChance"/>
+		<Parameter propertyName="obiettivoInvestimento"/>
+		<Parameter propertyName="versamentoIniziale"/>
+		<Parameter propertyName="frequenzaVersamenti"/>
+		<Parameter propertyName="durataVersamenti"/>
+		<Parameter propertyName="importoOperazioneAggiuntiva"/>
+		<Parameter propertyName="isOperazioneStandAlone"/>
+		<Parameter propertyName="codProfiloPartenza"/>
+		<Parameter propertyName="codProfiloDestinazione"/>
+		<Parameter propertyName="percentualeOperazione"/>
+		<Parameter propertyName="codTipoOperazione"/>
+		<Parameter propertyName="quantita"/>
+	</Output>
+</Access> 
+
+<Access name="datiPdfScaduto" type="DAOTableAccess" tableName="PDF_INSTANCE" connectionCacheReference="CEPE">
+   <Bindings>
+	<Parameter propertyName="pdfInstanceId"		dbColumnName="PDF_INSTANCE_ID" primaryKey="true"/>
+	<Parameter propertyName="idCarrello"		dbColumnName="ID_CARRELLO"/>
+	<Parameter propertyName="pdfStatus"			dbColumnName="STATO"/>
+   </Bindings>
+</Access>
+
+<Access name="sganciaScadutoDalCarrello" type="DAOTableAccess" tableName="PDF_INSTANCE" connectionCacheReference="CEPE">
+   <Bindings>
+	<Parameter propertyName="pdfInstanceId"					dbColumnName="PDF_INSTANCE_ID" primaryKey="true"/>
+	<Parameter propertyName="idCarrello"					dbColumnName="ID_CARRELLO"/>
+   </Bindings>
+</Access>
+
+</DAO-Object>

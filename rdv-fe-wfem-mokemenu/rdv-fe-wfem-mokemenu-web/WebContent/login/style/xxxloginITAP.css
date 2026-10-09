@@ -1,0 +1,196 @@
+.sfondoReteScuro{
+	background-color:#A1A0A0;
+}
+.sfondoReteMedio{
+	background-color:#D3D3D3;
+}
+.sfondoReteChiaro{
+	background-color:#F0F0F0;
+}
+.carattereNormale{
+	font-size: 8pt;
+	font-family: Tahoma;
+	color:#000000;
+}
+.carattereScuro{
+	font-size: 8pt;
+	font-family: Tahoma;
+	color:#A1A0A0;
+}
+.campoDiInput {
+	font-family: Tahoma;
+	font-size: 8pt;
+	color: #000000;
+	text-transform : uppercase;
+	background-color : white;
+	border-right-width : 1px;
+	border-bottom-width : 1px;
+	border-top-width : 1px;
+	border-left-width : 1px;
+	border-right-color : #A1A0A0;
+	border-bottom-color : #A1A0A0;
+	border-top-color : #A1A0A0;
+	border-left-color : #A1A0A0;
+	border-right-style : solid;
+	border-bottom-style : solid;
+	border-top-style : solid;
+	border-left-style : solid ;
+}
+.labelUserPwd {
+	font-family: Tahoma;
+	font-size: 8pt;
+	color: #ffffff;
+	cursor: pointer;
+}
+.funz{
+	cursor: pointer;
+	font-family:Tahoma;
+	font-size:8pt;
+	color:gray;
+}
+.funzEvidenziata{
+	cursor:pointer;
+	font-family:Tahoma;
+	font-weight:bold;
+	font-size:8pt;
+	color:black;
+}
+.subFunz{
+	cursor:pointer;
+	font-family:Tahoma;
+	font-size:7pt;
+	color:gray;
+}
+.subFunzEvidenziata{
+	cursor:pointer;
+	font-family:Tahoma;
+	font-weight:bold;
+	font-size:7pt;
+	color:black;
+}
+.labelLogoff{
+	cursor:pointer;
+	font-family:Tahoma;
+	font-size:8pt;
+	color:black;
+}
+.labelAppl{
+	color:#A1A0A0;
+	font-family:Tahoma;
+	font-size:10pt;
+	font-weight:bold;
+}
+.labelMainFunz{
+	color:#000000;
+	font-family:Tahoma;
+	font-weight:bold;
+	font-size:9pt;
+}
+.labelSubFunz{
+	color:#666666;
+	font-family:Tahoma;
+	font-weight:bold;
+	font-size:8pt;
+}
+.labelBenvenuto{
+	color:white;
+	font-weight:bold;
+	font-size:11px;
+	font-family:Tahoma;
+}
+.labelBenvenutoUser{
+	color:white;
+	font-weight:bold;
+	font-size:11px;
+	font-family:Tahoma;
+}
+.labelBenvenutoData{
+	color:white;
+	font-size:10px;
+	font-family:Tahoma;
+}
+.labelVersioneAppl{
+	font-size:10px;
+	font-family:Tahoma;
+}
+.evidenziaApplicazione{
+	border-style: outset;
+	border-width: thin;
+}
+.labelMaximizeRestore{
+	font-family:Tahoma;
+	font-size:12px;
+	cursor: pointer;
+}
+.gruppo{
+	font-family:Tahoma;
+	font-size:12px;
+	background-color: #CEE1F1;
+	cursor: pointer;
+	color:#000000;
+}
+.gruppoEvidenziato{
+	color:#A1A0A0;
+	font-family:Tahoma;
+	font-size:12px;
+	font-weight:bold;
+	background-color : white;
+	border-right-width : 1px;
+	border-left-width : 1px;
+	border-right-color : #A1A0A0;
+	border-left-color : #A1A0A0;
+	border-right-style : solid;
+	border-left-style : solid ;
+}
+.contornoTabellaErrore
+{
+	color:#000000;
+	font-family:Tahoma;
+	font-size:15pt;
+	font-weight:bold;
+	background-color :#F4F4F2;
+	border-left-width :1px;
+	border-right-width :1px;
+	border-top-width :1px;
+	border-bottom-width :1px;
+	border-left-color : #A1A0A0;
+	border-right-color : #A1A0A0;
+	border-bottom-color : #A1A0A0;
+	border-top-color : #A1A0A0;
+	border-left-style : solid ;
+	border-right-style : solid;
+	border-bottom-style : solid ;
+	border-top-style : solid ;
+}
+.newsTestata {
+	FONT-SIZE: 21px; 
+	COLOR: #A1A0A0; 
+	font-family:Tahoma;
+	font-size:13pt;
+}
+A.newsLink{
+	TEXT-DECORATION: none;
+	font-family:Tahoma;
+	font-size:9pt;
+	color: black; 
+}
+A.newsLink:hover {
+	TEXT-DECORATION: underline;
+	font-family:Tahoma;
+	font-size:9pt;
+	color: black;
+}
+
+.newsRiquadro {
+	BORDER-RIGHT: #A1A0A0 1px solid; 
+	PADDING-RIGHT: 10px; 
+	BORDER-TOP: #A1A0A0 1px solid; 
+	PADDING-LEFT: 10px; 
+	PADDING-BOTTOM: 10px; 
+	BORDER-LEFT: #A1A0A0 1px solid; 
+	WIDTH: 198px; 
+	PADDING-TOP: 10px; 
+	BORDER-BOTTOM: #A1A0A0 1px solid;
+	font-family:Tahoma;
+	font-size:9pt;
+}

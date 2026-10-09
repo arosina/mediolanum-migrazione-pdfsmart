@@ -1,0 +1,104 @@
+/* Bottoni upload */
+.uploadButton{
+	font-family: Arial;
+	font-size: 8pt;
+	cursor: pointer;
+	color: #1A458F;
+}
+
+.uploadField{
+	font-family: Arial;
+	font-size: 8pt;
+	cursor: pointer;
+	border-top: solid 1px silver;
+	border-left: solid 1px silver;
+	border-bottom: solid 1px silver;
+	border-right: solid 1px silver;
+}
+
+/* Campi in input */
+.upperField{
+	text-transform: uppercase;
+}
+.numberField{
+	text-align: right;
+}
+.inputField{
+	font-family: Arial;
+	font-size: 8pt;
+	color: #1A458F;
+	border: solid 1px silver;
+}
+.outputField {
+	cursor: default;
+	font-family: Arial;
+	font-size: 8pt;
+	color: #1A458F;
+	background-color : #f8f8f8;
+	border: solid 1px silver;
+}
+.fieldHasError {
+	font-family: Arial;
+	font-size: 8pt;
+	color: red;
+	border: solid 1px coral;
+}
+.styledCombo{
+	margin: 0;
+}
+
+/* Helper for errors, warnings and message */
+.helperPanel{
+	background-color: #f8f8f8;
+	border: 1px solid silver;
+	-moz-border-radius: 5px; 
+	-webkit-border-radius: 5px; 
+	border-radius: 5px;
+}
+.helperRow{
+	font-family: Arial;
+	font-size: 8pt;
+	color: #1A458F;
+	font-weight: normal;
+	padding: 3pt;
+	border: solid silver 1px;
+}
+.helperErrorHeader{
+	font-family: Arial;
+	font-size: 8pt;
+	color: white;
+	font-weight: bold;
+	background-color: red;
+	cursor: pointer;
+	padding-left: 3pt;
+	padding-right: 3pt;
+	padding-top: 1pt;
+	padding-bottom: 1pt;
+	border: solid silver 1px;	
+}
+.helperWarningHeader{
+	font-family: Arial;
+	font-size: 8pt;
+	color: #1A458F;
+	font-weight: bold;
+	background-color: gold;
+	cursor: pointer;
+	padding-left: 3pt;
+	padding-right: 3pt;
+	padding-top: 1pt;
+	padding-bottom: 1pt;
+	border: solid silver 1px;
+}
+.helperMessageHeader{
+	font-family: Arial;
+	font-size: 8pt;
+	color: white;
+	font-weight: bold;
+	background-color: blue;
+	cursor: pointer;
+	padding-left: 3pt;
+	padding-right: 3pt;
+	padding-top: 1pt;
+	padding-bottom: 1pt;
+	border: solid silver 1px;
+}

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="ISO-8859-15"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.atosorigin.wfem</groupId>
+    <artifactId>rdv-lib-wfem-thirdparty</artifactId>
+    <version>3.0.0</version>
+  </parent>
+  <artifactId>rdv-lib-wfem-thirdparty-ear</artifactId>
+  <packaging>ear</packaging>
+  <name>rdv-lib-wfem-thirdparty-ear</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>${project.parent.groupId}</groupId>
+      <artifactId>rdv-lib-wfem-thirdparty-deps</artifactId>
+      <version>${project.parent.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>${project.name}</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-ear-plugin</artifactId>
+        <configuration>
+          <modules>
+            <jarModule>
+              <groupId>${project.parent.groupId}</groupId>
+              <artifactId>${project.parent.artifactId}-deps</artifactId>
+              <includeInApplicationXml>true</includeInApplicationXml>
+              <bundleDir>/lib</bundleDir>
+            </jarModule>
+          </modules>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <profiles>
+    <profile>
+      <id>bea</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.oracle.weblogic</groupId>
+            <artifactId>weblogic-maven-plugin</artifactId>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

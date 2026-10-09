@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="PdfDataentryUtil" connectionCacheReference="DBAZ_SOGG">
+
+<Access name="luogoAutocomplete" maxResultRows="10" type="DAOQueryAccess" queryType="1"
+		OutputCommandDataModel="prgm.pdfwebforms.dataentryutil.LuogoAutocompleteModel">
+	<Query> 
+		select distinct 
+					CAP_X_LOC
+		from 		CLL.CAP
+		where		GSTD_F_ESIST = 'S'
+		and         DAT_FINE_VALID = to_date('31/12/9999','dd/mm/yyyy')
+		<IfNotNull propertyName="autocompleteTerm">and trim(CAP_X_LOC) like upper(<p>autocompleteTerm%</p>)</IfNotNull>
+		<IfNotNull propertyName="luogo">and trim(CAP_X_LOC) = upper(<p>luogo</p>)</IfNotNull>
+		order by CAP_X_LOC
+	</Query> 
+	<Output>  
+		<Parameter propertyName="luogo"/> 
+	</Output> 
+</Access>  							
+
+<Access name="toponimoAutocomplete" maxResultRows="15" type="DAOQueryAccess" queryType="1"
+		OutputCommandDataModel="prgm.pdfwebforms.dataentryutil.ToponimoAutocompleteModel">
+	<Query> 
+		select COD, DESCR 
+		from DAICREF.CCB_ANAGRAFICA_DECOD
+		where TIPO = 'TIPO-VIA-INFORETE' 
+		and nvl(trim(COD),' ') != ' ' 
+		and ATTIVO = 'S'
+		<IfNotNull propertyName="autocompleteTerm">and trim(DESCR) like upper(<p>autocompleteTerm%</p>)</IfNotNull>
+		<IfNotNull propertyName="descrToponimo">and trim(DESCR) = upper(<p>descrToponimo</p>)</IfNotNull>
+		order by DESCR
+	</Query> 
+	<Output>  
+		<Parameter propertyName="codToponimo"/> 
+		<Parameter propertyName="descrToponimo"/> 
+	</Output> 
+</Access>  							
+
+<Access name="comuneAutocomplete" maxResultRows="20" type="DAOQueryAccess" queryType="1"
+		OutputCommandDataModel="prgm.pdfwebforms.dataentryutil.ComuneAutocompleteModel">
+	<Query> 
+		select distinct	'I', 'ITALIA', CAP_C_PROV, CAP_C_CAP, CAP_X_LOC
+		from 		CLL.CAP
+		where		GSTD_F_ESIST = 'S'
+		and         DAT_FINE_VALID = to_date('31/12/9999','dd/mm/yyyy')		
+		<IfNotNull  propertyName="autocompleteTerm">
+			<IfEqual propertyName="autocompleteFieldName" propertyValue="provinciaComune">
+				and trim(CAP_C_PROV) like upper(<p>autocompleteTerm%</p>)
+			</IfEqual>
+			<IfEqual propertyName="autocompleteFieldName" propertyValue="capComune">
+				and trim(CAP_C_CAP) like upper(<p>autocompleteTerm%</p>)
+			</IfEqual>
+			<IfEqual propertyName="autocompleteFieldName" propertyValue="comune">
+				and trim(CAP_X_LOC) like upper(<p>autocompleteTerm%</p>)
+			</IfEqual>
+		</IfNotNull>
+		<IfNotNull  propertyName="provinciaComune">and trim(CAP_C_PROV) = upper(<p>provinciaComune</p>)</IfNotNull>
+		<IfNotNull  propertyName="capComune">and trim(CAP_C_CAP) = upper(<p>capComune</p>)</IfNotNull>
+		<IfNotNull  propertyName="comune">and trim(CAP_X_LOC) = upper(<p>comune</p>)</IfNotNull>
+		order by CAP_X_LOC
+	</Query> 
+	<Output>
+		<Parameter propertyName="nazioneComune"/>
+		<Parameter propertyName="descrNazioneComune"/>   
+		<Parameter propertyName="provinciaComune"/> 
+		<Parameter propertyName="capComune"/> 
+		<Parameter propertyName="comune"/> 
+	</Output> 
+</Access>  							
+
+<Access name="agePersonAutocomplete" maxResultRows="10" type="DAOQueryAccess" queryType="1"
+        connectionCacheReference="INR"
+		OutputCommandDataModel="prgm.pdfwebforms.dataentryutil.AgePersonAutocompleteModel">
+	<Query> 
+		select 	A.AGE_C_AGE
+		, 		A.AGE_M_COGN_AGE as cognome
+		, 		A.AGE_M_NOME_AGE as nome
+		from 	INR_AGENTI A
+		where 	1 = 1
+				<IfNotNull propertyName="codice">and A.AGE_C_AGE like <p>%codice</p></IfNotNull>
+				<IfNotNull propertyName="nome">and A.AGE_M_NOME_AGE like upper(<p>nome%</p>)</IfNotNull>
+				<IfNotNull propertyName="cognome">and A.AGE_M_COGN_AGE like upper(<p>cognome%</p>)</IfNotNull>
+				<IfNotNull propertyName="codiceFiscale">and A.AGE_X_CF_AGE like upper(<p>codiceFiscale%</p>)</IfNotNull>
+				<IfNotNull propertyName="partitaIva">and (A.AGE_N_PIVA_AGE like upper(<p>partitaIva%</p>) and A.AGE_N_PIVA_AGE != '00000000000')</IfNotNull>
+				<IfNotNull propertyName="cognomeNome">and (ltrim(rtrim(upper(A.AGE_M_COGN_AGE))) + ' ' + ltrim(rtrim(upper(A.AGE_M_NOME_AGE))) like (isnull(upper(<p>cognomeNome</p>)+'%','%')) or ltrim(rtrim(upper(A.AGE_M_NOME_AGE))) + ' ' + ltrim(rtrim(upper(A.AGE_M_COGN_AGE))) like (isnull(upper(<p>cognomeNome</p>)+'%','%')))</IfNotNull>
+				<IfNotNull propertyName="nomeCognome">and (ltrim(rtrim(upper(A.AGE_M_COGN_AGE))) + ' ' + ltrim(rtrim(upper(A.AGE_M_NOME_AGE))) like (isnull(upper(<p>nomeCognome</p>)+'%','%')) or ltrim(rtrim(upper(A.AGE_M_NOME_AGE))) + ' ' + ltrim(rtrim(upper(A.AGE_M_COGN_AGE))) like (isnull(upper(<p>nomeCognome</p>)+'%','%')))</IfNotNull>
+				<IfNotNull propertyName="codiceFiscalePartitaIva">and ((A.AGE_X_CF_AGE like upper(<p>codiceFiscalePartitaIva%</p>)) or (A.AGE_N_PIVA_AGE like upper(<p>codiceFiscalePartitaIva%</p>) and A.AGE_N_PIVA_AGE != '00000000000'))</IfNotNull>
+		<IfNotNull propertyName="codice">order by 1 asc</IfNotNull>				
+		<IfNull propertyName="codice">order by 2, 3 asc</IfNull>
+	</Query> 
+	<Output>  
+		<Parameter propertyName="codAgente"/> 
+		<Parameter propertyName="cognome"/> 
+		<Parameter propertyName="nome"/> 
+	</Output> 
+</Access>  				
+
+<Access name="personAutocomplete" maxResultRows="10" type="DAOQueryAccess" queryType="1"
+		OutputCommandDataModel="prgm.pdfwebforms.dataentryutil.PersonAutocompleteModel">
+	<Query>
+		select 	distinct B.AGE_C
+		,		A.CLI_C as ndg
+		, 		'' as idCensimento
+		, 		A.CLI_M_COGN as cognome
+		, 		A.CLI_M_NOM as nome
+		,		A.CLI_C_SEC_INT as secondaIntestazione
+		from 	CLL.CLI A inner join CLL.CLIAGE B on A.CLI_C = B.CLI_C
+		<IfEqual propertyName="includiSoloCogestiti" propertyValue="true">
+	    inner join CLL.LEGM_CLI_AGENT_COGEST C 
+	    		on 	C.CLI_C = A.CLI_C 
+			    and C.COD_RUOLO_AGENT = <p>codRuoloImpersonato</p>
+			    and C.COD_AGENT = <p>contextCurrentLinkedUserCode</p>
+	    		and C.GSTD_F_ESIST = 'S'
+		</IfEqual>
+		where 	1 = 1
+				<IfNotNull propertyName="ndg">and trim(leading '0' from A.CLI_C) like trim(leading '0' from <p>ndg</p>)||'%'</IfNotNull>
+				<IfNotNull propertyName="idCensimento">and 1 = 2</IfNotNull>
+				<IfNotNull propertyName="nome">and A.CLI_M_NOM like upper(<p>nome%</p>)</IfNotNull>
+				<IfNotNull propertyName="cognome">and A.CLI_M_COGN like upper(<p>cognome%</p>)</IfNotNull>
+				<IfNotNull propertyName="secondaIntestazione">and A.CLI_C_SEC_INT like upper(<p>secondaIntestazione%</p>)</IfNotNull>
+				<IfNotNull propertyName="codiceFiscale">and A.CLI_X_CF like upper(<p>codiceFiscale%</p>)</IfNotNull>
+				<IfNotNull propertyName="partitaIva">and (A.CLI_N_PIVA like upper(<p>partitaIva%</p>) and A.CLI_N_PIVA != '00000000000')</IfNotNull>
+				<IfNotNull propertyName="cognomeNome">and (ltrim(rtrim(upper(A.CLI_M_COGN))) || ' ' || ltrim(rtrim(upper(A.CLI_M_NOM))) like (nvl(upper(<p>cognomeNome</p>)||'%','%')) or ltrim(rtrim(upper(A.CLI_M_NOM))) || ' ' || ltrim(rtrim(upper(A.CLI_M_COGN))) like (nvl(upper(<p>cognomeNome</p>)||'%','%')))</IfNotNull>
+				<IfNotNull propertyName="nomeCognome">and (ltrim(rtrim(upper(A.CLI_M_COGN))) || ' ' || ltrim(rtrim(upper(A.CLI_M_NOM))) like (nvl(upper(<p>nomeCognome</p>)||'%','%')) or ltrim(rtrim(upper(A.CLI_M_NOM))) || ' ' || ltrim(rtrim(upper(A.CLI_M_COGN))) like (nvl(upper(<p>nomeCognome</p>)||'%','%')))</IfNotNull>
+				<IfNotNull propertyName="codiceFiscalePartitaIva">and ((A.CLI_X_CF like upper(<p>codiceFiscalePartitaIva%</p>)) or (A.CLI_N_PIVA like upper(<p>codiceFiscalePartitaIva%</p>) and A.CLI_N_PIVA != '00000000000'))</IfNotNull>
+		and		B.AGE_C = <p>codAgente</p>
+		and     trunc(sysdate) between B.CLIAGE_D_INIZ and B.CLIAGE_D_FINE
+        and     A.GSTD_F_ESIST = 'S'
+        and     B.GSTD_F_ESIST = 'S'		
+		
+		union
+		
+		select 	distinct B.AGE_C
+		,		A.CLI_C as ndg
+		, 		'' as idCensimento
+		, 		A.CLI_M_COGN as cognome
+		, 		A.CLI_M_NOM as nome
+		,		A.CLI_C_SEC_INT as secondaIntestazione
+		from 	CLL.CLI A inner join CLL.LEGM_CLI_SECON_AGENT B on A.CLI_C = B.CLI_C
+		<IfEqual propertyName="includiSoloCogestiti" propertyValue="true">
+	    inner join CLL.LEGM_CLI_AGENT_COGEST C 
+	    		on 	C.CLI_C = A.CLI_C 
+			    and C.COD_RUOLO_AGENT = <p>codRuoloImpersonato</p>
+			    and C.COD_AGENT = <p>contextCurrentLinkedUserCode</p>
+	    		and C.GSTD_F_ESIST = 'S'
+		</IfEqual>
+		where 	1 = 1
+				<IfNotNull propertyName="ndg">and trim(leading '0' from A.CLI_C) like trim(leading '0' from <p>ndg</p>)||'%'</IfNotNull>
+				<IfNotNull propertyName="idCensimento">and 1 = 2</IfNotNull>
+				<IfNotNull propertyName="nome">and A.CLI_M_NOM like upper(<p>nome%</p>)</IfNotNull>
+				<IfNotNull propertyName="cognome">and A.CLI_M_COGN like upper(<p>cognome%</p>)</IfNotNull>
+				<IfNotNull propertyName="secondaIntestazione">and A.CLI_C_SEC_INT like upper(<p>secondaIntestazione%</p>)</IfNotNull>
+				<IfNotNull propertyName="codiceFiscale">and A.CLI_X_CF like upper(<p>codiceFiscale%</p>)</IfNotNull>
+				<IfNotNull propertyName="partitaIva">and (A.CLI_N_PIVA like upper(<p>partitaIva%</p>) and A.CLI_N_PIVA != '00000000000')</IfNotNull>
+				<IfNotNull propertyName="cognomeNome">and (ltrim(rtrim(upper(A.CLI_M_COGN))) || ' ' || ltrim(rtrim(upper(A.CLI_M_NOM))) like (nvl(upper(<p>cognomeNome</p>)||'%','%')) or ltrim(rtrim(upper(A.CLI_M_NOM))) || ' ' || ltrim(rtrim(upper(A.CLI_M_COGN))) like (nvl(upper(<p>cognomeNome</p>)||'%','%')))</IfNotNull>
+				<IfNotNull propertyName="nomeCognome">and (ltrim(rtrim(upper(A.CLI_M_COGN))) || ' ' || ltrim(rtrim(upper(A.CLI_M_NOM))) like (nvl(upper(<p>nomeCognome</p>)||'%','%')) or ltrim(rtrim(upper(A.CLI_M_NOM))) || ' ' || ltrim(rtrim(upper(A.CLI_M_COGN))) like (nvl(upper(<p>nomeCognome</p>)||'%','%')))</IfNotNull>
+				<IfNotNull propertyName="codiceFiscalePartitaIva">and ((A.CLI_X_CF like upper(<p>codiceFiscalePartitaIva%</p>)) or (A.CLI_N_PIVA like upper(<p>codiceFiscalePartitaIva%</p>) and A.CLI_N_PIVA != '00000000000'))</IfNotNull>
+		and		B.AGE_C = <p>codAgente</p>
+        and     A.GSTD_F_ESIST = 'S'
+        and     B.GSTD_F_ESIST = 'S'		
+		
+		<IfNotEqual propertyName="escludiProspect" propertyValue="true">
+		union
+		
+		select 	distinct A.AGE_C_AGE
+		,		'' as ndg
+		, 		A.ASSGNCLIAGE_C_POTZLE as idCensimento
+		, 		A.CLI_M_COGN as cognome
+		, 		A.CLI_M_NOME as nome
+		,		A.CLI_X_SECONDA_INTEST as secondaIntestazione
+		from 	CLL.INR_CLI_ELETTR_REP A
+		<IfEqual propertyName="includiSoloCogestiti" propertyValue="true">
+	    inner join CLL.LEGM_PROSPCT_AGENT_COGEST D 
+   				on 		D.ASSGNCLIAGE_C_POTZLE = A.ASSGNCLIAGE_C_POTZLE 
+			    and   	D.COD_RUOLO_AGENT = <p>codRuoloImpersonato</p>
+			    and   	D.COD_AGENT = <p>contextCurrentLinkedUserCode</p>
+   				and 	D.GSTD_F_ESIST = 'S'
+		</IfEqual>
+		where 	1 = 1
+				<IfNotNull propertyName="ndg">and 1 = 2</IfNotNull>
+				<IfNotNull propertyName="idCensimento">and A.ASSGNCLIAGE_C_POTZLE = <p>idCensimento</p></IfNotNull>
+				<IfNotNull propertyName="nome">and A.CLI_M_NOME like upper(<p>nome%</p>)</IfNotNull>
+				<IfNotNull propertyName="cognome">and A.CLI_M_COGN like upper(<p>cognome%</p>)</IfNotNull>
+				<IfNotNull propertyName="secondaIntestazione">and A.CLI_X_SECONDA_INTEST like upper(<p>secondaIntestazione%</p>)</IfNotNull>
+				<IfNotNull propertyName="codiceFiscale">and A.CLI_X_CF like upper(<p>codiceFiscale%</p>)</IfNotNull>
+				<IfNotNull propertyName="partitaIva">and (A.CLI_N_PIVA like upper(<p>partitaIva%</p>) and A.CLI_N_PIVA != '00000000000')</IfNotNull>
+				<IfNotNull propertyName="cognomeNome">and (ltrim(rtrim(upper(A.CLI_M_COGN))) || ' ' || ltrim(rtrim(upper(A.CLI_M_NOME))) like (nvl(upper(<p>cognomeNome</p>)||'%','%')) or ltrim(rtrim(upper(A.CLI_M_NOME))) || ' ' || ltrim(rtrim(upper(A.CLI_M_COGN))) like (nvl(upper(<p>cognomeNome</p>)||'%','%')))</IfNotNull>
+				<IfNotNull propertyName="nomeCognome">and (ltrim(rtrim(upper(A.CLI_M_COGN))) || ' ' || ltrim(rtrim(upper(A.CLI_M_NOME))) like (nvl(upper(<p>nomeCognome</p>)||'%','%')) or ltrim(rtrim(upper(A.CLI_M_NOME))) || ' ' || ltrim(rtrim(upper(A.CLI_M_COGN))) like (nvl(upper(<p>nomeCognome</p>)||'%','%')))</IfNotNull>
+				<IfNotNull propertyName="codiceFiscalePartitaIva">and ((A.CLI_X_CF like upper(<p>codiceFiscalePartitaIva%</p>)) or (A.CLI_N_PIVA like upper(<p>codiceFiscalePartitaIva%</p>) and A.CLI_N_PIVA != '00000000000'))</IfNotNull>
+		and		A.AGE_C_AGE = <p>codAgente</p> 
+		and		A.CODIFCLIMEDL_C_CLI_MEDL is null
+		</IfNotEqual>
+		
+		<IfEqual propertyName="includiNdgSpecifici" propertyValue="true">
+			union
+			
+			select 	distinct B.AGE_C
+			,		A.CLI_C as ndg
+			, 		'' as idCensimento
+			, 		A.CLI_M_COGN as cognome
+			, 		A.CLI_M_NOM as nome
+			,		A.CLI_C_SEC_INT as secondaIntestazione
+			from 	CLL.CLI A inner join CLL.CLIAGE B on A.CLI_C = B.CLI_C
+			where 	1 = 1
+					<IfNull propertyName="ndg">and 1 = 2</IfNull>
+					<IfNotNull propertyName="ndg">and A.CLI_C = lpad(<p>ndg</p>, 11, '0')</IfNotNull>
+			and     trunc(sysdate) between B.CLIAGE_D_INIZ and B.CLIAGE_D_FINE
+	        and     A.GSTD_F_ESIST = 'S'
+	        and     B.GSTD_F_ESIST = 'S'
+        </IfEqual>
+		
+		order by 4, 5 asc
+	</Query> 
+	<Output>  
+		<Parameter propertyName="codAgente"/> 
+		<Parameter propertyName="ndg"/> 
+		<Parameter propertyName="idCensimento"/> 
+		<Parameter propertyName="cognome"/> 
+		<Parameter propertyName="nome"/> 
+		<Parameter propertyName="secondaIntestazione"/> 
+	</Output> 
+</Access>  				
+
+<Access name="contoAutocomplete" type="DAOQueryAccess" queryType="1" 
+	    OutputCommandDataModel="prgm.pdfwebforms.dataentryutil.ContoAutocompleteModel">
+	<Query>
+		select	distinct <p>tipoConto</p> as tipoConto
+		,		<IfNotNull  propertyName="codAgente">CLIAGE1.AGE_C</IfNotNull><IfNull  propertyName="codAgente">null</IfNull> as codAgente
+		,		CONTRCLI.CLI_C as ndgCliente
+		,		CONTR.CONTR_N as numeroContoOriginale
+		,		CONTR.CONTR_N as numeroEstesoConto
+		,		substr(CONTR.CONTR_N,5,8) as numeroConto 
+		,		'IT' || nvl(substr(CONTR.CONTR_C_IBAN,1,13),'             ') || substr('000000000000' || substr(CONTR.CONTR_N,5,8),-12) as ibanConto  
+		,		CONTR.CONTR_D_CARICAM as dataAperturaConto 
+	    ,       to_char(extract(year from CONTR.CONTR_D_CARICAM))     as annoAperturaConto 
+		,		'IT'                                                  as paeseIbanConto
+		,		nvl(substr(CONTR.CONTR_C_IBAN,1,2),'  ')              as cinEuropeoIbanConto
+		,		nvl(substr(CONTR.CONTR_C_IBAN,3,1),' ')               as cinControlloIbanConto
+		,		nvl(substr(CONTR.CONTR_C_IBAN,4,5),'     ')           as abiIbanConto
+		,		nvl(substr(CONTR.CONTR_C_IBAN,9,5),'     ')           as cabIbanConto
+		,		substr('000000000000'||substr(CONTR.CONTR_N,5,8),-12) as numeroIbanConto
+		,		CONTRCLI.CONTRCLI_C_RUOLO_CONTR                       as codiceRuoloConto 
+		,		(select DES_RUOLO_CONTR from SOGG_POSIZINFORM.LEGM_RUOLO_TIPO_PROD_CONTR where trim(COD_TIPO_PROD_CONTR) = 'CC' and trim(COD_RUOLO_CONTR_CLI) = trim(CONTRCLI.CONTRCLI_C_RUOLO_CONTR) and rownum=1) as ruoloConto
+		,		CONTR.CONTR_C_CAT 									  as categoriaConto
+		,		CONTR.CONTR_C_SCAT 									  as sottocategoriaConto
+		,		CONTR.CONTR_C_CONV 									  as convenzioneConto
+		,		CONTR.CONTR_C_DIV									  as divisaConto
+		,		DSC.FLG_STATO_BLOC									  as isContoAttivoMaBloccato
+		
+		from    CLL.CLIAGE CLIAGE 
+				inner join CLL.CONTRCLI CONTRCLI on CLIAGE.CLI_C = CONTRCLI.CLI_C
+				inner join CLL.CONTR CONTR on CONTRCLI.CONTR_N = CONTR.CONTR_N and CONTRCLI.PROD_C = CONTR.PROD_C
+				inner join CLL.CONTRCLI CONTRCLI1 on CONTR.PROD_C = CONTRCLI1.PROD_C and CONTR.CONTR_N = CONTRCLI1.CONTR_N
+				inner join CLL.CLIAGE CLIAGE1 on CONTRCLI1.CLI_C = CLIAGE1.CLI_C
+				inner join SOGG_POSIZINFORM.DETT_CONTR_BANCA DCB on DCB.CONTR_N = CONTR.CONTR_N and DCB.PROD_C = CONTR.PROD_C
+				inner join SOGG_POSIZINFORM.DOM_STATO_CONTR DSC on cast(DSC.COD_STATO_CONTR AS CHAR(3)) = DCB.COD_STATO_CONTR_EFFETV and DSC.COD_TIPO_PROD_CONTR = 'CC'
+				
+		where 	CONTRCLI.GSTD_F_ESIST='S'
+		and		CONTRCLI1.GSTD_F_ESIST='S'
+		and		CLIAGE1.GSTD_F_ESIST = 'S'
+    	and 	CLIAGE1.CLIAGE_D_FINE = TO_DATE('31/12/9999','DD/MM/YYYY')
+		and		CONTRCLI1.CONTRCLI_D_FINE_RUOLO = to_date('31/12/9999','dd/mm/yyyy')
+		and		CONTRCLI1.CONTRCLI_C_RUOLO_CONTR in ('I','P')
+		and 	CLIAGE.GSTD_F_ESIST = 'S'
+    	and 	CLIAGE.CLIAGE_D_FINE = TO_DATE('31/12/9999','DD/MM/YYYY')
+		and		CONTR.PROD_C = cast('BAN01' as char(11))
+		<IfNotEqual propertyName="isNdgAsString" propertyValue="true">and CONTRCLI.CLI_C = substr('00000000000' || <p>ndgCliente</p>, -11)</IfNotEqual>
+		<IfEqual 	propertyName="isNdgAsString" propertyValue="true">and CONTRCLI.CLI_C in (<ToString>ndgCliente</ToString>)</IfEqual>
+		and		CONTRCLI.CONTRCLI_D_FINE_RUOLO = to_date('31/12/9999','dd/mm/yyyy')
+		and		CONTR.CONTR_D_ESTI = TO_DATE('31/12/9999','DD/MM/YYYY')
+		<IfNotNull 	propertyName="tipoConto">
+			<IfNull 	propertyName="whereTipoConto">and CONTR.CONTR_C_CAT not in ('0005', '0043', '0075', '0076', '0044')</IfNull>
+			<IfNotNull 	propertyName="whereTipoConto">and <ToString>whereTipoConto</ToString></IfNotNull>
+			<IfNull propertyName="ruoliAmmessi">and CONTRCLI.CONTRCLI_C_RUOLO_CONTR in ('P', 'I', 'C', 'D')</IfNull>
+		</IfNotNull>		
+		<IfNotNull  propertyName="ibanConto">and 'IT' || nvl(substr(CONTR.CONTR_C_IBAN,1,13),'             ') || substr('000000000000' || substr(CONTR.CONTR_N,5,8),-12) = <p>ibanConto</p></IfNotNull>
+		<IfNotNull  propertyName="ruoliAmmessi">and CONTRCLI.CONTRCLI_C_RUOLO_CONTR in (<ToString>ruoliAmmessi</ToString>)</IfNotNull>
+		<IfNotNull  propertyName="divisaConto">and CONTR.CONTR_C_DIV in (<ToString>divisaConto</ToString>)</IfNotNull>
+		
+		order by 1 asc
+	</Query>
+	<Output>
+		<Parameter propertyName="tipoConto"/>
+		<Parameter propertyName="codAgente"/>
+		<Parameter propertyName="ndgCliente"/>
+		<Parameter propertyName="numeroContoOriginale"/>
+		<Parameter propertyName="numeroEstesoConto"/>
+		<Parameter propertyName="numeroConto"/>
+		<Parameter propertyName="ibanConto"/>
+		<Parameter propertyName="dataAperturaConto"/>
+		<Parameter propertyName="annoAperturaConto" propertyType="IntegerType"/>
+		<Parameter propertyName="paeseIbanConto"/>
+		<Parameter propertyName="cinEuropeoIbanConto"/>
+		<Parameter propertyName="cinControlloIbanConto"/>
+		<Parameter propertyName="abiIbanConto"/>
+		<Parameter propertyName="cabIbanConto"/>
+		<Parameter propertyName="numeroIbanConto"/>
+		<Parameter propertyName="codiceRuoloConto"/>
+		<Parameter propertyName="ruoloConto"/>
+		<Parameter propertyName="categoriaConto"/>
+		<Parameter propertyName="sottocategoriaConto"/>
+		<Parameter propertyName="convenzioneConto"/>
+		<Parameter propertyName="divisaConto"/>
+		<Parameter propertyName="isContoAttivoMaBloccato" propertyType="BooleanType"/>
+	</Output>         
+</Access>
+<Access name="nominativiContoAutocomplete" type="DAOQueryAccess" queryType="0"
+	OutputCommandDataModel="prgm.pdfwebforms.dataentryutil.NominativiContoModel">
+	<Query>
+		select 	case when CONTR.CONTRCLI_C_RUOLO_CONTR = 'I' then 1
+					 when CONTR.CONTRCLI_C_RUOLO_CONTR = 'P' then 2
+					 when CONTR.CONTRCLI_C_RUOLO_CONTR = 'C' then 3 
+					 else 4 end as orderBy
+		,		CLI.CLI_C
+		, 		CLI.CLI_M_COGN
+		, 		CLI.CLI_M_NOM
+		, 		CONTR.CONTRCLI_C_RUOLO_CONTR
+		,		(select DES_RUOLO_CONTR from SOGG_POSIZINFORM.LEGM_RUOLO_TIPO_PROD_CONTR where trim(COD_TIPO_PROD_CONTR) = 'CC' and trim(COD_RUOLO_CONTR_CLI) = trim(CONTR.CONTRCLI_C_RUOLO_CONTR) and rownum=1) as ruoloConto
+		from 	CLL.CONTRCLI CONTR, CLL.CLI CLI
+		where 	CONTR.CONTR_N = rpad(?, 20)
+		and 	CONTR.PROD_C='BAN01'
+		and 	CONTR.GSTD_F_ESIST='S'
+		and 	CLI.CLI_C = CONTR.CLI_C
+		order by 1
+	</Query>
+	<Input>
+		<Parameter propertyName="numeroContoOriginale"/>
+	</Input>         
+	<Output>
+		<Parameter propertyName="orderBy"/>
+		<Parameter propertyName="ndgCliente"/>
+		<Parameter propertyName="cognomeCliente"/>
+		<Parameter propertyName="nomeCliente"/>
+		<Parameter propertyName="codiceRuoloCliente"/>
+		<Parameter propertyName="ruoloCliente"/>
+	</Output>         
+</Access>
+
+<Access name="codiceAgevolazioneAutocomplete" type="DAOQueryAccess" queryType="1"  connectionCacheReference="CEPE"
+		OutputCommandDataModel="prgm.pdfwebforms.dataentryutil.CodiceAgevolazioneAutocompleteModel">
+	<Query>
+		select	ag.ID_DEROGA
+		,		ag.TIPO_DEROGA
+		,		(select td.DESCRIZIONE from CEPE_CRLEVE_DOMINIO_DEROGA td where td.TIPO_DEROGA = ag.TIPO_DEROGA)
+		,		ag.MANDATO_ARR
+		,		ag.CODICE_CONV
+		,		ag.MODAL_VERS
+		,		ag.PCT_ESENZ
+		,		ag.IMPORTO_INVEST
+		,		ag.APPL_DEROGA
+		from	CEPE_CRLEVE_MOV_DEROG_GEST ag, CEPE_CRLEVE_LOGATTIVITA log, PDF_INSTANCE pdf
+		where	ag.ID_ATTIVITA = log.ID_ATTIVITA
+		and		log.PDF_ID = pdf.PDF_INSTANCE_ID		
+		and		ag.CODICE_CONV is not null
+		<IfEqual propertyName="isOperatoreMom" propertyValue="true">
+			and log.STATO in ('03', '05', '12')
+			and log.PROCESSATA_DA_SEDE is null
+		</IfEqual>
+		<IfNotEqual propertyName="isOperatoreMom" propertyValue="true">
+			and log.STATO in ('03', '05')
+			and	not exists (select 1 from PDF_INSTANCE where PDF_INSTANCE.ID_AGEVOLAZIONE = convert(varchar, ag.ID_DEROGA) and <c>prgm.pdfwebforms.model.PdfInstanceModel.CONDIZIONE_STATO_PDF_COMPLETATO_RETE</c>)
+		</IfNotEqual>
+		<IfNotNull propertyName="codProdottoDispositiva">and ag.PROD_C_PROD = <p>codProdottoDispositiva</p></IfNotNull>
+		<IfNull propertyName="codProdottoDispositiva">
+			<IfNotNull propertyName="pdfMomCode">and ag.MOM_CODE = <p>pdfMomCode</p></IfNotNull>
+		</IfNull>
+		<IfNotNull propertyName="codProdottoDispositivaPartenza">and PROD_C_PROD_PART like <p>%codProdottoDispositivaPartenza%</p></IfNotNull>
+		<IfNotNull propertyName="codAgente">and (pdf.COD_AGENTE = (select right('0000000000' + <p>codAgente</p>, 10)) or pdf.COD_AGE_IMPERSONATO = (select right('0000000000' + <p>codAgente</p>, 10)))</IfNotNull>
+		<IfNotNull propertyName="codCliente">and ag.COD_CLIENTE = (select right('00000000000' + <p>codCliente</p>, 11))</IfNotNull>
+		<IfNotNull propertyName="modalitaVersamentoAgevolazione">and ag.MODAL_VERS in (<ToString>modalitaVersamentoAgevolazione</ToString>)</IfNotNull>
+		<IfNotNull propertyName="numeroContrattoDestinazione">and (select right('00000000000000000000' + ag.MANDATO_ARR, 20)) = (select right('00000000000000000000' + <p>numeroContrattoDestinazione</p>, 20))</IfNotNull>
+		order by 2 
+ 	</Query> 
+	<Output>  
+		<Parameter propertyName="idAgevolazione"/>
+		<Parameter propertyName="tipologiaAgevolazione"/>
+		<Parameter propertyName="descrTipologiaAgevolazione"/>
+		<Parameter propertyName="numeroContrattoDestinazione"/>
+		<Parameter propertyName="codiceAgevolazione"/>
+		<Parameter propertyName="modalitaVersamentoAgevolazione"/>
+		<Parameter propertyName="percentualeAgevolazione"/>
+		<Parameter propertyName="importoAgevolazione"/>
+		<Parameter propertyName="applicazioneDeroga"/>
+	</Output> 
+</Access>
+
+<Access name="prestitoAutocomplete" type="DAOQueryAccess" queryType="0"
+		OutputCommandDataModel="prgm.pdfwebforms.dataentryutil.PrestitoAutocompleteModel">
+	<Query>
+		SELECT	CONTRMUTUI.CONTR_N  						as numero
+		,		CONTRMUTUI.CONTRMUTUI_I_IMPORTOEROG			as importoErogato
+		,		CONTRMUTUI.CONTRMUTUI_I_DEBITORESIDUO 		as debitoResiduo
+		,		CONTRMUTUI.CONTRMUTUI_N_TOTALERATE 			as totaleRate
+		,		CONTRMUTUI.CONTRMUTUI_N_TOTALERATEPAGATE 	as ratePagate
+		,		CONTRMUTUI.CONTRMUTUI_D_SCAD 				as dataScadenza
+		,		CONTRMUTUI.CONTRMUTUI_D_SCADPROSSRATA 		as scadenzaProssimaRata
+		,		CONTRMUTUI.CONTRMUTUI_I_IMPORTOPROSSRATA 	as importoProssimaRata
+		,		CONTRMUTUI.CONTRMUTUI_C_PROGRRAPP			as progressivoPiano
+		,		CONTRMUTUI.CONTRMUTUI_F_STATOPRESTITI 		as stato
+		,		CONTRMUTUI.CONTRMUTUI_I_TASSOINIZIALE 		as tassoIniziale
+		,		CONTRMUTUI.CONTRMUTUI_I_TASSOCORRENTE 		as tassoCorrente
+		,		CONTRMUTUI.CONTRMUTUI_I_TAEG 				as taeg
+		,		CONTRMUTUI.CONTRMUTUI_I_SPREAD 				as spread
+		,		CONTRMUTUI.CONTRMUTUI_C_CAT 				as categoria
+		,		CONTRMUTUI.CONTRMUTUI_C_SCAT 				as sottocategoria
+		,		CONTRMUTUI.CONTRMUTUI_C_CONV 				as convenzione
+		,		CONTRMUTUI.CONTRMUTUI_C_CONTOCORRREGOLAM 	as contoCorrenteRegolamento
+		from   CLL.CONTRCLI CONTRCLI
+				inner join CLL.CONTR CONTR on CONTRCLI.CONTR_N = CONTR.CONTR_N and CONTRCLI.PROD_C = CONTR.PROD_C
+				inner join CLL.CONTRMUTUI CONTRMUTUI on CONTRCLI.CONTR_N = CONTRMUTUI.CONTR_N and CONTRCLI.PROD_C = CONTRMUTUI.PROD_C               
+		where	CONTRCLI.GSTD_F_ESIST='S'           
+		and		CONTRCLI.CLI_C = lpad(?, 11, '0')
+		and		CONTRCLI.CONTRCLI_D_FINE_RUOLO &gt; sysdate   
+		and		CONTR.GSTD_F_ESIST='S'
+		and		CONTR.PROD_C = cast('BAN06' as char(11))  
+		and		CONTR.CONTR_D_ESTI &gt; sysdate 
+		and		CONTRMUTUI.GSTD_F_ESIST='S'
+		order by 1 asc
+ 	</Query> 
+ 	<Input>
+ 		<Parameter propertyName="ndgCliente"/>
+ 	</Input>
+	<Output>  
+		<Parameter propertyName="numero"/>
+		<Parameter propertyName="importoErogato"/>
+		<Parameter propertyName="debitoResiduo"/>
+		<Parameter propertyName="totaleRate"/>
+		<Parameter propertyName="ratePagate"/>
+		<Parameter propertyName="dataScadenza"/>
+		<Parameter propertyName="scadenzaProssimaRata"/>
+		<Parameter propertyName="importoProssimaRata"/>
+		<Parameter propertyName="progressivoPiano"/>
+		<Parameter propertyName="codStato"/>
+		<Parameter propertyName="tassoIniziale"/>
+		<Parameter propertyName="tassoCorrente"/>
+		<Parameter propertyName="taeg"/>
+		<Parameter propertyName="spread"/>
+		<Parameter propertyName="codCategoria"/>
+		<Parameter propertyName="codSottocategoria"/>
+		<Parameter propertyName="codConvenzione"/>
+		<Parameter propertyName="contoCorrenteRegolamento"/>
+	</Output> 
+</Access>
+
+</DAO-Object>

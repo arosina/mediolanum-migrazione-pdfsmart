@@ -1,0 +1,105 @@
+<%
+	boolean doSpeakOnLoad = false;
+	String dispoSpeak = personaCorrente.readNomeCognome()+" "+personaCorrente.getNdg()+".";
+	dispoSpeak += " Scorri il documento e accetta le clausole.";
+	if(model.isInAccettazioneCopernicoMobile())
+		dispoSpeak += " Usa le frecce per aiutarti.";
+	if(!model.getLastSpeakOnPageLoad().equals(dispoSpeak)){
+		model.setLastSpeakOnPageLoad(dispoSpeak);
+		doSpeakOnLoad = true; /* Mettere fisso "false" per abilitare il workaround */
+%>
+<!-- Scommentare per abilitare il workaround mettendo sempre a false doSpeakOnLoad e modificando anche la onPageLoad -->
+<!-- 
+	<div style="position:absolute;top:-9999;left:-9999;">
+		<span id="speakOnLoad-describedby" style="display:none;"><%=dispoSpeak%></span>
+		<input id="speakOnLoad" tabindex="0" type="text" aria-describedby="speakOnLoad-describedby" aria-hidden="true"></input>
+	</div>
+ -->
+<% } %>
+<style>
+#speakOnLoad:focus {
+    outline: none;
+}
+</style>
+<div class="pdf-sign-main-container main-content-readable">
+	<div class="header">
+        <div <%=(doSpeakOnLoad?"id='speakOnLoad' tabindex='0'":"aria-hidden='true'")%> class="subtitle w-100">
+        	<div class="h6">
+	            <%=personaCorrente.readNomeCognome().trim()%> - <%=personaCorrente.getNdg().toString().trim()%><br>
+	            Scorri il documento e accetta le clausole
+				
+				<br>Usa le frecce per aiutarti
+				
+			</div>
+        </div>		
+	    <div aria-hidden="true" id="button-ctrl-container" class="d-flex justify-content-between">
+	        <div class="button-box">
+	            <div class="row">
+	                <div class="col-6">
+	                    <button type="button" role="button" class="btn-med-icon ml-auto mr-auto" aria-label="Precedente elemento" onclick="scrollToPriorSign();">
+	                        <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+	                    </button>
+	                </div>
+	                <div class="col-6">
+	                    <button type="button" role="button" class="btn-med-icon ml-auto mr-auto" aria-label="Prossimo elemento" onclick="scrollToNextSign();">
+	                        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+	                    </button>
+	                </div>
+	                <div class="col-6 text-center med-icon-text-button" aria-hidden="true">
+	                    Precedente<br>elemento
+	                </div>
+	                <div class="col-6 text-center med-icon-text-button" aria-hidden="true">
+	                    Prossimo<br>elemento
+	                </div>
+	            </div>
+	        </div>
+	        <div class="button-box">
+	            <div class="row">
+	                <div class="col-6">
+	                    <button type="button" role="button" class="btn-med-icon ml-auto mr-auto" aria-label="Aumenta lo zoom" onclick="doZoomIn();">
+	                        <i class="fa-solid fa-plus" aria-hidden="true"></i>
+	                    </button>
+	                </div>
+	                <div class="col-6 text-center">
+	                    <button type="button" role="button" class="btn-med-icon ml-auto mr-auto" aria-label="Diminuisci lo zoom" onclick="doZoomOut();">
+	                        <i class="fa-solid fa-minus" aria-hidden="true"></i>
+	                    </button>
+	                </div>
+	                <div class="col-12 text-center med-icon-text-button" aria-hidden="true">
+	                    Zoom
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	        
+    </div>
+
+    <div class="main container-fluid">  
+        <div id="pdf-container" aria-hidden="true">
+            <%PdfHtmlDrawer.drawPdfForSign((java.io.Writer)out,request.getAttribute("BrowserInstance").toString(),template,model,personaCorrente);%>
+        </div>
+    </div>
+
+    <div class="footer">
+   		<div aria-hidden="true" class="d-flex flex-row-reverse justify-content-center">
+            <div class="">
+            	<button type="button" role="button" class="btn btn-primary ml-2" onclick="goOnCopernicoSign();">CONTINUA</button>
+            </div>
+            <div class="">
+                <button type="button" role="button" class="btn btn-secondary" onclick="sendIndietro();">Indietro</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+	function focusOnFirstInvalidField() {
+		$(".signFieldValue").each(function(index){
+		    if(this.value != "true"){
+		        $("#"+this.id+"Check").focus();
+		        return false;
+		    }
+		});
+	}
+</script>
+

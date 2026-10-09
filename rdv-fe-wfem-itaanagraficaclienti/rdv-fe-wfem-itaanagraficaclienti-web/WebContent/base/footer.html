@@ -1,0 +1,122 @@
+<table width="100%">
+<tr>
+	<td>
+		<!--------  TOOLBAR BASSA --------------->
+		<table width="100%" class="toolbar" cellpadding="0" cellspacing="2">
+		<tr>
+		    <td width="20%" id="toolDown" name="toolDown" style="visibility: hidden;">
+			    <table cellpadding="0" cellspacing="0" width="100%"><tr>
+			    <td width="5">&nbsp;</td>
+			    <td width="8" 
+			        id="attenzione1" name="attenzione1" height="20" class="text" bgcolor="#E1E1E1" style="font-weight: bold; color: red;" 
+			        onclick="openNewWindow('call.wfem?wfemCmd=showErrorsPage&BrowserInstance=<%=request.getAttribute("BrowserInstance")%>');"></td>
+			    <td id="attenzione2" name="attenzione2" height="20" class="text" bgcolor="#E1E1E1" style="font-weight: bold;"></td>
+			    </tr></table>
+		    </td>
+		    <% if(modificabile){ %>
+		    	<% if(model.getCallingAppl().toString().equals(Costanti.CALLING_APPL_MHD)){%>
+				   	<td width="55%" align="center">I campi evidenziati con <span class="mtory">(*)</span> sono obbligatori per il censimento.<br>
+				   	I campi evidenziati dallo sfondo <span style="border:1px solid; background-image:url('/ItaAnagraficaClienti/images/pem.gif');background-repeat:repeat;width:15px;">&nbsp;</span> sono obbligatori per lo scoring.</td>
+				<% }else if(model.getCallingAppl().toString().equals(Costanti.CALLING_APPL_TOOLPREVIDENZA)){ %>
+				   	<td width="55%" align="center">I campi evidenziati con <span class="mtory">(*)</span> sono obbligatori per il censimento.<br>
+				   	I campi evidenziati dallo sfondo <span style="border:1px solid; background-image:url('/ItaAnagraficaClienti/images/pem.gif');background-repeat:repeat;width:15px;">&nbsp;</span> sono obbligatori per l'utilizzo del 'Long Life Tool'.</td>
+				<% }else if(model.getCallingAppl().toString().equals(Costanti.CALLING_APPL_TOOLPROTEZIONE)){ %>
+				   	<td width="55%" align="center">I campi evidenziati con <span class="mtory">(*)</span> sono obbligatori per il censimento.<br>
+				   	I campi evidenziati dallo sfondo <span style="border:1px solid; background-image:url('/ItaAnagraficaClienti/images/pem.gif');background-repeat:repeat;width:15px;">&nbsp;</span> sono obbligatori per l'utilizzo del 'Protection Easy Tool'.</td>
+				<% }else if(model.getCallingAppl().toString().equals(Costanti.CALLING_APPL_TOOLDOSSIERTITOLI)){ %>
+				   	<td width="55%" align="center">I campi evidenziati con <span class="mtory">(*)</span> sono obbligatori per il censimento.<br>
+				   	I campi evidenziati dallo sfondo <span style="border:1px solid; background-image:url('/ItaAnagraficaClienti/images/pem.gif');background-repeat:repeat;width:15px;">&nbsp;</span> sono obbligatori per l'utilizzo del 'Bond Analysis Tool'.</td>
+				<% }else{ %>
+				   	<td width="55%" align="center">I campi evidenziati con <span class="mtory">(*)</span> sono obbligatori</td>
+				<% } %>    
+		   	<% }else{ %>
+			   	<td width="55%">&nbsp;</td>
+		   	<% } %>
+		    <td width="30%" align="right">
+		    	<% 
+		    		String color = "crimson";
+		   			String descTipoClientePre = "Cliente: ";
+		    		String descTipoCliente = "?";
+		    		if(model.getIsProspect().booleanValue()){
+		    			descTipoCliente = "Prospect";
+		    			color = "coral";
+		    		}else if(model.getIsBozza().booleanValue()){
+		    			descTipoClientePre = "Anagrafica: ";
+		    			descTipoCliente = "Bozza";
+		    			color = "antiquewhite";
+		    		}else if(model.getIsPotenziale().booleanValue() && model.getStatoConfermato().equals(Costanti.VALORE_FLAG_STATO_CONFERMATO)){
+		    			descTipoCliente = "Presale mutui";
+		    			color = "lavender";
+		    		}else if(model.getIsPotenziale().booleanValue()){
+		    			descTipoClientePre = "Anagrafica: ";
+		    			descTipoCliente = "Inviata in sede";
+		    			color = "white";
+		    		}else if(model.getIsAcquisito().booleanValue()){
+		    			descTipoCliente = "Acquisito";
+		    			color = "lightgreen";
+		    		}else if(model.getIsEffettivoPersonale().booleanValue()){
+		    			descTipoCliente = "Effettivo personale";
+		    			color = "lemonchiffon";
+		    		}else if(model.getIsEffettivoRiassegnato().booleanValue()){
+		    			descTipoCliente = "Effettivo riassegnato";
+		    			color = "khaki";
+		    		}else if(model.getIsCointestatarioNonAssegnato().booleanValue()){
+		    			descTipoCliente = "Cointestatario";
+		    			color = "palegreen";
+		    		}else if(model.getIsAssegnatoAdAltroAgente().booleanValue()){
+		    			descTipoCliente = "Cointestatario assegnato ad altro agente";
+		    			color = "paleturquoise";
+		    		}
+		    	%>
+		    	<% if(!model.getStato().equals(StatiPropostaAnagrafica.NON_TROVATA)){ %>
+			    	<table class="text"><tr>
+					  <td><%=descTipoClientePre%></td>
+					  <td style="background-color:<%=color%>; border: solid 1px #1A458F;">&nbsp;<%=descTipoCliente%>&nbsp;</td>
+				      <%if(model.getRuntimeModality().equals(Costanti.PARAM_RUNTIME_MODALITY_SIMPLE)){%>
+				         <td>&nbsp;.</td>
+				      <%}%>
+					</tr></table>
+				<%}else{%>
+					&nbsp;
+				<%}%>
+		    </td>
+		</tr>
+		</table>
+	</td>
+</tr>
+<tr>
+	<td>
+		<table width="100%" cellpadding="0" cellspacing="0" class="text" id="messagesAndErrors" name="messagesAndErrors">
+		<% if(model.hasCommandErrors()){ %>
+			<% java.util.List errori = model.getCommandErrors();
+			   for(int i=0;i<errori.size();i++){ %>
+			      <tr><td align="center" style="color: white; background-color: red;"><%=template.getProperty((com.atosorigin.wfem.command.CommandError)errori.get(i))%></td></tr>
+		    <% } %>
+		<% }else if(model.hasCommandWarnings()){ %>
+			<% java.util.List warnings = model.getCommandWarnings();
+			   for(int i=0;i<warnings.size();i++){ %>
+			      <tr><td align="center" style="background-color: gold;"><%=template.getProperty((com.atosorigin.wfem.command.CommandWarning)warnings.get(i))%></td></tr>
+		    <% } %>
+		<% } %>
+		
+		<% if(model.hasCommandMessages()){ %>
+			<% java.util.List messaggi = model.getCommandMessages();
+			   for(int i=0;i<messaggi.size();i++){ %>
+			      <tr><td align="center" style="background-color: lightcyan;"><%=template.getProperty((com.atosorigin.wfem.command.CommandMessage)messaggi.get(i))%></td></tr>
+		    <% } %>
+		<% } %>
+		
+		<% if(model.isAlmenoUnaProvinciaScaduta()){ %>
+		   <tr><td align="center" style="background-color: lightcyan;">Una o più province sono state aggiornate secondo le nuove tabelle in vigore</td></tr>
+		<% } %>
+		</table>
+	</td>
+</tr>
+<tr>
+	<td>
+		<table><tr><td>&nbsp;</td></tr></table>
+	</td>
+</tr>
+</table>
+
+

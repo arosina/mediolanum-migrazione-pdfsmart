@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="LocalitaNazioneItalia">	
+
+<Access name="isIndirizzoValido" type="DAOQueryAccess" queryType="1"	connectionCacheReference="SER_MIFID" 
+		OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType">
+	<Query>
+		SELECT  	case when count(*) > 0 then 'S' else 'N' end 
+		FROM 		CLL.CAP A 
+		WHERE		A.GSTD_F_ESIST = 'S' 
+		AND         A.DAT_FINE_VALID = to_date('31/12/9999','dd/mm/yyyy')
+		AND 		A.CAP_X_LOC = cast(upper(<p>comune</p>) as char(40))
+		AND 		A.CAP_C_PROV = cast(upper(<p>provincia</p>) as char(2))
+		AND 		A.CAP_C_CAP = cast(upper(<p>cap</p>) as char(5))		
+	</Query> 
+	<Output>
+		<Parameter propertyName="comune"/>
+		<Parameter propertyName="cap"/>	
+		<Parameter propertyName="provincia"/>	 
+	</Output> 
+</Access>
+
+<Access name="localitaCatastoAccess" type="DAOQueryAccess" queryType="1"	connectionCacheReference="SER_MIFID" 
+		OutputCommandDataModel="prgm.pdfwebformsutil.drivers.dao.localita.nazioneItalia.LocalitaNazioneItaliaModel">
+	<Query>
+		SELECT  	A.CAP_X_LOC, B.COD_FISC_COMU, A.CAP_C_CAP, A.CAP_C_PROV	
+		FROM 		CLL.CAP A 
+					INNER JOIN CLL.ANAG_CATAST_COMUN B 
+					ON A.CAP_C_CAP = B.COD_CAP
+					AND A.CAP_X_LOC = cast(B.DEN_COMU as char(40))
+					AND A.CAP_C_PROV = cast(B.COD_PROV as char(2))
+		WHERE		A.GSTD_F_ESIST = 'S' AND B.GSTD_F_ESIST = 'S'
+		AND         A.DAT_FINE_VALID = to_date('31/12/9999','dd/mm/yyyy')
+		<IfNotNull propertyName="cap">
+		AND 		A.CAP_C_CAP = cast(upper(<p>cap</p>) as char(5))		
+		</IfNotNull>
+		AND 		A.CAP_X_LOC = cast(upper(<p>comune</p>) as char(40))		
+		AND 		A.CAP_C_PROV = cast(upper(<p>provincia</p>) as char(2))		
+	</Query> 
+	<Output>
+		<Parameter propertyName="comune"/>
+		<Parameter propertyName="codiceCatasto"/>	
+		<Parameter propertyName="cap"/>	
+		<Parameter propertyName="provincia"/>	 
+	</Output> 
+</Access>
+
+<Access name="isToponimoValido" type="DAOQueryAccess" queryType="1"	connectionCacheReference="SER_MIFID" 
+		OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType">
+	<Query>
+		SELECT  	case when count(*) > 0 then 'S' else 'N' end 
+		FROM        DAICREF.CCB_ANAGRAFICA_DECOD  
+		WHERE		GSTD_F_ESIST = 'S' 
+		AND         TIPO = 'TIPO-VIA-INFORETE' AND DESCR = trim(upper(<p>toponimo</p>))
+	</Query> 
+</Access>
+</DAO-Object>

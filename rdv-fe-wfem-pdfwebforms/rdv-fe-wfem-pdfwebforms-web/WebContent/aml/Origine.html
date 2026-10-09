@@ -1,0 +1,192 @@
+<table width="100%" height="100%" cellpadding="0" cellspacing="0" style="table-layout: fixed;">
+	<tr>
+		<td valign="top" style="border-right: solid 1px lightgray;">
+			<table width="100%" height="100%" cellpadding="0" cellspacing="0">
+				<tr>
+					<td class="testo" style="padding:20;"">
+						Per le operazioni oggetto di proposta di seguito elencate è necessario indicare l'origine della provvista
+					</td>
+				</tr>
+				<tr>
+					<td height="100%">
+						<div id="elencoSinistraCont" style="position:relative;height:100%;width:100%;margin:0 auto;overflow:auto;">
+						<table width="100%" cellpadding="0" cellspacing="0">
+						<% for(int i=0;i<origine.getElencoDispositive().size();i++){
+							DispositivaAmlContainer dc = origine.getElencoDispositive().get(i);
+							String bordertop = i ==0 ?"border-top:solid 1px lightgray;":"";
+						 %>
+						 	<tr>
+						 		<td class="dispo" style="padding:15;<%=bordertop%>border-left:solid 1px lightgray;border-bottom:solid 1px lightgray;">
+						 			<table width="100%">
+							 			<tr>
+							 				<td style="width:20;">&nbsp;</td>
+							 				<td class="dispo"><%=dc.title()%><br><span class="dispoPropContr"><%=dc.numPropostaContratto()%></span></td>
+							 			</tr>
+						 			</table>
+						 		</td>
+						 	</tr>
+						<% } %>
+						</table>
+						</div>
+					</td>
+				</tr>
+			</table>
+			</div>
+		</td>
+		<td valign="top" style="width:50%;height:100%;">
+			<div id="elencoDestraCont" style="position:relative;height:100%;width:100%;margin:0 auto;overflow:auto;">
+			<table>
+				<tr>
+					<td <%=origine.getImportoContestualeTotale().doubleValue() == 0 ? "style='display:none;'":""%>>
+						<table>
+							<tr>
+								<td class="sottotitolo">Versamenti contestuali alla proposta</td>
+							</tr>
+							<tr>
+								<td class="testo">
+									L'importo si riferisce alla somma delle operazioni contestuali alla proposta.
+									Fanno parte di questa categoria i PIC, i versamenti aggiuntivi, gli iniziali dei piani PAC e gli
+									iniziali dei PIC programmati.
+								</td>
+							</tr>
+							<tr>
+								<td style="height:30;"">
+									<table><tr>
+										<td class="sottotitolo" style="font-size: 16px;">Totale complessivo: <span class="testo" style="color:#027BC2;font-size:20px;"><%=origine.getImportoContestualeTotale()%> &euro;</span></td>
+										<td id="importoTotaleDigitatoContestualiCont" style="padding-left:20;padding-top:8;">
+											<%=template.field("amlModel_origine_importoTotaleDigitatoContestuali","modality='read' labelposition='nolabel' style='display:none;'")%>
+										</td>
+									</tr></table>
+								</td>
+							</tr>
+							<tr>
+								<td id="elencoImportiContestualiCont">
+									<table style="table-layout: fixed;">
+										<tr>
+											<td class="inputLabel" style="padding-left:5;">Tipologia origine della provvista</td>
+											<td class="inputLabel" style="padding-left:5;">Importo in &euro;</td>
+											<td></td>
+										</tr>
+										<% for(int i=0;i<origine.getElencoImportiContestuali().size();i++){ 
+											TipoImportoOrigineModel ti = (TipoImportoOrigineModel)origine.getElencoImportiContestuali().get(i);
+											String title = "";
+											if(ti.isCodTipoImportoPreselezionatoSwitchFondi())
+												title = "title='Informazione non modificabile in quanto derivata dalle operazioni di switch fondi'";
+										%>
+											<tr>
+												<td><%=template.field("amlModel_origine_elencoImportiContestuali"+i+"_codTipoImporto",(ti.isCodTipoImportoPreselezionatoSwitchFondi()?"disabled":"onchange='onChangeTipoImporto(this);'")+" idx='"+i+"' sezioneImporti='Contestuali' label='nolabel' style='width:280;' "+title)%></td>
+												<td><%=template.field("amlModel_origine_elencoImportiContestuali"+i+"_importo","onchange='onChangeImporto(this);' sezioneImporti='Contestuali' keepzerodec='true' scale='2' label='nolabel' style='width:80;'")%></td>
+												<td>
+													<table><tr>
+														<% if(i==origine.getElencoImportiContestuali().size()-1 && i < origine.getNumTipiImporto()-1){ %>
+															<td style="width:10;cursor:pointer;" onclick="aggiungiTipoImporto('Contestuali');"><img src="<%=template.getWebApp()%>/images/piu.png"></td>
+														<% } %>
+														<% if(origine.getElencoImportiContestuali().size()>1 && !ti.isCodTipoImportoPreselezionatoSwitchFondi()){ %>
+															<td style="width:10;cursor:pointer;" onclick="eliminaTipoImporto('Contestuali','<%=i%>');"><img src="<%=template.getWebApp()%>/images/cestino.png"></td>
+														<% } %>
+														<td></td>
+													</tr></table>
+												</td>
+											</tr>
+										<% } %>
+										<tr>
+											<td id="descrVoceAltroImportiContestualiCont" colspan="3">
+												<% if(origine.isSelezionatoAltro(origine.getElencoImportiContestuali())){ %>
+													<table width="100%">
+														<tr><td class="inputLabel" style="padding-left:5;">Per la voce "Altro" specificare l'origine</td></tr>
+														<tr>
+															<td>
+																<%=template.field("amlModel_origine_descrVoceAltroImportiContestuali",
+																	"placeholder='Descrivere tipologia' "+		
+																	"onchange='onChangeDescrAltro(this);' sezioneImporti='Contestuali' rows='2' upper='false' type='all' style='width:100%;'")%>
+															</td>
+														</tr>
+													</table>
+												<% } %>
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td style="border-bottom:solid 1px lightgray;">&nbsp;</td>
+				</tr>
+				<tr>
+					<td style="padding-top: 20; <%=origine.getImportoFuturoTotale().doubleValue() == 0 ? "display:none;":""%>">
+						<table>
+							<tr>
+								<td class="sottotitolo">Versamenti Futuri</td>
+							</tr>
+							<tr>
+								<td class="testo">
+									L'importo si riferisce alla somma dei versamenti futuri relativi al PAC e ai PIC programmati
+									all'interno della proposta.
+								</td>
+							</tr>
+							<tr>
+								<td style="height:30;"">
+									<table><tr>
+										<td class="sottotitolo">Totale complessivo: <span style="color:#027BC2;font-size:20px;"><%=origine.getImportoFuturoTotale()%> &euro;</span></td>
+										<td id="importoTotaleDigitatoFuturiCont" style="padding-left:20;padding-top:8;">
+											<%=template.field("amlModel_origine_importoTotaleDigitatoFuturi","modality='read' labelposition='nolabel' style='display:none;'")%>
+										</td>
+									</tr></table>
+								</td>
+							</tr>
+							<tr>
+								<td id="elencoImportiFuturiCont">
+									<table style="table-layout: fixed;">
+										<tr>
+											<td class="inputLabel" style="padding-left:5;">Tipologia origine della provvista</td>
+											<td class="inputLabel" style="padding-left:5;">Importo in &euro;</td>
+											<td></td>
+										</tr>
+										<% for(int i=0;i<origine.getElencoImportiFuturi().size();i++){ %>
+											<tr>
+												<td><%=template.field("amlModel_origine_elencoImportiFuturi"+i+"_codTipoImporto","onchange='onChangeTipoImporto(this);' idx='"+i+"' sezioneImporti='Futuri' label='nolabel' style='width:280;'")%></td>
+												<td><%=template.field("amlModel_origine_elencoImportiFuturi"+i+"_importo","onchange='onChangeImporto(this);' sezioneImporti='Futuri' keepzerodec='true' scale='2' label='nolabel' style='width:80;'")%></td>
+												<td>
+													<table><tr>
+													<% if(i==origine.getElencoImportiFuturi().size()-1 && i < origine.getNumTipiImporto()-1){ %>
+														<td style="width:10;cursor:pointer;" onclick="aggiungiTipoImporto('Futuri');"><img src="<%=template.getWebApp()%>/images/piu.png"></td>
+													<% } %>
+													<% if(origine.getElencoImportiFuturi().size()>1){ %>
+														<td style="width:10;cursor:pointer;" onclick="eliminaTipoImporto('Futuri','<%=i%>');"><img src="<%=template.getWebApp()%>/images/cestino.png"></td>
+													<% } %>
+													<td></td>
+													</tr>
+													</table>
+												</td>
+											</tr>
+										<% } %>
+										<tr>
+											<td id="descrVoceAltroImportiFuturiCont" colspan="3">
+												<% if(origine.isSelezionatoAltro(origine.getElencoImportiFuturi())){ %>
+													<table width="100%" class="text">
+														<tr><td class="inputLabel" style="padding-left:5;">Per la voce "Altro" specificare l'origine</td></tr>
+														<tr>
+															<td>
+																<%=template.field("amlModel_origine_descrVoceAltroImportiFuturi",
+																		"placeholder='Descrivere tipologia' "+		
+																		"onchange='onChangeDescrAltro(this);' sezioneImporti='Futuri' rows='2' upper='false' type='all' style='width:100%;'")%>
+															</td>
+														</tr>
+													</table>
+												<% } %>
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+			</div>
+		</td>
+	</tr>
+</table>
+<script>setScrollPos();</script>

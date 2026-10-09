@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="DChanceInserisci" connectionCacheReference="CEPE">
+
+<Access name="getConvenzioneDoubleChance" type="DAOQueryAccess" queryType="0" OutputCommandDataModel="com.atosorigin.wfem.types.StringType">
+	<Query>
+	SELECT	
+	CONVENZIONE	 
+	FROM
+	CEPE_GEST_TASSI_CONVENZIONI_DC
+	WHERE
+	PROD_C_PROD = ? AND      
+	TIPOLOGIA = ? AND 
+	DURATA = ? AND 
+	FLAG_PERSONA_GIURIDICA = ? AND
+	N_MIN_IMPORTO &lt;= ? AND 
+	N_MAX_IMPORTO &gt;= ? AND 
+	DATA_INIZIO &lt;= convert(varchar(8),?,112) AND
+	(DATA_FINE IS NULL OR DATA_FINE &gt;= convert(varchar(8),?,112)) AND
+	FLAG_VALIDITA = 'S' 
+	</Query>
+ <Input>
+    <Parameter propertyName="codiceProdotto"/>
+    <Parameter propertyName="tipologia"/>
+    <Parameter propertyName="durata"/>
+    <Parameter propertyName="personaGiuridica"/>
+    <Parameter propertyName="importo"/>
+    <Parameter propertyName="importo"/>
+    <Parameter propertyName="dataFirma"/>
+    <Parameter propertyName="dataFirma"/>
+</Input>
+	<Output>
+		<Parameter propertyName="tipoConvenzione"/>
+	</Output>
+</Access> 
+
+<Access name="CSCDChanceInserisci" type="DAOQASAccess" serviceName="CSC-DChanceInserisci">
+   <Input>
+   	<![CDATA[
+		<OFX>
+			<CSC-DChanceInserisciQARCMSGSRQV1>
+				<UTENTE propertyName="utente"></UTENTE>
+				<CANALE>FDI</CANALE>
+				<IDRIFERIMENTO appInfo="true" propertyName="idRiferimento"></IDRIFERIMENTO>
+				<FLGAVVIATRANSAZIONI>S</FLGAVVIATRANSAZIONI>
+				<CONTOORIGINE propertyName="contoOrigine"></CONTOORIGINE>
+				<CONTOPRENOTATO propertyName="contoPrenotato"></CONTOPRENOTATO>
+				<DATATIMBRO propertyName="dataTimbro"></DATATIMBRO>
+				<CONVENZIONE propertyName="convenzione"></CONVENZIONE>
+				<IDEDIZIONE>0</IDEDIZIONE>
+				<CATEGORIA propertyName="categoria"></CATEGORIA>
+				<SOTTOCATEGORIA propertyName="sottocategoria"></SOTTOCATEGORIA>
+				<CLIC_INTESTATARIO1 propertyName="cliCIntestatario1"></CLIC_INTESTATARIO1>
+				<CLIC_INTESTATARIO2 propertyName="cliCIntestatario2"></CLIC_INTESTATARIO2>
+				<CLIC_INTESTATARIO3 propertyName="cliCIntestatario3"></CLIC_INTESTATARIO3>
+				<CODICEAGENTE propertyName="codiceAgente"></CODICEAGENTE>
+				<FLGGIROCONTO>S</FLGGIROCONTO>
+				<IMPORTOGIROCONTO propertyName="importoGiroconto"></IMPORTOGIROCONTO>
+				<FLGSETINDCORRISPONDENZA>N</FLGSETINDCORRISPONDENZA>
+				<CODAGEVENDENTE propertyName="idVendente"></CODAGEVENDENTE>
+			</CSC-DChanceInserisciQARCMSGSRQV1>
+		</OFX>
+	]]>
+   </Input>
+   <Output>
+   	<![CDATA[
+		<OFX>
+			<CSC-DChanceInserisciQARCMSGSRSV1>
+				<ESITOINSERIMENTO propertyName="esitoRichiestaApertura"></ESITOINSERIMENTO>
+				<IDRICHIESTACSC appInfo="true" propertyName="idCSCRichiestaApertura"></IDRICHIESTACSC>
+				<DESCRIZIONEERRORE propertyName="descrErroreApertura"></DESCRIZIONEERRORE>
+			</CSC-DChanceInserisciQARCMSGSRSV1>
+		</OFX>
+		]]>
+   </Output>
+</Access>
+
+<Access name="esitoElaborazione" type="DAOTableAccess" tableName="PDF_POSTCOMP_DATA">
+   <Bindings>
+	<Parameter propertyName="pdfInstanceId" 			dbColumnName="PDF_INSTANCE_ID" primaryKey="true"/>
+	<Parameter propertyName="dataRichiestaApertura" 	dbColumnName="DCINS_DATA_RICH_APERT"/>
+	<Parameter propertyName="idCSCRichiestaApertura" 	dbColumnName="DCINS_ID_CSC_RICH_APERT"/>		
+   </Bindings>
+</Access>
+
+<Access name="getEsitoCreazioneConto" type="DAOQueryAccess" queryType="0" OutputCommandDataModel="com.atosorigin.wfem.types.StringType">
+	<Query>
+		SELECT
+			WSAPE_ESITO_APERT
+		FROM PDF_POSTCOMP_DATA
+		WHERE PDF_INSTANCE_ID = ?
+	</Query>
+ <Input>
+    <Parameter propertyName="pdfInstanceId"/>
+</Input>
+</Access> 
+
+<Access name="loadDatiPdfInstance" type="DAOTableAccess" tableName="PDF_INSTANCE">
+  <Bindings>
+    <Parameter propertyName="pdfInstanceId"				dbColumnName="PDF_INSTANCE_ID" primaryKey="true"/>
+    <Parameter propertyName="pdfCodAgente"				dbColumnName="COD_AGENTE"/>
+    <Parameter propertyName="pdfCodiceDispositivaBMED"	dbColumnName="COD_DISPOSITIVA_BMED"/>
+  </Bindings>
+</Access>
+
+<Access name="aggiornaStatoPraticaMOM" type="DAOOSBAccess" serviceName="service/soggetto/posizionedispositiva/EventiDispositivaService/v1" operationName="insertEvento">
+<Input>
+	<![CDATA[	
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://posizionedispositiva.soggetto.be.schema.bmed.it/EventiDispositiva/v1">
+		   <soapenv:Header/>
+		   <soapenv:Body>
+		      <v11:insertEvento>
+		         <v11:metadata>
+					<v11:abiCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:callerDataId append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:channelCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:companyCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:familyBankerCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:familyBanker>true</v11:familyBanker>
+					<v11:inputCommonDataVestion append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:ip append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:keyHole>false</v11:keyHole>
+					<v11:keylog append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:operatorCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:placeCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:statusCode>0</v11:statusCode>
+					<v11:swift append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:timeStamp append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:userAgent append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:userId>ICW_PostCompl</v11:userId>
+					<v11:userIdKeyHole append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:versionBs append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		         </v11:metadata>
+		         <v11:codOperzDispBmed propertyName="codDispositivaBMED"></v11:codOperzDispBmed>
+		         <v11:codOperzEvenOrig propertyName="pdfInstanceId"></v11:codOperzEvenOrig>
+		         <v11:desNoteStatoTgt append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"></v11:desNoteStatoTgt>
+		         <v11:desInfoAggiuEven append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"></v11:desInfoAggiuEven>
+		         <v11:codStatoOrigEven propertyName="codStatoOrigEven"></v11:codStatoOrigEven>
+		         <v11:codTipoSistOrigDisp>PRT</v11:codTipoSistOrigDisp>
+		         <v11:codProdSistOrig append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"></v11:codProdSistOrig>
+		         <v11:codTipoSistTgtEven>MOM</v11:codTipoSistTgtEven>
+		         <v11:codStatoTecnEvenDisp append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"></v11:codStatoTecnEvenDisp>
+		      </v11:insertEvento>
+		   </soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+</Input>
+<Output>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+		   <soapenv:Body>
+		      <v1:insertEventoResponse xmlns:v1="http://posizionedispositiva.soggetto.be.schema.bmed.it/EventiDispositiva/v1">
+		         <v1:errorCode propertyName="errorCode"></v1:errorCode>
+		         <v1:errorMessage propertyName="errorMessage"></v1:errorMessage>
+		         <v1:seqEvento propertyName="seqEvento"></v1:seqEvento>
+		      </v1:insertEventoResponse>
+		   </soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+</Output>
+</Access>
+
+</DAO-Object>

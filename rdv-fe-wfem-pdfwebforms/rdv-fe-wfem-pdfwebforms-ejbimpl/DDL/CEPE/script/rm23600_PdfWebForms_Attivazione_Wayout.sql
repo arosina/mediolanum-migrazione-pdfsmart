@@ -1,0 +1,8 @@
+use CEPE
+go
+
+INSERT INTO INR_CE_DOMINIO (DOMINIO_C_TABELLA, DOMINIO_C_CODICE, DOMINIO_X_DESCR, DOMINIO_F_VALIDITA, DOMINIO_C_UTENTE)
+VALUES ('ENABLED_FUNCTIONS', 'PDFWEBFORMS_WAYOUT', 'Attivazione wayout continuità operativa', 'S', NULL)
+go
+
+print "Continuità operativa attivata"

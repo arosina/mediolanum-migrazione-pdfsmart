@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="Beneficiari" connectionCacheReference="CEPE">
+	
+	
+	<Access name="ricercaPopup" type="DAOQueryAccess" queryType="1" maxResultRows="50" OutputCommandDataModel="prgm.pdfwebformspolizzeutil.popup.RicercaPopupModel" connectionCacheReference="SER_MIFID">
+		<Query> 
+			SELECT CLI.CLI_C,
+				CASE  
+					CLI_C_SESSO 
+					WHEN 'M' THEN CLI.CLI_X_CF 
+					WHEN 'F' THEN CLI.CLI_X_CF 
+					ELSE CLI.CLI_N_PIVA 
+				END,
+				CLI.CLI_M_NOM, 
+				CLI.CLI_M_COGN,
+				TRIM(CLI.CLI_M_COGN) || ' ' || TRIM(CLI.CLI_M_NOM)
+					FROM CLL.CLI 
+					WHERE   GSTD_F_ESIST = 'S'
+					AND CLI_C_PERS_FISICA = 'G'
+					AND NVL(TRIM(CLI_C_NCG),'#') NOT IN ('SMM','SFF')
+					
+					AND NVL(TRIM(CLI_S_BLOCCO_BAN),'#') != 'K'
+					AND NVL(TRIM(CLI_C_COD_BLOCCO),'#') != 'R'					
+					
+					<IfEqual propertyName="escludiXxx" propertyValue="ATC">
+						AND NVL(TRIM(CLI_C_CLIE_SEGN),'#') != 'ATC'
+					</IfEqual>					
+					<IfNotNull propertyName="codiceCliente">
+						AND CLI.CLI_C  LIKE<p>%codiceCliente%</p>
+					</IfNotNull>			
+					
+					<IfNotNull propertyName="ragioneSociale">
+						AND (UPPER(CLI.CLI_M_COGN) LIKE UPPER(<p>%ragioneSociale%</p>) OR UPPER(CLI.CLI_M_NOM) LIKE UPPER(<p>%ragioneSociale%</p>))
+					</IfNotNull>
+					<IfNotNull propertyName="codiceFiscale">
+						AND (UPPER(CLI.CLI_X_CF) LIKE UPPER(<p>%codiceFiscale%</p>) OR CLI.CLI_N_PIVA LIKE <p>%codiceFiscale%</p> )
+					</IfNotNull>			
+		</Query>
+		<Output>
+			<Parameter propertyName="codiceCliente"/>            
+			<Parameter propertyName="codiceFiscale"/>      
+			<Parameter propertyName="nome"/>           
+			<Parameter propertyName="cognome"/>        
+			<Parameter propertyName="ragioneSociale"/>    
+		</Output>
+	</Access>
+	
+	
+	
+	
+	<Access name="ricercaBeneficiari" type="DAOQueryAccess" queryType="1" maxResultRows="50" OutputCommandDataModel="prgm.pdfwebformspolizzeutil.model.BeneficiarioModel" connectionCacheReference="SER_MIFID">
+		<Query> 
+			SELECT
+				CLI.CLI_C,
+				CASE  
+					CLI_C_SESSO 
+					WHEN 'M' THEN CLI.CLI_X_CF 
+					WHEN 'F' THEN CLI.CLI_X_CF 
+					ELSE CLI.CLI_N_PIVA 
+				END,
+				CLI.CLI_M_NOM, 
+				CLI.CLI_M_COGN,
+				TRIM(CLI.CLI_M_COGN) || ' ' || TRIM(CLI.CLI_M_NOM)
+			FROM 
+				CLL.CLI CLI
+				INNER JOIN CLL.CLIAGE CLIAGE ON CLI.CLI_C = CLIAGE.CLI_C
+			WHERE 1 = 1
+			AND CLI.GSTD_F_ESIST = 'S'
+			AND CLIAGE.GSTD_F_ESIST = 'S'
+			AND trunc(sysdate) between CLIAGE.CLIAGE_D_INIZ AND CLIAGE.CLIAGE_D_FINE
+			<IfNotNull propertyName="codiceAgente">
+				<IfNotEqual propertyName="codiceAgente" propertyValue="0000000000">
+					AND CLIAGE.AGE_C = LPAD(<p>codiceAgente</p>,10,'0')
+				</IfNotEqual>
+			</IfNotNull>
+			<IfNotNull propertyName="codiceCliente">
+				AND CLI.CLI_C LIKE<p>%codiceCliente%</p>
+			</IfNotNull>
+			<IfEqual propertyName="tipoRicerca" propertyValue="PF">
+				<IfNotNull propertyName="codiceFiscale">
+					AND UPPER(CLI.CLI_X_CF) LIKE UPPER( <p>%codiceFiscale%</p>)
+				</IfNotNull>
+				<IfNotNull propertyName="nome">
+					AND UPPER(CLI.CLI_M_NOM) LIKE UPPER(<p>%nome%</p>)
+				</IfNotNull>
+				<IfNotNull propertyName="cognome">
+					AND UPPER(CLI.CLI_M_COGN) LIKE UPPER(<p>%cognome%</p>)
+				</IfNotNull>
+				AND CLI_C_PERS_FISICA = 'F'
+			</IfEqual>
+			<IfEqual propertyName="tipoRicerca" propertyValue="PG">
+				<IfNotNull propertyName="ragioneSociale">
+					AND (UPPER(CLI.CLI_M_COGN) LIKE UPPER(<p>%ragioneSociale%</p>) OR UPPER(CLI.CLI_M_NOM) LIKE UPPER(<p>%ragioneSociale%</p>))
+				</IfNotNull>
+				<IfNotNull propertyName="codiceFiscale">
+					AND (UPPER(CLI.CLI_X_CF) LIKE UPPER(<p>%codiceFiscale%</p>) OR CLI.CLI_N_PIVA LIKE <p>%codiceFiscale%</p>)
+				</IfNotNull>
+				AND CLI_C_SESSO in (' ','S')
+			</IfEqual>
+			
+			UNION ALL
+			
+			SELECT 
+				DISTINCT CLI.CLI_C,
+				CASE  
+					CLI_C_SESSO 
+					WHEN 'M' THEN CLI.CLI_X_CF 
+					WHEN 'F' THEN CLI.CLI_X_CF 
+					ELSE CLI.CLI_N_PIVA 
+				END,
+				CLI.CLI_M_NOM, 
+				CLI.CLI_M_COGN,
+				TRIM(CLI.CLI_M_COGN) || ' ' || TRIM(CLI.CLI_M_NOM)
+			FROM 
+				CLL.CONTR CON
+			   	INNER JOIN CAT_PROD.DETT_PROD_TECN DPT on DPT.PROD_C = CON.PROD_C 
+			   	INNER JOIN SOGG_POSIZINFORM.DOM_STATO_CONTR DSC ON DSC.COD_STATO_CONTR= CAST(trim(CON.CONTR_C_STATO) || trim(CON.CONTR_C_MOTIV) AS  CHAR(4)) and DPT.COD_TIPO_PROD_CONTR = DSC.COD_TIPO_PROD_CONTR 
+			   	INNER JOIN CLL.CONTRCLI CCLI ON CON.PROD_C = CCLI.PROD_C AND CON.CONTR_N = CCLI.CONTR_N
+			   	INNER JOIN SOGG_POSIZINFORM.LEGM_RUOLO_TIPO_PROD_CONTR LRTPC ON LRTPC.COD_RUOLO_CONTR_CLI = CCLI.CONTRCLI_C_RUOLO_CONTR and DPT.COD_TIPO_PROD_CONTR = LRTPC.COD_TIPO_PROD_CONTR
+			   	INNER JOIN CLL.CLIAGE CLA ON CCLI.CLI_C = CLA.CLI_C
+			   	INNER JOIN CLL.BENEFC BF ON BF.CONTR_N = CON.CONTR_N and BF.PROD_C = CON.PROD_C
+			   	INNER JOIN CLL.CLI CLI ON BF.BENEFC_C_CLI_BENEFC = CLI.CLI_C
+			   	INNER JOIN CLL.CLI_DATIAGGIUNTIVI CLI_AGG ON CLI.CLI_C = CLI_AGG.CLI_C and CLI_AGG.CODICE_DATO = '850' and CLI_AGG.GSTD_F_ESIST = 'S' AND CLI_AGG.DATO IN ('B','T')
+			WHERE 1 = 1
+				AND CON.GSTD_F_ESIST = 'S'
+				AND DPT.GSTD_F_ESIST = 'S'
+				AND DSC.GSTD_F_ESIST = 'S'    
+				AND CCLI.GSTD_F_ESIST = 'S'
+				AND LRTPC.GSTD_F_ESIST = 'S'
+				AND CLA.GSTD_F_ESIST = 'S'
+				AND BF.GSTD_F_ESIST = 'S'
+				AND CLI.GSTD_F_ESIST = 'S'
+				AND DPT.COD_TIPO_PROD_CONTR = 'PV'
+				AND DSC.FLG_CONTR_APER = 'A'
+				AND LRTPC.COD_TIPO_RUOLO_CONTR = 'P'    
+				AND trunc(SYSDATE) BETWEEN CLA.CLIAGE_D_INIZ AND CLA.CLIAGE_D_FINE
+		  	<IfNotNull propertyName="codiceAgente">
+		  		<IfNotEqual propertyName="codiceAgente" propertyValue="0000000000">
+					AND CLA.AGE_C = LPAD(<p>codiceAgente</p>,10,'0')
+		  		</IfNotEqual>
+			</IfNotNull>
+			<IfNotNull propertyName="codiceCliente">
+				AND CLI.CLI_C  LIKE<p>%codiceCliente%</p>
+			</IfNotNull>
+			<IfEqual propertyName="tipoRicerca" propertyValue="PF">
+				<IfNotNull propertyName="codiceFiscale">
+					AND UPPER(CLI.CLI_X_CF) LIKE UPPER( <p>%codiceFiscale%</p>)
+				</IfNotNull>
+				<IfNotNull propertyName="nome">
+					AND UPPER(CLI.CLI_M_NOM) LIKE UPPER(<p>%nome%</p>)
+				</IfNotNull>
+				<IfNotNull propertyName="cognome">
+					AND UPPER(CLI.CLI_M_COGN) LIKE UPPER(<p>%cognome%</p>)
+				</IfNotNull>
+				AND CLI_C_PERS_FISICA = 'F'
+			</IfEqual>
+			<IfEqual propertyName="tipoRicerca" propertyValue="PG">
+				<IfNotNull propertyName="ragioneSociale">
+					AND (UPPER(CLI.CLI_M_COGN) LIKE UPPER(<p>%ragioneSociale%</p>) OR UPPER(CLI.CLI_M_NOM) LIKE UPPER(<p>%ragioneSociale%</p>))
+				</IfNotNull>
+				<IfNotNull propertyName="codiceFiscale">
+					AND (UPPER(CLI.CLI_X_CF) LIKE UPPER(<p>%codiceFiscale%</p>) OR CLI.CLI_N_PIVA LIKE <p>%codiceFiscale%</p> )
+				</IfNotNull>
+				AND CLI_C_SESSO in (' ','S')
+			</IfEqual>
+		</Query>
+		<Output>
+			<Parameter propertyName="codiceCliente"/>            
+			<Parameter propertyName="codiceFiscale"/>      
+			<Parameter propertyName="nome"/>           
+			<Parameter propertyName="cognome"/>        
+			<Parameter propertyName="ragioneSociale"/>    
+		</Output>
+	</Access>
+	<Access name="ricercaBeneficiario" type="DAOQueryAccess" queryType="1"  OutputCommandDataModel="prgm.pdfwebformspolizzeutil.model.BeneficiarioModel" connectionCacheReference="SER_MIFID">
+		<Query> 
+			SELECT VCLI.CLI_C,
+			CASE  CLI_F_SESSO 
+			WHEN  'M' THEN VCLI.CLI_X_CF 
+			WHEN  'F' THEN VCLI.CLI_X_CF 
+			ELSE VCLI.CLI_N_PIVA END,
+			VCLI.CLI_M_NOME, 
+			VCLI.CLI_M_COGN,
+			VCLI.CLI_F_SESSO,
+			VCLI.CLI_D_NASC, 
+			VCLI.CLI_X_COMU_NASC, 
+			VCLI.PROV_C_PROV_NASC, 
+			NAZ1.DEN_NAZ,
+			TRIM(VCLI.CLI_M_COGN) || ' ' || TRIM(VCLI.CLI_M_NOME),
+			INDCLI.INDCLI_X_TOPONIMO_IND,
+			INDCLI.INDCLI_X_TIPO_IND,
+			INDCLI.INDCLI_X_IND, 
+			INDCLI.INDCLI_X_NUM_IND,
+			TRIM(INDCLI.CAP_C_AVVIAM_POSTL),			
+			INDCLI.INDCLI_X_COMU,
+			INDCLI.PROV_C_PROV, 
+			NAZ2.DEN_NAZ,
+			TRIM(CLI_C_NUM_ISCRIZ_REA),
+			CLI_D_ISCRIZ_REA,
+			CLI_C_PROV_ISCRIZ_REA,
+			CLI_X_IND_INTERNET,
+			TRIM(RECAPTELCLI_X_PREF_INTERN),			
+			TRIM(RECAPTELCLI_X_PREF_TEL),			
+			TRIM(RECAPTELCLI_X_NUM_TEL),			
+			CASE TIPRECAPTEL_C_TIP_RECAP WHEN '01' THEN 'F'  WHEN '14' THEN 'C' ELSE '' END,
+			VCLI.CLI_C_TITOLARE_1,
+			VCLI.CLI_C_TITOLARE_2
+			FROM CLL.V_CLI VCLI 
+			LEFT JOIN CLL.V_INDCLI INDCLI ON VCLI.CLI_C = INDCLI.CLI_C  AND INDCLI.TIPIND_C_TIP_IND='01'
+			LEFT JOIN UTLY.V_DOM_NOME_NAZ NAZ1	 ON  VCLI.NAZ_C_NAZ_NASC= NAZ1.COD_NAZ_CLI
+			LEFT JOIN UTLY.V_DOM_NOME_NAZ NAZ2	 ON  NAZ_C_NAZ= NAZ2.COD_NAZ_CLI 
+			LEFT JOIN (SELECT CLI_C, RECAPTELCLI_X_PREF_INTERN,
+						RECAPTELCLI_X_PREF_TEL,
+						RECAPTELCLI_X_NUM_TEL,
+						TIPRECAPTEL_C_TIP_RECAP FROM CLL.V_RECAPTELCLI RECAPTELCLI
+						WHERE CLI_C = LPAD(<p>codiceCliente</p>,11,'0')  
+						AND TIPRECAPTEL_C_TIP_RECAP IN (SELECT MAX(TIPRECAPTEL_C_TIP_RECAP) FROM  CLL.V_RECAPTELCLI RECAPTELCLI
+														WHERE CLI_C = LPAD(<p>codiceCliente</p>,11,'0')
+														AND trim(RECAPTELCLI.RECAPTELCLI_X_PREF_TEL) is not null
+														AND trim(RECAPTELCLI.RECAPTELCLI_X_NUM_TEL) is not null
+														AND RECAPTELCLI.TIPRECAPTEL_C_TIP_RECAP IN ('01','14'))
+					) RECAPTEL ON  VCLI.CLI_C = RECAPTEL.CLI_C 
+			WHERE 1 = 1
+			AND VCLI.CLI_C = LPAD(<p>codiceCliente</p>,11,'0')
+		</Query>
+		<Output>
+			<Parameter propertyName="codiceCliente"/>            
+			<Parameter propertyName="codiceFiscale"/>      
+			<Parameter propertyName="nome"/>           
+			<Parameter propertyName="cognome"/>     
+			<Parameter propertyName="sesso"/>            
+			<Parameter propertyName="dataNascita"/>      
+			<Parameter propertyName="comuneNascita"/>           
+			<Parameter propertyName="provinciaComuneNascita"/>  
+			<Parameter propertyName="nazioneComuneNascita"/>    
+			<Parameter propertyName="ragioneSociale"/>
+			<Parameter propertyName="toponimoIndirizzo"/>
+			<Parameter propertyName="codToponimoIndirizzo"/>   
+			<Parameter propertyName="indirizzo"/> 
+			<Parameter propertyName="numeroCivicoIndirizzo"/>           
+			<Parameter propertyName="capComune"/>     
+			<Parameter propertyName="comune"/>            
+			<Parameter propertyName="provinciaComune"/>      
+			<Parameter propertyName="nazioneComune"/>
+			<Parameter propertyName="numeroIscrizioneCCIAA"/>     
+			<Parameter propertyName="dataIscrizioneCCIAA"/>            
+			<Parameter propertyName="provinciaIscrizioneCCIAA"/>      
+			<Parameter propertyName="email"/>
+			<Parameter propertyName="prefissoInternazionaleTelefono"/>     
+			<Parameter propertyName="prefissoTelefono"/>            
+			<Parameter propertyName="telefono"/>      
+			<Parameter propertyName="tipoTelefono"/>
+			<Parameter propertyName="codiceClienteTitolare1"/>      
+			<Parameter propertyName="codiceClienteTitolare2"/>
+		</Output>
+	</Access>
+	
+	<Access name="getCodiceFromValore" type="DAOQueryAccess" queryType="0" connectionCacheReference="SER_MIFID"
+			OutputCommandDataModel="com.atosorigin.wfem.types.StringType" maxrows="1">
+		<Query>
+			SELECT
+				COD
+			FROM
+				DAICREF.CCB_ANAGRAFICA_DECOD
+			WHERE
+				ATTIVO = 'S'
+				AND TIPO = ?
+				AND DESCR= ?
+		</Query>
+		<Input>
+			<Parameter propertyName="tipo"/> 
+		 	<Parameter propertyName="descrizione"/> 
+		</Input>
+	</Access>
+	
+	<Access name="clienteIsSocietaFiduciaria" type="DAOQueryAccess" queryType="0" connectionCacheReference="SER_MIFID" 
+			OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType">
+		<Query>
+			SELECT 
+				CASE
+					WHEN CLI_C_GRUPPO = '273'
+					THEN 'S'
+					ELSE 'N'
+				END
+			FROM 
+				CLL.CLI
+			WHERE
+				CLI_C = LPAD(?,11,'0')
+			AND GSTD_F_ESIST = 'S' 
+		</Query>   
+		<Input>
+			<Parameter propertyName="codiceCliente"/>
+		</Input>
+		<Output>
+			<Parameter propertyName="isSocietaFiduciaria"/>
+		</Output>
+	</Access>
+	
+	<Access name="getDatiLegaleRappresentante" type="DAOQueryAccess" queryType="0" connectionCacheReference="SER_MIFID"
+		OutputCommandDataModel="com.atosorigin.wfem.command.MapCommandDataModel">
+		<Query>
+			SELECT 		legalrapp.CLI_M_COGN, legalrapp.CLI_M_NOM, legalrapp.CLI_X_CF
+			FROM 		CLL.CLI cli
+      			JOIN    CLL.CLI legalrapp on (legalrapp.cli_c = cli.CLI_C_COD_LEGALRAPP)
+			WHERE  		cli.CLI_C = LPAD(?,11,'0')
+			AND 		cli.GSTD_F_ESIST = 'S'
+			AND			legalrapp.GSTD_F_ESIST = 'S'	
+		</Query>
+		<Input>
+			<Parameter propertyName="ndgCliente"/>            
+		</Input>
+		<Output>
+			<Parameter propertyName="cognome"/>
+			<Parameter propertyName="nome"/>
+			<Parameter propertyName="codiceFiscale"/>
+		</Output>
+	</Access>
+
+	<Access name="getDatiProcuratore" type="DAOQueryAccess" queryType="0" connectionCacheReference="SER_MIFID"
+		OutputCommandDataModel="com.atosorigin.wfem.command.MapCommandDataModel">
+		<Query>
+			SELECT 	CLI.CLI_M_COGN, CLI.CLI_M_NOM, CLI.CLI_X_CF
+			FROM 	SOGG_POSIZINFORM.LEGM_CLI_RETE_ANAG C,
+						SOGG_POSIZINFORM.LEGM_CLI_RETE_ANAG P,
+  			        	CLL.CLI CLI
+			WHERE 	C.COD_TIPO_RETE_ANAG IN ('X','W')
+      			AND 	C.COD_NDG = LPAD(?,11,'0')
+				AND 	C.FLG_CAPORETE = 'S'
+				AND 	C.FLG_RETE_ANAG_ATTIV = 'S'
+				AND 	C.GSTD_F_ESIST = 'S'
+				AND 	C.NUM_RAPPO = P.NUM_RAPPO
+				AND 	P.FLG_CAPORETE != 'S'
+				AND 	P.GSTD_F_ESIST = 'S'
+				AND 	P.FLG_RETE_ANAG_ATTIV = 'S'
+				AND 	P.COD_TIPO_RETE_ANAG IN ('X')
+ 				AND   	CLI.CLI_c = P.COD_NDG
+ 				AND   	CLI.GSTD_F_ESIST = 'S'
+		</Query>
+		<Input>
+			<Parameter propertyName="ndgCliente"/>            
+		</Input>
+		<Output>
+			<Parameter propertyName="cognome"/>
+			<Parameter propertyName="nome"/>
+			<Parameter propertyName="codiceFiscale"/>
+		</Output>
+	</Access>
+
+</DAO-Object>

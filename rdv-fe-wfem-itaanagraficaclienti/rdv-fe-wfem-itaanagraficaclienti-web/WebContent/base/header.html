@@ -1,0 +1,136 @@
+<!--------  TOOLBAR ALTA --------------->
+<%
+	String avvisoCogestione = "";
+	if(model.getIsClienteInCogestione().booleanValue()){
+		if(model.getCogestioneData().getIsUtenteCogestore().booleanValue() && !model.getCogestioneData().isContrattoCogestioneAttivo()){
+			avvisoCogestione = "Salvando l'anagrafica il soggetto sarà disponibile tra i prospect/clienti personali e non più cogestito.";
+		}else if(model.getCogestioneData().getIsUtenteTitolare().booleanValue()){
+			avvisoCogestione = "Salvando l'anagrafica il soggetto sarà disponibile tra i prospect/clienti personali e non più cogestito.";
+		}
+	}
+%>
+<script>var jsAvvisoCogestione = "<%=avvisoCogestione%>";</script>
+
+<table style="width:100%">
+
+	<% if(!model.getIsDatoreDiLavoro().booleanValue() &&
+		   model.getIsPotenziale().booleanValue() && 
+		   model.getConcurrencyViolationFoundedWidth() == null){ %>
+		   
+	<tr>
+		<td align="right">
+			<% if(model.getCogestioneData().getIsUtenteTitolare().booleanValue()){ %>
+			
+		        <input type="hidden" id="isClienteInCogestione" name="isClienteInCogestione" value="false"> 
+			
+			<% }else if(model.getCogestioneData().getIsUtenteCogestore().booleanValue()){ %>
+
+				<% if(model.getCogestioneData().isContrattoCogestioneAttivo()){ %>
+					<table style="width:230px;background-color:#DFDFDF;padding:3px;"><tr>
+					<td id="isClienteInCogestioneLabel" class="switch-label">
+						<%=model.getIsClienteInCogestione().booleanValue()?"Cliente in cogestione":"Cliente personale"%>
+					</td>
+					<td style="text-align: right;">
+						<label class="switch">
+					      <input type="hidden" id="isClienteInCogestione" name="isClienteInCogestione" value="<%=model.getIsClienteInCogestione().booleanValue()?"true":"false"%>"> 
+						  <input type="checkbox" <%=model.getIsClienteInCogestione().booleanValue()?"checked":""%>
+						  		<%=modificabile?"onclick='changeIsInCogestione(this);'":"disabled"%>>
+						  <span class="slider round"></span>
+						</label>
+					</td>
+					</tr></table>
+				<% }else{ %>
+					<table style="background-color:#DFDFDF;padding:3px;"><tr>
+			        <td><input type="hidden" id="isClienteInCogestione" name="isClienteInCogestione" value="false"></td> 
+					<td class="switch-label">Non è possibile effettuare un censimento anagrafico in cogestione in quanto l'accordo di cogestione con il FB Senior non risulta al momento attivo</td>
+					</tr></table>
+				<% } %>
+				
+			<% } %>
+		</td>
+	</tr>
+		   
+	<% } %>
+	
+	<tr>
+		<td>
+			<table width="100%" class="toolbar" cellpadding="0" cellspacing="2">
+			  <tr>
+			  	 <% 
+			  	     String msgToolbar = "";
+			  	     if(model.getIsPotenziale().booleanValue())
+			  	     	msgToolbar = "Censimento ";
+					 if(model.getIsDitta().booleanValue())
+					 	msgToolbar += "Ditta /Lib. Prof."; 
+					 else if(model.getIsPersonaGiuridica().booleanValue())
+					 	msgToolbar += "Persona Giuridica"; 
+					 else  	     
+					 	msgToolbar += "Persona Fisica";
+					 	 
+					 if(model.isDigitale()){
+					 	msgToolbar += " in firma digitale";
+					 }
+					 
+			  	     if(!model.getCodMediolanum().isNull()){
+				  	     msgToolbar += "&nbsp;&nbsp;-&nbsp;&nbsp;Codice Cliente: <span style='color:orangered;'>"+Tools.unFillSx(model.getCodMediolanum().toString(),'0')+"</span>";
+			  	     }
+			  	     
+			  	     if(!model.getCodCluster().isNull()){
+			  	     	msgToolbar += "&nbsp;&nbsp;-&nbsp;&nbsp;Cod. business: <span style='color:orangered;'>"+model.getDescValue("codCluster")+"</span>";
+			  	     }
+			  	 %>
+			     <td width="82%">
+			       <table class="text"><tr>
+			         <td valign="middle" style="font-size: 10; font-weight: bold;"><%=msgToolbar%></td>
+			       </tr></table>
+			     </td>
+			     
+			     <% if(model.getConcurrencyViolationFoundedWidth() == null){ %>
+				  	 <td width="18%" align="right">
+				  	    <table class="text" cellpadding="0" cellspacing="0"><tr>
+				  	    
+					   	<% if(!model.getPopupMode().booleanValue() && model.getShowBack().booleanValue()){ %>
+					     	 <td><%=template.action("gobackAction","style='width: 95;'")%></td>
+					    <% } %>
+					     
+					   	<% if(!model.getCallingAppl().isNull()){ %>
+					     	 <td><%=template.action("goApplAction","style='width: 95;'")%></td>
+					    <% } %>
+					    
+						<% if(modificabile){ %>
+							<% if(model.getCallingAppl().toString().equals(Costanti.CALLING_APPL_MHD)){ %>
+								<%@ include file="../base/toolbarModificaMHD.html"%>
+						 	<% }else{ %>
+								<%@ include file="../base/toolbarModifica.html"%>
+						 	<% } %>
+						<% } %>
+				
+				 		<% if(!model.isDigitale() && 
+				 			  !model.getIsDatoreDiLavoro().booleanValue() && 
+				 			  !model.getCodPotenziale().isNull() &&
+				 			  !model.getIsPersonaGiuridica().booleanValue()){ %>
+							<%@ include file="../base/toolbarStampa.html"%>
+					    <% } %>
+						</tr></table>
+				     </td>
+			     <% } %>
+			     
+			  </tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<table width="100%" class="toolbar" cellpadding="0" cellspacing="2">
+			  <tr>
+			     <td>
+			       <table class="text"><tr>
+			         <td valign="middle" style="font-size: 10; font-weight: bold;"><%=model.getProfiloPcp().getHtmlProfiloPcp()%></td>
+			       </tr></table>
+			     </td>
+			  </tr>
+			</table>
+		</td>
+	</tr>	
+</table>
+<!------------------------------------------->

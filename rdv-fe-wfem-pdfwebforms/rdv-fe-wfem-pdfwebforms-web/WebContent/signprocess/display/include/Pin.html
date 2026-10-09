@@ -1,0 +1,82 @@
+<%
+	String codCliText = personaCorrente.getNdg().isNull() ? "" : " - Codice Cliente: "+personaCorrente.getNdg();
+	String dispoSpeak = personaCorrente.readCognomeNome()+codCliText+". Inserisci il Primo codice segreto. ";
+
+	String incipit = "Per procedere con la sottoscrizione del contratto è necessario avviare la sezione di autenticazione del cliente.";
+	if(!personaCorrente.isAgente() && (!personaCorrente.getIsEffettivo().booleanValue() || !personaCorrente.isHasBancaDiretta()))
+		incipit += "<br>Per prospect o clienti non bancarizzati utilizzare il primo codice segreto temporaneo ricevuto via sms.";
+
+	if(!model.getLastSpeakOnPageLoad().equals(dispoSpeak)){
+		model.setLastSpeakOnPageLoad(dispoSpeak);
+%>
+	<div id="speakOnLoad" style="display:none;"><%=dispoSpeak%></div>
+<% } %>
+
+<div style="padding:10;display:grid;grid-template-columns:100%;">
+	<div style="text-align:left;">
+		<div class="testoAzzurro" style="padding-bottom:20px;"><%=personaCorrente.readCognomeNome()%><%=codCliText%></div>
+		<div class="titolo" style="padding-bottom:10px;">Inserisci il Primo codice segreto</div>
+		<div class="testo">
+			<%=incipit%>
+		</div>
+	</div>
+	<div style="width:100%;padding-top:40;padding-bottom:40;height:30px;">
+		<div id="pinCont" style="float:right;">
+			<% boolean pinHasError = signData.getDigit1DaChiedere().hasTypeErrors();%>
+			<% if(pinHasError){ %>
+					<span id="pinErrorMsg" class="testo" style="float:left;color:red;font-weight:bold;padding-top:10;padding-right:30;"><%=signData.getDigit1DaChiedere().getTypeErrors().get(0).toString()%></span>
+			<% } %>
+			<%  String[] cifre = new String[]{"prima","seconda","terza","quarta","quinta"};
+				for(int countDig=1;countDig<=5;countDig++){ %>
+				<% if(countDig == signData.getDigit1DaChiedere().intValue()){ %>
+					<div style="float:left;width: 54px;">
+						<input type="password" class="pinInput <%=pinHasError?"pinInputErr":""%>" maxlength="1"
+							   id="personaCorrente_signData_digit1Digitato" 
+							   name="personaCorrente_signData_digit1Digitato"
+							   value="<%=signData.getDigit1Digitato()%>"							   
+							   tabindex="0"
+							   spellcheck="false" autocorrect="on" autocomplete="off" data-semantics-role="text-field" 
+							   <%=pinHasError?"aria-invalid='true'":""%>
+							   aria-label="Inserisci la <%=cifre[signData.getDigit1DaChiedere().intValue()-1]%> cifra del primo codice segreto"
+							   onkeyup="onKeyupPin1(event,this);"
+							   <%=(signData.isStepPinSuperato()?"readonly disabled":"")%>>
+					</div>
+				<% }else if(countDig == signData.getDigit2DaChiedere().intValue()){ %>
+					<div style="float:left;width: 54px;">
+						<input type="password" class="pinInput <%=pinHasError?"pinInputErr":""%>" maxlength="1"
+							   id="personaCorrente_signData_digit2Digitato" 
+							   name="personaCorrente_signData_digit2Digitato"
+							   value="<%=signData.getDigit2Digitato()%>"
+							   tabindex="0"
+							   spellcheck="false" autocorrect="on" autocomplete="off" data-semantics-role="text-field" 
+							   <%=pinHasError?"aria-invalid='true'":""%>
+							   aria-label="Inserisci la <%=cifre[signData.getDigit2DaChiedere().intValue()-1]%> cifra del primo codice segreto"
+							   onkeyup="onKeyupPin2(event,this);"
+							   <%=(signData.isStepPinSuperato()?"readonly disabled":"")%>>
+					</div>
+				<% }else{ %>
+					<div style="float:left;width: 54px;">
+						<input type="text" class="pinOutput" readonly disabled='disabled'>
+					</div>
+				<% } %>
+		<% } %>
+		</div>
+	</div>
+	<div style="float:right;margin-right:5;">
+		<div class="testo" style="color:#737373;text-align:right;width:340px;float:right;padding-bottom:10;">
+			Inserisci la <%=signData.getDigit1DaChiedere().intValue()%>° e la <%=signData.getDigit2DaChiedere().intValue()%>° cifra del Primo codice segreto
+		</div>
+	</div>
+	<% if(!personaCorrente.isAgente() && (!personaCorrente.getIsEffettivo().booleanValue() || !personaCorrente.isHasBancaDiretta())){ %>
+		<div style="float:right;margin-right:5;">
+			<div class="testo" style="color:#737373;text-align:right;width:340px;float:right;padding-top:10;">
+				<span id="richiediNuovoPinProvvisorioLink" role="link" tabindex="0" style="color:#027BC2;text-decoration:underline;cursor:pointer;" onclick="richiediNuovoPinProvvisorio();">
+					Richiedi nuovo codice segreto temporaneo
+				</span>
+			</div>
+		</div>
+	<% } %>
+	<div style="float:right;text-align:right;padding-top:30;">
+		<div id="avantiButton" class="normalButton" style="display:inline-block;" onclick="doVerificaPin();">Avanti</div>
+	</div>					
+</div>

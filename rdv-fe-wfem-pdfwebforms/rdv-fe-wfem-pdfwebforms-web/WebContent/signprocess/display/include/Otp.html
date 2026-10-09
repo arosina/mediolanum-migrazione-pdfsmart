@@ -1,0 +1,191 @@
+<%
+	String dispoSpeak = " "+personaCorrente.readCognomeNome()+" - Codice Cliente: "+personaCorrente.getNdg()+". ";
+	if(!model.isMultiPdf()){
+		dispoSpeak += "Firma del modulo "+(model.getPdfData().getPdfTitle().isNull()?model.getPdfAnag().getPdfDescr():model.getPdfData().getPdfTitle())+". ";
+	}else{
+		String dispoTitle = ""+(model.mainPdfData().getPdfTitle().isNull()?model.mainPdfAnag().getPdfDescr():model.mainPdfData().getPdfTitle());
+		dispoSpeak += "Firma della dispositiva "+dispoTitle+". ";
+		if(!model.getPdfAnag().getPdfDescr().equalsIgnoreCase(dispoTitle))
+			dispoSpeak += "Firma del modulo "+model.getPdfAnag().getPdfDescr()+". ";
+	}
+	DoubleType importo = model.mainPdfData().read(PdfPredefinedFields.IMPORTO)==null ? new DoubleType():new DoubleType(model.mainPdfData().read(PdfPredefinedFields.IMPORTO).toString());
+	if(importo != null && !importo.isNull())
+		dispoSpeak += "Importo "+importo+" euro. ";
+	if(!model.getLastSpeakOnPageLoad().equals(dispoSpeak)){
+		model.setLastSpeakOnPageLoad(dispoSpeak);
+%>
+	<div style="position:absolute;top:-9999;left:-9999;">
+		<span id="speakOnLoad-describedby" style="display:none;"><%=dispoSpeak%></span>
+		<input id="speakOnLoad" tabindex="0" type="text" aria-describedby="speakOnLoad-describedby" aria-hidden="true"></input>
+	</div>
+<% } %>
+
+<% 
+	boolean mostraOtp = SignUtility.mostraOtp(model);
+	String rowheight="auto auto 1fr auto auto auto auto";
+%>
+<div style="width:100%;height:100%;display:grid;grid-template-columns:100%;grid-template-rows:<%=rowheight%>;">
+
+	<div style="display:grid;grid-template-columns: 1fr 210px;padding-bottom:10;">
+		<div>
+			<div style="text-align:left;">
+				<div class="titolo">Presa visione dei documenti e firma del contratto</div>
+				<div class="testo"><%=personaCorrente.readCognomeNome()%> - Codice Cliente: <%=personaCorrente.getNdg()%></div>
+				<% String title = model.getPdfData().getPdfTitle().isNull()?model.getPdfAnag().getPdfDescr().toString() : model.getPdfData().getPdfTitle().toString(); %>
+				<div class="testo"><%=title%></div>
+			</div>
+		</div>
+		<div style="text-align:left;">
+			<% if(htmlMaterialePrecontrattuale.length() > 0){ %>
+				<div class="linkAperturaConIcona">
+					<div><img alt="" src="<%=template.getWebApp()%>/images/visualizza_pdf.png"></div>
+					<div>
+						<span role="link" tabindex="0" id="linkMaterialePrecontrattuale" onclick="openMaterialePrecontrattualeDialog();">
+							Materiale precontrattuale obbligatorio
+						</span>
+						<% if(!personaCorrente.isAgente()){ %>
+							<input type="hidden" id="materialePrecontrattualeClicked" name="materialePrecontrattualeClicked" value="<%=model.getMaterialePrecontrattualeClicked()%>">
+						<% } %>
+					</div>
+				</div>
+			<% } %>
+			<% if(htmlMaterialePrecontrattualeAccessorio.length() > 0){ %>
+				<div class="linkAperturaConIcona">
+					<div><img alt="" src="<%=template.getWebApp()%>/images/visualizza_pdf.png"></div>
+					<div>
+						<span role="link" tabindex="0" id="linkMaterialePrecontrattualeAccessorio" onclick="openMaterialePrecontrattualeAccessorioDialog();">
+							Materiale precontrattuale accessorio
+						</span>
+						<% if(!personaCorrente.isAgente()){ %>
+							<input type="hidden" id="materialePrecontrattualeAccessorioClicked" name="materialePrecontrattualeAccessorioClicked" value="<%=model.getMaterialePrecontrattualeAccessorioClicked()%>">
+						<% } %>
+					</div>
+				</div>
+			<% } %>
+			<% if(hasReportAdeguatezza){ %>
+				<%
+					String linkReportAdeguatezzaText = linkReportAdeguatezzaTextEND; 
+					if(model.getStatoRecueroReportAdeguatezza().equals("WAIT"))
+						linkReportAdeguatezzaText = linkReportAdeguatezzaTextWAIT;
+					else if(model.getStatoRecueroReportAdeguatezza().equals("ERROR"))
+						linkReportAdeguatezzaText = linkReportAdeguatezzaTextERROR;
+					String linkReportAdeguatezzaStyle = model.getStatoRecueroReportAdeguatezza().equals("WAIT") ? "": "style='text-decoration:underline;cursor:pointer;'";
+				%>
+				<div class="linkAperturaConIcona">
+					<div><img alt="" src="<%=template.getWebApp()%>/images/visualizza_pdf.png"></div>
+					<div>
+						<span role="link" tabindex="0" id="linkReportAdeguatezza" onclick="openReportAdeguatezza(this);"
+						  <%=linkReportAdeguatezzaStyle%> 
+						  statoReportAdeguatezza="<%=model.getStatoRecueroReportAdeguatezza()%>" 
+						  isReportAdeguatezzaClicked="<%=model.isReportAdeguatezzaClicked()%>">
+						  <%=linkReportAdeguatezzaText%>
+						 </span>
+					</div>
+				</div>
+			<% } %>
+			<% if(showLinkRaccomandazioneIdd){ %>
+				<div class="linkAperturaConIcona">
+					<div><img alt="" src="<%=template.getWebApp()%>/images/visualizza_pdf.png"></div>
+					<div>
+						<span role="link" tabindex="0" id="linkRaccomandazioneIdd" onclick="openRaccomandazioneIddOnSign(this);"
+						  isRaccomandazioneIddClicked="<%=model.isRaccomandazioneIddClicked()%>">
+							Raccomandazione personalizzata e Modulo Unico Precontrattuale (Mup) per prodotti assicurativi IVASS n.40/2018
+						</span>
+					</div>
+				</div>
+			<% } %>
+			<div class="linkAperturaConIcona">
+				<div><img alt="" src="<%=template.getWebApp()%>/images/ricerca.png"></div>
+				<div>
+					<span role="link" tabindex="0" id="linkLeggiIlContratto" onclick="showLeggiIlContrattoAlert();">
+						Leggi il contratto
+					</span>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div>
+	<% if(!personaCorrente.isAgente() && model.isFirstSignPage() && !model.mainPdfAnag().getTipoPriips().isNull()){ %>
+		<div class="testo" style="text-align:left;">
+			Dichiaro di aver già ricevuto il materiale contrattuale dal mio Family Banker prima della sottoscrizione, e di averlo
+			letto attentamente comprendendone il contenuto al fine di assumere consapevolmente la decisione per
+			sottoscrivere la presente Proposta. Qualora non avessi già provveduto, chiedo di salvare su supporto durevole
+			il suddetto materiale.
+		</div>
+	<% } %>
+	</div>
+	
+	<div id="pageBody" tabindex="-1" style="display:grid;grid-template-rows:1fr;">
+		<%PdfHtmlDrawer.drawPdfForSign((java.io.Writer)out,request.getAttribute("BrowserInstance").toString(),template,model,personaCorrente);%>
+	</div>
+
+	<div>
+	<% if(mostraOtp && model.isFirstSignPage() && !personaCorrente.isAgente() && htmlMaterialePrecontrattuale.length() > 0){ %>
+		<div class="testo" style="text-align:left;padding-left:50;padding-top:30;padding-bottom:30;">
+			<div style="display:grid;grid-template-columns: auto 1fr;column-gap: 10px;">
+				<div>
+					<input tabindex="0" type="checkbox" name="presaVisioneMaterialePrecontrattualeCheck" id="presaVisioneMaterialePrecontrattualeCheck" 
+							ftype="BooleanType" <%=(model.getPresaVisioneMaterialePrecontrattuale().booleanValue()?"checked":"")%>>
+					<input type="hidden" name="presaVisioneMaterialePrecontrattuale" id="presaVisioneMaterialePrecontrattuale" 
+							ftype="BooleanType" value="<%=model.getPresaVisioneMaterialePrecontrattuale().booleanValue()%>">
+					<script>__fieldIntf.initBooleanType('presaVisioneMaterialePrecontrattualeCheck',null);</script>		
+				</div>
+				<div><label for="presaVisioneMaterialePrecontrattualeCheck">Dichiaro di aver preso visione del materiale precontrattuale</label></div>
+		</div>
+	<% } %>
+	</div>
+	
+	<div class="testo" align="left" style="padding-bottom:10px;padding-left:10px;display:grid;row-gap:5px;">
+		<div id="otpDigitatoLabel" height="30" style="color:#192D6E;padding-right:10px;<%=mostraOtp?"":"display:none;"%>">
+			Inserisci la One Time Password che hai ricevuto sul numero di cellulare: <%=signData.getNumeroCelluarePrimario().toString().replace("_", "&nbsp;")%>
+		</div>
+		<div id="otpCont" height="40" style="padding-right:10px;<%=mostraOtp?"":"display:none;"%>">
+			<% boolean otpHasError = model.getPersonaCorrente().getSignData().getOtpDigitato().hasTypeErrors(); %>
+			<div>
+				<span style="color:#027BC2;font-weight:bold;"><%if(!signData.getOtpGenerato().isNull()){%><span id="otpPrefisso"><%=signData.getOtpGenerato()%></span> -<%}%></span>
+				<input tabindex="0" type="password" class="otpInput<%=otpHasError?" otpInputErr":""%>" 
+					name="personaCorrente_signData_otpDigitato" id="personaCorrente_signData_otpDigitato"
+			 		onchange="__fieldIntf.toUpper(this);" maxlength="6" autocomplete="off" style="width:160;font-weight:bold;"
+			 		ftype="StringType" value="<%=model.getPersonaCorrente().getSignData().getOtpDigitato()%>"
+				    spellcheck="false" autocorrect="on" autocomplete="off" data-semantics-role="text-field"
+				    <%=otpHasError?"aria-invalid='true'":""%>
+				    aria-label="Inserisci la One Time Password che hai ricevuto sul numero di cellulare: <%=signData.getNumeroCelluarePrimario().toString().replace("_", " ")%>, con prefisso <%=signData.getOtpGenerato()%>.">
+			 	<script>__fieldIntf.initStringType('personaCorrente_signData_otpDigitato',null);</script>
+				<% if(otpHasError){ %>
+					<span id="otpErrorMsg" style="color:red;font-weight:bold;padding-left:30;"><%=model.getPersonaCorrente().getSignData().getOtpDigitato().getTypeErrors().get(0).toString()%></span>
+				<% } %>
+			</div>
+		</div>
+		<div valign="top" style="height:25px;padding-right:10px;<%=mostraOtp?"":"display:none;"%>">
+			<span role="link" tabindex="0" style="color:#027BC2;text-decoration:underline;cursor:pointer;" onclick="richiediNuovoOtp();">
+				Se non hai ricevuto l'SMS richiedi un nuovo codice
+			</span>
+		</div>
+	</div>
+	
+	<div class="line">&nbsp;</div>
+
+	<div>
+		<table width="100%" cellpadding="0" cellspacing="0">
+			<tr>
+				<td style="padding:10;padding-top:3;">
+					<table>
+						<tr>
+							<td><div class="normalButton whiteButton" onclick="doZoomIn();" aria-label="zoom più">Zoom +</div></td>
+							<td><div class="normalButton whiteButton" onclick="doZoomOut();" aria-label="zoom meno">Zoom -</div></td>
+						</tr>
+					</table>
+				</td>				
+				<td align="right" style="padding:10;padding-top:3;">
+					<table>
+						<tr>
+							<td><div class="normalButton" onclick="doVerificaOtp();">Avanti</div></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</div>
+	 
+</div>

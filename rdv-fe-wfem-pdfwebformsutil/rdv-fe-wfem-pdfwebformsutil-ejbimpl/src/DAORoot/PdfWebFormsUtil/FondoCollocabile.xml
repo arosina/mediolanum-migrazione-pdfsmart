@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="FondoCollocabile">	
+
+	
+<Access name="isFondoCollocabile" type="DAOQueryAccess" queryType="0" connectionCacheReference="SER_MIFID" OutputCommandDataModel="com.atosorigin.wfem.command.MapCommandDataModel">
+		<Query>
+			select
+			case when (trunc(nvl(dat_fine_sscr_iniz, sysdate)) - trunc(sysdate)) &lt; 0 then -1 else 1 end,
+			case when (trunc(nvl(dat_fine_aggiu, sysdate)) - trunc(sysdate)) &lt; 0 then -1 else 1 end,
+			case when (trunc(nvl(dat_fine_sscr_aggiu, sysdate)) - trunc(sysdate)) &lt; 0 then -1 else 1 end,
+			case when (trunc(nvl(dat_fine_riscat, sysdate)) - trunc(sysdate)) &lt; 0 then -1 else 1 end
+					
+			from cat_prod.DETT_OPERT_PROD 
+			where cod_prod_contnre = ?
+				AND cod_tipo_sist_orig_disp = ?				
+				and gstd_f_esist='S'
+				and dat_iniz_colloc_bmed &lt;= trunc(sysdate)
+                and nvl(dat_fine_colloc_bmed, to_date('99991231', 'YYYYMMDD')) &gt;= trunc(sysdate)				
+		</Query>   
+		<Input>
+			<Parameter propertyName="codFondo"/>
+		</Input>
+		<Input>
+			<Parameter propertyName="origine"/>
+		</Input>						
+		<Output>
+			<Parameter propertyName="isCollocabileIniziale"/>
+		</Output>
+		<Output>
+			<Parameter propertyName="isCollocabileAggiuntivoInPortafoglio"/>
+		</Output>
+		<Output>
+			<Parameter propertyName="isCollocabileAggiuntivoNonInPortafoglio"/>
+		</Output>
+		<Output>
+			<Parameter propertyName="isCollocabileRiscatto"/>
+		</Output>		
+		
+	</Access>
+		
+</DAO-Object>

@@ -1,0 +1,677 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="PdfPublisher" connectionCacheReference="CEPE">
+
+<CodDescriptions>
+
+   	<CodDesc name="Aree" tableName="PDF_AREAS" codColumnName="AREA" descrColumnName="DESCR"/>
+   
+	<CodDesc name="ProdottiPrit" tableName="CEPE_PT_RETEP_PRODOTTO" refreshTime="120" connectionCacheReference="CEPE"
+			 codColumnName="PT_PRODOTTO_N_PT_PRODOTTO" 
+			 descrColumnName="PT_PRODOTTO_X_PT_PRODOTTO + '  [cod. ' + convert(varchar(20),PT_PRODOTTO_N_PT_PRODOTTO) + ']'" descrAliasColumnName="DESCR"  
+			 whereCondition="PT_PRODOTTO_N_PT_PRODOTTO != 0"
+			 validityWhereCondition="PT_PRODOTTO_N_PT_PRODOTTO != 0 and PT_PRODOTTO_F_VALIDITA = 'S'"
+			 orderBy="upper(PT_PRODOTTO_X_PT_PRODOTTO)"/>
+
+	<CodDesc name="OperazioniProdottoPrit" tableName="CEPE_PT_RETEP_OPERAZIONE O, CEPE_PT_RETEP_PRODOPER PO" connectionCacheReference="CEPE"
+			 codColumnName="O.PT_OPERAZIONE_N_PT_OPERAZIONE" 
+			 descrColumnName="O.PT_OPERAZIONE_X_PT_OPERAZIONE + '  [cod. ' + convert(varchar(20),O.PT_OPERAZIONE_N_PT_OPERAZIONE) + ']'" descrAliasColumnName="DESCR"
+			 whereCondition="PO.PT_PRODOTTO_N_PT_PRODOTTO = ? and O.PT_OPERAZIONE_N_PT_OPERAZIONE != 0 and PO.PT_OPERAZIONE_N_PT_OPERAZIONE = O.PT_OPERAZIONE_N_PT_OPERAZIONE"
+			 validityWhereCondition="PO.PT_PRODOTTO_N_PT_PRODOTTO = ? and O.PT_OPERAZIONE_N_PT_OPERAZIONE != 0 and PO.PT_OPERAZIONE_N_PT_OPERAZIONE = O.PT_OPERAZIONE_N_PT_OPERAZIONE and O.PT_OPERAZIONE_F_VALIDITA = 'S' and (PO.PT_PRODOPER_F_VALIDITA is null or PO.PT_PRODOPER_F_VALIDITA = 'S')"
+			 orderBy="upper(O.PT_OPERAZIONE_X_PT_OPERAZIONE)">
+	     <WhereFields>
+	        <Parameter propertyName="pdfCodProdottoPrit"/>
+	     </WhereFields>
+	     <ValidityFields>
+	        <Parameter propertyName="pdfCodProdottoPrit"/>
+	     </ValidityFields>
+     </CodDesc>
+     
+   	<CodDesc name="LineeBusiness" tableName="PDF_LINEE_DI_BUSINESS" codColumnName="CODICE" descrColumnName="DESCRIZIONE" orderBy="ORDINE"/>
+   	<CodDesc name="FasiCommerciali" tableName="PDF_FASI_COMMERCIALI" codColumnName="CODICE" descrColumnName="DESCRIZIONE" orderBy="ORDINE"/>
+   	
+</CodDescriptions>
+
+<Access name="searchPdfAnagCatalogo" type="DAOQueryAccess" queryType="1" maxResultRows="100"
+		OutputCommandDataModel="prgm.pdfwebforms.publisher.model.PdfAnagModel">
+ <Query>
+	select 	distinct 
+			C.ID_MODULO as pdfId
+	,		C.CODICE_MODULO as pdfCode
+	, 		C.DESCRIZIONE as pdfDescr
+	,		C.VALIDO_DAL
+	,		C.VALIDO_FINO_AL  
+	,		(select P2.PUBLICATION_ID from PDF_PUBLICATION P2 where (P2.IS_ARCHIVED is null or P2.IS_ARCHIVED = 'N') and P2.PDF_ID = C.ID_MODULO and P2.START_DATE &lt;= getdate() having P2.START_DATE = max(P2.START_DATE) and P2.PUBLISH_TIME = max(P2.PUBLISH_TIME)) as pdfPubIdCorrente	
+	, 		(select count(P2.PDF_ID) from PDF_PUBLICATION P2 where (P2.IS_ARCHIVED is null or P2.IS_ARCHIVED = 'N') and P2.PDF_ID = C.ID_MODULO) as pdfNumPubblicazioni
+	, 		(select count(P2.PDF_ID) from PDF_PUBLICATION P2 where P2.IS_ARCHIVED = 'S' and P2.PDF_ID = C.ID_MODULO) as pdfNumArchiviazioni
+	,		'S' as isFromCatalogoModuli
+	,		(select case when (select count(*) from PDF_ANAG A where A.PDF_ID = C.ID_MODULO) = 0 then 'N' else 'S' end) as isOnWork
+	,		(select DESCR from PDF_AREAS where AREA='CATALOGO_MODULI') as pdfArea
+	,		(select AA.MOM_CODE from PDF_ANAG AA where AA.PDF_ID = C.ID_MODULO) as pdfMomCode
+	,		(select AA.COD_PRODOTTO_PRIT from PDF_ANAG AA where AA.PDF_ID = C.ID_MODULO) as pdfCodProdottoPrit
+	,		(select AA.COD_OPERAZIONE_PRIT from PDF_ANAG AA where AA.PDF_ID = C.ID_MODULO) as pdfCodOperazionePrit
+	,		(select AA.CALL_SRV_DISPOSITIVA_BMED from PDF_ANAG AA where AA.PDF_ID = C.ID_MODULO) as callSrvDispositivaBMED
+	,		(select AA.TIPO_PROCESSO_SEDE from PDF_ANAG AA where AA.PDF_ID = C.ID_MODULO) as tipoProcessoSede
+	from 	CEPE_CATM_MODULO C
+	<IfEqual propertyName="isRicercaOnAnag" propertyValue="true">, PDF_ANAG A</IfEqual>
+	where 	ltrim(rtrim(C.CODICE_MODULO)) is not null
+	<IfEqual propertyName="isRicercaOnAnag" propertyValue="true">and C.ID_MODULO = A.PDF_ID</IfEqual>
+	<IfNotNull propertyName="ricercaPdfParam_pdfCode">and upper(C.CODICE_MODULO) like upper(<p>%ricercaPdfParam_pdfCode%</p>)</IfNotNull>
+	<IfNotNull propertyName="ricercaPdfParam_pdfDescr">and upper(C.DESCRIZIONE) like upper(<p>%ricercaPdfParam_pdfDescr%</p>)</IfNotNull>
+	<IfEqual propertyName="soloAttivi" propertyValue="true">and (getdate() between C.VALIDO_DAL and isnull(dateadd(dd,+1,C.VALIDO_FINO_AL),'99990101'))</IfEqual>
+	
+	<IfEqual propertyName="isRicercaOnAnag" propertyValue="true">
+		<IfNotNull propertyName="ricercaPdfParam_pdfMomCode">and upper(A.MOM_CODE) = upper(<p>ricercaPdfParam_pdfMomCode</p>)</IfNotNull>
+		<IfNotNull propertyName="ricercaPdfParam_callSrvDispositivaBMED">
+			<IfEqual propertyName="ricercaPdfParam_callSrvDispositivaBMED" propertyValue="ISNULL">and A.CALL_SRV_DISPOSITIVA_BMED is null</IfEqual>
+			<IfEqual propertyName="ricercaPdfParam_callSrvDispositivaBMED" propertyValue="D">and A.CALL_SRV_DISPOSITIVA_BMED = 'D'</IfEqual>
+			<IfEqual propertyName="ricercaPdfParam_callSrvDispositivaBMED" propertyValue="S">and A.CALL_SRV_DISPOSITIVA_BMED = 'S'</IfEqual>
+		</IfNotNull>
+	</IfEqual>
+	order by 3 desc
+ </Query> 
+ <Output>
+	<Parameter propertyName="pdfId"/>
+	<Parameter propertyName="pdfCode"/>
+	<Parameter propertyName="pdfDescr"/>
+	<Parameter propertyName="pdfStartDate"/>
+	<Parameter propertyName="pdfEndDate"/>
+	<Parameter propertyName="pdfPubIdCorrente"/>
+	<Parameter propertyName="pdfNumPubblicazioni"/>
+	<Parameter propertyName="pdfNumArchiviazioni"/>
+	<Parameter propertyName="isFromCatalogoModuli"/>
+	<Parameter propertyName="isOnWork"/>
+	<Parameter propertyName="pdfArea"/>
+	<Parameter propertyName="pdfMomCode"/>
+	<Parameter propertyName="pdfCodProdottoPrit"/>
+	<Parameter propertyName="pdfCodOperazionePrit"/>
+	<Parameter propertyName="callSrvDispositivaBMED"/>
+	<Parameter propertyName="tipoProcessoSede"/>
+ </Output> 
+</Access> 
+
+<Access name="searchPdfAnag" type="DAOQueryAccess" queryType="1" maxResultRows="100"
+		OutputCommandDataModel="prgm.pdfwebforms.publisher.model.PdfAnagModel">
+ <Query>
+	select 	distinct 
+			A.PDF_ID as pdfId
+	,		A.CODE as pdfCode
+	, 		A.DESCR as pdfDescr
+	,		A.START_DATE
+	,		A.END_DATE
+	,		(select P2.PUBLICATION_ID from PDF_PUBLICATION P2 where (P2.IS_ARCHIVED is null or P2.IS_ARCHIVED = 'N') and P2.PDF_ID = A.PDF_ID and P2.START_DATE &lt;= getdate() having P2.START_DATE = max(P2.START_DATE) and P2.PUBLISH_TIME = max(P2.PUBLISH_TIME)) as pdfPubIdCorrente	
+	, 		(select count(P2.PDF_ID) from PDF_PUBLICATION P2 where (P2.IS_ARCHIVED is null or P2.IS_ARCHIVED = 'N') and P2.PDF_ID = A.PDF_ID) as pdfNumPubblicazioni
+	, 		(select count(P2.PDF_ID) from PDF_PUBLICATION P2 where P2.IS_ARCHIVED = 'S' and P2.PDF_ID = A.PDF_ID) as pdfNumArchiviazioni
+	,		'N' as isFromCatalogoModuli
+	,		'S' as isOnWork
+	,		isnull((select AR.DESCR from PDF_AREAS AR where AR.AREA=A.AREA),A.AREA) as pdfArea
+	,		A.MOM_CODE as pdfMomCode
+	,		A.COD_PRODOTTO_PRIT as pdfCodProdottoPrit
+	,		A.COD_OPERAZIONE_PRIT as pdfCodOperazionePrit
+	,		A.CALL_SRV_DISPOSITIVA_BMED as callSrvDispositivaBMED
+	,		A.TIPO_PROCESSO_SEDE as tipoProcessoSede
+	from 	PDF_ANAG A
+	where 	1 = 1
+	<IfNotNull propertyName="area">and A.AREA = <p>area</p></IfNotNull>
+	<IfNotNull propertyName="ricercaPdfParam_pdfCode">and upper(A.CODE) like upper(<p>%ricercaPdfParam_pdfCode%</p>)</IfNotNull>
+	<IfNotNull propertyName="ricercaPdfParam_pdfMomCode">and upper(A.MOM_CODE) = upper(<p>ricercaPdfParam_pdfMomCode</p>)</IfNotNull>
+	<IfNotNull propertyName="ricercaPdfParam_pdfDescr">and upper(A.DESCR) like upper(<p>%ricercaPdfParam_pdfDescr%</p>)</IfNotNull>
+	<IfNotNull propertyName="ricercaPdfParam_pdfDriverName">and A.DRIVER_NAME like <p>%ricercaPdfParam_pdfDriverName%</p></IfNotNull>
+	<IfEqual propertyName="soloAttivi" propertyValue="true">
+		and (A.START_DATE is null or A.START_DATE &lt;= getDate())
+		and (A.END_DATE is null or dateadd(dd,+1,A.END_DATE) &gt;= getDate())
+	</IfEqual>
+	<IfNotNull propertyName="ricercaPdfParam_callSrvDispositivaBMED">
+		<IfEqual propertyName="ricercaPdfParam_callSrvDispositivaBMED" propertyValue="ISNULL">and A.CALL_SRV_DISPOSITIVA_BMED is null</IfEqual>
+		<IfEqual propertyName="ricercaPdfParam_callSrvDispositivaBMED" propertyValue="D">and A.CALL_SRV_DISPOSITIVA_BMED = 'D'</IfEqual>
+		<IfEqual propertyName="ricercaPdfParam_callSrvDispositivaBMED" propertyValue="S">and A.CALL_SRV_DISPOSITIVA_BMED = 'S'</IfEqual>
+	</IfNotNull>
+	order by 3 desc
+ </Query> 
+ <Output>
+	<Parameter propertyName="pdfId"/>
+	<Parameter propertyName="pdfCode"/>
+	<Parameter propertyName="pdfDescr"/>
+	<Parameter propertyName="pdfStartDate"/>
+	<Parameter propertyName="pdfEndDate"/>
+	<Parameter propertyName="pdfPubIdCorrente"/>
+	<Parameter propertyName="pdfNumPubblicazioni"/>
+	<Parameter propertyName="pdfNumArchiviazioni"/>
+	<Parameter propertyName="isFromCatalogoModuli"/>
+	<Parameter propertyName="isOnWork"/>
+	<Parameter propertyName="pdfArea"/>
+	<Parameter propertyName="pdfMomCode"/>
+	<Parameter propertyName="pdfCodProdottoPrit"/>
+	<Parameter propertyName="pdfCodOperazionePrit"/>
+	<Parameter propertyName="callSrvDispositivaBMED"/>
+	<Parameter propertyName="tipoProcessoSede"/>
+ </Output> 
+</Access> 
+
+<Access name="pdfCodeExist" type="DAOQueryAccess" queryType="0"
+		OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType">
+ <Query>
+	select case when ((select count(*) from PDF_ANAG where CODE = ?) + 
+					  (select count(*) from CEPE_CATM_MODULO where CODICE_MODULO = ?)
+					  ) > 0 then 'S' else 'N' end as pdfCodeExist  
+ </Query> 
+ <Input>
+	<Parameter propertyName="pdfCode"/>
+	<Parameter propertyName="pdfCode"/>
+ </Input> 
+</Access> 
+
+<Access name="pdfMomCodeExist" type="DAOQueryAccess" queryType="1"
+		OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType">
+ <Query>
+	select case when 
+		(select count(*) from PDF_ANAG where MOM_CODE = <p>pdfMomCode</p> and AREA = <p>pdfArea</p> <IfNotNull propertyName="pdfId">and PDF_ID != <p>pdfId</p></IfNotNull>) > 0 
+		then 'S' else 'N' end as pdfMomCodeExist  
+ </Query> 
+</Access> 
+
+<Access name="loadModuloCatalogoAnag" type="DAOQueryAccess" queryType="0" maxResultRows="1">
+ <Query>
+	select 	top 1
+			C.CODICE_MODULO
+	,		C.DESCRIZIONE
+	,		isnull(TM.DESCRIZIONE,convert(varchar,C.CODICE_TIPOMODULO))
+	,		isnull(TS.DESCRIZIONE,convert(varchar,C.CODICE_SEGMENTO))
+	,		C.VALIDO_DAL
+	,		C.VALIDO_FINO_AL
+	,		C.FLAG_CONTR_ELETTR
+	,		C.FLAG_STAMPA_CONTR_ELETTR
+	,		C.FLAG_INTRANET
+	,		C.FLAG_CARTA_CHIMICA
+	,		(select P2.START_DATE from PDF_PUBLICATION P2 where (P2.IS_ARCHIVED is null or P2.IS_ARCHIVED = 'N') and P2.PDF_ID = C.ID_MODULO and P2.START_DATE &lt;= getdate() having P2.START_DATE = max(P2.START_DATE) and P2.PUBLISH_TIME = max(P2.PUBLISH_TIME)) as dataUltimaPubblicazione 
+	from 	CEPE_CATM_MODULO C, CEPE_CATM_TIPOMODULO TM, CEPE_CATM_SEGMENTO TS, PDF_ANAG PA
+	where 	C.ID_MODULO = ?
+	and		C.CODICE_TIPOMODULO *= TM.CODICE_TIPOMODULO
+	and		C.CODICE_SEGMENTO *= TS.CODICE_SEGMENTO
+	and		C.ID_MODULO *= PA.PDF_ID
+	and		PA.AREA = 'CATALOGO_MODULI'
+ </Query>
+ <Input>
+	<Parameter propertyName="pdfId"/>
+ </Input> 
+ <Output>
+ 	<Parameter propertyName="pdfCode"/>
+ 	<Parameter propertyName="pdfDescr"/>
+	<Parameter propertyName="pdfModulo_tipoModulo"/>
+	<Parameter propertyName="pdfModulo_segmento"/>
+	<Parameter propertyName="pdfModulo_dataInizioValidita"/>
+	<Parameter propertyName="pdfModulo_dataFineValidita"/>
+	<Parameter propertyName="pdfModulo_flagContrElettronico"/>
+	<Parameter propertyName="pdfModulo_flagStampaContrElettronico"/>
+	<Parameter propertyName="pdfModulo_flagIntranet"/>
+	<Parameter propertyName="pdfModulo_flagCartaChimica"/>
+	<Parameter propertyName="pdfModulo_dataUltimaPubblicazione"/>	
+ </Output> 
+</Access> 
+
+<Access name="allegatoOriginaleModulo" type="DAOTableAccess" tableName="CEPE_CATM_MODULO_ALLEGATO">
+   <Bindings>
+	<Parameter propertyName="pdfId" 		dbColumnName="ID_MODULO"					primaryKey="true"/>
+	<Parameter propertyName="pdfContent"	dbColumnName="MODULO_ALLEGATO_CONTENT_TYPE" fileTypeDataPart="contentType"/>
+	<Parameter propertyName="pdfContent"  	dbColumnName="MODULO_ALLEGATO_FILE_NAME"	fileTypeDataPart="fileName"/>
+	<Parameter propertyName="pdfContent"  	dbColumnName="MODULO_ALLEGATO"				fileTypeDataPart="image"/>
+   </Bindings>
+</Access>
+
+<Access name="pdfAnag" type="DAOTableAccess" tableName="PDF_ANAG">
+   <Bindings>
+	<Parameter propertyName="pdfId" 						dbColumnName="PDF_ID" 	primaryKey="true"/>
+	<Parameter propertyName="pdfCode" 						dbColumnName="CODE"/>
+	
+	<Parameter propertyName="pdfCreationUser" 	 			dbColumnName="CREATION_USER"/>	 
+	<Parameter propertyName="pdfCreationTime" 	 			dbColumnName="CREATION_TIME"/>	 
+	<Parameter propertyName="pdfLastModUser" 	 			dbColumnName="LASTMOD_USER"/>	 
+	<Parameter propertyName="pdfLastModTime" 	 			dbColumnName="LASTMOD_TIME"/>
+
+	<Parameter propertyName="pdfStartDate"					dbColumnName="START_DATE"/>
+	<Parameter propertyName="pdfEndDate"					dbColumnName="END_DATE"/>
+	<Parameter propertyName="pdfDescr"						dbColumnName="DESCR"/>
+	<Parameter propertyName="pdfCodProdottoPrit"			dbColumnName="COD_PRODOTTO_PRIT"/>
+	<Parameter propertyName="pdfCodOperazionePrit"			dbColumnName="COD_OPERAZIONE_PRIT"/>
+	<Parameter propertyName="pdfMomCode" 		 			dbColumnName="MOM_CODE"/>
+	<Parameter propertyName="pdfCodLineaBusiness" 		 	dbColumnName="COD_LINEA_BUSINESS"/>
+	<Parameter propertyName="pdfCodFaseCommerciale"		 	dbColumnName="COD_FASE_COMMERCIALE"/>
+	
+	<Parameter propertyName="pdfIsStampaEnabled" 	 		dbColumnName="IS_STAMPA_ENABLED"/>
+	<Parameter propertyName="pdfIsCartaLiberaEnabled" 	 	dbColumnName="IS_CARTA_LIBERA_ENABLED"/>
+	<Parameter propertyName="pdfIsCartaChimicaEnabled" 	 	dbColumnName="IS_CARTA_CHIMICA_ENABLED"/>
+	<Parameter propertyName="pdfIsFirmaDigitaleEnabled"  	dbColumnName="IS_FIRMA_DIGTALE_ENABLED"/>
+	<Parameter propertyName="pdfIsCopernicoEnabled"  		dbColumnName="IS_COPERNICO_ENABLED"/>
+	<Parameter propertyName="downloadAsFacsimile" 			dbColumnName="DOWNLOAD_AS_FACSIMILE"/>
+	
+	<Parameter propertyName="pdfNumCopie"		 			dbColumnName="NUM_COPIE"/>
+	<Parameter propertyName="pdfTestoCopia1" 				dbColumnName="TESTO_COPIA_1"/>
+	<Parameter propertyName="pdfTestoCopia2" 		 		dbColumnName="TESTO_COPIA_2"/>
+	<Parameter propertyName="pdfTestoCopia3" 		 		dbColumnName="TESTO_COPIA_3"/>
+	<Parameter propertyName="pdfTestoCopia4" 		 		dbColumnName="TESTO_COPIA_4"/>
+
+	<Parameter propertyName="signAll" 		 				dbColumnName="SIGN_ALL"/>
+	<Parameter propertyName="pdfArea"		 		 		dbColumnName="AREA"/>
+	<Parameter propertyName="pdfDriverName"	 				dbColumnName="DRIVER_NAME"/>
+
+	<Parameter propertyName="sendFBMailOnSign" 		 		dbColumnName="SEND_FB_MAIL_ONSIGN"/>
+	<Parameter propertyName="sendCliSmsOnSign" 		 		dbColumnName="SEND_CLI_SMS_ONSIGN"/>
+	<Parameter propertyName="cliSmsOnSignText" 		 		dbColumnName="CLI_SMS_ONSIGN_TEXT"/>
+	
+	<Parameter propertyName="externalLinkOnSignLabel" 		dbColumnName="EXT_LINK_ONSIGN_LABEL"/>
+	<Parameter propertyName="externalLinkOnSignUrl" 		dbColumnName="EXT_LINK_ONSIGN_URL"/>
+	<Parameter propertyName="externalLinkAggOnSignLabel" 	dbColumnName="EXT_LINK_AGG_ONSIGN_LABEL"/>
+	<Parameter propertyName="externalLinkAggOnSignUrl" 		dbColumnName="EXT_LINK_AGG_ONSIGN_URL"/>
+	
+	<Parameter propertyName="isProspectEnabledOnCli1" 		dbColumnName="IS_PROSPECT_ENABLED_ON_CLI1"/>
+	<Parameter propertyName="isProspectEnabledOnCli2" 		dbColumnName="IS_PROSPECT_ENABLED_ON_CLI2"/>
+	<Parameter propertyName="isProspectEnabledOnCli3" 		dbColumnName="IS_PROSPECT_ENABLED_ON_CLI3"/>
+	<Parameter propertyName="isProspectEnabledOnCli4" 		dbColumnName="IS_PROSPECT_ENABLED_ON_CLI4"/>
+	<Parameter propertyName="isProspectEnabledOnCli5" 		dbColumnName="IS_PROSPECT_ENABLED_ON_CLI5"/>
+	<Parameter propertyName="isProspectEnabledOnCli6" 		dbColumnName="IS_PROSPECT_ENABLED_ON_CLI6"/>
+	<Parameter propertyName="isProspectEnabledOnCli7" 		dbColumnName="IS_PROSPECT_ENABLED_ON_CLI7"/>
+	<Parameter propertyName="isProspectEnabledOnCli8" 		dbColumnName="IS_PROSPECT_ENABLED_ON_CLI8"/>
+	<Parameter propertyName="isProspectEnabledOnCli9" 		dbColumnName="IS_PROSPECT_ENABLED_ON_CLI9"/>
+	
+	<Parameter propertyName="isControlliCompleti" 			dbColumnName="IS_CONTROLLI_COMPLETI"/>
+	<Parameter propertyName="callSrvDispositivaBMED" 		dbColumnName="CALL_SRV_DISPOSITIVA_BMED"/>
+	<Parameter propertyName="tipoProcessoSede" 				dbColumnName="TIPO_PROCESSO_SEDE"/>
+	<Parameter propertyName="tipoPriips" 					dbColumnName="HAS_PRIIPS"/>
+	<Parameter propertyName="hasDataSottoscrizioneOggi" 	dbColumnName="HAS_DATA_SOTTOSCRIZIONE_OGGI"/>
+	<Parameter propertyName="facSimileOnPreview" 			dbColumnName="FAC_SIMILE_ON_PREVIEW"/>
+	<Parameter propertyName="hasPreferenzeInPriips" 		dbColumnName="HAS_PREFERENZE_IN_PRIIPS"/>
+	<Parameter propertyName="onStockProcessBatchQueue" 		dbColumnName="ON_STOCK_PROC_QUEUE"/>
+	
+	<Parameter propertyName="isTipoSoggettoPersonaFisica" 		dbColumnName="IS_TIPO_SOGG_PERS_FISICA"/>
+	<Parameter propertyName="isTipoSoggettoProfessional" 		dbColumnName="IS_TIPO_SOGG_PROFESSIONAL"/>
+	<Parameter propertyName="isTipoSoggettoPersonaGiuridica" 	dbColumnName="IS_TIPO_SOGG_PERS_GIURIDICA"/>
+	<Parameter propertyName="isTipoSoggettoFamilyBanker" 		dbColumnName="IS_TIPO_SOGG_FAMILYBANKER"/>
+	<Parameter propertyName="isUsableInCrafterWayout" 			dbColumnName="IS_USABLE_IN_CRAFTER_WAYOUT"/>
+	<Parameter propertyName="existInCartaChimica" 				dbColumnName="EXIST_IN_CARTA_CHIMICA"/>
+	<Parameter propertyName="noteDiConfigurazione" 				dbColumnName="NOTE_DI_CONFIGURAZIONE"/>
+	<Parameter propertyName="noteFbCopernico" 					dbColumnName="NOTE_FB_COPERNICO"/>
+	
+	<Parameter propertyName="filenetClasseDocCliente" 			dbColumnName="FILENET_CLASSE_DOC_CLIENTE"/>
+	<Parameter propertyName="filenetCodiceDocCliente" 			dbColumnName="FILENET_CODICE_DOC_CLIENTE"/>
+	
+	<Parameter propertyName="hasControlloAmlAVR" 				dbColumnName="HAS_CONTROLLO_AML_AVR"/>
+	<Parameter propertyName="hasControlloAmlPEP" 				dbColumnName="HAS_CONTROLLO_AML_PEP"/>
+	<Parameter propertyName="hasControlloSCAI" 					dbColumnName="HAS_CONTROLLO_SCAI"/>
+	
+	<Parameter propertyName="pdfHasLayerCollocamentoADistanza" 	dbColumnName="HAS_LAYER_COLLOC_A_DISTANZA"/>
+	<Parameter propertyName="societa" 	 						dbColumnName="SOCIETA"/>	 
+   </Bindings>
+</Access>
+<Access name="loadPdfAnagApplReferences" type="DAOQueryAccess" queryType="0"  
+	OutputCommandDataModel="prgm.pdfwebforms.publisher.model.PdfApplReferenceModel">
+ <Query>
+	select  APPL_REFERENCE, PDF_ENVIRONMENT, PDF_CODE, ACROFORM_VERSION, APPL_DESCR
+	from 	PDF_APPL_REFERENCED_CODE
+	where 	PDF_CODE = ? or PDF_CODE = ?
+	order by APPL_DESCR	asc
+ </Query>   
+ <Input>
+	<Parameter propertyName="pdfCode"/>
+	<Parameter propertyName="pdfMomCode"/>
+ </Input> 
+ <Output>
+	<Parameter propertyName="applReference"/>
+	<Parameter propertyName="pdfEnvironment"/>
+	<Parameter propertyName="pdfCode"/>
+	<Parameter propertyName="acroformVersion"/>
+	<Parameter propertyName="applDescr"/>
+ </Output>
+</Access>  
+<Access name="pdfPublication_WORK" type="DAOTableAccess" tableName="PDF_PUBLICATION_WORK">
+   <Bindings>
+	<Parameter propertyName="pdfId" 				dbColumnName="PDF_ID" 	primaryKey="true"/>
+	<Parameter propertyName="pdfPublicationId"		dbColumnName="PUBLICATION_ID"/>
+	<Parameter propertyName="pdfOriginalPubId"		dbColumnName="ORIGINAL_PUB_ID"/>
+	
+	<Parameter propertyName="pdfPubStartDate" 					dbColumnName="START_DATE"/>
+	<Parameter propertyName="pdfDataFineAccettazionePubblPrec" 	dbColumnName="DATA_FINE_ACCET_PUBBL_PREC"/>
+	<Parameter propertyName="pdfEdition" 		 				dbColumnName="EDITION"/>
+	 
+	<Parameter propertyName="pdfAcroformVersion" 	dbColumnName="ACROFORM_VERSION"/>
+	<Parameter propertyName="pdfDriverVersion" 		dbColumnName="DRIVER_VERSION"/>
+	<Parameter propertyName="pdfMomVersion"		 	dbColumnName="MOM_VERSION"/>
+
+	<Parameter propertyName="pdfPublishUser" 	 	dbColumnName="PUBLISH_USER"/>	 
+	<Parameter propertyName="pdfPublishTime" 	 	dbColumnName="PUBLISH_TIME"/>	 
+	 	 
+	<Parameter propertyName="pdfContent"  			dbColumnName="FILE_NAME"	fileTypeDataPart="fileName"/>
+	<Parameter propertyName="pdfContent"  			dbColumnName="CONTENT"		fileTypeDataPart="image"/>
+	
+	<Parameter propertyName="pdfValidationWarningMessage"  dbColumnName="VALIDATION_WARNINGS_MSG"/>
+	<Parameter propertyName="pdfPublicationNotes"  		   dbColumnName="PUBLICATION_NOTES"/>
+   </Bindings>
+</Access>
+<Access name="pdfPublication_WORK_setFileName" type="DAOTableAccess" tableName="PDF_PUBLICATION_WORK">
+   <Bindings>
+	<Parameter propertyName="pdfId" 				dbColumnName="PDF_ID" 	primaryKey="true"/>
+	<Parameter propertyName="pdfFileName"  			dbColumnName="FILE_NAME"/>
+   </Bindings>
+</Access>
+<Access name="pdfPublication" type="DAOTableAccess" tableName="PDF_PUBLICATION">
+   <Bindings>
+	<Parameter propertyName="pdfId" 				dbColumnName="PDF_ID" 			primaryKey="true"/>
+	<Parameter propertyName="pdfPublicationId"		dbColumnName="PUBLICATION_ID" 	primaryKey="true"/>
+	 
+	<Parameter propertyName="pdfPubStartDate" 					dbColumnName="START_DATE"/>
+	<Parameter propertyName="pdfDataFineAccettazionePubblPrec" 	dbColumnName="DATA_FINE_ACCET_PUBBL_PREC"/>
+	<Parameter propertyName="pdfEdition" 		 				dbColumnName="EDITION"/>
+	 
+	<Parameter propertyName="pdfAcroformVersion" 	dbColumnName="ACROFORM_VERSION"/>
+	<Parameter propertyName="pdfDriverVersion" 		dbColumnName="DRIVER_VERSION"/>
+	<Parameter propertyName="pdfMomVersion"		 	dbColumnName="MOM_VERSION"/>
+
+	<Parameter propertyName="pdfPublishUser" 	 	dbColumnName="PUBLISH_USER"/>	 
+	<Parameter propertyName="pdfPublishTime" 	 	dbColumnName="PUBLISH_TIME"/>	 
+	 	 
+	<Parameter propertyName="pdfContent"  			dbColumnName="FILE_NAME"	fileTypeDataPart="fileName"/>
+	<Parameter propertyName="pdfContent"  			dbColumnName="CONTENT"		fileTypeDataPart="image"/>
+	
+	<Parameter propertyName="pdfPublicationNotes"  			dbColumnName="PUBLICATION_NOTES"/>
+	<Parameter propertyName="pdfNumSignFields" 				dbColumnName="NUM_SIGN_FIELDS"/>
+	<Parameter propertyName="pdfValidationWarningMessage"  	dbColumnName="VALIDATION_WARNINGS_MSG"/>
+   </Bindings>
+</Access>
+<Access name="pdfPublication_setFileName" type="DAOTableAccess" tableName="PDF_PUBLICATION">
+   <Bindings>
+	<Parameter propertyName="pdfId" 				dbColumnName="PDF_ID" 	primaryKey="true"/>
+	<Parameter propertyName="pdfFileName"  			dbColumnName="FILE_NAME"/>
+   </Bindings>
+</Access>
+
+<Access name="pdfPage_WORK" type="DAOTableAccess" tableName="PDF_PAGE_WORK">
+   <Bindings>
+	<Parameter propertyName="pdfId" 				dbColumnName="PDF_ID" 	primaryKey="true" foreignKey="pdfId"/>
+	<Parameter propertyName="pdfPageNum"			dbColumnName="PAGE_NUM" 	primaryKey="true"/>
+	<Parameter propertyName="pdfPublicationId"		dbColumnName="PUBLICATION_ID"/>
+	 
+	<Parameter propertyName="pdfPageImg"  			dbColumnName="PAGE_IMG"		fileTypeDataPart="image"/>
+   </Bindings>
+</Access>
+<Access name="pdfPage" type="DAOTableAccess" tableName="PDF_PAGE">
+   <Bindings>
+	<Parameter propertyName="pdfId" 				dbColumnName="PDF_ID" 		primaryKey="true" foreignKey="pdfId"/>
+	<Parameter propertyName="pdfPublicationId"		dbColumnName="PUBLICATION_ID" 	primaryKey="true" foreignKey="pdfPublicationId"/>
+	<Parameter propertyName="pdfPageNum"			dbColumnName="PAGE_NUM" 		primaryKey="true"/>
+	 
+	<Parameter propertyName="pdfPageImg"  			dbColumnName="PAGE_IMG"		fileTypeDataPart="image"/>
+   </Bindings>
+</Access>
+
+<Access name="pdfFile_WORK" type="DAOTableAccess" tableName="PDF_PUBLICATION_WORK">
+   <Bindings>
+	<Parameter propertyName="pdfId" 				dbColumnName="PDF_ID" 	primaryKey="true"/>
+	 	 
+	<Parameter propertyName="pdfContent"  			dbColumnName="FILE_NAME"	fileTypeDataPart="fileName"/>
+	<Parameter propertyName="pdfContent"  			dbColumnName="CONTENT"		fileTypeDataPart="image"/>
+   </Bindings>
+</Access>
+<Access name="pdfFile" type="DAOTableAccess" tableName="PDF_PUBLICATION">
+   <Bindings>
+	<Parameter propertyName="pdfId" 				dbColumnName="PDF_ID" 			primaryKey="true"/>
+	<Parameter propertyName="pdfPublicationId"		dbColumnName="PUBLICATION_ID" 	primaryKey="true"/>
+	 	 
+	<Parameter propertyName="pdfContent"  			dbColumnName="FILE_NAME"	fileTypeDataPart="fileName"/>
+	<Parameter propertyName="pdfContent"  			dbColumnName="CONTENT"		fileTypeDataPart="image"/>
+   </Bindings>
+</Access>
+
+<Access name="loadOtherPdfData" type="DAOQueryAccess" queryType="1">
+ <Query>
+	select 	(select count (*) from PDF_PAGE PG where PG.PDF_ID = P.PDF_ID and PG.PUBLICATION_ID = P.PUBLICATION_ID) as pdfNumPages
+	,		(select P2.PUBLICATION_ID from PDF_PUBLICATION P2 where (P2.IS_ARCHIVED is null or P2.IS_ARCHIVED = 'N') and P2.PDF_ID = P.PDF_ID and P2.START_DATE &lt;= getdate() having P2.START_DATE = max(P2.START_DATE) and P2.PUBLISH_TIME = max(P2.PUBLISH_TIME)) as pdfPubIdCorrente	
+	,		(select count (*) from PDF_PUBLICATION P2 where (P2.IS_ARCHIVED is null or P2.IS_ARCHIVED = 'N') and P2.PDF_ID = P.PDF_ID) as pdfNumPubblicazioni
+	from 	PDF_PUBLICATION P
+	where	P.PDF_ID = <p>pdfId</p>
+	and		P.PUBLICATION_ID = <p>pdfPublicationId</p>
+ </Query> 
+ <Output>
+	<Parameter propertyName="pdfNumPages"/>
+	<Parameter propertyName="pdfPubIdCorrente"/>
+	<Parameter propertyName="pdfNumPubblicazioni"/>
+ </Output> 
+</Access> 
+<Access name="loadOtherPdfDataOnWork" type="DAOQueryAccess" queryType="1">
+ <Query>
+	select 	(select count (*) from PDF_PAGE_WORK PG where PG.PDF_ID = P.PDF_ID and PG.PUBLICATION_ID = P.PUBLICATION_ID) as pdfNumPages
+	,		(select P2.PUBLICATION_ID from PDF_PUBLICATION P2 where (P2.IS_ARCHIVED is null or P2.IS_ARCHIVED = 'N') and P2.PDF_ID = P.PDF_ID and P2.START_DATE &lt;= getdate() having P2.START_DATE = max(P2.START_DATE) and P2.PUBLISH_TIME = max(P2.PUBLISH_TIME)) as pdfPubIdCorrente	
+	,		(select count (*) from PDF_PUBLICATION P2 where (P2.IS_ARCHIVED is null or P2.IS_ARCHIVED = 'N') and P2.PDF_ID = P.PDF_ID) as pdfNumPubblicazioni
+	from 	PDF_PUBLICATION_WORK P
+	where	P.PDF_ID = <p>pdfId</p>
+	and		P.PUBLICATION_ID = <p>pdfPublicationId</p>
+ </Query> 
+ <Output>
+	<Parameter propertyName="pdfNumPages"/>
+	<Parameter propertyName="pdfPubIdCorrente"/>
+	<Parameter propertyName="pdfNumPubblicazioni"/>
+ </Output> 
+</Access> 
+
+<Access name="loadNextPubblicationId" type="DAOQueryAccess" queryType="0">
+ <Query>
+	select  isnull(max(PUBLICATION_ID),0)+1
+	from 	PDF_PUBLICATION
+	where	PDF_ID = ?
+ </Query>
+ <Input>
+	<Parameter propertyName="pdfId"/>
+ </Input> 
+ <Output>
+	<Parameter propertyName="pdfPublicationId"/>
+ </Output> 
+</Access> 
+
+<Access name="pdfPubblicationList" type="DAOQueryAccess" queryType="0"
+		OutputCommandDataModel="prgm.pdfwebforms.publisher.model.PdfAnagModel">
+ <Query>
+	select 	A.PDF_ID
+	,		A.CODE
+	, 		P.PUBLICATION_ID
+	,		P.EDITION
+	,		P.ACROFORM_VERSION
+	,		P.DRIVER_VERSION
+	,		P.MOM_VERSION
+	, 		P.START_DATE
+	,		P.DATA_FINE_ACCET_PUBBL_PREC
+	,		P.FILE_NAME
+	,		(select count(PG.PDF_ID) from PDF_PAGE PG where PG.PDF_ID = P.PDF_ID and PG.PUBLICATION_ID = P.PUBLICATION_ID) as pdfNumPages	
+	,		(select P2.PUBLICATION_ID from PDF_PUBLICATION P2 where (P2.IS_ARCHIVED is null or P2.IS_ARCHIVED = 'N') and P2.PDF_ID = P.PDF_ID and P2.START_DATE &lt;= getdate() having P2.START_DATE = max(P2.START_DATE) and P2.PUBLISH_TIME = max(P2.PUBLISH_TIME)) as pdfPubIdCorrente
+	,		case when datalength(P.PUBLICATION_NOTES) > 0 then 'S' else 'N' end as pdfHasPublicationNotes	
+	,		case when datalength(P.VALIDATION_WARNINGS_MSG) > 0 then 'S' else 'N' end pdfHasValidationWarningMessage
+	from 	PDF_ANAG A, PDF_PUBLICATION P
+	where	A.PDF_ID = ?
+	and		A.PDF_ID = P.PDF_ID
+	and		(P.IS_ARCHIVED is null or P.IS_ARCHIVED = 'N')
+	order by convert(varchar(8),P.START_DATE,112) desc, P.PUBLICATION_ID desc
+ </Query> 
+ <Input>
+	<Parameter propertyName="pdfId"/>
+ </Input>
+ <Output>
+	<Parameter propertyName="pdfId"/>
+	<Parameter propertyName="pdfCode"/>
+	<Parameter propertyName="pdfPublicationId"/>
+	<Parameter propertyName="pdfEdition"/>
+	<Parameter propertyName="pdfAcroformVersion"/>
+	<Parameter propertyName="pdfDriverVersion"/>
+	<Parameter propertyName="pdfMomVersion"/>
+	<Parameter propertyName="pdfPubStartDate"/>
+	<Parameter propertyName="pdfDataFineAccettazionePubblPrec"/>
+	<Parameter propertyName="pdfFileName"/>
+	<Parameter propertyName="pdfNumPages"/>
+	<Parameter propertyName="pdfPubIdCorrente"/>
+	<Parameter propertyName="pdfHasPublicationNotes"/>
+	<Parameter propertyName="pdfHasValidationWarningMessage"/>
+ </Output> 
+</Access> 
+
+<Access name="pdfNumArchiviazioni" type="DAOQueryAccess" queryType="0"
+		OutputCommandDataModel="com.atosorigin.wfem.types.IntegerType">
+ <Query>
+	select 	count(PUBLICATION_ID) as pdfNumArchiviazioni
+	from 	PDF_PUBLICATION 
+	where 	PDF_ID = ?
+	and 	IS_ARCHIVED = 'S'
+ </Query> 
+ <Input>
+	<Parameter propertyName="pdfId"/>
+ </Input>
+</Access> 
+
+<Access name="pdfArchivedList" type="DAOQueryAccess" queryType="0"
+		OutputCommandDataModel="prgm.pdfwebforms.publisher.model.PdfAnagModel">
+ <Query>
+	select 	A.PDF_ID
+	,		A.CODE
+	, 		P.PUBLICATION_ID
+	,		P.EDITION
+	,		P.ACROFORM_VERSION
+	,		P.DRIVER_VERSION
+	,		P.MOM_VERSION
+	, 		P.START_DATE
+	,		P.FILE_NAME
+	,		(select count(PG.PDF_ID) from PDF_PAGE PG where PG.PDF_ID = P.PDF_ID and PG.PUBLICATION_ID = P.PUBLICATION_ID) as pdfNumPages	
+	,		(select P2.PUBLICATION_ID from PDF_PUBLICATION P2 where P2.IS_ARCHIVED = 'S' and P2.PDF_ID = P.PDF_ID and P2.START_DATE &lt;= getdate() having P2.START_DATE = max(P2.START_DATE) and P2.PUBLISH_TIME = max(P2.PUBLISH_TIME)) as pdfPubIdCorrente	
+	from 	PDF_ANAG A, PDF_PUBLICATION P
+	where	A.PDF_ID = ?
+	and		P.IS_ARCHIVED = 'S'
+	and		A.PDF_ID = P.PDF_ID
+	order by P.PUBLICATION_ID desc
+ </Query> 
+ <Input>
+	<Parameter propertyName="pdfId"/>
+ </Input>
+ <Output>
+	<Parameter propertyName="pdfId"/>
+	<Parameter propertyName="pdfCode"/>
+	<Parameter propertyName="pdfPublicationId"/>
+	<Parameter propertyName="pdfEdition"/>
+	<Parameter propertyName="pdfAcroformVersion"/>
+	<Parameter propertyName="pdfDriverVersion"/>
+	<Parameter propertyName="pdfMomVersion"/>
+	<Parameter propertyName="pdfPubStartDate"/>
+	<Parameter propertyName="pdfFileName"/>
+	<Parameter propertyName="pdfNumPages"/>
+	<Parameter propertyName="pdfPubIdCorrente"/>
+ </Output> 
+</Access> 
+
+<Access name="deletePdfPublication" type="DAOTableAccess" tableName="PDF_PUBLICATION">
+   <Bindings>
+	<Parameter propertyName="pdfId" 				dbColumnName="PDF_ID"		primaryKey="true"/>
+	<Parameter propertyName="pdfPublicationId"		dbColumnName="PUBLICATION_ID" 	primaryKey="true"/>
+   </Bindings>
+</Access>
+
+<Access name="archivePdfPublication" type="DAOTableAccess" tableName="PDF_PUBLICATION">
+   <Bindings>
+	<Parameter propertyName="pdfId" 					dbColumnName="PDF_ID"			primaryKey="true"/>
+	<Parameter propertyName="pdfPublicationIdForArch"	dbColumnName="PUBLICATION_ID" 	primaryKey="true"/>
+	 
+	<Parameter propertyName="pdfIsArchived" 	 	propertyType="BooleanType" propertyValue="true" dbColumnName="IS_ARCHIVED"/>
+   </Bindings>
+</Access>
+
+<Access name="restorePdfPublication" type="DAOTableAccess" tableName="PDF_PUBLICATION">
+   <Bindings>
+	<Parameter propertyName="pdfId" 					dbColumnName="PDF_ID"			primaryKey="true"/>
+	<Parameter propertyName="pdfPublicationIdForArch"	dbColumnName="PUBLICATION_ID" 	primaryKey="true"/>
+	 
+	<Parameter propertyName="pdfIsArchived" 	 	propertyType="BooleanType" propertyValue="false" dbColumnName="IS_ARCHIVED"/>
+   </Bindings>
+</Access>
+
+<Access name="getContatorePdfAnag" type="DAOCallableAccess" store="sp_get_progressivi"	connectionCacheReference="CEPE">
+   <Input>
+		<Parameter propertyName="resourceName" propertyType="StringType" propertyValue="PDFWEBFORM_ANAG_COUNTER"/>
+		<Parameter propertyName="#contextUserCode"/>
+		<Parameter propertyName="increment" propertyType="IntegerType" propertyValue="1"/>
+		<Parameter propertyName="pdfId"/>
+   </Input>
+   <Output>
+		<Parameter propertyName=""/>
+		<Parameter propertyName=""/>
+		<Parameter propertyName=""/>
+		<Parameter propertyName="pdfId"/>
+   </Output>
+</Access>
+
+<Access name="loadLastPublishedPdfAcroformVersion" type="DAOQueryAccess" queryType="0" maxResultRows="1"
+		OutputCommandDataModel="com.atosorigin.wfem.types.IntegerType">
+ <Query>
+	select 	top 1 P.ACROFORM_VERSION
+	from 	PDF_PUBLICATION P
+	where 	P.PDF_ID = ? 
+	and		PUBLICATION_ID = (select P2.PUBLICATION_ID from PDF_PUBLICATION P2 where (P2.IS_ARCHIVED is null or P2.IS_ARCHIVED = 'N') and P2.PDF_ID = P.PDF_ID having P2.START_DATE = max(P2.START_DATE) and P2.PUBLISH_TIME = max(P2.PUBLISH_TIME))
+ </Query> 
+ <Input>
+	<Parameter propertyName="pdfId"/>
+ </Input> 
+</Access> 
+
+<Access name="loadLastPublishedPdfContent" type="DAOQueryAccess" queryType="0" maxResultRows="1">
+ <Query>
+	select 	top 1 P.CONTENT
+	,		P.PUBLICATION_ID
+	from 	PDF_PUBLICATION P
+	where 	P.PDF_ID = ? 
+	and		PUBLICATION_ID = (select P2.PUBLICATION_ID from PDF_PUBLICATION P2 where (P2.IS_ARCHIVED is null or P2.IS_ARCHIVED = 'N') and P2.PDF_ID = P.PDF_ID having P2.START_DATE = max(P2.START_DATE) and P2.PUBLISH_TIME = max(P2.PUBLISH_TIME))
+ </Query> 
+ <Input>
+	<Parameter propertyName="pdfId"/>
+ </Input> 
+ <Output>
+ 	<Parameter propertyName="pdfContent" fileTypeDataPart="image"/>
+	<Parameter propertyName="pdfPublicationId"/>
+ </Output>
+</Access> 
+
+<Access name="loadPdfPublicationNotes" type="DAOQueryAccess" queryType="0">
+ <Query>
+ 	select 	PUBLICATION_NOTES 
+ 	from 	PDF_PUBLICATION 
+ 	where 	PDF_ID = ? 
+ 	and 	PUBLICATION_ID = ?
+ </Query> 
+ <Input>
+	<Parameter propertyName="pdfId"/>
+	<Parameter propertyName="pdfPublicationId"/>
+ </Input> 
+ <Output>
+	<Parameter propertyName="pdfPublicationNotes"/>
+ </Output>
+</Access> 
+
+<Access name="loadAnagRuoliUtilizzatori" type="DAOQueryAccess" queryType="0"
+		OutputCommandDataModel="prgm.pdfwebforms.publisher.model.PdfRuoloUtilizzatoreModel">
+ <Query>
+	select 	A.CODICE
+	, 		A.DESCRIZIONE
+	, 		case when B.CODICE_RUOLO is null then 'N' else 'S' end
+	from PDF_RUOLI_UTILIZZATORI A
+	left outer join PDF_ANAG_RUOLI_UTILIZZATORI B on A.CODICE=B.CODICE_RUOLO
+	and 	B.PDF_ID = ?
+	order by A.ORDINE
+ </Query> 
+ <Input>
+	<Parameter propertyName="pdfId"/>
+ </Input>
+ <Output>
+	<Parameter propertyName="codiceRuoloUtilizzatore"/>
+	<Parameter propertyName="descrizioneRuoloUtilizzatore"/>
+	<Parameter propertyName="isSelezionato"/>
+ </Output>
+</Access> 
+
+<Access name="ruoloUtilizzatore" type="DAOTableAccess" tableName="PDF_ANAG_RUOLI_UTILIZZATORI">
+   <Bindings>
+	<Parameter propertyName="pdfId" 					dbColumnName="PDF_ID"	primaryKey="true"/>
+	<Parameter propertyName="codiceRuoloUtilizzatore"	dbColumnName="CODICE_RUOLO"/>
+   </Bindings>
+</Access>
+
+</DAO-Object>

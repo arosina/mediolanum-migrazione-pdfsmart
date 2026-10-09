@@ -1,0 +1,17 @@
+<!--------  STAMPA --------------->
+<% if(!model.getPopupMode().booleanValue()){ %>
+	<% if(model.getCallingAppl().isNull()){ %>
+		<% if(model.getCodMediolanum().isNull()){ %>
+			 <td><%=template.action("stampaCensimentoAction","style='width: 95;'")%></td>
+		<% }else{ %>
+			<% if(model.getIsPropostaInviataInSede().booleanValue()){%>
+				<td><%=template.action("stampaVariazioneAction","style='width: 100;'")%></td>
+			<% }else{ %>
+				<% if(model.getVariazioni().getElencoVariazioni().size() > 0){ %>
+					<td><%=template.action("stampaVariazioniAction","enabled='false' style='width: 95;'")%></td>
+				<% } %>
+			<% } %>
+		<% } %>
+	<% } %>
+<% } %>
+<!------------------------------------------->

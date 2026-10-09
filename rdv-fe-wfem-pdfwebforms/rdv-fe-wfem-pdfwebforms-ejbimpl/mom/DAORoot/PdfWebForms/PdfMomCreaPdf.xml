@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="PdfMomCreaPdf" connectionCacheReference="CEPE">
+
+<Access name="loadPdfInstanceIdPraticaMOM" type="DAOQueryAccess" queryType="0" maxResultRows="1"
+		OutputCommandDataModel="com.atosorigin.wfem.types.StringType">
+ <Query>
+	select 	PDF_INSTANCE_ID 
+	from 	PDF_INSTANCE 
+	where 	EXTERNAL_ENTITY_APPL = 'MOM'
+	and 	EXTERNAL_ENTITY_NAME = 'PRATICA'
+	and 	EXTERNAL_ENTITY_KEY  = ?
+	and 	CREATION_USERTYPE    = 'SEDE'
+ </Query> 
+ <Input>
+	<Parameter propertyName="idPraticaMOM"/>	
+ </Input>
+</Access> 
+
+<Access name="getClonedPdfInstanceId" type="DAOQueryAccess" queryType="0"
+		OutputCommandDataModel="com.atosorigin.wfem.types.StringType">
+ <Query>
+	select 	PDF_INSTANCE_ID
+	from 	PDF_INSTANCE 
+	where 	ORIGINAL_PDF_INSTANCE_ID = ?
+	and 	EXTERNAL_ENTITY_APPL = 'MOM'
+	and 	EXTERNAL_ENTITY_NAME like 'DOPPIASPUNTA-MOM-%' 
+ </Query> 
+ <Input>
+	<Parameter propertyName="pdfInstanceId"/>	
+ </Input>
+</Access>
+
+</DAO-Object>

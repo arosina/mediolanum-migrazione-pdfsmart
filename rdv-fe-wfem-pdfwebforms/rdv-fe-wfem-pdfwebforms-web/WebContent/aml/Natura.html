@@ -1,0 +1,107 @@
+<table width="100%" height="100%" cellpadding="0" cellspacing="0" style="table-layout: fixed;">
+	<tr>
+		<td valign="top" style="border-right: solid 1px lightgray;">
+			<table width="100%" height="100%" cellpadding="0" cellspacing="0">
+				<tr>
+					<td class="testo" style="padding:20;"">
+						Per ognuna delle operazioni oggetto di proposta di seguito elencate è necessario
+						indicare la natura e lo scopo del rapporto.
+					</td>
+				</tr>
+				<tr>
+					<td height="100%" id="elencoDisositiveCont">
+						<div id="elencoSinistraCont" style="position:relative;height:100%;width:100%;margin:0 auto;overflow:auto;">
+						<table width="100%" cellpadding="0" cellspacing="0">
+						<% for(int i=0;i<natura.getElencoDispositive().size();i++){
+							DispositivaAmlContainer dc = natura.getElencoDispositive().get(i);
+							ScopoRapportoModel scopoRapporto = (ScopoRapportoModel)natura.getElencoScopiRapporto().get(i);
+							String bordertop = i ==0 ?"border-top:solid 1px lightgray;":"";
+							String classname = i == natura.getDispositivaSelezionata().intValue()?" dispoSel":"";
+						 %>
+						 	<tr>
+						 		<td idx="<%=i%>" onclick="selezionaDispo(this);" class="dispoUnsel<%=classname%>"
+						 			style="padding:15;<%=bordertop%>border-left:solid 1px lightgray;border-bottom:solid 1px lightgray;">
+						 			<table width="100%">
+							 			<tr>
+							 				<td style="width:20;"><%=scopoRapporto.drawIcons()%></td>
+							 				<td class="dispoUnsel<%=classname%>"><%=dc.title()%><br><span class="dispoPropContr"><%=dc.numPropostaContratto()%></span></td>
+							 				<td align="right" style="width:20;"><img src="<%=template.getWebApp()%>/images/maggiore.png"></td>
+							 			</tr>
+						 			</table>
+						 		</td>
+						 	</tr>
+						<% } %>
+						</table>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</td>
+		<td valign="top" style="padding-top:20;width:50%;height:100%;">
+			<table class="testo" width="100%">
+				<% ScopoRapportoModel scopoRapporto = (ScopoRapportoModel)natura.getElencoScopiRapporto().get(natura.getDispositivaSelezionata().intValue()); %>
+				<% for(int i=0;i<scopoRapporto.getCodScopoRapportoDataList().getCodDescCount();i++){ %>
+				<% 
+					String valoreRadio = scopoRapporto.getCodScopoRapportoDataList().getCodDesc(i).getCod();
+					boolean valoreDisabilitato = false;
+					String title = "";
+					if(scopoRapporto.isCodScopoRapportoPreselezionato()){
+						valoreDisabilitato = true;
+						title = "title='Informazione non modificabile in quanto già fornita nei moduli di sottoscrizione'";
+					}
+					if(!scopoRapporto.isCodScopoRapportoPreselezionato() && valoreRadio.equals("3")){
+						valoreDisabilitato = true;
+						title = "title='Valore non selezionabile'";
+					}
+				%>
+					<tr>
+						<td style="padding:10;">
+							<table class="testo"><tr>
+								<td>
+									<input type="radio" name="amlModel_natura_elencoScopiRapporto<%=natura.getDispositivaSelezionata().intValue()%>_codScopoRapporto" 
+												value="<%=valoreRadio%>"
+												<%=valoreDisabilitato?"disabled":"onclick='selezionaScopoRapporto(this);'"%>
+												<%=title%>
+												<%=scopoRapporto.getCodScopoRapporto().equals(scopoRapporto.getCodScopoRapportoDataList().getCodDesc(i).getCod())?"checked":"" %>>
+								</td>
+								<td><%=scopoRapporto.getCodScopoRapportoDataList().getCodDesc(i).getDescr()%></td>
+							</tr></table>
+						</td>
+					</tr>
+				<% } %>
+				<td style="display:none;"><%=template.field("amlModel_natura_elencoScopiRapporto"+natura.getDispositivaSelezionata().intValue()+"_codScopoRapporto")%></td>				
+				<% if(scopoRapporto.isCodScopoRapportoPreselezionato()){ %>
+				<tr>
+					<td align="center" style="padding-top: 30; font-style: oblique;font-size:12;">
+						Informazione non modificabile in quanto già fornita nei moduli di sottoscrizione
+					</td>
+				</tr>
+				<% } %>
+				<% if(scopoRapporto.getCodScopoRapporto().hasTypeErrors()){ %>
+				<tr>
+					<td align="center" style="padding-top: 30; color: red; font-style: oblique;font-size:12;">
+						Selezionare una delle opzioni
+					</td>
+				</tr>
+				<% } %>
+				<tr>
+					<td align="center" style="padding-top: 30;">
+					<% if(!scopoRapporto.isCodScopoRapportoPreselezionato() && natura.numScopiRapportoNonPreselezionati() >= 2){ %>
+						<table>
+							<tr>
+								<td>
+									<div id="applicaATutteLeOperazioniButton" class="amlButton" 
+										onclick="doApplicaATutteLeOperazioni();" <%=scopoRapporto.getCodScopoRapporto().isNull()?"style='display:none;'":""%>>
+										Applica a tutte le operazioni
+									</div>
+								</td>
+							</tr>
+						</table>
+					<% } %>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+<script>setScrollPos();</script>

@@ -1,0 +1,32 @@
+<!--------  TELEFONO ------->
+<table width="100%" cellpadding="3" cellspacing="3">
+<% 	
+	{ // START - Inner definition delle variabili
+	TelefonoModel tel = (TelefonoModel)template.getCurrentDataModel();
+	
+	String prefissoInternazionaleModality = "";
+	if (modificabile) {
+		prefissoInternazionaleModality = "insert";
+		if((tel.isTelefonoCellulare() || tel.isTelefonoFax()) && tel.getPrefissoInternazionale().equals(Costanti.PREFIX_INTERNAZIONALE_ITALIA)) {
+			prefissoInternazionaleModality = "read";
+		}
+	} else {
+			prefissoInternazionaleModality = "read";
+	}
+%>
+  <tr>
+    <td>
+      <table><tr>
+	    <td style="width: 20px;"></td>
+		<td style="<%=model.fch(template.getPrefix(),"prefissoInternazionale")%>"><%=template.field("prefissoInternazionale","modality='"+prefissoInternazionaleModality+"' type='num' maxlength='6' size='3'")%></td>
+		<td>&nbsp;</td>
+		<td style="<%=model.fch(template.getPrefix(),"prefisso")%>"><%=template.field("prefisso","type='num' maxlength='8' size='3'")%></td>
+		<td>&nbsp;</td>
+		<td style="<%=model.fch(template.getPrefix(),"numeroTelefono")%>"><%=template.field("numeroTelefono","type='num' maxlength='12' size='20'")%></td>
+      </tr></table>
+    </td>  
+  </tr>
+
+<% } // END Inner definition %>
+</table>
+<!------------------------------------------->

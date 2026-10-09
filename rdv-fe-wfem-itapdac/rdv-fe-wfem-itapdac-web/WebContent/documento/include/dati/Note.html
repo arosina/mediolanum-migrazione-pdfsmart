@@ -1,0 +1,37 @@
+<table width="100%" cellpadding="0" cellspacing="0">
+
+   <tr>
+      <td align="center">
+      	<table width="99%" cellpadding="0" cellspacing="0">
+      	<tr>
+      		<td style="border-bottom: 2px solid #1A458F; font-size: 8px;">&nbsp;&nbsp;</td>
+      		<td rowspan="2" valign="middle" class="text" nowrap="nowrap">
+				<img src="<%=template.getWebApp()%>/images/section.gif">&nbsp;<b>Note</b>&nbsp;
+      		</td>
+      		<td style="border-bottom: 2px solid #1A458F; font-size: 8px;" width="100%">&nbsp;</td>
+      	</tr>
+      	<tr>
+      		<td style="font-size: 8px;">&nbsp;</td>
+      		<td style="font-size: 8px;">&nbsp;</td>
+      	</tr>
+      	</table>
+      </td>
+   </tr>
+   
+   <tr>
+      <td id="noteCont">
+    	  <table width="100%" cellpadding="0" cellspacing="0">
+	        <tr>
+	    		<% if(documento.getFnc().equals(Costanti.FNC_SPUNTA)){ %>
+		    	    <td><%=template.field("noteAutore","modality='read' labelwidth='60' size='50' maxlength='50'")%></td>
+		    	    <td><%=template.field("noteOperatore","onchange='changeDoc();' labelwidth='60' size='50' maxlength='50'")%></td>
+	    		<% }else{ %>
+		    	    <td><%=template.field("noteAutore","onchange='changeDoc();' labelwidth='50' size='50' maxlength='50'")%></td>
+		    	    <td><%=template.field("noteOperatore","modality='read' labelwidth='60' size='50' maxlength='50'")%></td>
+	    		<% } %>
+			</tr>
+    	  </table>
+	  </td>
+   </tr>
+   
+</table>

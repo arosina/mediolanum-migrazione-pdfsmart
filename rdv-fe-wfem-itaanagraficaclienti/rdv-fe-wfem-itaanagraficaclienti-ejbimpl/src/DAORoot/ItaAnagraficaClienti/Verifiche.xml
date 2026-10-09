@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="Verifiche" connectionCacheReference="DBAZ_SOGG">
+
+<Access name="verificaProvincia" type="DAOQueryAccess" queryType="0" maxResultRows="1"
+		connectionCacheReference="DBAZ_SOGG"  
+		OutputCommandDataModel="com.atosorigin.wfem.types.DateType">
+	<Query> 
+		select cast(decode(PROV_D_FINE_VAL,to_date('31/12/9999','dd/mm/yyyy'),null,PROV_D_FINE_VAL) as date)
+		from CLL.V_PROV
+		where PROV_X_PROV = ?
+	</Query>
+	<Input>
+		<Parameter propertyName="provincia"/>
+	</Input> 
+</Access>
+
+<Access name="verificaComune" type="DAOQueryAccess" queryType="1" maxResultRows="1"
+		connectionCacheReference="DBAZ_SOGG"  
+		OutputCommandDataModel="prgm.ita.anagraficaclienti.model.ComuneModel">
+	<Query> 
+		SELECT DISTINCT 	
+					COMU.COMU_X_DENOM_COMU
+		,			CAP.CAP_C_CAP
+		,			PROV.PROV_C_PROV
+		,			to_char(COMU.COMU_C_COMU)
+		,           cast(decode(PROV.PROV_D_FINE_VAL,to_date('31/12/9999','dd/mm/yyyy'),null,PROV.PROV_D_FINE_VAL) as date)
+		,           cast(decode(COMU.COMU_D_FINE_VAL,to_date('31/12/9999','dd/mm/yyyy'),null,COMU.COMU_D_FINE_VAL) as date)
+		FROM 		CLL.V_COMU COMU
+		,			CLL.CAP CAP
+		,			( SELECT CAP_C_PROV as PROV_C_PROV, CAP_X_LOC, MIN(CAP_C_CAP) as MIN_CAP, MAX(CAP_C_CAP) as MAX_CAP, MAX(DAT_FINE_VALID) as PROV_D_FINE_VAL, MIN(CAP_N_PROGR) as CAP_N_PROGR FROM CLL.CAP GROUP BY CAP_C_PROV, CAP_X_LOC ) PROV		
+		WHERE		CAP.CAP_C_CAP BETWEEN COMU.CAP_C_AVVIAM_POSTL_MIN AND COMU.CAP_C_AVVIAM_POSTL_MAX 
+		AND			COMU.PROV_C_PROV = PROV.PROV_C_PROV
+		<IfNotNull propertyName="comune">	 AND trim(COMU.COMU_X_DENOM_COMU) = <p>comune</p></IfNotNull> 
+		<IfNotNull propertyName="provincia"> AND trim(PROV.PROV_C_PROV) = <p>provincia</p></IfNotNull> 
+		<IfNull    propertyName="provincia"> AND PROV.PROV_D_FINE_VAL = to_date('31/12/9999','dd/mm/yyyy')</IfNull> 
+		<IfNotNull propertyName="cap">		 AND trim(CAP.CAP_C_CAP) = <p>cap</p></IfNotNull>
+		AND COMU.COMU_D_FINE_VAL = to_date('31/12/9999','dd/mm/yyyy')		
+	</Query> 
+	<Output>  
+		<Parameter propertyName="comune"/> 
+		<Parameter propertyName="cap"/>
+		<Parameter propertyName="provincia"/>
+		<Parameter propertyName="codComune"/>
+		<Parameter propertyName="scadenzaProvincia"/>
+		<Parameter propertyName="scadenzaComune"/>
+	</Output> 
+</Access>
+
+<Access name="verificaComuneIscrittoAlCatasto" type="DAOQueryAccess" queryType="1" maxResultRows="1"
+        connectionCacheReference="DBAZ_SOGG"  
+		OutputCommandDataModel="prgm.ita.anagraficaclienti.model.ComuneModel">
+	<Query> 
+		select distinct
+					CATASTO.DEN_COMU
+		,			null
+		,			PROV.PROV_C_PROV
+		,			to_char(CATASTO.COD_CATAS_COMU)
+		,			cast(decode(PROV.PROV_D_FINE_VAL,to_date('31/12/9999','dd/mm/yyyy'),null,PROV.PROV_D_FINE_VAL) as date)
+		from 		CLL.V_PROV PROV
+		,			CLL.ANAG_CATAST_COMUN CATASTO
+		where		CATASTO.COD_PROV = PROV.PROV_C_PROV
+		and			(CATASTO.COD_PROV != 'EE' OR (CATASTO.COD_PROV = 'EE' AND substr(CATASTO.COD_FISC_COMU,1) != 'Z'))
+		<IfNotNull propertyName="comune">	 and trim(CATASTO.DEN_COMU) = <p>comune</p></IfNotNull> 
+		<IfNotNull propertyName="provincia"> and trim(PROV.PROV_C_PROV) = <p>provincia</p></IfNotNull> 
+		<IfNull    propertyName="provincia"> and (PROV.PROV_D_FINE_VAL = to_date('31/12/9999','dd/mm/yyyy') or PROV.PROV_C_PROV = 'EE')</IfNull> 
+	</Query> 
+	<Output>  
+		<Parameter propertyName="comune"/> 
+		<Parameter propertyName="cap"/>
+		<Parameter propertyName="provincia"/>
+		<Parameter propertyName="codComune"/>
+		<Parameter propertyName="scadenzaProvincia"/>
+	</Output> 
+</Access>  				
+
+<Access name="verificaSeAnagraficaUtilizzataInMHD" type="DAOQueryAccess" queryType="0"
+		OutputCommandDataModel="com.atosorigin.wfem.types.IntegerType"
+		connectionCacheReference="MHD">
+	<Query>
+		select count(C_POTENZIALE) from MHD_SOGGETTI_SOLUZ where C_POTENZIALE = ?
+	</Query> 
+	<Input>
+		<Parameter propertyName="codPotenziale"/>
+	</Input>
+</Access>
+
+<Access name="verificaPresentatoreIntestCointestContoDepositoAttivoINR" type="DAOQueryAccess" queryType="0"
+		OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType" connectionCacheReference="DBAZ_SOGG">
+	<Query>
+		SELECT		case 
+						when (count(*) > 1) then 'S'
+						else 'N'
+					end 
+		FROM	    CLL.CONTR     CP
+		,			CLL.CONTRCLI  LCC
+		WHERE		CP.PROD_C = LCC.PROD_C
+		AND			CP.CONTR_N = LCC.CONTR_N
+		AND			LCC.CONTRCLI_C_RUOLO_CONTR IN ('I','P','C')
+		AND         CP.PROD_C = 'BAN01'
+		AND			CP.CONTR_C_CAT = '0076'
+		AND			CP.CONTR_C_SCAT = '001'
+		AND			CP.CONTR_C_CONV IN ('000761' , '000762', '000763', '000764', '000765', '000766')
+		AND         CP.CONTR_D_ESTI = to_date('31/12/9999','dd/mm/yyyy')
+		AND 	    LCC.CLI_C = ?
+	</Query>
+	<Input>
+		<Parameter propertyName="codMediolanum"/>	
+	</Input>
+</Access>
+
+<Access name="verificaPresentatoreIntestCointestContoDepositoCEPE" type="DAOQueryAccess" queryType="0"
+		OutputCommandDataModel="com.atosorigin.wfem.types.IntegerType"
+		connectionCacheReference="CEPE">
+	<Query>
+		SELECT 	count(*) 
+		FROM 	CEPE_CONTRATTI_ELETTRONICI a, INR_DISPCLI b
+		WHERE 	a.TIPDISP_C_TIPDISP = '115'
+		AND 	b.DISP_C_DISP = a.DISP_C_DISP
+		and 	b.CODIFCLIMEDL_C_CLI_MEDL = ? 
+	</Query> 
+	<Input>
+		<Parameter propertyName="codMediolanum"/>	
+	</Input>
+</Access>
+<Access name="selezionaDataInvioContoDepositoPotenziale" type="DAOQueryAccess" queryType="0"
+		OutputCommandDataModel="com.atosorigin.wfem.types.DateType"
+		connectionCacheReference="CEPE">
+	<Query>
+		SELECT max(a.DISP_D_CAMBIO_STATO)
+		FROM   CEPE_CONTRATTI_ELETTRONICI a,  INR_DISPCLI b
+		WHERE 	a.TIPDISP_C_TIPDISP = '115'
+		AND		a.TIPDISPSTATO_C_TIPDISPSTATO = '03'
+		AND 	b.DISP_C_DISP = a.DISP_C_DISP
+		AND 	b.ASSGNCLIAGE_C_POTZLE =  ?
+	</Query> 
+	<Input>
+		<Parameter propertyName="codPotenziale"/>	
+	</Input>
+</Access>
+
+<Access name="isEmailDiAltroCliente" type="DAOQueryAccess" queryType="0"
+		connectionCacheReference="DBAZ_SOGG"  
+		OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType">
+	<Query> 
+		select 	decode(count(*),0,'N','S')
+		from CLL.IND I inner join CLL.CLI C on I.CLI_C = C.CLI_C
+		where 	I.IND_C_TIP = 'IB'
+		and 	I.GSTD_F_ESIST = 'S'
+		and 	C.GSTD_F_ESIST = 'S'
+		and		C.CLI_C_SESSO in ('M','F')
+		and 	C.CLI_X_CF != ?
+		and 	upper(trim(I.IND_X_IND)) = upper(?)
+	</Query> 
+	<Input>  
+		<Parameter propertyName="codFiscale"/> 
+		<Parameter propertyName="recapiti_email"/>
+	</Input> 
+</Access>
+
+<Access name="isCellulareDiAltroCliente" type="DAOQueryAccess" queryType="0"
+		connectionCacheReference="DBAZ_SOGG"  
+		OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType">
+	<Query> 
+		SELECT 	decode(count(*),0,'N','S')
+		FROM 	CLL.CLI C INNER JOIN CLL.TEL T ON C.CLI_C = T.CLI_C
+		WHERE 	C.GSTD_F_ESIST = 'S'
+		AND 	T.GSTD_F_ESIST = 'S'
+		AND 	C.CLI_C_SESSO in ('M','F')
+		AND 	trim(nvl(T.TEL_C,'0')) = '2'
+		and 	substr(T.TEL_C_PREF,1) !='0'
+		AND 	C.CLI_X_CF != CAST( ? as CHAR(16))
+		AND 	T.TEL_C_PREF = CAST(? AS CHAR(8))
+		AND 	T.TEL_X_NUM = CAST(? AS CHAR(12))
+	</Query> 
+	<Input>  
+		<Parameter propertyName="codFiscale"/> 
+		<Parameter propertyName="recapiti_telefonoCellulare_prefisso"/>
+		<Parameter propertyName="recapiti_telefonoCellulare_numeroTelefono"/>
+	</Input> 
+</Access>
+
+<Access name="verificaSeFalsoProspect" type="DAOQueryAccess" queryType="0"
+		OutputCommandDataModel="com.atosorigin.wfem.types.StringType" >
+	<Query>
+		select A.CLI_C as CODIFCLIMEDL_C_CLI_MEDL
+		from   CLL.CLI A
+		where  A.CLI_X_CF = ? 
+		AND   (A.CLI_C_SESSO in ('M','F') and (A.CLI_C_NCG in ('FMM','FFF' ) or rtrim(ltrim(A.CLI_C_NCG)) is null))
+		AND   (A.CLI_C_COD_BLOCCO != 'R' OR A.CLI_C_COD_BLOCCO IS NULL)
+	</Query>
+	<Input>
+		<Parameter propertyName="codFiscale"/>
+	</Input>
+</Access>
+
+<Access name="verificaSeFalsoProspectDitta" type="DAOQueryAccess" queryType="0"
+		OutputCommandDataModel="com.atosorigin.wfem.types.StringType" >
+	<Query>
+		select A.CLI_C as CODIFCLIMEDL_C_CLI_MEDL
+		from   CLL.CLI A
+		where  A.CLI_N_PIVA = ? 
+		AND   (A.CLI_C_COD_BLOCCO != 'R' OR A.CLI_C_COD_BLOCCO IS NULL)
+	</Query>
+	<Input>
+		<Parameter propertyName="partitaIva"/>
+	</Input>
+</Access>
+
+
+<Access name="getPatrimonioCliente" type="DAOOSBAccess" serviceName="Enterprise_service/soggetto/posizioneinformativa/PortafoglioClienteMifid/v1/inbound/PS_WS_PatrimonioClienteService_v1.0"
+		operationName="getPatrimonioCliente" osbName="OSB12C">
+<Input>
+	<![CDATA[	
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://posizioneinformativa.soggetto.be.schema.bmed.it/PatrimonioCliente/v1">
+		   <soapenv:Header>
+		      <v1:requestHeader>
+		         <v1:idOperazione>
+		            <v1:codiceApplicazioneChiamante>ANAGRAFICA</v1:codiceApplicazioneChiamante>
+		            <v1:codiceOperazione></v1:codiceOperazione>
+		         </v1:idOperazione>
+		         <v1:idConversazione></v1:idConversazione>
+		         <v1:timeStamp></v1:timeStamp>
+		         <v1:contestoChiamante>
+		            <v1:idApplicazioneChiamante>ANAGRAFICA</v1:idApplicazioneChiamante>
+		            <v1:canale>RDV</v1:canale>
+		            <v1:utente propertyName="utente"></v1:utente>
+		            <v1:ndgCliente></v1:ndgCliente>
+		            <v1:numeroRapporto></v1:numeroRapporto>
+		         </v1:contestoChiamante>
+		      </v1:requestHeader>
+		   </soapenv:Header>
+		   <soapenv:Body>
+		      <v11:getPatrimonioCliente>
+		         <v11:metadata append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>        
+		         <v11:ndgCliente propertyName="ndgCliente"></v11:ndgCliente>
+		      </v11:getPatrimonioCliente>
+		   </soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+</Input>
+<Output>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+		   <soapenv:Body>
+		      <v1:getPatrimonioClienteResponse xmlns:v1="http://posizioneinformativa.soggetto.be.schema.bmed.it/PatrimonioCliente/v1">
+		         <v1:totalePatrimonioMediolanum propertyName="totalePatrimonioMediolanum" propertyType="StringType"></v1:totalePatrimonioMediolanum>
+		      </v1:getPatrimonioClienteResponse>
+		   </soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+</Output>
+</Access>	
+
+</DAO-Object>
+

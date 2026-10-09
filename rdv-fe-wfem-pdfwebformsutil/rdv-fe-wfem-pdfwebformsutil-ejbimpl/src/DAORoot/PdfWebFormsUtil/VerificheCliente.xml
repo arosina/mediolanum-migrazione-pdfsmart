@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="VerificheCliente">	
+
+<Access name="isAlmenoUnClienteCointestatarioPuro" type="DAOQueryAccess" queryType="1" connectionCacheReference="SER_MIFID" 
+		OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType">	
+	<Query>
+		select
+			CASE WHEN COUNT(*) > 0 THEN 'S' ELSE 'N' END
+		from
+			 CLL.CLIAGE A
+		where
+			A.AGE_C = '0000000000'
+			AND A.GSTD_F_ESIST = 'S'
+			and trunc(sysdate) between A.CLIAGE_D_INIZ and A.CLIAGE_D_FINE
+			<IfNotNull propertyName="inputCodiceCliente">AND A.CLI_C = <p>inputCodiceCliente</p></IfNotNull>						
+			<IfNotNull propertyName="inputElencoCodiciCliente">AND A.CLI_C IN (<ToString>inputElencoCodiciCliente</ToString>)</IfNotNull>
+	</Query>
+</Access>
+
+<Access name="isCodiceFiscaleAgente" type="DAOQueryAccess" queryType="1" connectionCacheReference="INR" OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType">
+	<Query>
+		select	case when count(*) > 0 then 'S' else 'N' end 
+		from	INR_AGENTI A, INR_AGE E
+		where	A.AGE_C_AGE = E.AGE_C_AGE
+		and		E.CICLOVITA_C_CICLO_VITA = 'A'
+		and		A.AGE_X_CF_AGE = <p>inputCodiceFiscale</p>
+	</Query>	 
+</Access>
+
+<Access name="isResidenzaFisicaEstera" type="DAOQueryAccess" queryType="0" connectionCacheReference="SER_MIFID"
+		OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType">
+	<Query>
+		SELECT CASE WHEN COUNT(*) = 0 THEN 'N' ELSE 'S' END AS isResidenzaFisicaEstera 
+		  FROM CLL.V_INDCLI 
+		 WHERE TIPIND_C_TIP_IND = '01' 
+		   AND NAZ_C_NAZ != 'I'
+           AND CLI_C = ?	
+	</Query>
+	<Input>
+		<Parameter propertyName="ndgCliente"/>
+	</Input>
+</Access>
+				
+<Access name="isResidenzaFisicaEsteraProspect" type="DAOQueryAccess" queryType="0" connectionCacheReference="SER_MIFID"
+		OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType">
+	<Query>
+		SELECT CASE WHEN COUNT(*) = 0 THEN 'N' ELSE 'S' END AS isResFisEsteraProspect 
+		  FROM CLL.INR_INDCLI_ELETTR_REP 
+		 WHERE TIPIND_C_TIP_IND = '01'
+		   AND NAZ_C_NAZ  != 'I'
+		   AND ASSGNCLIAGE_C_POTZLE = ?	
+	</Query>
+	<Input>
+		<Parameter propertyName="codProspect"/>
+	</Input>
+</Access>	
+
+<Access name="residenzaFiscalePredominante" type="DAOQueryAccess" queryType="0" connectionCacheReference="SER_MIFID"
+		OutputCommandDataModel="com.atosorigin.wfem.types.StringType">
+	<Query>
+		SELECT DATO 
+		  FROM CLL.CLI_DATIAGGIUNTIVI 
+		 WHERE CODICE_DATO = 3140 
+		   AND CLI_C = ?
+	</Query>
+	<Input>
+		<Parameter propertyName="ndgCliente"/>		
+	</Input>
+</Access>	
+
+<Access name="gradoRischioResidenzaFisica" type="DAOQueryAccess" queryType="0" connectionCacheReference="SER_MIFID"
+		OutputCommandDataModel="com.atosorigin.wfem.types.IntegerType">
+	<Query>
+		select distinct pae.COD_RISCH_RICLAGG  AS gradoRischioResidenzaFisica
+		from cll.v_indcli cli
+		inner join utly.dom_naz naz
+		on cli.NAZ_C_NAZ = naz.COD_NAZ_CLI
+		inner join cll.paestero pae
+		on naz.cod_naz_uic_cdcri = pae.paestero_c_uic
+		where naz.gstd_f_esist = 'S'
+		and pae.gstd_f_esist = 'S'
+		and cli.TIPIND_C_TIP_IND = '01'
+		and sysdate between naz.DAT_INIZ_VALID and naz.DAT_FINE_VALID
+		and cli.CLI_C = ?	
+	</Query>
+	<Input>
+		<Parameter propertyName="ndgCliente"/>
+	</Input>
+</Access>
+	
+<Access name="gradoRischioResidenzaFisicaProspect" type="DAOQueryAccess" queryType="0" connectionCacheReference="SER_MIFID"
+		OutputCommandDataModel="com.atosorigin.wfem.types.IntegerType">
+	<Query>
+		select distinct pae.COD_RISCH_RICLAGG AS gradoRischioResidenzaFisicaProspect
+		from cll.INR_INDCLI_ELETTR_REP cli
+		inner join utly.dom_naz naz
+		on cli.NAZ_C_NAZ = naz.COD_NAZ_CLI
+		inner join cll.paestero pae
+		on naz.cod_naz_uic_cdcri = pae.paestero_c_uic
+		WHERE naz.gstd_f_esist = 'S'
+		and pae.gstd_f_esist = 'S'
+		and cli.TIPIND_C_TIP_IND = '01'
+		and sysdate between naz.DAT_INIZ_VALID and naz.DAT_FINE_VALID
+		AND cli.ASSGNCLIAGE_C_POTZLE = ?	
+	</Query>
+	<Input>
+		<Parameter propertyName="codProspect"/>
+	</Input>
+</Access>	
+
+</DAO-Object>

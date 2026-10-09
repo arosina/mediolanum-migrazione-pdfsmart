@@ -1,0 +1,69 @@
+.gridDSRigaTitolo {
+	font-family: Arial;
+	font-size: 9pt;
+	font-weight: bold;
+	color: #FFFFFF;
+	background-color: #3399CC;
+}
+.gridDSCellaTitolo {
+	border-color: darkgray;
+	border-width: 1px;
+	border-bottom-style: solid;
+	border-right-style: solid;
+	padding-left: 3px;
+}
+
+.gridDSRigaDocumento {
+	font-family: Arial;
+	font-size: 8pt;
+	font-weight: normal;
+	color: #1A458F;
+	
+	background-image: url(''); 
+	background-color: white;
+
+	border-color: darkgray;
+}
+.gridDSRigaAttesa{
+	font-family: Arial;
+	font-size: 8pt;
+	font-weight: normal;
+	color: #1A458F;
+
+	background-image: url('/ItaPDac/images/sfondoRetinato.gif'); 
+	border-color: darkgray;
+}
+
+
+.gridDSCellaDocumento {
+	padding-left: 2px;
+
+	border-color: darkgray;
+
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-right-style: solid;
+	border-right-width: 1px;
+	
+}
+.gridDSCellaAttesa {
+	padding-left: 2px;
+	background-image: url('/ItaPDac/images/sfondoRetinato.gif'); 
+	
+	border-color: darkgray;
+
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-right-style: solid;
+	border-right-width: 1px;
+}
+.gridDSCellaStrumenti{
+	border-color: darkgray;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	
+	background-image: url(''); 
+	background-color: #f0f8ff;
+
+	padding-left: 2px;
+}

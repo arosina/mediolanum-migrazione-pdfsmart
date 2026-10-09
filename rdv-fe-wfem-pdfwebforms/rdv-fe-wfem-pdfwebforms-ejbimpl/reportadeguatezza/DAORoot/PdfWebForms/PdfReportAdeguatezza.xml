@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="PdfReportAdeguatezza">
+
+<Access name="generaReportAdeguatezza" markNillable="true" type="DAOOSBAccess" serviceName="service/soggetto/posizionedispositiva/ReportAdeguatezzaDinamicoService/v1" operationName="generaReportAdeguatezza">
+	<Input>
+		<![CDATA[
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://posizionedispositiva.soggetto.be.schema.bmed.it/ReportAdeguatezza/v1">
+			   <soapenv:Header/>
+			   <soapenv:Body>
+			      <v1:generaReportAdeguatezza>
+			         <v1:metadata>
+						<v1:abiCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v1:callerDataId append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v1:channelCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v1:companyCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v1:familyBankerCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v1:familyBanker>true</v1:familyBanker>
+						<v1:inputCommonDataVestion append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v1:ip append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v1:keyHole>false</v1:keyHole>
+						<v1:keylog append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v1:operatorCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v1:placeCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v1:statusCode>0</v1:statusCode>
+						<v1:swift append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v1:timeStamp propertyName="now"></v1:timeStamp>
+						<v1:userAgent append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v1:userId propertyName="userId"></v1:userId>
+						<v1:userIdKeyHole append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v1:versionBs append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					 </v1:metadata>
+			         <v1:reportAdeguatezza attrs="calcolaSost@calcSost">
+			            <v1:testata>
+			               <v1:agente propertyName="codiceAgente"></v1:agente>
+			               <v1:cliente propertyName="codiceCliente"></v1:cliente>
+			               <v1:dataCreazione append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/> 
+			               <v1:dataScadenza append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+			               <v1:codRichiedente>1</v1:codRichiedente>
+ 						   <v1:codRaccomandazione propertyName="codRaccomandazioneIdd"></v1:codRaccomandazione>
+ 						   <v1:codSostituzione propertyName="idSostituzione"></v1:codSostituzione>
+ 						   <v1:idAdeguatezzaRDA propertyName="idAdeguatezzaRDA"></v1:idAdeguatezzaRDA>
+ 						   <v1:flagManlevaKOESG propertyName="flagManlevaKOESG"></v1:flagManlevaKOESG>
+ 			            </v1:testata>
+ 			            <v1:preferenze listContainer="true" propertyName="elencoPreferenze">
+							<v1:preferenza propertyName="elencoPreferenze">
+								<v1:codPreferenza propertyName="idPreferenza"></v1:codPreferenza>
+								<v1:codTipoSistOrigDisp>PDF</v1:codTipoSistOrigDisp>
+								<v1:desPreferenza propertyName="descrizione"></v1:desPreferenza>
+							</v1:preferenza>
+						</v1:preferenze>
+			            <v1:ordini>
+			               <v1:ordine propertyName="ordini" attrs="descr@descr,padre@padre,progr@progr"> 
+			                  <v1:contratto propertyName="contratto"></v1:contratto> 
+			                  <v1:prodotto propertyName="prodotto"></v1:prodotto>
+			                  <v1:operazione propertyName="operazione"></v1:operazione>
+ 			                  <v1:controvalore propertyName="controvalore"></v1:controvalore> 
+ 			                  <v1:variazione propertyName="variazione"></v1:variazione> 
+			                  <v1:deroga propertyName="deroga"></v1:deroga>
+			                  <v1:derogaVersamentoIniziale propertyName="derogaVersamentoIniziale"></v1:derogaVersamentoIniziale>
+			                  <v1:costi append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+			                  <v1:soggetti>
+			                     <v1:soggetto propertyName="soggetti" attrs="codice@codice,ruolo@ruolo"/>
+			                  </v1:soggetti>
+			               </v1:ordine>			   
+			            </v1:ordini>
+			            <v1:sostituzioni append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+			            <v1:grafici append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+			         </v1:reportAdeguatezza>
+			      </v1:generaReportAdeguatezza>
+			   </soapenv:Body>
+			</soapenv:Envelope>
+		]]>
+	</Input>
+	<Output>
+		<![CDATA[
+			<Envelope>
+			   <Body>
+			      <generaReportAdeguatezzaResponse>
+			         <reportAdeguatezza attrs="idReportAdeguatezza@idReport">
+						<sostituzioni>
+							<sostituzione>
+								<ordine propertyName="ordiniResult">
+									<deroga propertyName="derogaResult"></deroga>
+								</ordine>
+							</sostituzione>
+						</sostituzioni>
+			         </reportAdeguatezza>
+			      </generaReportAdeguatezzaResponse>
+			   </Body>
+			</Envelope>		
+		]]>
+	</Output>
+</Access>	
+
+<Access name="recuperaReportAdeguatezza" type="DAOOSBAccess" serviceName="service/soggetto/posizionedispositiva/ReportAdeguatezzaDinamicoService/v1" operationName="recuperaReportAdeguatezza">
+	<Input>
+		<![CDATA[	
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://posizionedispositiva.soggetto.be.schema.bmed.it/ReportAdeguatezza/v1">
+			   <soapenv:Header/>
+			   <soapenv:Body>
+			      <v1:recuperaReportAdeguatezza>
+			         <v1:metadata>
+						<v1:abiCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v1:callerDataId append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v1:channelCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v1:companyCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v1:familyBankerCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v1:familyBanker>true</v1:familyBanker>
+						<v1:inputCommonDataVestion append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v1:ip append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v1:keyHole>false</v1:keyHole>
+						<v1:keylog append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v1:operatorCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v1:placeCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v1:statusCode>0</v1:statusCode>
+						<v1:swift append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v1:timeStamp propertyName="now"></v1:timeStamp>
+						<v1:userAgent append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v1:userId propertyName="userId"></v1:userId>
+						<v1:userIdKeyHole append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v1:versionBs append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+			         </v1:metadata>
+			         <v1:idReport propertyName="idReportAdeguatezza"></v1:idReport>
+			         <v1:agente propertyName="codiceAgente"></v1:agente>
+			      </v1:recuperaReportAdeguatezza>
+			   </soapenv:Body>
+			</soapenv:Envelope>
+		]]>
+	</Input>
+	<Output>
+		<![CDATA[
+			<Envelope>
+			   <Body>
+			      <recuperaReportAdeguatezzaResponse>
+			         <reportAdeguatezza attrs="stato@stato">
+			            <reportFile propertyName="elencoLink" attrs="idReportPDF@idReportPDF,codiceCliente@cliente">
+			               <link>
+			                  <link propertyName="link"></link>
+			                  <guid propertyName="guid"></guid>
+			               </link>
+			               <idECM propertyName="idECM"></idECM>
+			            </reportFile>
+			         </reportAdeguatezza>         
+			      </recuperaReportAdeguatezzaResponse>
+			   </Body>
+			</Envelope>
+		]]>
+	</Output>
+</Access>
+
+<Access name="scriviLegameDispositivaOrdine" type="DAOOSBAccess" serviceName="service/soggetto/posizionedispositiva/ReportAdeguatezzaDinamicoService/v1" operationName="scriviLegameDispositivaOrdine">
+<Input>
+	<![CDATA[	
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://posizionedispositiva.soggetto.be.schema.bmed.it/ReportAdeguatezza/v1">
+		   <soapenv:Header/>
+		   <soapenv:Body>
+		      <v11:scriviLegameDispositivaOrdine>
+		         <v11:metadata>
+					<v11:abiCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:callerDataId append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:channelCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:companyCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:familyBankerCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:familyBanker>true</v11:familyBanker>
+					<v11:inputCommonDataVestion append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:ip append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:keyHole>false</v11:keyHole>
+					<v11:keylog append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:operatorCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:placeCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:statusCode>0</v11:statusCode>
+					<v11:swift append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:timeStamp propertyName="now"></v11:timeStamp>
+					<v11:userAgent append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:userId propertyName="userId"></v11:userId>
+					<v11:userIdKeyHole append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:versionBs append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+				 </v11:metadata>
+		         <v11:dispositiva attrs="codOperzDispOrig@codOperzDispOrig,tipoSistemaOrig@tipoSistemaOrig"/>
+				 <v11:ordine propertyName="ordini" attrs="idReport@idReport,progr@progr"/>
+		      </v11:scriviLegameDispositivaOrdine>
+		   </soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+</Input>
+<Output>
+	<![CDATA[
+		<Envelope>
+		   <Body>
+		      <scriviLegameDispositivaOrdineResponse>
+		         <ordine attrs="idReportOut@idReport"/>
+		      </scriviLegameDispositivaOrdineResponse>
+		   </Body>
+		</Envelope>	
+	]]>
+</Output>
+</Access>	
+
+<Access name="recuperaAnagraficaProdottoServizio" type="DAOQueryAccess" queryType="0" maxResultRows="1"
+		connectionCacheReference="SER_MIFID" OutputCommandDataModel="com.atosorigin.wfem.types.StringType">
+	<Query>
+		select 	COD_SURROG_PROD_SERVZ 
+		from	CAT_PROD.VW_LEGM_APS_MIFID
+		where	COD_CHIAV_NAT_PROD = ? 
+	</Query>   
+	<Input>
+		<Parameter propertyName="prodotto"/>
+	</Input>
+</Access> 
+
+</DAO-Object>

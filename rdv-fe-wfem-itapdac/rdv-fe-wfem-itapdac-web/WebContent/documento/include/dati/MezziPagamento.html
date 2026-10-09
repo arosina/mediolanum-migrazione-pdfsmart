@@ -1,0 +1,102 @@
+<table width="100%" height="100%" cellpadding="0" cellspacing="0">
+
+   <tr> 
+      <td align="center">
+      	<table width="99%" cellpadding="0" cellspacing="0">
+      	<tr>
+      		<td style="border-bottom: 2px solid #1A458F; font-size: 8px;">&nbsp;&nbsp;</td>
+      		<td rowspan="2" valign="middle">
+	      		<table>
+	      		<tr>
+		   	      <td class="text" nowrap="nowrap"><img src="<%=template.getWebApp()%>/images/section.gif">&nbsp;<b>Mezzi di Pagamento</b>
+		   	      	<% if(!readonly){ %>
+		    	          &nbsp;&nbsp;[
+		    	          <span class="text" onclick="doAggMezzoPg();" style="cursor:pointer;text-decoration:underline;" 
+		    	                title="Aggiungi mezzo di pagamento"><img src="<%=template.getWebApp()%>/images/add.png"> Aggiungi mezzo di pagamento</span>
+		    	          ]&nbsp;&nbsp;
+		   	          <% } %>
+		   	      </td>
+		   	      <td>&nbsp;&nbsp;</td>
+		   	      <td><%=template.inlineAnchor("documento_nessunMezzoDiPagamento")%></td>
+		   	      <td>&nbsp;</td>
+		   	      <td class="text" id="avvisoAlmenoUnMezzoTd" style="font-style: italic;"></td>
+		        </tr>
+		        </table>
+      		</td>
+      		<td style="border-bottom: 2px solid #1A458F; font-size: 8px;" width="100%">&nbsp;</td>
+      	</tr>
+      	<tr>
+      		<td style="font-size: 8px;">&nbsp;</td>
+      		<td style="font-size: 8px;">&nbsp;</td>
+      	</tr>
+      	</table>
+      </td>
+   </tr>
+
+   <tr>
+      <td id="mezziPgCont" height="100%" valign="top">
+    	  <table width="100%" height="100%" cellpadding="2">
+	        <tr>
+			    <td id="mezziPagamentoCont" valign="top" height="100%" <%=documento.changedStyle("mezziPagamento")%>>
+				    <% 
+				    	documento.setEditabilitaMezziPg(readonly);
+				    	
+			    		template.setLabelCodePrefix(docPrefixInclude+"documento_mezziPagamento.");
+						
+				    	String norowsmsg = "Nessuno";
+				    	String mezziPagamentoCellHeight = "cellheight='30' ";
+				    	modality = "update";
+			    		cols = "cols='#isEditabile,#idMezzoPg,#esitoDocumentoAssegno,remove,codTipoPagamento,importo,codDivisa,luogoEmissione,dataEmissione,flagTrasferibile,beneficiariAssegno,numAssegno,banca' ";
+			    		dim = "colswidths='3%,*,12%,15%,*,13%,10%,*,10%,*' ";
+			    		if(readonly){
+					    	modality = "read";
+					    	mezziPagamentoCellHeight="cellheight='25' ";
+				    		cols = "cols='#isEditabile,#idMezzoPg,#changedProps,codTipoPagamento,importo,codDivisa,luogoEmissione,dataEmissione,flagTrasferibile,numAssegno,banca' ";
+				    		dim = "colswidths='*,12%,15%,*,13%,10%,10%,*' ";
+			    		}
+				    %>
+				    <% if(documento.getNumMezziPgEditabili() == 0){ %>
+					    	<table width='100%' height="100%" style='border:solid darkgray 1px;'>
+					    	   <tr>
+					    	     <td class='text' align='center' height="100%"><%=norowsmsg%></td>
+					    	   </tr>
+					    	</table>
+				    <% }else{ %>
+				    	<table width='100%' height="100%"><tr><td style="padding: 5;">
+					    <%=template.grid("mezziPagamento",cols+dim+
+					    								  "helper='yes' "+
+					    								  "width='100%' height='230px' "+
+					    								  "headernowrap='false' "+
+					    								  "sortable='false' "+
+					    								  "selection='none' "+
+					    								  "onnewrow='onNewRowMezzoPg(this);' "+
+					    								  "onnewcell='onNewCellMezzoPg(this);' "+
+					    								  "noRowsMsg='"+norowsmsg+"' "+
+					    								  "counterwidth='0' "+
+					    								  "showbottomarea='false' showtoparea='false' "+
+					    								  mezziPagamentoCellHeight+
+					    								  "modality='"+modality+"' "+
+					    								  "decorator='prgm.ita.p.dac.model.MezzoPagamentoModel' "+
+					    								  "codTipoPagamento={onchange='changeDoc();onChangeTipoPagamento(this);'} "+
+					    								  "importo={onchange='changeDoc();' maxlength='14'} "+
+					    								  "codDivisa={showempty='false' onchange='changeDoc();'} "+
+					    								  "numAssegno={onchange='changeDoc();' maxlength='14'} "+
+					    								  "banca={onchange='changeDoc();' maxlength='50'} "+
+					    								  "luogoEmissione={onchange='changeDoc();' maxlength='50'} "+
+					    								  "dataEmissione={onchange='changeDoc();'} "+
+					    								  "beneficiariAssegno={maxlength='40'} "+
+					    								  "flagTrasferibile={onchange='changeDoc();onChangeFlagTrasferibile(this);'} "+
+					    								  "")%>
+						</td></tr></table>
+					<% } %>
+				    								  
+			    	<%
+			    		template.setLabelCodePrefix(docPrefixInclude);
+			    	%>
+				</td>
+		    </tr>
+    	  </table>
+	  </td>
+   </tr>
+   
+</table>

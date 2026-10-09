@@ -1,0 +1,91 @@
+<html>
+<head>
+<style>
+.logout {
+	font-family: Arial;
+	font-size: 10pt;
+	color:#FFFFFF;
+	background:#587BC4;
+}
+.fnc {
+	background: #f0f0f0;
+	font-family: Arial;
+	font-size: 8pt;
+	color:#1A458F;
+}
+.fncSel {
+	background: #C9D6EA;
+	font-family: Arial;
+	font-size: 8pt;
+	color:#1A458F;
+	font-weight: bold;
+}
+</style>
+
+<script>
+function attivaFunzione(fncCode){
+	try{
+		if(top.window.frames["clientarea"].document.readyState != 'complete'){
+			alert("Caricamento in corso. Attendere prego");
+			return;
+		}
+	}catch(e){}
+	var fnc = top.window.frames["menu"].menu.showFunzioni(fncCode);
+	var divWait = "<html>"+
+				  "<center><br><br><br><br><br><br><br>"+
+				  "<table bgcolor='#F0F0F0' cellspacing='0' cellpadding='0' border='1' width='300'>" +
+				  "<tr><td align='center'><table>" +
+				  "<tr><td>&nbsp;</td></tr>" +
+				  "<tr><td align='center' style='font-family: Arial; font-size: 8pt; color: #1A458F; font-weight: normal'>Attendere prego...</td></tr>" +
+				  "<tr><td>&nbsp;</td></tr>" +
+				  "</table></td></tr>" +
+				  "</table>"+
+				  "</center>"+
+				  "</html>";
+	try{
+		top.window.frames["clientarea"].document.open();
+		top.window.frames["clientarea"].document.write(divWait);
+	}catch(e){}
+	document.attivaFunzioneForm.code.value = fnc.code;
+	document.attivaFunzioneForm.commandName.value = fnc.commandName;
+	document.attivaFunzioneForm.commandType.value = fnc.commandType;
+	document.attivaFunzioneForm.browserInstance.value = fnc.browserInstance;
+	document.attivaFunzioneForm.isMultiTaskMode.value = getIsMultiTaskField();
+	document.attivaFunzioneForm.submit();
+}
+</script>
+</head>
+
+<body class="fnc" style="margin:0px;">
+
+<div style="overflow:auto;height:400;">
+<table width="100%" class="fnc">
+  <tr>
+    <td id="funzioni">
+    </td>
+  </tr>
+</table>
+</div>
+
+<table width="100%">
+  <tr>
+    <td class="logout">
+      &nbsp;<span class="logout" style="cursor:pointer;text-decoration:underline;" 
+            onclick="top.window.frames['menu'].logout();">Logout</span>
+    </td>
+  </tr>
+</table>
+
+<form name="attivaFunzioneForm" method="post" target="clientarea" action="call.wfem">
+<input type="hidden" name="wfemCmd" value="moke.menu2.business.AttivaFunzione.execute">
+<input type="hidden" name="readRequest" value="false">
+<input type="hidden" name="code" value="">
+<input type="hidden" name="commandName" value="">
+<input type="hidden" name="commandType" value="">
+<input type="hidden" name="browserInstance" value="">
+<input type="hidden" name="isMultiTaskMode" value="false">
+</form>
+
+</body>
+</html>
+

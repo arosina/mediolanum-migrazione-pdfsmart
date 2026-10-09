@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="PdfVerifiers" connectionCacheReference="DBAZ_SOGG">
+
+<Access name="loadSchedaScaiCliente" type="DAOOSBAccess" serviceName="soggetto-anagrafica-be-osb-informativedatiadv-prj/proxy/PS_Anagrafica"
+	operationName="recuperaDatiSchedaScaiCliente" resultCharsetName="UTF-8">
+	<Input>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://anagrafica.soggetto.service.bmed.it/v1">
+		   <soapenv:Header></soapenv:Header>
+		   <soapenv:Body>
+		      <v11:recuperaDatiSchedaScaiCliente>
+				<metadata append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+				<codiceCliente propertyName="codiceCliente" appInfo="true"/>
+		      </v11:recuperaDatiSchedaScaiCliente>
+		   </soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+	</Input>
+	<Output>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+		    <S:Body xmlns:S="http://schemas.xmlsoap.org/soap/envelope/">
+		        <v1:recuperaDatiSchedaScaiClienteResponse xmlns:v1="http://anagrafica.soggetto.service.bmed.it/v1">
+		            <anagraficaSchedaDTO>
+		                <dettSchedaDto>
+		                    <domStatoSchedaSCAI>
+		                        <codiceStatoSchedaSCAI propertyName="codiceStatoSchedaSCAI"/>
+		                    </domStatoSchedaSCAI>
+		                </dettSchedaDto>
+		            </anagraficaSchedaDTO>
+		        </v1:recuperaDatiSchedaScaiClienteResponse>
+		    </S:Body>
+		</soapenv:Envelope>
+	]]>
+	</Output>
+</Access>
+
+<Access name="isPersonaFisica" type="DAOQueryAccess" queryType="0"
+		OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType"> 
+	<Query> 
+		select case when (trim(CLI_C_SESSO) = 'S' or trim(CLI_C_SESSO) is null) then 'N' else 'S' end
+		from  CLL.CLI
+		where CLI_C = ?
+		and   GSTD_F_ESIST='S'
+	</Query>     
+    <Input> 
+    	<Parameter propertyName="codiceCliente"/>
+	</Input> 
+</Access> 
+
+<Access name="loadFlagPepCliente" type="DAOQueryAccess" queryType="0" maxResultRows="1"
+		OutputCommandDataModel="com.atosorigin.wfem.types.StringType"> 
+	<Query> 
+		select trim(PEP) from CLL.CLI_ADEGUATA_VERIFICA where CLI_C = ?
+		union
+		select trim(CLI_F_PEP) from CLL.INR_CLI_ELETTR_REP where ASSGNCLIAGE_C_POTZLE = ?
+	</Query>     
+    <Input> 
+    	<Parameter propertyName="codiceCliente"/> 
+    	<Parameter propertyName="codiceCliente"/> 
+	</Input> 
+</Access> 
+
+<Access name="loadRischioCliente" type="DAOOSBAccess" serviceName="service/processioperativi/pratica/PS_CalcolaProfiloRischio/v1"
+	operationName="getProfiloRischio" resultCharsetName="UTF-8">
+	<Input>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://pratica.processioperativi.be.schema.bmed.it/getprofilorischio/v1">
+		   <soapenv:Body>
+		      <v11:getProfiloRischio>
+		         <v11:modalitaIngaggio>OFFLINE</v11:modalitaIngaggio>
+		         <v11:ndg propertyName="ndg"></v11:ndg>
+		      </v11:getProfiloRischio>
+		   </soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+	</Input>
+	<Output>
+	<![CDATA[
+		<env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wsa="http://www.w3.org/2005/08/addressing">
+		   <env:Body>
+		      <getProfiloRischioResponse xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:ns2="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://www.bea.com/wli/sb/context" xmlns:fs="http://fault.common.schema.bmed.it/v1" xmlns:ns4="http://pratica.processioperativi.be.service.bmed.it/getprofilorischio/v1" xmlns:ns3="http://api.wsclient.nac.search.osb.be.it" xmlns:ns5="http://simpleType.common.schema.bmed.it/v1" xmlns:WL5G3N0="http://schemas.xmlsoap.org/wsdl/" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:cs="http://common.schema.bmed.it/v1" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:tns="http://pratica.processioperativi.be.schema.bmed.it/getprofilorischio/v1" xmlns="http://pratica.processioperativi.be.schema.bmed.it/getprofilorischio/v1">
+		         <tns:profiloRischioCalcolato propertyName="profiloRischioCalcolato"></tns:profiloRischioCalcolato>
+		       </getProfiloRischioResponse>
+		   </env:Body>
+		</env:Envelope>
+	]]>
+	</Output>
+</Access>
+
+<Access name="isNdgCliente1Fiduciaria" type="DAOQueryAccess" queryType="0" maxResultRows="1"
+		OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType">
+	<Query>
+		select case when count(*) > 0 then 'S' else 'N' end 	
+		from 	cll.cli cli
+		where	cli.cli_c = lpad(?, 11, '0')
+		and 	cli.CLI_C_GRUPPO = '273' 
+	</Query>     
+	<Input>
+		<Parameter propertyName="ndgCliente1"/>
+	</Input>
+</Access>  
+
+<Access name="isAgenteBC" type="DAOQueryAccess" queryType="0" maxResultRows="1"
+		OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType" connectionCacheReference="ARC">
+	<Query>
+		select case when count(*) > 0 then 'S' else 'N' end 	
+		from ARC_ANAG_SOGGETTO S
+		inner join ARC_INCARICHI I on I.N_ANAG_SOGG = S.N_ANAG_SOGG
+		inner join ARC_TIPO_INCARICO T on T.N_TIPO_INCARICO = I.N_TIPO_INCARICO
+		where COD_TIPO_INCARICO = 'BC'
+		and GETDATE() BETWEEN I.DT_INIZIO_INCARICO AND I.DT_FINE_INCARICO
+		and I.FLG_ANNULLATO = 'N'
+		and T.FLG_ANNULLATO = 'N'
+		and S.COD_SOGGETTO = ?
+	</Query>     
+	<Input>
+		<Parameter propertyName="codiceAgente"/>
+	</Input>
+</Access>  
+
+<Access name="isAgenteCertificatoPerFiduciarie" type="DAOQueryAccess" queryType="0" maxResultRows="1"
+		OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType" connectionCacheReference="ARC">
+	<Query>
+		select case when count(*) > 0 then 'S' else 'N' end 	
+		from 	ARC_MCU_CERTIFICAZIONI_UTENTI
+		where	upper(ID_CERTIFICAZIONE) = upper('Abilitazione Mediolanum Fiduciaria')
+		and 	STUD_ID = ?
+		and 	FLG_ANNULLATO = 'N'
+	</Query>     
+	<Input>
+		<Parameter propertyName="codiceAgente"/>
+	</Input>
+</Access>  
+
+<Access name="valutaPoteriDiFirmaLegaleRappresentante" type="DAOOSBAccess" serviceName="service/soggetto/posizionedispositiva/ValutazionePoteriFirma/v1"
+	operationName="valutazionePoteriFirmaRequest" markNillable="true" resultCharsetName="UTF-8">
+	<Input>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://posizionedispositiva.soggetto.be.schema.bmed.it/ValutazionePoteriFirma/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+			<soapenv:Body>
+				<v11:valutazionePoteriFirmaRequest>
+			        <v11:metadata>
+						<v11:abiCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v11:callerDataId append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v11:channelCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v11:companyCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v11:familyBankerCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v11:familyBanker>false</v11:familyBanker>
+						<v11:inputCommonDataVestion append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v11:ip append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v11:keyHole>false</v11:keyHole>
+						<v11:keylog append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v11:operatorCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v11:placeCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v11:statusCode>0</v11:statusCode>
+						<v11:swift append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v11:timeStamp propertyName="now"></v11:timeStamp>
+						<v11:userAgent append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v11:userId propertyName="userId"></v11:userId>
+						<v11:userIdKeyHole append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v11:versionBs append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+			        </v11:metadata>
+					<v11:codiceNdgPersonaGiuridica propertyName="codiceNdgPersonaGiuridica"/>
+					<v11:dataSottoscrizione propertyName="dataSottoscrizioneAAAAMMGG"/>
+					<v11:codiceModalitaRichiestaDispositiva>2</v11:codiceModalitaRichiestaDispositiva>
+					<v11:operazioni>
+						<v11:operazione>
+							<v11:idOperazioneSistemaOrigine>1</v11:idOperazioneSistemaOrigine>
+							<v11:codiceTipoSistemaOrigine>PRT</v11:codiceTipoSistemaOrigine>
+							<v11:codiceProdottoSistemaOrigine propertyName="codProdottoPrit"/>
+							<v11:codiceTipoOperazioneSistemaOrigine propertyName="codOperazionePrit"/>
+							<v11:codiceSurrogatoDispositiva append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+							<v11:codiceTipoOperazioneDispositiva append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+							<v11:importoOperazione propertyName="importo"/>
+							<v11:numeroOperazioniAttuale append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+							<v11:codicePeriodicitaNumeroOperazioniAttuale append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+							<v11:importoCumuloAttuale append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+							<v11:codicePeriodicitaCumulo append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						</v11:operazione>
+					</v11:operazioni>
+					<v11:firmatari>
+						<v11:codiceNdgFirmatario propertyName="codiceNdgFirmatario"/>
+					</v11:firmatari>
+				</v11:valutazionePoteriFirmaRequest>
+			</soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+	</Input>
+	<Output>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://posizionedispositiva.soggetto.be.schema.bmed.it/ValutazionePoteriFirma/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+			<soapenv:Body>
+				<v11:valutazionePoteriFirmaResponse>
+					<v11:esito propertyName="esitoGlobale"></v11:esito>
+					<v11:operazioni>
+						<v11:operazione>
+							<v11:firmatari>
+								<v11:firmatario>
+									<v11:esito propertyName="esitoValutazioneFirmatario"/>
+									<v11:errori>
+										<v11:errore propertyName="erroriFirmatario">
+											<v11:codice propertyName="codiceErrore"/>
+											<v11:descrizione propertyName="descrizioneErrore"/>
+										</v11:errore>
+									</v11:errori>
+								</v11:firmatario>
+							</v11:firmatari>
+						</v11:operazione>
+					</v11:operazioni>
+				</v11:valutazionePoteriFirmaResponse>
+			</soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+	</Output>
+</Access>
+
+</DAO-Object>

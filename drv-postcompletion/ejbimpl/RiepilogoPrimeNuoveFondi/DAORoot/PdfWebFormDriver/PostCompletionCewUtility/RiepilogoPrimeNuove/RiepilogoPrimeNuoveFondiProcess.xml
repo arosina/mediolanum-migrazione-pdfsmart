@@ -1,0 +1,1071 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="RiepilogoPrimeNuoveFondiProcess" connectionCacheReference="CEPE">
+
+<Access name="esitoElaborazionePrimeNuove" type="DAOTableAccess" tableName="PDF_POSTCOMP_DATA">
+   <Bindings>
+	<Parameter propertyName="pdfInstanceId" 	dbColumnName="PDF_INSTANCE_ID" primaryKey="true"/>
+	<Parameter propertyName="dataElabPrimeNuove" 	dbColumnName="DATA_ELAB_PRNUO"/>
+	<Parameter propertyName="infoPrimeNuove" 	dbColumnName="PRNUO_INFO"/>		
+   </Bindings>
+</Access>
+
+<Access name="esitoElaborazioneConfAgg" type="DAOTableAccess" tableName="PDF_POSTCOMP_DATA">
+   <Bindings>
+	<Parameter propertyName="pdfInstanceId" 	dbColumnName="PDF_INSTANCE_ID" primaryKey="true"/>
+	<Parameter propertyName="dataElabConfAgg" 	dbColumnName="DATA_ELAB_CONF_AGG"/>
+	<Parameter propertyName="infoConfAgg" 	    dbColumnName="CONF_AGG_INFO"/>
+   </Bindings>
+</Access>
+
+<Access name="esitoElaborazioneDis" type="DAOTableAccess" tableName="PDF_POSTCOMP_DATA">
+   <Bindings>
+	<Parameter propertyName="pdfInstanceId" 	dbColumnName="PDF_INSTANCE_ID" primaryKey="true"/>
+	<Parameter propertyName="dataElabSwitchDis" 	dbColumnName="DATA_ELAB_SWITCH_DIS"/>
+	<Parameter propertyName="infoSwitchDis" 	dbColumnName="SWITCH_DIS_INFO"/>
+   </Bindings>
+</Access>
+
+<Access name="esitoElaborazioneInv" type="DAOTableAccess" tableName="PDF_POSTCOMP_DATA">
+   <Bindings>
+	<Parameter propertyName="pdfInstanceId" 	dbColumnName="PDF_INSTANCE_ID" primaryKey="true"/>
+	<Parameter propertyName="dataElabSwitchInv" 	dbColumnName="DATA_ELAB_SWITCH_INV"/>
+	<Parameter propertyName="infoSwitchInv" 	dbColumnName="SWITCH_INV_INFO"/>
+   </Bindings>
+</Access>
+
+<Access name="riepilogoPrimeNuove" type="DAOQASAccess" serviceName="FD-FOL-RiepilogoPrimeNuove"
+			dataFormatter = "prgm.pdfwebformsdrivers.postcompletioncewutility.riepilogoprimenuove.PrimeNuoveFondiFormatter" >
+   <Input>
+   	<![CDATA[<OFX>
+	<SIGNONMSGSRQV1>
+		<SONRQ>
+			<USERID>9555559</USERID>
+			<USERPASS>6111116</USERPASS>
+			<GENUSERKEY>1</GENUSERKEY>
+			<APPID>POR</APPID>
+			<APPDATALIST>
+				<APPROOT>
+					<WHEREIS>
+						<HTTP_REFERER/>
+						<PATH_INFO/>
+						<REMOTE_ADDR>172.16.210.00</REMOTE_ADDR>
+					</WHEREIS>
+					<SESSION>
+						<PAGE/>
+						<OPERCODE/>
+						<ISOPER/>
+						<pPg/>
+						<DefaultPage/>
+					</SESSION>
+					<PINCONTROL>
+						<USERCODE propertyName="idUtente"></USERCODE>
+						<PASSWORD/>
+						<POS1/>
+						<POS2/>
+						<PWDPOS1/>
+						<PWDPOS2/>
+					</PINCONTROL>
+				</APPROOT>
+			</APPDATALIST>
+		</SONRQ>
+	</SIGNONMSGSRQV1>
+   	<FD-FOL-RiepilogoPrimeNuoveQARCMSGSRQV1>
+		<RIEPILOGO>
+			<DATIOPERAZIONE>
+				<IDPRENOTAZIONE/>
+				<IDUTENTE propertyName="idUtente"></IDUTENTE>
+				<IDUTENTECOSOTT1 propertyName="idUtentePrimoCosott"></IDUTENTECOSOTT1>
+				<IDUTENTECOSOTT2 propertyName="idUtenteSecondoCosott"></IDUTENTECOSOTT2>
+				<IDMANDATO propertyName="idMandato"></IDMANDATO>
+				<FLGSWITCH propertyName="flagSwitch"></FLGSWITCH>
+				<FLGPRIMASOTT propertyName="flagPrimaSott"></FLGPRIMASOTT>
+				<IDCONTOORDINANTE propertyName="idContoOrdinante"></IDCONTOORDINANTE>
+				<DESINTORDINANTE>-</DESINTORDINANTE>
+				<IDAGENTE propertyName="idAgente"></IDAGENTE>
+				<IDCONTRATTO propertyName="idContratto"></IDCONTRATTO>
+				<DIVISA>EUR</DIVISA>
+				<UMBRELLA_FUND propertyName="umbrellaFund"></UMBRELLA_FUND>
+				<CLASSE propertyName="classe"></CLASSE>
+				<MODALITA propertyName="modalita"></MODALITA>
+				<MODALITA_COMUNIC propertyName="modalitaComunic"></MODALITA_COMUNIC>
+				<RECAPITO_VIA propertyName="recapitoVia"></RECAPITO_VIA>
+				<RECAPITO_NUM propertyName="recapitoNum"></RECAPITO_NUM>
+				<RECAPITO_LOC propertyName="recapitoLoc"></RECAPITO_LOC>
+				<RECAPITO_CAP propertyName="recapitoCap"></RECAPITO_CAP>
+				<RECAPITO_PRO propertyName="recapitoPro"></RECAPITO_PRO>
+				<RECAPITO_NAZ propertyName="recapitoNaz"></RECAPITO_NAZ>
+				<OI_ESPERIENZA>-</OI_ESPERIENZA>
+				<OI_ALTRIINVESTIMENTI>-</OI_ALTRIINVESTIMENTI>
+				<OI_TERMINE>-</OI_TERMINE>
+				<OI_RISCHIO>-</OI_RISCHIO>
+				<OI_INFORMAZIONI>-</OI_INFORMAZIONI>
+				<FLGPACPIU propertyName="flagPACPiu"></FLGPACPIU>
+				<REGIMEFISCALE propertyName="regimeFiscale"></REGIMEFISCALE>
+				<FLGSERVIZIO propertyName="flagServizio"></FLGSERVIZIO>
+				<IMPORTORATATOTALE propertyName="importoRataTotale"></IMPORTORATATOTALE>
+				<NUMRATE propertyName="numRate"></NUMRATE>
+				<FREQUENZARATE propertyName="frequenzaRate"></FREQUENZARATE>
+				<SCADENZARATE propertyName="scadenzaRate"></SCADENZARATE>
+				<LOITOTALE propertyName="loiTotale" dataFormatter="formatAsDoubleType"></LOITOTALE>
+				<FLAGISTAT propertyName="flagIstat"></FLAGISTAT>
+				<TIPODISTRIBUZPROVENTI propertyName="tipoDistribuzioneProventi"></TIPODISTRIBUZPROVENTI>
+				<DISTRIBUZIONEPROVENTI propertyName="distribuzioneProventi"></DISTRIBUZIONEPROVENTI>
+				<FLGDIPENDENTE propertyName="flagDipendente"></FLGDIPENDENTE>
+				<LFONDISCELTI propertyName="fondiScelti">
+					<PROD_C propertyName="codComparto"></PROD_C>
+					<VERS_INIZ propertyName="importoComparto"></VERS_INIZ>
+					<IMPORTO_RATA propertyName="rataUnitaria"></IMPORTO_RATA>
+					<PERC_CONSOLIDA propertyName="percentualeConsolida"></PERC_CONSOLIDA>
+					<PERC_VERS_INIZ propertyName="percentualeComparto"></PERC_VERS_INIZ>
+					<COD_MANDATO_CONS propertyName="codMandatoConsolida"></COD_MANDATO_CONS>
+					<COD_COMPARTO_FONDO_CONS propertyName="codCompartoFondoCons"></COD_COMPARTO_FONDO_CONS>
+					<LOIPARZIALE propertyName="valoreLoi"></LOIPARZIALE>
+					<REINVESTI propertyName="reinvestimento"></REINVESTI>
+				</LFONDISCELTI>
+				<CONTRATTOPRODOTTODIS/>
+				<TIPODIS/>
+				<LFONDIDISI>
+					<CODICEPRODOTTODIS/>
+					<IMPORTODIS/>
+					<QUOTEDIS/>
+				</LFONDIDISI>
+				<TOT_IMPORTO_SRV propertyName="totaleImportoSrv" dataFormatter="formatAsDoubleType"></TOT_IMPORTO_SRV>				
+				<CANALE>R</CANALE>
+				<GSTD_X_USER>PFB</GSTD_X_USER>
+				<GSTD_M_NOM_ULT_MODF>INT_FOL_PAG_0003</GSTD_M_NOM_ULT_MODF>
+				<I_ID_CONTATTO_FISICO>0</I_ID_CONTATTO_FISICO>
+				<I_CANALEACCESSOCONTATTO>R</I_CANALEACCESSOCONTATTO>
+				<I_TIPOLOGIAACCESSOCONTATTO>R</I_TIPOLOGIAACCESSOCONTATTO>
+				<I_PROMOTORECONTATTO/>
+				<I_CANALEACCESSO>R</I_CANALEACCESSO>
+				<I_TIPOACC>PFB</I_TIPOACC>
+				<I_TIPOLOGIARICHIESTA propertyName="tipologiaRichiesta"></I_TIPOLOGIARICHIESTA>
+				<I_DESCRICHIESTA propertyName="descRichiesta"></I_DESCRICHIESTA>
+				<I_STATO/>
+				<I_CODICE_UFFICIO>91</I_CODICE_UFFICIO>
+				<RECAPITO_PRESSO>-</RECAPITO_PRESSO>
+				<PROFILATO>S</PROFILATO>
+				<IS_NUOVO_MOTORE>1</IS_NUOVO_MOTORE>
+				<ID_ESITO_ADEGUATEZZA propertyName="idEsitoAdeguatezza"></ID_ESITO_ADEGUATEZZA>
+				<ADEGUAT propertyName="adeguatezza"></ADEGUAT>
+				<DESCRADEGUAT  propertyName="descrAdeguatezza"></DESCRADEGUAT>
+				<MANLEVAADEGUAT/>
+				<CLIOBBINV/>
+				<CLIOBBTEMP/>
+				<CLIMODVERS/>
+				<CLISITFINANZ/>
+				<ADEGUATEZZA propertyName="elencoAdeguatezza">
+					<cli_c propertyName="codCliente"></cli_c>
+					<adeNote propertyName="adeNote"></adeNote>
+					<errProf propertyName="errProf"></errProf>
+					<adeTogg/>
+					<desTogg propertyName="desTogg"></desTogg>
+					<adeDime/>
+					<desDime propertyName="desDime"></desDime>
+					<adeFreq/>
+					<desFreq/>
+					<adeObbi/>
+					<desObbi/>
+					<adeOrit/>
+					<desOrit/>
+					<adeModv/>
+					<desModv/>
+					<cliRuolo propertyName="cliRuolo"></cliRuolo>
+				</ADEGUATEZZA>
+				<I_TRASFERITO_DA/>	
+				<I_SETTORE/>		
+				<I_DATAPIN2>1900/01/01</I_DATAPIN2>	
+				<I_ApplicaPricing>N</I_ApplicaPricing>	
+				<TOT_QUOTE_SRV>0</TOT_QUOTE_SRV>	
+				<F_QUOTA_IMPORTO>I</F_QUOTA_IMPORTO>
+				<IDSESSIONE>0</IDSESSIONE>		
+				<DATAPROSPETTO>01/01/1753</DATAPROSPETTO>
+				<DATAMODULO>01/01/1753</DATAMODULO>	
+				<DATAVERSAMENTOINIZIALE>01/01/1753</DATAVERSAMENTOINIZIALE>
+				<STRINFAGG1 propertyName="strinfAgg1"></STRINFAGG1>
+				<STRINFAGG2 propertyName="strinfAgg2"></STRINFAGG2>
+				<STRINFAGG3 propertyName="strinfAgg3"></STRINFAGG3>
+				<OPZIONI propertyName="opzioni"></OPZIONI>
+				<AGEVOLAZIONE propertyName="agevolazione"></AGEVOLAZIONE>
+				<FLAG_RADAR propertyName="isRadarForzato"></FLAG_RADAR>
+				<ID_OPERAZIONE propertyName="codDisposizione"></ID_OPERAZIONE>
+				<ID_SUITABILITY propertyName="idSuitability"></ID_SUITABILITY>
+                <PRG_SUITABILITY propertyName="prgSuitability">1</PRG_SUITABILITY>
+                <CHIAVEK propertyName="chiaveEK"></CHIAVEK>
+                <IDVENDENTE propertyName="idVendente"></IDVENDENTE>
+			</DATIOPERAZIONE>
+		</RIEPILOGO>
+	</FD-FOL-RiepilogoPrimeNuoveQARCMSGSRQV1>
+</OFX>]]>
+   </Input>
+   <Output>
+   	<![CDATA[
+   			<OFX>   	
+			  <FD-FOL-RiepilogoPrimeNuoveQARCMSGSRSV1> 	
+				<STATUS>				
+					<CODE></CODE>		
+					<SEVERITY></SEVERITY>	
+					<MESSAGE></MESSAGE>	
+					<SOURCE></SOURCE>	
+				</STATUS>				
+				<RIEPILOGO>			
+					<ESITO></ESITO>		
+					<IDDISPOSIZIONE propertyName="output_idDisposizione"></IDDISPOSIZIONE>
+					<IDISTANZA propertyName="output_idIstanza"></IDISTANZA>
+				</RIEPILOGO>			
+			 </FD-FOL-RiepilogoPrimeNuoveQARCMSGSRSV1>
+		   </OFX>
+		]]>
+   </Output>
+
+</Access>
+
+<Access name="riepConfAgg" type="DAOQASAccess" serviceName="FD-FOL-RiepConfAgg">
+   <Input>
+   	<![CDATA[<OFX>
+	<SIGNONMSGSRQV1>
+		<SONRQ>
+			<USERID>9555559</USERID>
+			<USERPASS>6111116</USERPASS>
+			<GENUSERKEY>1</GENUSERKEY>
+			<APPID>POR</APPID>
+			<APPDATALIST>
+				<APPROOT>
+					<WHEREIS>
+						<HTTP_REFERER/>
+						<PATH_INFO/>
+						<REMOTE_ADDR>172.16.210.00</REMOTE_ADDR>
+					</WHEREIS>
+					<SESSION>
+						<PAGE/>
+						<OPERCODE/>
+						<ISOPER/>
+						<pPg/>
+						<DefaultPage/>
+					</SESSION>
+					<PINCONTROL>
+						<USERCODE propertyName="idUtente"></USERCODE>
+						<PASSWORD/>
+						<POS1/>
+						<POS2/>
+						<PWDPOS1/>
+						<PWDPOS2/>
+					</PINCONTROL>
+				</APPROOT>
+			</APPDATALIST>
+		</SONRQ>
+	</SIGNONMSGSRQV1>
+	<FD-FOL-RiepConfAggQARCMSGSRQV1>
+		<RIEPILOGO_CONFERMA>
+			<CLI_C appInfo="true" propertyName="idUtente"></CLI_C>
+			<tipo_operazione>CONFERMA</tipo_operazione>
+			<CODICE_PRENOTATA>VERSA</CODICE_PRENOTATA>
+			<CONTO_CORRENTE propertyName="idContoOrdinante"></CONTO_CORRENTE>
+			<INTESTATARIO_CONTO propertyName="nominativoIntestatarioContoOrdinante"></INTESTATARIO_CONTO>
+			<CANALE>R</CANALE>
+			<DESCRIZIONE_RICHIESTA>-</DESCRIZIONE_RICHIESTA>
+			<CODICE_PAGINA>INT_FOL_PAG_001A</CODICE_PAGINA>
+			<TIPOLOGIA_ACCESSO_CNT>PFB</TIPOLOGIA_ACCESSO_CNT>
+			<TRASFERITO_DA>N</TRASFERITO_DA>
+			<PROMOTORE>-</PROMOTORE>
+			<FLAG_AUTORIZZAZIONE>N</FLAG_AUTORIZZAZIONE>
+			<CODICE_OPERATORE>PFB</CODICE_OPERATORE>
+			<CODICE_UFFICIO_OPERATORE>-</CODICE_UFFICIO_OPERATORE>
+			<DATI_FONDI  propertyName="fondiScelti">
+				<NUMERO_CONTRATTO propertyName="numeroContratto"></NUMERO_CONTRATTO>
+				<CODICE_PRODOTTO  propertyName="codComparto"></CODICE_PRODOTTO>
+				<IMPORTO propertyName="importoComparto"></IMPORTO>
+			</DATI_FONDI>
+			<PROFILATO>S</PROFILATO>
+			<IS_NUOVO_MOTORE>1</IS_NUOVO_MOTORE>
+			<ID_ESITO_ADEGUATEZZA propertyName="idEsitoAdeguatezza"></ID_ESITO_ADEGUATEZZA>
+			<ADEGUAT propertyName="adeguatezza"></ADEGUAT>
+			<DESCRADEGUAT  propertyName="descrAdeguatezza"></DESCRADEGUAT>
+			<MANLEVAADEGUAT/>
+			<CLIOBBINV/>
+			<CLIOBBTEMP/>
+			<CLIMODVERS/>
+			<CLISITFINANZ/>
+			<ADEGUATEZZA propertyName="elencoAdeguatezza">
+				<cli_c propertyName="codCliente"></cli_c>
+				<adeNote propertyName="adeNote"></adeNote>
+				<errProf propertyName="errProf"></errProf>
+				<adeTogg/>
+				<desTogg propertyName="desTogg"></desTogg>
+				<adeDime/>
+				<desDime propertyName="desDime"></desDime>
+				<adeFreq/>
+				<desFreq/>
+				<adeObbi/>
+				<desObbi/>
+				<adeOrit/>
+				<desOrit/>
+				<adeModv/>
+				<desModv/>
+				<cliRuolo propertyName="cliRuolo"></cliRuolo>
+			</ADEGUATEZZA>
+			<AGEVOLAZIONE propertyName="agevolazione"></AGEVOLAZIONE>
+			<FLAG_RADAR propertyName="isRadarForzato"></FLAG_RADAR>
+			<LOITOTALE propertyName="loiTotale"></LOITOTALE>
+			<ID_OPERAZIONE propertyName="codDisposizione"></ID_OPERAZIONE>
+			<ID_SUITABILITY propertyName="idSuitability"></ID_SUITABILITY>
+            <PRG_SUITABILITY propertyName="prgSuitability">1</PRG_SUITABILITY>
+            <CHIAVEK propertyName="chiaveEK"></CHIAVEK>
+            <IDVENDENTE propertyName="idVendente"></IDVENDENTE>
+		</RIEPILOGO_CONFERMA>
+	</FD-FOL-RiepConfAggQARCMSGSRQV1>	
+</OFX>]]>
+   </Input>
+   <Output>
+   	<![CDATA[
+   			<OFX>   	
+			<FD-FOL-RiepConfAggQARCMSGSRSV1>
+				<STATUS>
+					<CODE></CODE>
+					<SEVERITY></SEVERITY>
+					<MESSAGE></MESSAGE>
+					<SOURCE></SOURCE>
+				</STATUS>
+				<RIEPILOGO_CONFERMA>
+					<TOTALE_INVESTIMENTO></TOTALE_INVESTIMENTO>
+					<DATAVAL></DATAVAL>
+					<INTESTATARIO_CONTO></INTESTATARIO_CONTO>
+					<PROGRESSIVO_PRENOTAZIONE></PROGRESSIVO_PRENOTAZIONE>
+					<ID_DISPOSIZIONE propertyName="output_idDisposizione"></ID_DISPOSIZIONE>
+					<ESITO propertyName="output_esito"></ESITO>
+					<ID_RICHIESTA propertyName="output_idRichiesta"></ID_RICHIESTA>
+					<IS_OPERATOR></IS_OPERATOR>
+					<ERRNUMADEG></ERRNUMADEG>
+					<ERRDESCRADEG></ERRDESCRADEG>
+				</RIEPILOGO_CONFERMA>
+			</FD-FOL-RiepConfAggQARCMSGSRSV1>
+			</OFX>
+		]]>
+   </Output>
+</Access>
+<!-- INIZIO SERVIZIO PER RIMBORSO FONDI IRLANDA E ITALIA -->
+<Access name="riepilogoConferma" type="DAOQASAccess" serviceName="FD-FOL-RiepilogoConferma"
+			dataFormatter = "prgm.pdfwebformsdrivers.postcompletioncewutility.riepilogoprimenuove.PrimeNuoveFondiFormatter" >
+   <Input>
+   	<![CDATA[<OFX>
+	<SIGNONMSGSRQV1>
+		<SONRQ>
+			<USERID>9555559</USERID>
+			<USERPASS>6111116</USERPASS>
+			<GENUSERKEY>1</GENUSERKEY>
+			<APPID>POR</APPID>
+			<APPDATALIST>
+				<APPROOT>
+					<WHEREIS>
+						<HTTP_REFERER/>
+						<PATH_INFO/>
+						<REMOTE_ADDR>172.16.210.00</REMOTE_ADDR>
+					</WHEREIS>
+					<SESSION>
+						<PAGE/>
+						<OPERCODE/>
+						<ISOPER/>
+						<pPg/>
+						<DefaultPage/>
+					</SESSION>
+					<PINCONTROL>
+						<USERCODE propertyName="idUtente"></USERCODE>
+						<PASSWORD/>
+						<POS1/>
+						<POS2/>
+						<PWDPOS1/>
+						<PWDPOS2/>
+					</PINCONTROL>
+				</APPROOT>
+			</APPDATALIST>
+		</SONRQ>
+	</SIGNONMSGSRQV1>
+   	<FD-FOL-RiepilogoConfermaQARCMSGSRQV1>
+	   	<RIEPILOGO>
+			<NUMERO_PROPOSTA propertyName="codDisposizione"></NUMERO_PROPOSTA>								
+			<DATIOPERAZIONE>								
+				<IDUTENTE propertyName="idUtente"></IDUTENTE>					
+				<CONTO_CORRENTE propertyName="idContoOrdinante"></CONTO_CORRENTE>					
+				<F_QUOTA_IMPORTO>I</F_QUOTA_IMPORTO>						
+				<TOT_IMPORTO_SRV propertyName="totaleImportoSrv" dataFormatter="formatAsDoubleNoThousands"></TOT_IMPORTO_SRV>					
+				<TOT_QUOTE_SRV propertyName="totaleQuoteSrv"></TOT_QUOTE_SRV>					
+				<I_ID_CONTATTO_FISICO>0</I_ID_CONTATTO_FISICO>					
+				<I_CANALEACCESSOCONTATTO>P</I_CANALEACCESSOCONTATTO>							
+				<I_TIPOLOGIAACCESSOCONTATTO>PFB</I_TIPOLOGIAACCESSOCONTATTO>							
+				<I_PROMOTORECONTATTO>PFB</I_PROMOTORECONTATTO>	
+				<I_FLAG_REVOCA_REINV_PROGR propertyName="flagRevocaReinvProgr"></I_FLAG_REVOCA_REINV_PROGR>					
+				<I_FLAG_REVOCA_ADDEBITO_RID propertyName="flagRevocaAddebitoRid"></I_FLAG_REVOCA_ADDEBITO_RID>					
+				<I_TIPOLOGIARICHIESTA propertyName="tipologiaRichiesta"></I_TIPOLOGIARICHIESTA>							
+				<I_DESCRICHIESTA propertyName="descRichiesta"></I_DESCRICHIESTA>							
+				<I_DISP_C_TIPO_DISP propertyName="tipoDisp"></I_DISP_C_TIPO_DISP>							
+				<I_CODICE_UFFICIO propertyName="codiceUfficio"></I_CODICE_UFFICIO>							
+				<I_ApplicaPricing>N</I_ApplicaPricing>											
+				<I_MODALITA_FIRMA>F</I_MODALITA_FIRMA>
+				<FLG_SERVIZIO propertyName="flagServizio"></FLG_SERVIZIO>
+				<PROD_C_SERVIZIO propertyName="codServizio"></PROD_C_SERVIZIO>							
+				<TIPODISTRIBUZPROVENTI propertyName="tipoDistribuzioneProventi"></TIPODISTRIBUZPROVENTI>							
+				<DISTRIBUZIONEPROVENTI propertyName="distribuzioneProventi"></DISTRIBUZIONEPROVENTI>							
+				<DISTRIBUZIONEPROVENTI_DETT>							
+					<AS_DESTINATARIO propertyName="descUtente"></AS_DESTINATARIO>						
+					<AS_INDIRIZZO propertyName="recapitoVia"></AS_INDIRIZZO>						
+					<AS_CIVICO propertyName="recapitoNum"></AS_CIVICO>						
+					<AS_COMUNE propertyName="recapitoLoc"></AS_COMUNE>						
+					<AS_PROVINCIA propertyName="recapitoPro"></AS_PROVINCIA>						
+					<AS_CAP propertyName="recapitoCap"></AS_CAP>						
+					<BB_INTESTATARIO propertyName="descUtente"></BB_INTESTATARIO>						
+					<BB_CC propertyName="ibanBonifico"></BB_CC>						
+					<BB_CAB propertyName="cabBonifico"></BB_CAB>						
+					<BB_ABI propertyName="abiBonifico"></BB_ABI>						
+					<POL_NUMERO></POL_NUMERO>						
+					<POL_NOME></POL_NOME>						
+					<POL_CONTRAENTE></POL_CONTRAENTE>						
+					<POL_INTESTATARIO></POL_INTESTATARIO>						
+					<GEST_DOSSIER></GEST_DOSSIER>						
+					<GEST_CCTECNICO></GEST_CCTECNICO>						
+				</DISTRIBUZIONEPROVENTI_DETT>							
+				<DATI_FONDI propertyName="elencoFondiDisinv">							
+					<NUMERO_CONTRATTO propertyName="numeroContratto"></NUMERO_CONTRATTO>						
+					<CODICE_PRODOTTO propertyName="codProdottoDis"></CODICE_PRODOTTO>						
+					<TIPO_DISINVESTIMENTO propertyName="reinvestimento"></TIPO_DISINVESTIMENTO>						
+					<IMPORTO propertyName="importoDis"></IMPORTO>						
+					<QUOTA propertyName="quoteDis"></QUOTA>						
+				</DATI_FONDI>				
+				<CHIAVEK propertyName="chiaveEK"></CHIAVEK>
+				<IDVENDENTE propertyName="idVendente"></IDVENDENTE>			
+			</DATIOPERAZIONE>								
+		</RIEPILOGO>
+	</FD-FOL-RiepilogoConfermaQARCMSGSRQV1>
+</OFX>]]>
+   </Input>
+   <Output>
+   	<![CDATA[
+   			<OFX>   	
+			  <FD-FOL-RiepilogoConfermaQARCMSGSRSV1>	
+				<STATUS>				
+					<CODE></CODE>		
+					<SEVERITY></SEVERITY>	
+					<MESSAGE></MESSAGE>	
+					<SOURCE></SOURCE>	
+				</STATUS>				
+				<RIEPILOGO>			
+					<ESITO></ESITO>		
+					<ID_DISPOSIZIONE propertyName="output_idDisposizione"></ID_DISPOSIZIONE>
+					<IDISTANZA propertyName="output_idIstanza"></IDISTANZA>
+				</RIEPILOGO>			
+			 </FD-FOL-RiepilogoConfermaQARCMSGSRSV1>
+		   </OFX>
+		]]>
+   </Output>
+</Access>
+<!-- FINE  SERVIZIO PER RIMBORSO FONDI IRLANDA E ITALIA-->
+
+<!-- INIZIO SERVIZIO PER RIMBORSO PROGRAMMATO FONDI IRLANDA E ITALIA-->
+<Access name="rimborsoProgrammatoFondi" type="DAOQASAccess" serviceName="FD-FOL-RimborsoProgrammatoFondi"
+			dataFormatter = "prgm.pdfwebformsdrivers.postcompletioncewutility.riepilogoprimenuove.PrimeNuoveFondiFormatter" >
+<Input>
+   	<![CDATA[<OFX>
+	<SIGNONMSGSRQV1>
+		<SONRQ>
+			<USERID>9555559</USERID>
+			<USERPASS>6111116</USERPASS>
+			<GENUSERKEY>1</GENUSERKEY>
+			<APPID>POR</APPID>
+			<APPDATALIST>
+				<APPROOT>
+					<WHEREIS>
+						<HTTP_REFERER/>
+						<PATH_INFO/>
+						<REMOTE_ADDR>172.16.210.00</REMOTE_ADDR>
+					</WHEREIS>
+					<SESSION>
+						<PAGE/>
+						<OPERCODE/>
+						<ISOPER/>
+						<pPg/>
+						<DefaultPage/>
+					</SESSION>
+					<PINCONTROL>
+						<USERCODE propertyName="idUtente"></USERCODE>
+						<PASSWORD/>
+						<POS1/>
+						<POS2/>
+						<PWDPOS1/>
+						<PWDPOS2/>
+					</PINCONTROL>
+				</APPROOT>
+			</APPDATALIST>
+		</SONRQ>
+	</SIGNONMSGSRQV1>
+    <FD-FOL-RimborsoProgrammatoFondiQARCMSGSRQV1>
+	   	<RIEPILOGO>
+	   		<NUMERO_PROPOSTA propertyName="codDisposizione"></NUMERO_PROPOSTA>
+	   		<I_IdContattoFisico>0</I_IdContattoFisico>				
+			<I_IdCliente propertyName="idUtente"></I_IdCliente>				
+			<I_CanaleAccessoContatto>P</I_CanaleAccessoContatto>				
+			<I_TipologiaAccessoContatto>PFB</I_TipologiaAccessoContatto>				
+			<I_PromotoreContatto>PFB</I_PromotoreContatto>				
+			<I_CodicePdtSrv>00006</I_CodicePdtSrv>				
+			<I_SottocategPdtSrv>99999</I_SottocategPdtSrv>				
+			<I_TipologiaRichiesta>S5238</I_TipologiaRichiesta>				
+			<I_RichTipoIns>A</I_RichTipoIns>				
+			<I_CanaleAccesso>P</I_CanaleAccesso>				
+			<I_TipoAcc>PFB</I_TipoAcc>				
+			<I_NumeroContratto propertyName="idContratto"></I_NumeroContratto>				
+			<I_DescRichiesta propertyName="descRichiesta"></I_DescRichiesta>			
+			<I_Richie_Sconfino>N</I_Richie_Sconfino>				
+			<I_Stato>N</I_Stato>				
+			<I_Importo propertyName="totaleImportoSrv"></I_Importo>				
+			<I_Importo_Div>EUR</I_Importo_Div>				
+			<I_ID_Operazione>1</I_ID_Operazione>				
+			<I_Tipo_Disposizione>M</I_Tipo_Disposizione>				
+			<I_pdt_srv_tipo>P</I_pdt_srv_tipo>				
+			<I_Codice_Ufficio>159</I_Codice_Ufficio>				
+			<I_procedura_chiamante>INT_FOL_PAG_007</I_procedura_chiamante>				
+			<I_Trasferito_Da></I_Trasferito_Da>				
+			<I_pdt_srv_prod_c propertyName="contrattoProdDisinv"></I_pdt_srv_prod_c>				
+			<I_IdRichiestaPadre>0</I_IdRichiestaPadre>	   			
+    	</RIEPILOGO>
+	</FD-FOL-RimborsoProgrammatoFondiQARCMSGSRQV1>
+</OFX>]]>
+</Input>
+<Output>
+   	<![CDATA[
+   			<OFX>
+   			<FD-FOL-RimborsoProgrammatoFondiQARCMSGSRSV1>						
+				<STATUS>					
+					<CODE>0</CODE>				
+					<SEVERITY>INFO</SEVERITY>				
+					<MESSAGE></MESSAGE>				
+					<SOURCE></SOURCE>				
+				</STATUS>					
+				<RIEPILOGO>					
+					<O_IdOperazione propertyName="output_idIstanza"></O_IdOperazione>				
+					<O_IdRichiesta propertyName="output_idDisposizione"></O_IdRichiesta>			
+					<ERRNUM></ERRNUM>				
+					<ERRDESCR></ERRDESCR>				
+				</RIEPILOGO>					
+			</FD-FOL-RimborsoProgrammatoFondiQARCMSGSRSV1>	   			
+			</OFX>
+		]]>
+</Output>
+</Access>
+<!-- FINE SERVIZIO PER RIMBORSO PROGRAMMATO FONDI IRLANDA E ITALIA-->
+
+<!-- INIZIO SERVIZIO PER CONVERSIONE FONDI IRLANDA -->
+<Access name="riepConfSwitch" type="DAOQASAccess" serviceName="FD-FOL-RiepConfSwitch"
+			dataFormatter = "prgm.pdfwebformsdrivers.postcompletioncewutility.riepilogoprimenuove.PrimeNuoveFondiFormatter" >
+   <Input>
+   	<![CDATA[<OFX>
+	<SIGNONMSGSRQV1>
+		<SONRQ>
+			<USERID>9555559</USERID>
+			<USERPASS>6111116</USERPASS>
+			<GENUSERKEY>1</GENUSERKEY>
+			<APPID>POR</APPID>
+			<APPDATALIST>
+				<APPROOT>
+					<WHEREIS>
+						<HTTP_REFERER/>
+						<PATH_INFO/>
+						<REMOTE_ADDR>172.16.210.00</REMOTE_ADDR>
+					</WHEREIS>
+					<SESSION>
+						<PAGE/>
+						<OPERCODE/>
+						<ISOPER/>
+						<pPg/>
+						<DefaultPage/>
+					</SESSION>
+					<PINCONTROL>
+						<USERCODE propertyName="idUtente"></USERCODE>
+						<PASSWORD/>
+						<POS1/>
+						<POS2/>
+						<PWDPOS1/>
+						<PWDPOS2/>
+					</PINCONTROL>
+				</APPROOT>
+			</APPDATALIST>
+		</SONRQ>
+	</SIGNONMSGSRQV1>
+   	<FD-FOL-RiepConfSwitchQARCMSGSRQV1>	
+	   	<RIEPILOGO>		
+	   		<NUMERO_PROPOSTA propertyName="codDisposizione"></NUMERO_PROPOSTA>					
+			<DATIOPERAZIONE>				
+				<CLI_C propertyName="idUtente"></CLI_C>		
+				<TIPODISI>N</TIPODISI>		
+				<CANALE>P</CANALE>
+				<DESCRIZIONE_RICHIESTA propertyName="descRichiesta"></DESCRIZIONE_RICHIESTA>						
+				<CODICE_PAGINA>INT_FOL_PAG_0003</CODICE_PAGINA>						
+				<ID_CONTATTO_FISICO>0</ID_CONTATTO_FISICO>						
+				<CANALE_ACCESSO_CNT>P</CANALE_ACCESSO_CNT>						
+				<TIPOLOGIA_ACCESSO_CNT>PFB</TIPOLOGIA_ACCESSO_CNT>						
+				<I_TRASFERITO_DA></I_TRASFERITO_DA>						
+				<PROMOTORE></PROMOTORE>						
+				<FLAG_AUTORIZZAZIONE>P</FLAG_AUTORIZZAZIONE>						
+				<CODICE_OPERATORE>PFB</CODICE_OPERATORE>						
+				<CODICE_UFFICIO_OPERATORE></CODICE_UFFICIO_OPERATORE>						
+				<DATA_VALIDAZ_PIN2>1900/01/01</DATA_VALIDAZ_PIN2>						
+				<CODICE_PRODOTTO_DIS propertyName="contrattoProdDisinv"></CODICE_PRODOTTO_DIS>						
+				<FLAG_SERVIZIO></FLAG_SERVIZIO>
+				<DATI_FONDI_DIS propertyName="elencoFondiDisinv">						
+					<NUMERO_CONTRATTO propertyName="numeroContratto"></NUMERO_CONTRATTO>					
+					<CODICE_PRODOTTO propertyName="codProdottoDis"></CODICE_PRODOTTO>					
+					<IMPORTO propertyName="importoComparto"></IMPORTO>					
+				</DATI_FONDI_DIS>						
+				<DATI_FONDI_INV propertyName="elencoFondiInv">						
+					<NUMERO_CONTRATTO propertyName="numeroContratto"></NUMERO_CONTRATTO>					
+					<CODICE_PRODOTTO propertyName="codComparto"></CODICE_PRODOTTO>					
+					<IMPORTO propertyName="importoComparto"></IMPORTO>					
+				</DATI_FONDI_INV>						
+				<PROFILATO>S</PROFILATO>
+				<IS_NUOVO_MOTORE>1</IS_NUOVO_MOTORE>
+				<ID_ESITO_ADEGUATEZZA propertyName="idEsitoAdeguatezza"></ID_ESITO_ADEGUATEZZA>				
+				<ADEGUAT propertyName="adeguatezza"></ADEGUAT>
+				<DESCRADEGUAT  propertyName="descrAdeguatezza"></DESCRADEGUAT>				
+				<MANLEVAADEGUAT/>				
+				<CLIOBBINV/>				
+				<CLIOBBTEMP/>				
+				<CLIMODVERS/>				
+				<CLISITFINANZ/>				
+				<ADEGUATEZZA propertyName="elencoAdeguatezza">
+				    <cli_c propertyName="codCliente"></cli_c>
+					<adeNote propertyName="adeNote"></adeNote>
+					<errProf propertyName="errProf"></errProf>								
+					<adeTogg/>			
+					<desTogg propertyName="desTogg"></desTogg>
+					<adeDime/>
+					<desDime>NEW</desDime>			
+					<adeFreq/>			
+					<desFreq/>			
+					<adeObbi/>			
+					<desObbi/>			
+					<adeOrit/>			
+					<desOrit/>			
+					<adeModv/>			
+					<desModv/>			
+					<cliRuolo propertyName="cliRuolo"></cliRuolo>			
+				</ADEGUATEZZA>				
+				<STRINGAINFAGG></STRINGAINFAGG>				
+				<I_MODALITA_FIRMA>F</I_MODALITA_FIRMA>	
+				<AGEVOLAZIONE propertyName="agevolazione"></AGEVOLAZIONE>																		
+				<ASSOCIA_FONDI_DIS_INV>	
+					<FONDI propertyName="elencoFondiDisinvInv">
+						<DISINVESTITO propertyName="codProdottoDis"></DISINVESTITO>
+						<INVESTITO propertyName="codComparto"></INVESTITO>
+						<IMPORTO propertyName="importoComparto"></IMPORTO>
+					</FONDI>
+				</ASSOCIA_FONDI_DIS_INV>	
+				<ID_SUITABILITY propertyName="idSuitability"></ID_SUITABILITY>
+            	<PRG_SUITABILITY propertyName="prgSuitability">1</PRG_SUITABILITY>
+            	<CHIAVEK propertyName="chiaveEK"></CHIAVEK>
+            	<IDVENDENTE propertyName="idVendente"></IDVENDENTE>																		
+	   		</DATIOPERAZIONE>		
+		</RIEPILOGO>  	
+	</FD-FOL-RiepConfSwitchQARCMSGSRQV1>
+</OFX>]]>
+   </Input>
+   <Output>
+   	<![CDATA[
+   			<OFX>   	
+			  <FD-FOL-RiepConfSwitchQARCMSGSRSV1> 	
+				<STATUS>				
+					<CODE></CODE>		
+					<SEVERITY></SEVERITY>	
+					<MESSAGE></MESSAGE>	
+					<SOURCE></SOURCE>	
+				</STATUS>				
+				<RIEPILOGO_CONFERMA>
+					<TOTALE_INVESTIMENTO></TOTALE_INVESTIMENTO>
+					<PROGRESSIVO_PRENOTAZIONE></PROGRESSIVO_PRENOTAZIONE>
+					<ID_DISPOSIZIONE propertyName="output_idDisposizione"></ID_DISPOSIZIONE>							
+					<ESITO></ESITO>		
+					<ID_RICHIESTA propertyName="output_idIstanza"></ID_RICHIESTA>
+					<IS_OPERATOR></IS_OPERATOR>				
+                    <ERRNUMADEG></ERRNUMADEG>				
+                    <ERRDESCRADEG></ERRDESCRADEG>					
+				</RIEPILOGO_CONFERMA>			
+			 </FD-FOL-RiepConfSwitchQARCMSGSRSV1>
+		   </OFX>
+		]]>
+   </Output>
+
+</Access>
+<!-- FINE  SERVIZIO PER CONVERSIONE FONDI IRLANDA-->
+
+<!-- INIZIO SERVIZIO PER CONVERSIONE PROGRAMMATA FONDI IRLANDA -->
+<Access name="conversioneProgrammataFondi" type="DAOQASAccess" serviceName="FD-FOL-ConversioneProgrammataFondi"
+			dataFormatter = "prgm.pdfwebformsdrivers.postcompletioncewutility.riepilogoprimenuove.PrimeNuoveFondiFormatter" >						  		 
+<Input>
+   	<![CDATA[<OFX>
+	<SIGNONMSGSRQV1>
+		<SONRQ>
+			<USERID>9555559</USERID>
+			<USERPASS>6111116</USERPASS>
+			<GENUSERKEY>1</GENUSERKEY>
+			<APPID>POR</APPID>
+			<APPDATALIST>
+				<APPROOT>
+					<WHEREIS>
+						<HTTP_REFERER/>
+						<PATH_INFO/>
+						<REMOTE_ADDR>172.16.210.00</REMOTE_ADDR>
+					</WHEREIS>
+					<SESSION>
+						<PAGE/>
+						<OPERCODE/>
+						<ISOPER/>
+						<pPg/>
+						<DefaultPage/>
+					</SESSION>
+					<PINCONTROL>
+						<USERCODE propertyName="idUtente"></USERCODE>
+						<PASSWORD/>
+						<POS1/>
+						<POS2/>
+						<PWDPOS1/>
+						<PWDPOS2/>
+					</PINCONTROL>
+				</APPROOT>
+			</APPDATALIST>
+		</SONRQ>
+	</SIGNONMSGSRQV1>	
+    <FD-FOL-ConversioneProgrammataFondiQARCMSGSRQV1>					
+	<RIEPILOGO>
+		<NUMERO_PROPOSTA propertyName="codDisposizione"></NUMERO_PROPOSTA>
+		<I_IdContattoFisico>0</I_IdContattoFisico>				
+		<I_IdCliente propertyName="idUtente"></I_IdCliente>				
+		<I_CanaleAccessoContatto>P</I_CanaleAccessoContatto>				
+		<I_TipologiaAccessoContatto>PFB</I_TipologiaAccessoContatto>				
+		<I_PromotoreContatto>PFB</I_PromotoreContatto>				
+		<I_CodicePdtSrv>00006</I_CodicePdtSrv>				
+		<I_SottocategPdtSrv>99999</I_SottocategPdtSrv>				
+		<I_TipologiaRichiesta>S5238</I_TipologiaRichiesta>				
+		<I_RichTipoIns>A</I_RichTipoIns>				
+		<I_CanaleAccesso>P</I_CanaleAccesso>				
+		<I_TipoAcc>PFB</I_TipoAcc>				
+		<I_NumeroContratto propertyName="idContratto"></I_NumeroContratto>				
+		<I_DescRichiesta propertyName="descRichiesta"></I_DescRichiesta>				
+		<I_Richie_Sconfino>N</I_Richie_Sconfino>				
+		<I_Stato>N</I_Stato>				
+		<I_Importo propertyName="totaleImportoSrv" ></I_Importo>				
+		<I_Importo_Div>EUR</I_Importo_Div>				
+		<I_ID_Operazione>1</I_ID_Operazione>				
+		<I_Tipo_Disposizione>M</I_Tipo_Disposizione>				
+		<I_pdt_srv_tipo>P</I_pdt_srv_tipo>				
+		<I_Codice_Ufficio>159</I_Codice_Ufficio>				
+		<I_procedura_chiamante>INT_FOL_PAG_007</I_procedura_chiamante>				
+		<I_Trasferito_Da></I_Trasferito_Da>				
+		<I_pdt_srv_prod_c propertyName="contrattoProdDisinv"></I_pdt_srv_prod_c>				
+		<I_IdRichiestaPadre>0</I_IdRichiestaPadre>				
+		<I_Adeguat>S</I_Adeguat>				
+		<I_DescrAdeguat></I_DescrAdeguat>				
+		<PROFILATO>S</PROFILATO>				
+		<CLIOBBINV></CLIOBBINV>				
+		<CLIOBBTEMP></CLIOBBTEMP>				
+		<CLIMODVERS></CLIMODVERS>				
+		<CLISITFINANZ></CLISITFINANZ>
+		<ADEGUATEZZA propertyName="elencoAdeguatezza">			
+		      <cli_c propertyName="codCliente"></cli_c>			
+		      <adeNote propertyName="adeNote" ></adeNote>			
+		      <errProf propertyName="errProf"></errProf>								
+			  <adeTogg/>			
+			  <desTogg propertyName="desTogg"></desTogg>
+			  <adeDime/>
+			  <desDime>NEW</desDime>			
+		      <adeFreq></adeFreq>			
+		      <desFreq></desFreq>			
+		      <adeObbi></adeObbi>			
+		      <desObbi></desObbi>			
+		      <adeOrit></adeOrit>			
+		      <desOrit></desOrit>			
+		      <adeModv></adeModv>			
+		      <desModv></desModv>			
+		      <cliRuolo>1</cliRuolo>			
+		</ADEGUATEZZA>		
+		<ID_SUITABILITY propertyName="idSuitability"></ID_SUITABILITY>
+        <PRG_SUITABILITY propertyName="prgSuitability">1</PRG_SUITABILITY>
+        <CHIAVEK propertyName="chiaveEK"></CHIAVEK>	
+    </RIEPILOGO>				
+	</FD-FOL-ConversioneProgrammataFondiQARCMSGSRQV1>					
+ </OFX>]]>   
+   </Input>
+   <Output>
+   	<![CDATA[
+   			<OFX>
+   			<FD-FOL-ConversioneProgrammataFondiQARCMSGSRSV1>						
+				<STATUS>					
+					<CODE>0</CODE>				
+					<SEVERITY>INFO</SEVERITY>				
+					<MESSAGE></MESSAGE>				
+					<SOURCE></SOURCE>				
+				</STATUS>									
+				<O_IdOperazione propertyName="output_idIstanza"></O_IdOperazione>				
+				<O_IdRichiesta propertyName="output_idDisposizione"></O_IdRichiesta>				
+				<ERRNUM></ERRNUM>				
+				<ERRDESCR></ERRDESCR>				
+				<ERRNUMADEG></ERRNUMADEG>				
+				<ERRDESCRADEG></ERRDESCRADEG>									
+		    </FD-FOL-ConversioneProgrammataFondiQARCMSGSRSV1>   			
+			</OFX>
+		]]>
+   </Output>
+</Access>
+<Access name="propostaSwitchFondiDisinvestiti" type="DAOQASAccess" serviceName="FD-FOL-PropostaSwitchFondiDisinvestiti"
+	        dataFormatter ="prgm.pdfwebformsdrivers.postcompletioncewutility.riepilogoprimenuove.PrimeNuoveFondiFormatter">
+   <Input>
+   	<![CDATA[<OFX>
+	<SIGNONMSGSRQV1>
+		<SONRQ>
+			<USERID>9555559</USERID>
+			<USERPASS>6111116</USERPASS>
+			<GENUSERKEY>1</GENUSERKEY>
+			<APPID>POR</APPID>
+			<APPDATALIST>
+				<APPROOT>
+					<WHEREIS>
+						<HTTP_REFERER/>
+						<PATH_INFO/>
+						<REMOTE_ADDR>172.16.210.00</REMOTE_ADDR>
+					</WHEREIS>
+					<SESSION>
+						<PAGE/>
+						<OPERCODE/>
+						<ISOPER/>
+						<pPg/>
+						<DefaultPage/>
+					</SESSION>
+					<PINCONTROL>
+						<USERCODE propertyName="idUtente"></USERCODE>
+						<PASSWORD/>
+						<POS1/>
+						<POS2/>
+						<PWDPOS1/>
+						<PWDPOS2/>
+					</PINCONTROL>
+				</APPROOT>
+			</APPDATALIST>
+		</SONRQ>
+	</SIGNONMSGSRQV1>
+   	<FD-FOL-PropostaSwitchFondiDisinvestitiQARCMSGSRQV1>
+	   		<RIEPILOGO>							
+				<NUMERO_PROPOSTA propertyName="codDisposizione"></NUMERO_PROPOSTA>
+				<CODICE_SWITCH propertyName="codiceSwitch"></CODICE_SWITCH>				
+				<DATIOPERAZIONE>		
+					<IDUTENTE propertyName="idUtente"></IDUTENTE>						
+					<FLGSWITCH>S</FLGSWITCH>	
+					<IDCONTOORDINANTE propertyName="idContoOrdinante"></IDCONTOORDINANTE>	 
+					<DESINTORDINANTE>-</DESINTORDINANTE>	
+					<IDAGENTE>-</IDAGENTE>	
+					<CODICE_AGENTE propertyName="idAgente"></CODICE_AGENTE>	
+					<DIVISA>EUR</DIVISA>	
+					<UMBRELLA_FUND propertyName="umbrellaFund"></UMBRELLA_FUND>						
+					<OI_ESPERIENZA></OI_ESPERIENZA>	
+					<OI_ALTRIINVESTIMENTI></OI_ALTRIINVESTIMENTI>	
+					<OI_TERMINE></OI_TERMINE>	
+					<OI_RISCHIO></OI_RISCHIO>	
+					<OI_INFORMAZIONI></OI_INFORMAZIONI>						
+					<CODICE_PRODOTTO_DIS propertyName="contrattoProdDisinv"></CODICE_PRODOTTO_DIS>	
+					<CONTRATTOPRODOTTODIS propertyName="idContratto"></CONTRATTOPRODOTTODIS>	
+					<TIPODIS propertyName="tipoDisiv"></TIPODIS>	
+					<LFONDIDISI propertyName="elencoFondiDisinv">	
+						<CODICEPRODOTTODIS propertyName="codProdottoDis"></CODICEPRODOTTODIS>
+						<IMPORTODIS propertyName="importoDis"></IMPORTODIS>
+						<QUOTEDIS>0</QUOTEDIS>
+						<NUMERO_CONTRATTO propertyName="numeroContratto"></NUMERO_CONTRATTO>
+					</LFONDIDISI>	
+					<TOT_IMPORTO_SRV propertyName="totaleImportoSrv" dataFormatter="formatAsDoubleNoThousands"></TOT_IMPORTO_SRV>	
+					<CANALE>R</CANALE>	
+					<GSTD_X_USER>PFB</GSTD_X_USER>	
+					<GSTD_M_NOM_ULT_MODF>INT_FOL_PAG_0003</GSTD_M_NOM_ULT_MODF>	
+					<I_ID_CONTATTO_FISICO>0</I_ID_CONTATTO_FISICO>	
+					<I_CANALEACCESSOCONTATTO>R</I_CANALEACCESSOCONTATTO>	
+					<I_TIPOLOGIAACCESSOCONTATTO>R</I_TIPOLOGIAACCESSOCONTATTO>	
+					<I_PROMOTORECONTATTO></I_PROMOTORECONTATTO>	
+					<I_CANALEACCESSO>R</I_CANALEACCESSO>	
+					<I_TIPOACC>PFB</I_TIPOACC>	
+					<I_DESCRICHIESTA propertyName="descRichiesta"></I_DESCRICHIESTA>	
+					<I_STATO>N</I_STATO>						
+					<RECAPITO_PRESSO>-</RECAPITO_PRESSO>	
+					<CLIOBBINV/>	
+					<CLIOBBTEMP/>	
+					<CLIMODVERS/>	
+					<CLISITFINANZ/>	
+					<I_TRASFERITO_DA></I_TRASFERITO_DA>	
+					<I_SETTORE></I_SETTORE>	
+	   				<I_DATAPIN2>1900/01/01</I_DATAPIN2>	
+	   				<I_ApplicaPricing>N</I_ApplicaPricing>	
+	   				<TOT_QUOTE_SRV>0</TOT_QUOTE_SRV>	
+	   				<F_QUOTA_IMPORTO>I</F_QUOTA_IMPORTO>	
+	   				<IDSESSIONE>0</IDSESSIONE>	
+	   				<DATAPROSPETTO>01/01/1753</DATAPROSPETTO>	
+	   				<DATAMODULO>01/01/1753</DATAMODULO>	
+	   				<DATAVERSAMENTOINIZIALE>01/01/1753</DATAVERSAMENTOINIZIALE>	
+					<I_MODALITA_FIRMA>F</I_MODALITA_FIRMA>
+					<OPZIONI propertyName="opzioni"></OPZIONI>
+				</DATIOPERAZIONE>																
+		    </RIEPILOGO>
+	</FD-FOL-PropostaSwitchFondiDisinvestitiQARCMSGSRQV1>
+</OFX>]]>
+   </Input>
+   <Output>
+   	<![CDATA[
+   			<OFX>   	
+			  <FD-FOL-PropostaSwitchFondiDisinvestitiQARCMSGSRSV1>	
+				<STATUS>	
+					<CODE></CODE>
+					<SEVERITY></SEVERITY>
+					<MESSAGE></MESSAGE>
+					<SOURCE></SOURCE>
+				</STATUS>	
+				<RIEPILOGO>	
+					<CODICE_ERRORE></CODICE_ERRORE>
+					<MESSAGGIO></MESSAGGIO>
+				</RIEPILOGO>	
+			  </FD-FOL-PropostaSwitchFondiDisinvestitiQARCMSGSRSV1>	
+		   </OFX>
+		]]>
+   </Output>
+</Access>
+
+<Access name="propostaSwitchFondiInvestiti" type="DAOQASAccess" serviceName="FD-FOL-PropostaSwitchFondiInvestiti" 
+        dataFormatter ="prgm.pdfwebformsdrivers.postcompletioncewutility.riepilogoprimenuove.PrimeNuoveFondiFormatter" >
+   <Input>
+   	<![CDATA[<OFX>
+	<SIGNONMSGSRQV1>
+		<SONRQ>
+			<USERID>9555559</USERID>
+			<USERPASS>6111116</USERPASS>
+			<GENUSERKEY>1</GENUSERKEY>
+			<APPID>POR</APPID>
+			<APPDATALIST>
+				<APPROOT>
+					<WHEREIS>
+						<HTTP_REFERER/>
+						<PATH_INFO/>
+						<REMOTE_ADDR>172.16.210.00</REMOTE_ADDR>
+					</WHEREIS>
+					<SESSION>
+						<PAGE/>
+						<OPERCODE/>
+						<ISOPER/>
+						<pPg/>
+						<DefaultPage/>
+					</SESSION>
+					<PINCONTROL>
+						<USERCODE propertyName="idUtente"></USERCODE>
+						<PASSWORD/>
+						<POS1/>
+						<POS2/>
+						<PWDPOS1/>
+						<PWDPOS2/>
+					</PINCONTROL>
+				</APPROOT>
+			</APPDATALIST>
+		</SONRQ>
+	</SIGNONMSGSRQV1>
+   	<FD-FOL-PropostaSwitchFondiInvestitiQARCMSGSRQV1>
+   	        <RIEPILOGO>
+   	              <NUMERO_PROPOSTA propertyName="codDisposizione"></NUMERO_PROPOSTA>
+   	              <CODICE_SWITCH propertyName="codiceSwitch"></CODICE_SWITCH>   	              				
+   	              <DATIOPERAZIONE>
+   	                     <IDUTENTECOSOTT1 propertyName="idUtentePrimoCosott"></IDUTENTECOSOTT1>					
+						 <IDUTENTECOSOTT2 propertyName="idUtenteSecondoCosott"></IDUTENTECOSOTT2>   	                        	                     					
+   	                     <CODICE_PRODOTTO_INV propertyName="codiceProdInv"></CODICE_PRODOTTO_INV>					
+   	                     <IDMANDATO propertyName="idMandato"></IDMANDATO>
+   	                     <FLGPRIMASOTT propertyName="flagPrimaSott"></FLGPRIMASOTT>			
+   	                     <IDCONTRATTO propertyName="idContratto"></IDCONTRATTO>				
+   	                     <CLASSE propertyName="classe"></CLASSE>
+   	                     <MODALITA propertyName="modalita"></MODALITA>		
+   	                     <MODALITA_COMUNIC propertyName="modalitaComunic"></MODALITA_COMUNIC>
+   	                     <RECAPITO_VIA propertyName="recapitoVia"></RECAPITO_VIA>			
+						 <RECAPITO_NUM propertyName="recapitoNum"></RECAPITO_NUM>			
+						 <RECAPITO_LOC propertyName="recapitoLoc"></RECAPITO_LOC>			
+						 <RECAPITO_CAP propertyName="recapitoCap"></RECAPITO_CAP>			
+						 <RECAPITO_PRO propertyName="recapitoPro"></RECAPITO_PRO>			
+						 <RECAPITO_NAZ propertyName="recapitoNaz"></RECAPITO_NAZ>   	                     		
+   	                     <FLGPACPIU>N</FLGPACPIU>
+   	                     <REGIMEFISCALE propertyName="regimeFiscale"></REGIMEFISCALE>  	                     
+   	                     <FLGSERVIZIO propertyName="flagServizio"></FLGSERVIZIO>
+   	                     <FLGDIPENDENTE propertyName="flagDipendente"></FLGDIPENDENTE>  	                     			
+   	                     <IMPORTORATATOTALE propertyName="importoRataTotale"></IMPORTORATATOTALE>
+   	                     <NUMRATE propertyName="numRate"></NUMRATE>				
+						 <FREQUENZARATE propertyName="frequenzaRate"></FREQUENZARATE>				
+						 <SCADENZARATE propertyName="scadenzaRate"></SCADENZARATE>
+						 <LOITOTALE propertyName="loiTotale" dataFormatter="formatAsDoubleNoThousands"></LOITOTALE>		
+						 <FLAGISTAT propertyName="flagIstat"></FLAGISTAT>
+						 <TIPODISTRIBUZPROVENTI propertyName="tipoDistribuzioneProventi"></TIPODISTRIBUZPROVENTI>		
+						 <DISTRIBUZIONEPROVENTI propertyName="distribuzioneProventi"></DISTRIBUZIONEPROVENTI>		 		
+						 <UMBRELLA_FUND propertyName="umbrellaFund"></UMBRELLA_FUND>							
+						 <I_DESCRICHIESTA propertyName="descRichiesta"></I_DESCRICHIESTA>
+						 <PROFILATO>S</PROFILATO>				
+						 <IS_NUOVO_MOTORE>1</IS_NUOVO_MOTORE>					 
+						 <ID_ESITO_ADEGUATEZZA propertyName="idEsitoAdeguatezza"></ID_ESITO_ADEGUATEZZA>					
+						 <ADEGUAT propertyName="adeguatezza"></ADEGUAT>		
+						 <DESCRADEGUAT propertyName="descrAdeguatezza"></DESCRADEGUAT>		
+						 <MANLEVAADEGUAT propertyName="manlevaAdeguatezza"></MANLEVAADEGUAT>
+						 <ADEGUATEZZA propertyName="elencoAdeguatezza">						 						 		
+						 	<cli_c propertyName="codCliente"></cli_c>		
+							<adeNote propertyName="adeNote"></adeNote>		
+							<errProf propertyName="errProf"></errProf>		
+							<adeTogg></adeTogg>		
+							<desTogg propertyName="desTogg"></desTogg>		
+							<adeDime></adeDime>		
+							<desDime propertyName="desDime"></desDime>		
+							<adeFreq></adeFreq>		
+							<desFreq></desFreq>		
+							<adeObbi></adeObbi>		
+							<desObbi></desObbi>		
+							<adeOrit></adeOrit>		
+							<desOrit></desOrit>		
+							<adeModv></adeModv>		
+							<desModv></desModv>		
+							<cliRuolo propertyName="cliRuolo"></cliRuolo>		
+						 </ADEGUATEZZA>	
+						 <STRINFAGG1 propertyName="strinfAgg1"></STRINFAGG1>				
+						 <STRINFAGG2 propertyName="strinfAgg2"></STRINFAGG2>				
+						 <STRINFAGG3 propertyName="strinfAgg3"></STRINFAGG3>				
+						 <LFONDISCELTI propertyName="fondiScelti">							
+								<PROD_C propertyName="codComparto"></PROD_C>						
+								<VERS_INIZ propertyName="importoComparto"></VERS_INIZ>						
+								<IMPORTO_RATA propertyName="rataUnitaria"></IMPORTO_RATA>						
+								<PERC_CONSOLIDA propertyName="percentualeConsolida"></PERC_CONSOLIDA>						
+								<PERC_VERS_INIZ>0</PERC_VERS_INIZ>						
+								<COD_MANDATO_CONS propertyName="codMandatoConsolida"></COD_MANDATO_CONS>						
+								<COD_COMPARTO_FONDO_CONS propertyName="codCompartoFondoCons"></COD_COMPARTO_FONDO_CONS>						
+								<LOIPARZIALE propertyName="valoreLoi"></LOIPARZIALE>						
+								<REINVESTI>-</REINVESTI>						
+								<NUMERO_CONTRATTO propertyName="numeroContratto" ></NUMERO_CONTRATTO>						
+						 </LFONDISCELTI>
+						 <AGEVOLAZIONE propertyName="agevolazione"></AGEVOLAZIONE>     
+						 <ID_SUITABILITY propertyName="idSuitability"></ID_SUITABILITY>
+		             	 <PRG_SUITABILITY propertyName="prgSuitability">1</PRG_SUITABILITY>
+		            	 <CHIAVEK propertyName="chiaveEK"></CHIAVEK>
+		            	 <IDVENDENTE propertyName="idVendente"></IDVENDENTE>	   	                     				
+   	               </DATIOPERAZIONE>  	              
+   	        </RIEPILOGO>
+	</FD-FOL-PropostaSwitchFondiInvestitiQARCMSGSRQV1>
+	</OFX>]]>
+   </Input>
+   <Output>
+   	<![CDATA[
+   			<OFX>   	
+			  <FD-FOL-PropostaSwitchFondiInvestitiQARCMSGSRSV1>	
+				<STATUS>	
+					<CODE></CODE>
+					<SEVERITY></SEVERITY>
+					<MESSAGE></MESSAGE>
+					<SOURCE></SOURCE>
+				</STATUS>	
+				<RIEPILOGO>					
+					<ESITO></ESITO>				
+					<IDDISPOSIZIONE propertyName="output_idDisposizione"></IDDISPOSIZIONE>				
+					<IDISTANZA propertyName="output_idIstanza"></IDISTANZA>				
+				</RIEPILOGO>
+			  </FD-FOL-PropostaSwitchFondiInvestitiQARCMSGSRSV1>	
+		   </OFX>
+		]]>
+   </Output>
+   </Access>
+</DAO-Object>

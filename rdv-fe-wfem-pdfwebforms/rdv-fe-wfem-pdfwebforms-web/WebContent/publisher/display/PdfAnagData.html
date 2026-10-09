@@ -1,0 +1,455 @@
+<table width="100%" style="background-color: white;">
+
+<% if(!pdfAnag.getIsFromCatalogoModuli().booleanValue() || confModel.isAreaCrafter()){ %>
+<tr>
+	<td>
+		<fieldset class="fieldsGroup">
+		<legend class="text" style="font-weight: bold;">
+		Dati identificativi
+		</legend>
+			<table>
+				<% if(!pdfAnag.getIsFromCatalogoModuli().booleanValue()){ %>
+				<tr>
+					<td>
+						<table>
+							<tr>
+								<td><%=template.field("pdfAnag_pdfCode","maxlength='50' size='28' "+(pdfAnag.getPdfCreationTime().isNull()?"":"modality='read'"))%></td>
+								<td><%=template.field("pdfAnag_pdfDescr","type='all' maxlength='255' uppercase='false' size='50'")%></td>
+								<td><%=template.field("pdfAnag_pdfStartDate")%></td>
+								<td><%=template.field("pdfAnag_pdfEndDate")%></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<% } %>
+				<% if(confModel.isAreaCrafter()){ %>
+				<tr>
+					<td>
+						<table>
+							<tr>
+								<td class="text" style="padding-right:30;">Tipo di soggetto:</td>
+								<td><%=template.field("pdfAnag_isTipoSoggettoPersonaFisica")%></td>
+								<td><%=template.field("pdfAnag_isTipoSoggettoProfessional")%></td>
+								<td><%=template.field("pdfAnag_isTipoSoggettoPersonaGiuridica")%></td>
+								<td><%=template.field("pdfAnag_isTipoSoggettoFamilyBanker")%></td>
+							</tr>
+						</table>
+					</td>				
+				</tr>
+				<% } %>
+				<tr>
+					<td>
+						<table style="table-layout: fixed;">
+							<tr><th scope="col"></th><th scope="col"></th></tr>
+							<tr>
+								<td style="width:50%;vertical-align: top;">
+									<table>
+										<tr><td><%=template.field("pdfAnag_pdfCodLineaBusiness","labelwidth='120' labelalign='left'")%></td></tr>
+										<tr><td><%=template.field("pdfAnag_pdfCodFaseCommerciale","labelwidth='120' labelalign='left'")%></td></tr>
+										<tr><td><%=template.field("pdfAnag_societa","labelwidth='120' labelalign='left' type='all' uppercase='false' maxlength='100' size='50'")%></td></tr>
+									</table>
+								</td>
+								<td style="width:50%;">
+								<%
+									for(int i=0;i<pdfAnag.getPdfElencoRuoliUtilizzatori().size();i++){
+										PdfRuoloUtilizzatoreModel r = (PdfRuoloUtilizzatoreModel)pdfAnag.getPdfElencoRuoliUtilizzatori().get(i);
+										r.getDescrizioneRuoloUtilizzatore().setEditable(false);
+									}
+								 %>
+								   	<%=template.grid("pdfAnag_pdfElencoRuoliUtilizzatori",""+
+								   									  "cols='isSelezionato,descrizioneRuoloUtilizzatore' "+
+								   									  "colswidths='10%,*' "+
+								   									  "modality='insert' "+
+								   									  "cellheight='20' "+
+								   									  "headerheight='20' "+
+								  									  "sortable='false' "+
+								  									  "headernowrap='true' "+
+								  									  "selection='none' "+
+								  									  "showcounter='false' "+
+								  									  "showtoparea='true' topareaheight='20' "+
+								  									  "title='Utilizzabile in veste di' "+
+								  									  "showbottomarea='false' "+
+								  									  "height='100' width='100%'")%>								
+								</td>								
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</fieldset>
+	</td>
+</tr>
+<% } %>
+
+<tr>
+	<td>
+		<fieldset class="fieldsGroup">
+		<legend class="text" style="font-weight: bold;">
+		Materiale precontrattuale
+		</legend>
+			<table>
+				<tr>
+					<td>
+						<table>
+							<tr>
+								<td><%=template.field("pdfAnag_externalLinkOnSignUrl","labelposition='up' labelalign='left' size='75' type='all' uppercase='false' maxlength='600'")%></td>
+								<td style="width:30;"></td>
+								<td><%=template.field("pdfAnag_externalLinkOnSignLabel","labelposition='up' labelalign='left' size='66' type='all' uppercase='false' maxlength='250'")%></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<table>
+							<tr>
+								<td><%=template.field("pdfAnag_externalLinkAggOnSignUrl","labelposition='up' labelalign='left' size='75' type='all' uppercase='false' maxlength='600'")%></td>
+								<td style="width:30;"></td>
+								<td><%=template.field("pdfAnag_externalLinkAggOnSignLabel","labelposition='up' labelalign='left' size='66' type='all' uppercase='false' maxlength='250'")%></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</fieldset>
+	</td>
+</tr>
+<tr>
+	<td style="padding:3;">
+		<fieldset class="fieldsGroup">
+		<legend class="text" style="font-weight: bold;">
+		Modalità di compilazione
+		</legend>
+			<table width="100%">
+				<tr>
+					<td style="padding:2padding-left:20;">
+						<% if(pdfAnag.getIsFromCatalogoModuli().booleanValue() || pdfAnag.getPdfArea().equals(prgm.pdfwebforms.catalog.PdfCatalogModel.AREA_CATALOGO_OPERAZIONI)){ %>
+							<table cellpadding="0" cellspacing="0">
+								<tr>
+									<td><%=template.field("pdfAnag_pdfIsInvioInSedeEnabled")%></td>
+									<td style="width:15;">&nbsp;</td>
+									<td><%=template.field("pdfAnag_pdfIsFirmaDigitaleEnabled")%></td>
+									<td style="width:15;">&nbsp;</td>
+									<% if(confModel.getProfiloUtente().equalsIgnoreCase(CostantiPublisher.ProfiliUtente.SVILUPPO) ||
+	  									  confModel.getProfiloUtente().equalsIgnoreCase(CostantiPublisher.ProfiliUtente.AMMINISTRATORE)){ %>
+										<td><%=template.field("pdfAnag_pdfIsCopernicoEnabled")%></td>
+										<td style="width:15;">&nbsp;</td>
+									<% } %>
+									<td><%=template.field("pdfAnag_pdfIsStampaEnabled")%></td>
+								</tr>
+							</table>
+						<% }else{ %>
+							<table cellpadding="0" cellspacing="0">
+								<tr>
+									<td><%=template.field("pdfAnag_pdfIsCartaLiberaEnabled")%></td>
+									<td style="width:15;">&nbsp;</td>
+									<td><%=template.field("pdfAnag_pdfIsCartaChimicaEnabled")%></td>
+									<td style="width:15;">&nbsp;</td>
+									<td><%=template.field("pdfAnag_pdfIsFirmaDigitaleEnabled")%></td>
+									<td style="width:15;">&nbsp;</td>
+									<% if(confModel.getProfiloUtente().equalsIgnoreCase(CostantiPublisher.ProfiliUtente.SVILUPPO) ||
+	  									  confModel.getProfiloUtente().equalsIgnoreCase(CostantiPublisher.ProfiliUtente.AMMINISTRATORE)){ %>
+										<td><%=template.field("pdfAnag_pdfIsCopernicoEnabled")%></td>
+										<td style="width:15;">&nbsp;</td>
+									<% } %>
+									<td><%=template.field("pdfAnag_pdfIsStampaEnabled")%></td>
+								</tr>
+							</table>
+						<% } %>
+					</td>
+				</tr>				
+				<tr>
+					<td style="padding:2;">
+						<fieldset class="fieldsGroup">
+						<legend class="text" style="font-weight: bold;">
+						Opzioni Firma Digitale
+						</legend>
+							<table width="100%" cellpadding="0" cellspacing="0">
+								<tr>
+									<td>
+										<table>
+											<tr>
+												<td><%=template.field("pdfAnag_signAll")%></td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<table class="text">
+											<tr>
+												<td>Abilita firma prospect su:&nbsp;</td>
+												<td><%=template.field("pdfAnag_isProspectEnabledOnCli1")%></td>
+												<td style="width:1;"></td>
+												<td><%=template.field("pdfAnag_isProspectEnabledOnCli2")%></td>
+												<td style="width:1;"></td>
+												<td><%=template.field("pdfAnag_isProspectEnabledOnCli3")%></td>
+												<td style="width:1;"></td>
+												<td><%=template.field("pdfAnag_isProspectEnabledOnCli4")%></td>
+												<td style="width:1;"></td>
+												<td><%=template.field("pdfAnag_isProspectEnabledOnCli5")%></td>
+												<td style="width:1;"></td>
+												<td><%=template.field("pdfAnag_isProspectEnabledOnCli6")%></td>
+												<td style="width:1;"></td>
+												<td><%=template.field("pdfAnag_isProspectEnabledOnCli7")%></td>
+												<td style="width:1;"></td>
+												<td><%=template.field("pdfAnag_isProspectEnabledOnCli8")%></td>
+												<td style="width:1;"></td>
+												<td><%=template.field("pdfAnag_isProspectEnabledOnCli9")%></td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<table>
+											<tr>
+												<td><%=template.field("pdfAnag_sendFBMailOnSign")%></td>
+												<td style="width:30;"></td>
+												<td><%=template.field("pdfAnag_sendCliSmsOnSign")%></td>
+												<td><%=template.field("pdfAnag_cliSmsOnSignText","size='60' uppercase='false' maxlength='255'")%></td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+							</table>
+						</fieldset>
+					</td>
+				</tr>
+				
+				<tr>
+					<td style="padding:2;">
+						<fieldset class="fieldsGroup">
+						<legend class="text" style="font-weight: bold;">
+						Dati pratica
+						</legend>
+							<table width="100%">
+								<tr>
+									<td><%=template.field("pdfAnag_pdfCodProdottoPrit","labelalign='left' onchange='onChangeProdottoPrit();' style='width:300;'")%></td>
+									<td><%=template.field("pdfAnag_pdfCodOperazionePrit","labelalign='left' style='width:300;'")%></td>
+									<td><%=template.field("pdfAnag_pdfMomCode","labelalign='left' size='3' maxlength='4'")%></td>
+								</tr>
+							</table>
+						</fieldset>
+					</td>
+				</tr>
+			</table>
+		</fieldset>
+	</td>
+</tr>
+
+<tr>
+	<td style="padding:3;">
+		<fieldset class="fieldsGroup">
+			<table class="text" cellpadding="0" cellspacing="0">
+				<tr>
+					<td>
+						<table class="text">
+							<tr>
+								<td><%=template.field("pdfAnag_downloadAsFacsimile")%></td>
+								<% if(confModel.isAreaCrafter()){ %>
+									<td><%=template.field("pdfAnag_existInCartaChimica")%></td>
+								<% } %>
+								<% if(!pdfAnag.getPdfId().isNull()){ %>
+								<td style="padding-left:30;">
+										<% if(pdfAnag.getPdfApplReferences() != null && pdfAnag.getPdfApplReferences().size() > 0){ %>
+											Per questo modulo esistono <span onclick="openApplReferencesPopup();" style="text-decoration:underline;cursor:pointer;">riferimenti applicativi</span>
+										<% }else{ %>
+											Nessun riferimento applicativo per questo modulo
+										<% } %>
+								</td>
+								<% } %>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<table>
+							<tr>
+								<% if(confModel.isAreaCrafter()){ %>
+									<td style="padding-right:30;"><%=template.field("pdfAnag_isUsableInCrafterWayout")%></td>
+								<% } %>
+								<td><%=template.field("pdfAnag_facSimileOnPreview")%></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</fieldset>
+	</td>
+</tr>
+
+<tr>
+	<td style="padding:3;">
+		<fieldset class="fieldsGroup">
+		<legend class="text" style="font-weight: bold;">
+		Copie cartacee
+		</legend>
+			<table cellpadding="0" cellspacing="0">
+				<tr>
+					<td style="width:150px;"><%=template.field("pdfAnag_pdfNumCopie","labelwidth='100px' showempty='false'")%></td>
+					<td><%=template.field("pdfAnag_pdfTestoCopia1","labelwidth='80px' type='all' size='40' uppercase='false'")%></td>
+					<td><%=template.field("pdfAnag_pdfTestoCopia2","labelwidth='80px' type='all' size='40' uppercase='false'")%></td>
+				</tr>
+				<tr>
+					<td style="width:150px;"></td>
+					<td><%=template.field("pdfAnag_pdfTestoCopia3","labelwidth='80px' type='all' size='40' uppercase='false'")%></td>
+					<td><%=template.field("pdfAnag_pdfTestoCopia4","labelwidth='80px' type='all' size='40' uppercase='false'")%></td>
+				</tr>
+			</table>
+		</fieldset>
+	</td>
+</tr>
+
+<tr>
+	<td style="padding:3;">
+		<fieldset class="fieldsGroup">
+		<legend class="text" style="font-weight: bold;">
+		Controlli
+		</legend>
+			<table cellpadding="0" cellspacing="0">
+				<tr>
+					<td><%=template.field("pdfAnag_pdfDriverName","size='39' uppercase='false' maxlength='50'")%></td>
+					<td style="width:50;">&nbsp;</td>
+					<td><%=template.field("pdfAnag_isControlliCompleti")%></td>
+					<td style="width:50;">&nbsp;</td>
+					<td style="display:none;"><%=template.field("pdfAnag_pdfHasLayerCollocamentoADistanza")%></td>
+				</tr>
+			</table>
+		</fieldset>
+	</td>
+</tr>
+
+<tr>
+	<td style="padding:3;">
+		<fieldset class="fieldsGroup">
+		<legend class="text" style="font-weight: bold;">
+		Note di configurazione
+		</legend>
+			<table cellpadding="0" cellspacing="0" width="100%">
+				<tr>
+					<td style="padding: 3px;"><%=template.field("pdfAnag_noteDiConfigurazioneInInput","labelposition='up' labelalign='left' uppercase='false' type='all' rows='3' style='width:100%;'")%></td>
+				</tr>
+				<tr>
+					<td><%=template.field("pdfAnag_noteDiConfigurazione","labelposition='nolabel' modality='read' uppercase='false' rows='6' style='width:100%;'")%></td>
+				</tr>
+			</table>
+		</fieldset>
+	</td>
+</tr>
+
+<% if(confModel.getProfiloUtente().equalsIgnoreCase(CostantiPublisher.ProfiliUtente.SVILUPPO) ||
+	  confModel.getProfiloUtente().equalsIgnoreCase(CostantiPublisher.ProfiliUtente.AMMINISTRATORE)){ %>
+<tr>
+	<td>
+		<fieldset class="fieldsGroup">
+		<legend class="text" style="font-weight: bold;">
+		Configurazione parametri - IT
+		</legend>
+			<table>
+				<tr>
+					<td style="padding:2;">
+						<fieldset class="fieldsGroup">
+						<legend class="text" style="font-weight: bold;">
+						Integrazione MOM
+						</legend>
+							<table>
+								<tr>
+									<td><%=template.field("pdfAnag_callSrvDispositivaBMED","labelwidth='200' style='width:200px;' showempty='false'")%></td>
+									<td style="width:10px;"></td>
+									<td style="visibility:hidden;"><%=template.field("pdfAnag_tipoProcessoSede","labelwidth='250' showempty='false'")%></td>
+								</tr>
+							</table>
+						</fieldset>		
+					</td>
+				</tr>
+				<tr>
+					<td style="padding:2;">
+						<fieldset class="fieldsGroup">
+						<legend class="text" style="font-weight: bold;">
+						Controlli centralizzati
+						</legend>
+							<table>
+								<tr>
+									<td>
+										<table><tr>
+											<td><%=template.field("pdfAnag_tipoPriips","labelwidth='200' style='width:200px;'")%></td>
+											<td style="width:10px;"></td>
+											<td><%=template.field("pdfAnag_hasDataSottoscrizioneOggi","labelwidth='150'")%></td>
+										</tr></table>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<table><tr>
+											<%
+												pdfAnag.getHasControlloAmlAVR().addTypeMessage("Attiva sul Pdf Smart il controllo sul profilo di rischio AML per l'Adeguata Verifica Rafforzata. Il controllo viene effettuato su tutti i soggetti del contratto e non è bloccante.");
+												pdfAnag.getHasControlloAmlPEP().addTypeMessage("Attiva sul Pdf Smart il controllo sul flag PEP presente in anagrafica per l'Adeguata Verifica Rafforzata. Il controllo viene effettuato su sottoscrittore/ordinante e cointestatari e non è bloccante.");
+												pdfAnag.getHasControlloSCAI().addTypeMessage("Attiva sul Pdf Smart il controllo sullo stato della scheda SCAI del cliente. Se lo stato è \"SCADUTO\" vengono bloccate tutte le nuove sottoscrizioni, se \"BLOCCATO\" viene inibita completamente l'operatività. Il controllo viene effettuato su sottoscrittore/ordinante e cointestatari.");
+											 %>
+											<td><%=template.field("pdfAnag_hasControlloAmlAVR","labelwidth='150'")%></td>
+											<td style="width:20px;"></td>
+											<td><%=template.field("pdfAnag_hasControlloAmlPEP","labelwidth='250'")%></td>
+											<td style="width:40px;"></td>
+											<td><%=template.field("pdfAnag_hasControlloSCAI","labelwidth='100'")%></td>
+										</tr></table>
+									</td>
+								</tr>
+							</table>
+						</fieldset>		
+					</td>
+				</tr>
+				<tr>
+					<td style="padding:2;">
+						<fieldset class="fieldsGroup">
+						<legend class="text" style="font-weight: bold;">
+						Sostituzioni
+						</legend>
+							<table>
+								<tr>
+									<td><%=template.field("pdfAnag_hasPreferenzeInPriips","labelwidth='80'")%></td>
+									<td style="width:10px;"></td>
+									<td><%=template.field("pdfAnag_onStockProcessBatchQueue","labelwidth='100'")%></td>								
+								</tr>
+							</table>
+						</fieldset>		
+					</td>
+				</tr>
+				<tr>
+					<td style="padding:2;">
+						<fieldset class="fieldsGroup">
+						<legend class="text" style="font-weight: bold;">
+						Archiviazione
+						</legend>
+						<table>
+							<tr>
+								<td><%=template.field("pdfAnag_filenetClasseDocCliente","labelwidth='200'")%></td>
+								<td><%=template.field("pdfAnag_filenetCodiceDocCliente","labelwidth='200'")%></td>
+							</tr>
+						</table>
+						</fieldset>		
+					</td>				
+				</tr>
+				<tr>
+					<td style="padding:2;">
+						<fieldset class="fieldsGroup">
+						<legend class="text" style="font-weight: bold;">
+						Copernico
+						</legend>
+							<table style="width:100%;">
+								<tr>
+									<td><%=template.field("pdfAnag_noteFbCopernico","labelposition='up' labelalign='left' uppercase='false' rows='3' style='width:100%;'")%></td>
+								</tr>
+							</table>
+						</fieldset>		
+					</td>
+				</tr>
+				
+			</table>
+		</fieldset>
+	</td>
+</tr>
+<% } %>
+
+</table>

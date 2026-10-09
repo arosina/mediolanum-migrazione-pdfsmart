@@ -1,0 +1,1507 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="Dac" connectionCacheReference="CEPE">
+
+<CodDescriptions>
+	 
+	<CodDesc name="Errori" tableName="CEPE_PT_ERRORI" codColumnName="PT_ERRORI_N_ERRORE" descrColumnName="PT_ERRORI_X_ERRORE"/>
+
+	<CodDesc name="Uffici" tableName="CEPE_PT_UFFICIO" codColumnName="PT_UFFICIO_N_UFFICIO" descrColumnName="PT_UFFICIO_X_UFFICIO"
+			 validityWhereCondition="PT_UFFICIO_F_VALIDITA = 'S'"
+			 orderBy="upper(PT_UFFICIO_X_UFFICIO)"/>
+   
+	<CodDesc name="UfficiSpuntaRicercaDac" tableName="CEPE_PT_UFFICIO" 
+			 codColumnName="PT_UFFICIO_N_UFFICIO" descrColumnName="PT_UFFICIO_X_UFFICIO"
+			 whereCondition="PT_UFFICIO_N_UFFICIO in (2,5,6)"
+			 orderBy="upper(PT_UFFICIO_X_UFFICIO)"/>
+
+	<CodDesc name="UfficiLavorazioneRicercaDac" tableName="CEPE_PT_UFFICIO" 
+			 codColumnName="PT_UFFICIO_N_UFFICIO" descrColumnName="PT_UFFICIO_X_UFFICIO"
+			 whereCondition="PT_UFFICIO_F_VALIDITA = 'S' and PT_UFFICIO_N_UFFICIO != 1"
+			 orderBy="upper(PT_UFFICIO_X_UFFICIO)"/>
+
+	<CodDesc name="Cassette" tableName="CEPE_PT_CASSETTA" codColumnName="PT_CASSETTA_N_CASSETTA" descrColumnName="PT_CASSETTA_X_CASSETTA"
+   			 validityWhereCondition="PT_CASSETTA_F_VALIDITA = 'S'"
+   			 orderBy="upper(PT_CASSETTA_X_CASSETTA)"/>
+   			 
+   <CodDesc name="Box" tableName="CEPE_PT_BOX"
+			codColumnName="PT_BOX_N_BOX" descrColumnName="PT_BOX_X_BOX"
+   			validityWhereCondition="PT_BOX_F_VALIDITA='S'"
+   			orderBy="upper(PT_BOX_X_BOX)">
+   </CodDesc>      
+
+	<CodDesc name="UfficiBox" tableName="CEPE_PT_BOX A, CEPE_PT_UFFICIO B" 
+			codColumnName="A.PT_BOX_N_BOX" descrColumnName="A.PT_BOX_X_BOX"
+   			whereCondition="A.PT_UFFICIO_N_UFFICIO  = B.PT_UFFICIO_N_UFFICIO and A.PT_UFFICIO_N_UFFICIO = ? "			
+   			validityWhereCondition="A.PT_UFFICIO_N_UFFICIO  = B.PT_UFFICIO_N_UFFICIO and A.PT_UFFICIO_N_UFFICIO = ? and PT_BOX_F_VALIDITA='S'"
+			orderBy="upper(B.PT_UFFICIO_X_UFFICIO)">
+	     <WhereFields>
+	        <Parameter propertyName="uffDestinatario"/>
+	     </WhereFields>
+	     <ValidityFields>
+		     <Parameter propertyName="uffDestinatario"/>
+	     </ValidityFields>
+	     
+	     
+     </CodDesc>
+     
+   <CodDesc name="UfficiDestinatariBox" tableName="CEPE_PT_BOX A, CEPE_PT_UFFICIO B" distinct="true"
+			codColumnName="A.PT_UFFICIO_N_UFFICIO" descrColumnName="B.PT_UFFICIO_X_UFFICIO"
+   			whereCondition="A.PT_UFFICIO_N_UFFICIO  = B.PT_UFFICIO_N_UFFICIO"
+   			validityWhereCondition="A.PT_UFFICIO_N_UFFICIO  = B.PT_UFFICIO_N_UFFICIO and PT_BOX_F_VALIDITA='S'"
+   			orderBy="upper(B.PT_UFFICIO_X_UFFICIO)">
+    </CodDesc>
+
+   <CodDesc name="UfficiDestinatariDac" tableName="CEPE_PT_DESTINATARI_UFFICI A, CEPE_PT_UFFICIO B" distinct="true"
+			codColumnName="B.PT_UFFICIO_N_UFFICIO" descrColumnName="B.PT_UFFICIO_X_UFFICIO"
+   			whereCondition="A.PT_N_UFFICIO_DEST =* B.PT_UFFICIO_N_UFFICIO"
+   			validityWhereCondition="A.PT_N_UFFICIO_DEST = B.PT_UFFICIO_N_UFFICIO 
+   								AND A.PT_N_UFFICIO = ?
+   								AND A.PT_N_UFFICIO_DEST != ?
+   								AND B.PT_UFFICIO_F_VALIDITA='S'"
+   			orderBy="upper(B.PT_UFFICIO_X_UFFICIO)">
+	     <ValidityFields>
+	        <Parameter propertyName="ufficio"/>
+	        <Parameter propertyName="ufficio"/>
+	     </ValidityFields>
+    </CodDesc>
+
+   <CodDesc name="UfficiDestinatariDacResi" tableName="CEPE_PT_DESTINATARI_UFFICI A, CEPE_PT_UFFICIO B" distinct="true"
+			codColumnName="B.PT_UFFICIO_N_UFFICIO" descrColumnName="B.PT_UFFICIO_X_UFFICIO"
+   			whereCondition="A.PT_N_UFFICIO_DEST =* B.PT_UFFICIO_N_UFFICIO"
+   			validityWhereCondition="A.PT_N_UFFICIO_DEST = B.PT_UFFICIO_N_UFFICIO 
+   								AND A.PT_N_UFFICIO = ?
+   								AND A.PT_N_UFFICIO_DEST != ?
+   								AND A.PT_F_UFFICIO_RESI = 'S'
+   								AND B.PT_UFFICIO_F_VALIDITA='S'"
+   			orderBy="upper(B.PT_UFFICIO_X_UFFICIO)">
+	     <ValidityFields>
+	        <Parameter propertyName="ufficio"/>
+	        <Parameter propertyName="ufficio"/>
+	     </ValidityFields>
+   </CodDesc>      
+
+   <CodDesc name="UfficiDestinatariDoc" tableName="CEPE_PT_DESTINATARI_UFFICI A, CEPE_PT_UFFICIO B"
+			codColumnName="A.PT_N_UFFICIO_DEST" descrColumnName="B.PT_UFFICIO_X_UFFICIO"
+   			whereCondition="A.PT_N_UFFICIO_DEST = B.PT_UFFICIO_N_UFFICIO 
+   								AND A.PT_N_UFFICIO = ?"
+   			orderBy="upper(B.PT_UFFICIO_X_UFFICIO)">
+	     <WhereFields>
+	        <Parameter propertyName="ufficio"/>
+	     </WhereFields>
+   </CodDesc>      
+
+	<CodDesc name="StatiDacSedeInRicezione" tableName="CEPE_PT_STATO"
+			 codColumnName="PT_STATO_N_STATO" descrColumnName="PT_STATO_X_STATO"
+ 			 whereCondition="PT_STATO_N_STATO in (2,3)"
+ 			 orderBy="PT_STATO_N_STATO"/>
+
+	<CodDesc name="StatiDacSede" tableName="CEPE_PT_STATO"
+			 codColumnName="PT_STATO_N_STATO" descrColumnName="PT_STATO_X_STATO"
+ 			 whereCondition="PT_STATO_N_STATO in (1,2,3,4)"
+ 			 orderBy="PT_STATO_N_STATO"/>
+
+	<CodDesc name="StatiDac" tableName="CEPE_PT_STATO"
+			 codColumnName="PT_STATO_N_STATO" descrColumnName="PT_STATO_X_STATO"/>
+			 
+	<CodDesc name="StatiRicercaDacFb" tableName="CEPE_PT_STATO"
+			 codColumnName="PT_STATO_N_STATO" descrColumnName="PT_STATO_X_STATO"
+			 orderBy="PT_STATO_N_STATO"/>
+
+	<CodDesc name="StatiStoricoDac" tableName="CEPE_PT_STATO"
+			 codColumnName="PT_STATO_N_STATO" descrColumnName="PT_STATO_X_STATO"
+			 whereCondition="PT_STATO_N_STATO in (4,5,6)"
+			 orderBy="PT_STATO_N_STATO"/>
+			 
+	<CodDesc name="StatiRicercaMom" tableName="CEPE_PT_STATO"
+			 codColumnName="PT_STATO_N_STATO" descrColumnName="PT_STATO_X_STATO"
+			 whereCondition="PT_STATO_N_STATO in (2,3,4,5,6)"
+			 orderBy="PT_STATO_N_STATO"/>
+			 
+	<CodDesc name="StatiDocumento" tableName="CEPE_PT_STATODETT"
+			 codColumnName="PT_STATODETT_N_STATODETT" descrColumnName="PT_STATODETT_X_STATODETT"/>
+			 
+	<CodDesc name="EsitiDac" tableName="CEPE_PT_ESITO"
+			 codColumnName="PT_ESITO_N_ESITO" descrColumnName="PT_ESITO_X_ESITO"/>
+			 
+	<CodDesc name="EsitiDocumento" tableName="CEPE_PT_ESITODETT"
+			 codColumnName="PT_ESITODETT_N_ESITODETT" descrColumnName="PT_ESITODETT_X_ESITODETT"/>
+			 
+	<CodDesc name="TipiSpedizione" tableName="CEPE_PT_MEZZOSP"
+			 codColumnName="PT_MEZZOSP_N_MEZZOSP" descrColumnName="PT_MEZZOSP_X_MEZZOSP" 
+			 validityWhereCondition="PT_MEZZOSP_F_VALIDITA = 'S'"
+			 orderBy="upper(PT_MEZZOSP_X_MEZZOSP)"/>
+   			
+	<CodDesc name="Prodotti" tableName="CEPE_PT_RETEP_PRODOTTO" refreshTime="120"
+			 codColumnName="PT_PRODOTTO_N_PT_PRODOTTO" descrColumnName="PT_PRODOTTO_X_PT_PRODOTTO" 
+			 whereCondition="PT_PRODOTTO_N_PT_PRODOTTO != 0"
+			 validityWhereCondition="PT_PRODOTTO_N_PT_PRODOTTO != 0 and PT_PRODOTTO_F_VALIDITA = 'S'"
+			 orderBy="upper(PT_PRODOTTO_X_PT_PRODOTTO)"/>
+
+	<CodDesc name="ProdottiInRicercaDoc" tableName="CEPE_PT_RETEP_PRODOTTO" refreshTime="120"
+			 codColumnName="PT_PRODOTTO_N_PT_PRODOTTO" descrColumnName="PT_PRODOTTO_X_PT_PRODOTTO" 
+			 validityWhereCondition="PT_PRODOTTO_N_PT_PRODOTTO = 0 or PT_PRODOTTO_F_VALIDITA = 'S'"
+			 orderBy="upper(PT_PRODOTTO_X_PT_PRODOTTO)"/>
+
+	<CodDesc name="Operazioni" tableName="CEPE_PT_RETEP_OPERAZIONE" refreshTime="120"
+			 codColumnName="PT_OPERAZIONE_N_PT_OPERAZIONE" descrColumnName="PT_OPERAZIONE_X_PT_OPERAZIONE" 
+			 whereCondition="PT_OPERAZIONE_N_PT_OPERAZIONE != 0"
+			 validityWhereCondition="PT_OPERAZIONE_N_PT_OPERAZIONE != 0 and PT_OPERAZIONE_F_VALIDITA = 'S'"
+			 orderBy="upper(PT_OPERAZIONE_X_PT_OPERAZIONE)"/>
+			 
+	<CodDesc name="OperazioniProdotto" tableName="CEPE_PT_RETEP_OPERAZIONE O, CEPE_PT_RETEP_PRODOPER PO"
+			 codColumnName="O.PT_OPERAZIONE_N_PT_OPERAZIONE" descrColumnName="O.PT_OPERAZIONE_X_PT_OPERAZIONE" 
+			 whereCondition="PO.PT_PRODOTTO_N_PT_PRODOTTO = ? and O.PT_OPERAZIONE_N_PT_OPERAZIONE != 0 and PO.PT_OPERAZIONE_N_PT_OPERAZIONE = O.PT_OPERAZIONE_N_PT_OPERAZIONE"
+			 validityWhereCondition="PO.PT_PRODOTTO_N_PT_PRODOTTO = ? and O.PT_OPERAZIONE_N_PT_OPERAZIONE != 0 and PO.PT_OPERAZIONE_N_PT_OPERAZIONE = O.PT_OPERAZIONE_N_PT_OPERAZIONE and O.PT_OPERAZIONE_F_VALIDITA = 'S' and (PO.PT_PRODOPER_F_VALIDITA is null or PO.PT_PRODOPER_F_VALIDITA = 'S')"
+			 orderBy="upper(O.PT_OPERAZIONE_X_PT_OPERAZIONE)">
+	     <WhereFields>
+	        <Parameter propertyName="codProdotto"/>
+	     </WhereFields>
+	     <ValidityFields>
+	        <Parameter propertyName="codProdotto"/>
+	     </ValidityFields>
+     </CodDesc>
+     
+	<CodDesc name="CassetteOperazioniProdotto" tableName="CEPE_PT_CASSETTA C, CEPE_PT_RETEP_OPERAZIONE O, CEPE_PT_RETEP_PRODOPER PO"
+			 codColumnName="O.PT_OPERAZIONE_N_PT_OPERAZIONE" descrColumnName="C.PT_CASSETTA_N_CASSETTA" 
+			 whereCondition="PO.PT_PRODOTTO_N_PT_PRODOTTO = ? and PO.PT_OPERAZIONE_N_PT_OPERAZIONE = O.PT_OPERAZIONE_N_PT_OPERAZIONE and C.PT_CASSETTA_N_CASSETTA = PO.PT_CASSETTA_N_CASSETTA and O.PT_OPERAZIONE_F_VALIDITA = 'S'">
+	     <WhereFields>
+	        <Parameter propertyName="codProdotto"/>
+	     </WhereFields>
+     </CodDesc>
+     
+	<CodDesc name="TipiPagamento" tableName="CEPE_PT_MEZZOPG"
+			 codColumnName="PT_MEZZOPG_N_MEZZOPG" descrColumnName="PT_MEZZOPG_X_MEZZOPG" 
+			 validityWhereCondition="PT_MEZZOPG_F_VALIDITA = 'S'"
+			 orderBy="upper(PT_MEZZOPG_X_MEZZOPG)"/>
+			 
+</CodDescriptions>
+
+<Access name="recuperaCassettaBox" type="DAOQueryAccess" queryType="0" maxResultRows="1"
+	OutputCommandDataModel="com.atosorigin.wfem.types.IntegerType">
+
+	<Query>
+		select	PT_CASSETTA_N_CASSETTA 
+		from	CEPE_PT_BOXES_CASSETTA 
+		where	PT_BOX_N_BOX = ?
+	</Query>     
+	<Input>
+		<Parameter propertyName="box"/>
+	</Input>
+</Access> 
+
+<Access name="loadUfficioUtente" type="DAOQueryAccess" queryType="1" maxResultRows="1">
+	<Query>
+		select 	UFFICIO_N_UFFICIO
+		from 	CEPE_PT_UFFICI_UTENTI
+		where	right((replicate('0',10)+C_USER),10) = <p>contextUserCode</p>
+	</Query>     
+	<Output>
+		<Parameter propertyName="ufficio"/>
+	</Output>
+</Access>
+  
+<Access name="loadParamsUfficio" type="DAOQueryAccess" queryType="0" maxResultRows="1">
+	<Query>
+		select 	IS_SMISTATORE, IS_MGMPLICHI, IS_CTRL_CASSETTE, IS_CTRL_FIRME_DISATT, IS_CTRL_FIRME_AGE_DISATT 
+		from 	CEPE_PT_PARAMS_UFFICIO
+		where	PT_UFFICIO_N_UFFICIO = ?
+		and		PARAMS_D_FINE_VAL is null
+	</Query>     
+	<Input>
+		<Parameter propertyName="ufficio"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="isUfficioSmistatore"/>
+		<Parameter propertyName="isUfficioMgmPlichi"/>
+		<Parameter propertyName="isUfficioCtrlCassette"/>
+		<Parameter propertyName="isUfficioCtrlFirmeDisatt"/>
+		<Parameter propertyName="isUfficioCtrlFirmeAgenteDisatt"/>
+	</Output>
+</Access>
+
+<Access name="loadAgente" type="DAOQueryAccess" queryType="0" maxResultRows="1"  
+		connectionCacheReference="ARC">
+	<Query>
+		SELECT 	DISTINCT
+	RIGHT('0000000000'||AN.COD_SOGGETTO,10) AS AGE_C_AGE,
+	'P' AS RETEVEND_C_RETE,
+	DE.COGNOME,
+	DE.NOME,
+	AN.DENOMINAZIONE,
+	RIGHT('00000000000'||CONVERT(VARCHAR(11),DA.COD_CLI_AGENTE),11) AS CODIFCLIMEDL_C_CLI_MEDL,
+	char(65 + convert(integer,right(AN.COD_SOGGETTO,4)) %9) AS SERVER_C_REPLICA,
+	RIGHT('0000000000'||AREA.COD_SOGGETTO,10) AS AGE_C_AREA,
+	FIS.COD_FILIALE,
+	FI.INDIRIZZO ,
+	FI.CAP,
+	FI.COMUNE,
+	FI.PROVINCIA,
+	FI.TELEFONO,
+	FI.FAX,
+	STA.DESCR_STATO_GIURID,
+	CASE
+		when STA.DESCR_STATO_GIURID in ('PROMOTORE FINANZIARIO','DIPENDENTI/DIRIGENTI BM - PF') 
+		then 'PF' else 'AAF' 
+	end as TIPO_AGENTE,
+	Case 
+		when STA.DESCR_STATO_GIURID in ('PROMOTORE FINANZIARIO','DIPENDENTI BANCA MEDIOLANUM','DIPENDENTI/DIRIGENTI BM - PF') 
+		then 'S' else 'N' 
+	end as CAN_MAKE_FOR_OTHER,
+	CONVERT(VARCHAR(1), NULL) AS FLAG_ABILITATO_OAM
+FROM	ARC_ANAG_SOGGETTO	AN
+	INNER JOIN ARC_DATI_SOGGETTO DA
+	ON	1=1
+	AND	AN.N_ANAG_SOGG = DA.N_ANAG_SOGG
+		INNER JOIN 	ARC_DETT_SOGGETTO  DE
+		ON 	1=1
+AND	AN.N_ANAG_SOGG = DE.N_ANAG_SOGG
+	INNER JOIN ARC_MOV_STRUTTURA	MO
+	ON	1=1
+	AND	AN.N_ANAG_SOGG = MO.N_ANAG_SOGG
+	AND GETDATE() BETWEEN MO.DT_DECORR_MOV and MO.DT_FINE_DECORR_MOV
+		INNER JOIN ARC_STATO_SOGGETTO	ST
+		ON	1=1
+		AND	MO.N_STATO_SOGG = ST.N_STATO_SOGG
+			LEFT OUTER JOIN  ARC_GERARCHIA_VERTICALE_COMM GE
+			ON	1=1
+			AND	GE.N_ANAG_SOGG = AN.N_ANAG_SOGG
+			AND GE.N_ANAG_PADRE IN (SELECT N_ANAG_SOGG FROM ARC_CARRIERA_MANAGER WHERE DT_FINE = '99991231' AND COD_LIVELLO_CARRIERA_MANAGER = 'NRM')
+				LEFT OUTER JOIN	ARC_ANAG_SOGGETTO AREA
+				ON	1=1
+				AND	AREA.N_ANAG_SOGG = GE.N_ANAG_PADRE
+				AND AREA.FLG_ANNULLATO	= 'N'
+					LEFT OUTER JOIN ARC_FILIALE_SOGG FIS
+					ON	1=1
+					AND	FIS.N_ANAG_SOGG = AN.N_ANAG_SOGG
+					AND	FIS.FLG_ANNULLATO	= 'N'
+					AND GETDATE() BETWEEN FIS.DT_INIZIO_VALID AND FIS.DT_FINE_VALID
+						LEFT OUTER JOIN ARC_FILIALE	FI
+						ON FI.COD_FILIALE = FIS.COD_FILIALE
+						AND	FI.FLG_ANNULLATO	= 'N'
+							LEFT OUTER JOIN ARC_STRUTTURA_RETE	RET
+							ON	1=1
+							AND	RET.N_ANAG_SOGG = AN.N_ANAG_SOGG
+							AND RET.COD_TIPO_STRUTT in (0, 1) 
+							AND RET.FLG_ANNULLATO='N'
+								LEFT OUTER JOIN ARC_STATO_GIURIDICO	STA
+								ON	1=1
+								AND	STA.N_STATO_GIURID = RET.N_STATO_GIURID
+								AND STA.FLG_ANNULLATO = 'N'
+				
+		WHERE	1=1
+		AND	AN.FLG_ANNULLATO	= 'N'
+		AND DA.FLG_ANNULLATO	= 'N'
+		AND DE.FLG_ANNULLATO	= 'N'
+		AND MO.FLG_ANNULLATO	= 'N'
+		AND ST.FLG_ANNULLATO	= 'N'
+		AND RIGHT('0000000000'||AN.COD_SOGGETTO,10) = ?
+	</Query>     
+	<Input>
+		<Parameter propertyName="codAgente"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="codAgente"/>
+		<Parameter propertyName="codRete"/>
+		<Parameter propertyName="cognome"/>
+		<Parameter propertyName="nome"/>
+		<Parameter propertyName="nominativo"/>
+		<Parameter propertyName="codMediolanum"/>
+		<Parameter propertyName="serverReplica"/>
+		<Parameter propertyName="codArea"/>
+		<Parameter propertyName="codAgenzia"/>
+		<Parameter propertyName="indirizzoAgenzia"/>
+		<Parameter propertyName="capAgenzia"/>
+		<Parameter propertyName="comuneAgenzia"/>
+		<Parameter propertyName="provAgenzia"/>
+		<Parameter propertyName="telAgenzia"/>
+		<Parameter propertyName="faxAgenzia"/>
+		<Parameter propertyName="contrattoAgente"/>
+		<Parameter propertyName="tipoAgente"/>
+		<Parameter propertyName="canMakeForOtherFb"/>
+		<Parameter propertyName="isIscrittoOAM"/>
+	</Output>
+</Access>  
+
+<Access name="loadDocumentiDacRete" type="DAOQueryAccess" queryType="1"
+		OutputCommandDataModel="prgm.ita.p.dac.model.DocumentoModel">
+	<Query>
+		select  
+		<IfEqual propertyName="tipoDac" propertyValue="4">
+			top 50
+		</IfEqual>
+				D.PT_DETTAGLIO_N_TESTATA_CORR
+		,		D.PT_DETTAGLIO_N_PROGR 
+		,		case D.PT_DETTAGLIO_X_BARCODE when 'X' then '' else D.PT_DETTAGLIO_X_BARCODE end
+		,		D.PT_DETTAGLIO_N_CONTR 
+		,		D.PT_DETTAGLIO_C_DOC
+		,		D.PT_PRODOTTO_N_PRODOTTO
+		,		P.PT_PRODOTTO_X_PT_PRODOTTO
+		,		OP.PT_OPERAZIONE_X_PT_OPERAZIONE
+		,		D.PT_ESITODETT_N_ESITODETT
+		,		E.PT_ESITODETT_X_ESITODETT
+		,		D.PT_DETTAGLIO_C_AGE_MITT 
+		,		D.CODIFCLIMEDL_C_CLI_MEDL 
+		,		D.PT_DETTAGLIO_X_CLI_COGN 
+		,		D.PT_DETTAGLIO_X_CLI_NOME
+		,		D.PT_DETTAGLIO_CONTESTO_AGGR
+		<IfEqual propertyName="consideraPlichiBusta" propertyValue="true">
+		,		case PR.PT_PRIT_COD_AGGREGATORE when 'X' then '' else PR.PT_PRIT_COD_AGGREGATORE end
+		</IfEqual>
+		<IfNotEqual propertyName="consideraPlichiBusta" propertyValue="true">
+		,		case D.PT_DETTAGLIO_COD_AGGREGATORE when 'X' then '' else D.PT_DETTAGLIO_COD_AGGREGATORE end
+		</IfNotEqual>
+		,		(select sum(PG.PT_DETT_MEZZOPG_I_IMPORTO) from CEPE_PT_DETT_MEZZOPG PG where D.PT_DETTAGLIO_N_PROGR = PG.PT_DETTAGLIO_N_PROGR) as IMPORTO
+		,		D.PT_DETT_PADRE_ASS_N_PROGR
+		from 	CEPE_PT_PRIT PR, CEPE_PT_DETTAGLIO D, 
+				CEPE_PT_RETEP_PRODOTTO P, CEPE_PT_RETEP_OPERAZIONE OP, CEPE_PT_ESITODETT E
+		where 	PR.PT_TESTATA_N_PROGR = <p>idDac</p>
+		and		PR.PT_DETTAGLIO_N_PROGR = D.PT_DETTAGLIO_N_PROGR
+		and		PR.PT_PRIT_F_VALIDITA = 'S' 
+		and		D.PT_DETTAGLIO_F_VALIDITA = 'S'   
+		and		D.PT_PRODOTTO_N_PRODOTTO *= P.PT_PRODOTTO_N_PT_PRODOTTO 
+		and		D.PT_OPERAZIONE_N_OPERAZIONE *= OP.PT_OPERAZIONE_N_PT_OPERAZIONE
+		and		D.PT_ESITODETT_N_ESITODETT *= E.PT_ESITODETT_N_ESITODETT
+		order by PR.PT_PRIT_D_INS asc
+	</Query> 
+	<Output>
+		<Parameter propertyName="idDac"/>
+		<Parameter propertyName="idDocumento"/>
+		<Parameter propertyName="barcode"/>
+		<Parameter propertyName="numeroContratto"/>
+		<Parameter propertyName="codInforeteEsterno"/>
+		<Parameter propertyName="codProdotto"/>
+		<Parameter propertyName="descrProdotto"/>
+		<Parameter propertyName="descrOperazione"/>
+		<Parameter propertyName="esito"/>
+		<Parameter propertyName="descrEsito"/>
+		<Parameter propertyName="agente_codAgente"/>
+		<Parameter propertyName="cliente_codMediolanum"/>
+		<Parameter propertyName="cliente_cognome"/>
+		<Parameter propertyName="cliente_nome"/>
+		<Parameter propertyName="contestoAggregatore"/>
+		<Parameter propertyName="codAggregatore"/>
+		<Parameter propertyName="importo"/>
+		<Parameter propertyName="datiAssegno_idDocumento"/>
+	</Output>
+</Access>  
+
+<Access name="loadDocumentiDacSpunta" type="DAOQueryAccess" queryType="1"
+		OutputCommandDataModel="prgm.ita.p.dac.model.DocumentoModel">
+	<Query>
+		select  D.PT_DETTAGLIO_N_TESTATA_CORR
+		,		D.PT_DETTAGLIO_N_PROGR 
+		,		case D.PT_DETTAGLIO_X_BARCODE when 'X' then '' else D.PT_DETTAGLIO_X_BARCODE end
+		,		D.PT_DETTAGLIO_N_CONTR 
+		,		D.PT_DETTAGLIO_C_DOC
+		,		D.PT_PRODOTTO_N_PRODOTTO
+		,		P.PT_PRODOTTO_X_PT_PRODOTTO
+		,		OP.PT_OPERAZIONE_X_PT_OPERAZIONE
+		,		D.PT_ESITODETT_N_ESITODETT
+		,		E.PT_ESITODETT_X_ESITODETT
+		,		D.PT_DETTAGLIO_C_AGE_MITT 
+		,		D.CODIFCLIMEDL_C_CLI_MEDL 
+		,		D.PT_DETTAGLIO_X_CLI_COGN 
+		,		D.PT_DETTAGLIO_X_CLI_NOME
+		,		D.PT_DETTAGLIO_CONTESTO_AGGR
+		<IfEqual propertyName="consideraPlichiBusta" propertyValue="true">
+		,		case PR.PT_PRIT_COD_AGGREGATORE when 'X' then '' else PR.PT_PRIT_COD_AGGREGATORE end
+		</IfEqual>
+		<IfNotEqual propertyName="consideraPlichiBusta" propertyValue="true">
+		,		case D.PT_DETTAGLIO_COD_AGGREGATORE when 'X' then '' else D.PT_DETTAGLIO_COD_AGGREGATORE end
+		</IfNotEqual>
+		, 		OP.PT_OPERAZIONE_F_CNTRLFIRME
+		, 		OP.PT_OPERAZIONE_F_CNTRLFIRME_AAF
+		, 		OP.PT_OPERAZIONE_F_CNTRLFIRME_PF
+		,		CF.PT_CF_CONTROLLO_C_CONTROLLO
+		,		CFA.PT_CF_CONTROLLO_C_CONTROLLO
+		,		(select sum(PG.PT_DETT_MEZZOPG_I_IMPORTO) from CEPE_PT_DETT_MEZZOPG PG where D.PT_DETTAGLIO_N_PROGR = PG.PT_DETTAGLIO_N_PROGR) as IMPORTO
+		,		D2.PT_DETTAGLIO_N_CASSETTA
+		,		D.PT_DETT_PADRE_ASS_N_PROGR
+		from 	CEPE_PT_PRIT PR, CEPE_PT_DETTAGLIO D, CEPE_PT_DETTAGLIO2 D2, 
+				CEPE_PT_RETEP_PRODOTTO P, CEPE_PT_RETEP_OPERAZIONE OP, CEPE_PT_ESITODETT E, CEPE_PT_CF CF, CEPE_PT_CF_AGENTE CFA
+		where 	PR.PT_TESTATA_N_PROGR = <p>idDac</p>
+		and		PR.PT_DETTAGLIO_N_PROGR = D.PT_DETTAGLIO_N_PROGR
+		and		PR.PT_PRIT_F_VALIDITA = 'S' 
+		and		D.PT_DETTAGLIO_F_VALIDITA = 'S'   
+		and		D.PT_PRODOTTO_N_PRODOTTO *= P.PT_PRODOTTO_N_PT_PRODOTTO 
+		and		D.PT_OPERAZIONE_N_OPERAZIONE *= OP.PT_OPERAZIONE_N_PT_OPERAZIONE
+		and		D.PT_ESITODETT_N_ESITODETT *= E.PT_ESITODETT_N_ESITODETT
+		and		D.PT_DETTAGLIO_N_PROGR *= CF.PT_DETTAGLIO_N_PROGR
+		and		D.PT_DETTAGLIO_N_PROGR *= CFA.PT_DETTAGLIO_N_PROGR
+		and		D.PT_DETTAGLIO_N_PROGR *= D2.PT_DETTAGLIO_N_PROGR
+		order by PR.PT_PRIT_D_INS asc
+	</Query> 
+	<Output>
+		<Parameter propertyName="idDac"/>
+		<Parameter propertyName="idDocumento"/>
+		<Parameter propertyName="barcode"/>
+		<Parameter propertyName="numeroContratto"/>
+		<Parameter propertyName="codInforeteEsterno"/>
+		<Parameter propertyName="codProdotto"/>
+		<Parameter propertyName="descrProdotto"/>
+		<Parameter propertyName="descrOperazione"/>
+		<Parameter propertyName="esito"/>
+		<Parameter propertyName="descrEsito"/>
+		<Parameter propertyName="agente_codAgente"/>
+		<Parameter propertyName="cliente_codMediolanum"/>
+		<Parameter propertyName="cliente_cognome"/>
+		<Parameter propertyName="cliente_nome"/>
+		<Parameter propertyName="contestoAggregatore"/>
+		<Parameter propertyName="codAggregatore"/>
+		<Parameter propertyName="tipoControlloFirmeCliente"/>
+		<Parameter propertyName="tipoControlloFirmeAAF"/>
+		<Parameter propertyName="tipoControlloFirmePF"/>
+		<Parameter propertyName="esitoFirmaCliente"/>
+		<Parameter propertyName="esitoFirmaAgente"/>
+		<Parameter propertyName="importo"/>
+		<Parameter propertyName="codCassetta"/>
+		<Parameter propertyName="datiAssegno_idDocumento"/>
+	</Output>
+</Access>  
+<Access name="loadDatiDocumentoPerControlloFirmeAgentiInSpunta" type="DAOQueryAccess" queryType="0">
+	<Query>
+	select
+		(select CTRL_FIRME_AGE_CONTATORE_AAF from CEPE_PT_PARAMS_UFFICIO 
+		 where PT_UFFICIO_N_UFFICIO = ? and PARAMS_D_FINE_VAL is null) as contatoreFirmeAAF,
+		(select CTRL_FIRME_AGE_CONTATORE_PF from CEPE_PT_PARAMS_UFFICIO 
+		 where PT_UFFICIO_N_UFFICIO = ? and PARAMS_D_FINE_VAL is null) as contatoreFirmePF,
+		(select count(*) from CEPE_PT_CF_AGENTE CFA, CEPE_PT_PRIT P where P.PT_DETTAGLIO_N_PROGR = CFA.PT_DETTAGLIO_N_PROGR 
+				and P.PT_TESTATA_N_PROGR = ?
+				and CFA.AGE_C_AGE = ?) as numeroEsitiAgenteInPrit,
+		(select count(*) from CEPE_PT_CF_AGENTE 
+		 where 	(PT_CF_D_CONTROLLO &gt;= convert(varchar(8),getdate(),112) and PT_CF_D_CONTROLLO &lt; convert(varchar(8),dateadd(dd,+1,getdate()),112)) and AGE_TIPO_AGENTE = 'AAF' 
+		 and	PT_UFFICIO_N_UFFICIO = ?) as numeroAAFInGiornata,
+		(select count(*) from CEPE_PT_CF_AGENTE 
+		 where 	(PT_CF_D_CONTROLLO &gt;= convert(varchar(8),getdate(),112) and PT_CF_D_CONTROLLO &lt; convert(varchar(8),dateadd(dd,+1,getdate()),112)) and AGE_TIPO_AGENTE = 'PF' 
+		 and	PT_UFFICIO_N_UFFICIO = ?) as numeroPFInGiornata
+	</Query> 
+	<Input>
+		<Parameter propertyName="ufficio"/>
+		<Parameter propertyName="ufficio"/>
+		<Parameter propertyName="idDac"/>
+		<Parameter propertyName="agente_codAgente"/>
+		<Parameter propertyName="ufficio"/>
+		<Parameter propertyName="ufficio"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="contatoreFirmeAAF"/>
+		<Parameter propertyName="contatoreFirmePF"/>
+		<Parameter propertyName="numeroEsitiFirmeAgenteInPrit"/>
+		<Parameter propertyName="numeroEsitiFirmeAAFInGiornata"/>
+		<Parameter propertyName="numeroEsitiFirmePFInGiornata"/>
+	</Output>
+</Access>  
+  
+<Access name="loadDocumentiDacSede" type="DAOQueryAccess" queryType="1"
+		OutputCommandDataModel="prgm.ita.p.dac.model.DocumentoModel">
+	<Query>
+		select  
+		<IfEqual propertyName="tipoDac" propertyValue="4">
+			top 50
+		</IfEqual>
+				D.PT_DETTAGLIO_N_TESTATA_CORR
+		,		D.PT_DETTAGLIO_N_PROGR 
+		,		case D.PT_DETTAGLIO_X_BARCODE when 'X' then '' else D.PT_DETTAGLIO_X_BARCODE end
+		,		D.PT_DETTAGLIO_N_CONTR 
+		,		D.PT_DETTAGLIO_C_DOC
+		,		D.PT_PRODOTTO_N_PRODOTTO
+		,		P.PT_PRODOTTO_X_PT_PRODOTTO
+		,		OP.PT_OPERAZIONE_X_PT_OPERAZIONE
+		,		D.PT_ESITODETT_N_ESITODETT
+		,		E.PT_ESITODETT_X_ESITODETT
+		,		D.PT_DETTAGLIO_C_AGE_MITT
+		,		D.CODIFCLIMEDL_C_CLI_MEDL 
+		,		D.PT_DETTAGLIO_X_CLI_COGN 
+		,		D.PT_DETTAGLIO_X_CLI_NOME
+		,		D.PT_DETTAGLIO_CONTESTO_AGGR
+		<IfEqual propertyName="consideraPlichiBusta" propertyValue="true">
+		,		case PR.PT_PRIT_COD_AGGREGATORE when 'X' then '' else PR.PT_PRIT_COD_AGGREGATORE end
+		</IfEqual>
+		<IfNotEqual propertyName="consideraPlichiBusta" propertyValue="true">
+		,		case D.PT_DETTAGLIO_COD_AGGREGATORE when 'X' then '' else D.PT_DETTAGLIO_COD_AGGREGATORE end
+		</IfNotEqual>
+		,		(select sum(PG.PT_DETT_MEZZOPG_I_IMPORTO) from CEPE_PT_DETT_MEZZOPG PG where D.PT_DETTAGLIO_N_PROGR = PG.PT_DETTAGLIO_N_PROGR) as IMPORTO
+		,		D2.PT_DETTAGLIO_N_CASSETTA
+		,		D.PT_UFFICIO_N_UFFICIO
+		,		D2.PT_DETTAGLIO_N_UFFICIO_DEST
+		,		D2.PT_DETTAGLIO_F_RESO
+		,		D2.PT_DETTAGLIO_F_NON_PERVENUTO
+		,		PR2.PT_PRIT_F_AGGIUNTO_IN_RIC
+		,		PR2.PT_PRIT_F_ERR_SMISTAMENTO
+		,		D.PT_DETT_PADRE_ASS_N_PROGR
+		,		D2.PT_DETTAGLIO_F_INBUSTA
+		from 	CEPE_PT_PRIT PR, CEPE_PT_PRIT2 PR2, CEPE_PT_DETTAGLIO D, CEPE_PT_DETTAGLIO2 D2, 
+				CEPE_PT_RETEP_PRODOTTO P, CEPE_PT_RETEP_OPERAZIONE OP, CEPE_PT_ESITODETT E
+		where 	PR.PT_TESTATA_N_PROGR = <p>idDac</p>
+		and		PR.PT_TESTATA_N_PROGR = PR2.PT_TESTATA_N_PROGR 
+		and		PR.PT_DETTAGLIO_N_PROGR = PR2.PT_DETTAGLIO_N_PROGR
+		and		PR.PT_DETTAGLIO_N_PROGR = D2.PT_DETTAGLIO_N_PROGR
+		and		PR.PT_DETTAGLIO_N_PROGR = D.PT_DETTAGLIO_N_PROGR
+		and		PR.PT_PRIT_F_VALIDITA = 'S' 
+		and		D.PT_DETTAGLIO_F_VALIDITA = 'S'   
+		and		D.PT_PRODOTTO_N_PRODOTTO *= P.PT_PRODOTTO_N_PT_PRODOTTO 
+		and		D.PT_OPERAZIONE_N_OPERAZIONE *= OP.PT_OPERAZIONE_N_PT_OPERAZIONE
+		and		D.PT_ESITODETT_N_ESITODETT *= E.PT_ESITODETT_N_ESITODETT
+		order by PR.PT_PRIT_D_INS asc
+	</Query> 
+	<Output>
+		<Parameter propertyName="idDac"/>
+		<Parameter propertyName="idDocumento"/>
+		<Parameter propertyName="barcode"/>
+		<Parameter propertyName="numeroContratto"/>
+		<Parameter propertyName="codInforeteEsterno"/>
+		<Parameter propertyName="codProdotto"/>
+		<Parameter propertyName="descrProdotto"/>
+		<Parameter propertyName="descrOperazione"/>
+		<Parameter propertyName="esito"/>
+		<Parameter propertyName="descrEsito"/>
+		<Parameter propertyName="agente_codAgente"/>
+		<Parameter propertyName="cliente_codMediolanum"/>
+		<Parameter propertyName="cliente_cognome"/>
+		<Parameter propertyName="cliente_nome"/>
+		<Parameter propertyName="contestoAggregatore"/>
+		<Parameter propertyName="codAggregatore"/>
+		<Parameter propertyName="importo"/>
+		<Parameter propertyName="codCassetta"/>
+		<Parameter propertyName="ubicazione"/>
+		<Parameter propertyName="uffDestinatario"/>
+		<Parameter propertyName="reso"/>
+		<Parameter propertyName="nonPervenuto"/>
+		<Parameter propertyName="aggiuntoInRicezione"/>
+		<Parameter propertyName="isErroreSmistamento"/>		
+		<Parameter propertyName="datiAssegno_idDocumento"/>
+		<Parameter propertyName="isInBusta"/>
+	</Output>
+</Access>
+
+<Access name="loadDocumentiDacRicerca" type="DAOQueryAccess" queryType="1"
+		OutputCommandDataModel="prgm.ita.p.dac.model.DocumentoModel">
+	<Query>
+		select  
+		<IfEqual propertyName="tipoDac" propertyValue="4">
+			top 50
+		</IfEqual>
+				D.PT_DETTAGLIO_N_TESTATA_CORR
+		,		D.PT_DETTAGLIO_N_PROGR 
+		,		case D.PT_DETTAGLIO_X_BARCODE when 'X' then '' else D.PT_DETTAGLIO_X_BARCODE end
+		,		D.PT_DETTAGLIO_N_CONTR 
+		,		D.PT_DETTAGLIO_C_DOC
+		,		D.PT_PRODOTTO_N_PRODOTTO
+		,		P.PT_PRODOTTO_X_PT_PRODOTTO
+		,		OP.PT_OPERAZIONE_X_PT_OPERAZIONE
+		,		D.PT_ESITODETT_N_ESITODETT
+		,		E.PT_ESITODETT_X_ESITODETT
+		,		D.PT_DETTAGLIO_C_AGE_MITT
+		,		D.CODIFCLIMEDL_C_CLI_MEDL 
+		,		D.PT_DETTAGLIO_X_CLI_COGN 
+		,		D.PT_DETTAGLIO_X_CLI_NOME
+		,		D.PT_DETTAGLIO_CONTESTO_AGGR
+		<IfEqual propertyName="consideraPlichiBusta" propertyValue="true">
+		,		case PR.PT_PRIT_COD_AGGREGATORE when 'X' then '' else PR.PT_PRIT_COD_AGGREGATORE end
+		</IfEqual>
+		<IfNotEqual propertyName="consideraPlichiBusta" propertyValue="true">
+		,		case D.PT_DETTAGLIO_COD_AGGREGATORE when 'X' then '' else D.PT_DETTAGLIO_COD_AGGREGATORE end
+		</IfNotEqual>
+		, 		OP.PT_OPERAZIONE_F_CNTRLFIRME
+		, 		OP.PT_OPERAZIONE_F_CNTRLFIRME_AAF
+		, 		OP.PT_OPERAZIONE_F_CNTRLFIRME_PF
+		,		CF.PT_CF_CONTROLLO_C_CONTROLLO
+		,		CFA.PT_CF_CONTROLLO_C_CONTROLLO
+		,		(select sum(PG.PT_DETT_MEZZOPG_I_IMPORTO) from CEPE_PT_DETT_MEZZOPG PG where D.PT_DETTAGLIO_N_PROGR = PG.PT_DETTAGLIO_N_PROGR) as IMPORTO
+		,		D2.PT_DETTAGLIO_N_CASSETTA
+		,		D.PT_DETT_PADRE_ASS_N_PROGR
+		,		D.PT_UFFICIO_N_UFFICIO
+		,		D2.PT_DETTAGLIO_N_UFFICIO_DEST
+		,		D2.PT_DETTAGLIO_F_RESO
+		,		PR2.PT_PRIT_F_NON_PERVENUTO
+		,		PR2.PT_PRIT_F_AGGIUNTO_IN_RIC
+		,		PR2.PT_PRIT_F_ERR_SMISTAMENTO		
+		,		D2.PT_DETTAGLIO_F_INBUSTA
+		from 	CEPE_PT_PRIT PR, CEPE_PT_PRIT2 PR2, CEPE_PT_DETTAGLIO D, CEPE_PT_DETTAGLIO2 D2, 
+				CEPE_PT_RETEP_PRODOTTO P, CEPE_PT_RETEP_OPERAZIONE OP, CEPE_PT_ESITODETT E, CEPE_PT_CF CF, CEPE_PT_CF_AGENTE CFA
+		where 	PR.PT_TESTATA_N_PROGR = <p>idDac</p>
+		and		PR.PT_DETTAGLIO_N_PROGR = D.PT_DETTAGLIO_N_PROGR
+		and		PR.PT_PRIT_F_VALIDITA = 'S' 
+		and		D.PT_DETTAGLIO_F_VALIDITA = 'S'   
+		and		D.PT_PRODOTTO_N_PRODOTTO *= P.PT_PRODOTTO_N_PT_PRODOTTO 
+		and		D.PT_OPERAZIONE_N_OPERAZIONE *= OP.PT_OPERAZIONE_N_PT_OPERAZIONE
+		and		D.PT_ESITODETT_N_ESITODETT *= E.PT_ESITODETT_N_ESITODETT
+		and		D.PT_DETTAGLIO_N_PROGR *= CF.PT_DETTAGLIO_N_PROGR
+		and		D.PT_DETTAGLIO_N_PROGR *= CFA.PT_DETTAGLIO_N_PROGR
+		and		D2.PT_DETTAGLIO_N_PROGR =* D.PT_DETTAGLIO_N_PROGR
+		and		PR2.PT_TESTATA_N_PROGR =* PR.PT_TESTATA_N_PROGR
+		and		PR2.PT_DETTAGLIO_N_PROGR =* PR.PT_DETTAGLIO_N_PROGR
+		order by PR.PT_PRIT_D_INS asc
+	</Query> 
+	<Output>
+		<Parameter propertyName="idDac"/>
+		<Parameter propertyName="idDocumento"/>
+		<Parameter propertyName="barcode"/>
+		<Parameter propertyName="numeroContratto"/>
+		<Parameter propertyName="codInforeteEsterno"/>
+		<Parameter propertyName="codProdotto"/>
+		<Parameter propertyName="descrProdotto"/>
+		<Parameter propertyName="descrOperazione"/>
+		<Parameter propertyName="esito"/>
+		<Parameter propertyName="descrEsito"/>
+		<Parameter propertyName="agente_codAgente"/>
+		<Parameter propertyName="cliente_codMediolanum"/>
+		<Parameter propertyName="cliente_cognome"/>
+		<Parameter propertyName="cliente_nome"/>
+		<Parameter propertyName="contestoAggregatore"/>
+		<Parameter propertyName="codAggregatore"/>
+		<Parameter propertyName="tipoControlloFirmeCliente"/>
+		<Parameter propertyName="tipoControlloFirmeAAF"/>
+		<Parameter propertyName="tipoControlloFirmePF"/>
+		<Parameter propertyName="esitoFirmaCliente"/>
+		<Parameter propertyName="esitoFirmaAgente"/>
+		<Parameter propertyName="importo"/>
+		<Parameter propertyName="codCassetta"/>
+		<Parameter propertyName="datiAssegno_idDocumento"/>
+		<Parameter propertyName="ubicazione"/>
+		<Parameter propertyName="uffDestinatario"/>
+		<Parameter propertyName="reso"/>
+		<Parameter propertyName="nonPervenuto"/>
+		<Parameter propertyName="aggiuntoInRicezione"/>
+		<Parameter propertyName="isErroreSmistamento"/>		
+		<Parameter propertyName="isInBusta"/>
+	</Output>
+</Access>
+
+<Access name="loadErroriDocumento" type="DAOQueryAccess" queryType="1" 
+		OutputCommandDataModel="prgm.ita.p.dac.model.ErroreDocumentoModel">
+	<Query>
+		select	
+				errDoc.PROGRESSIVO, 
+				errDoc.PT_DETTAGLIO_X_BARCODE, 
+				case 
+					when PT_ERRORI_X_PARAM_1 is null then err.PT_ERRORI_X_ERRORE
+					else err.PT_ERRORI_X_ERRORE + ' [ ' + PT_ERRORI_X_PARAM_1 + ' ]'
+				end,
+				errDoc.PT_ERRORI_DOC_D_INS,
+				err.PT_ERRORI_F_DA_AUTORIZZARE,
+				errDoc.PT_ERRORI_DOC_D_AUTORIZZAZIONE,
+				errDoc.PT_ERRORI_DOC_F_IN_SPEDIZIONE
+		from 
+				CEPE_PT_ERRORI_DOCUMENTO errDoc,
+				CEPE_PT_ERRORI err
+		where
+				errDoc.PT_ERRORI_N_ERRORE *= err.PT_ERRORI_N_ERRORE
+			and errDoc.PT_TESTATA_N_PROGR = <p>idDac</p>
+		<IfEqual propertyName="inSpedizione" propertyValue="true">
+			and errDoc.PT_ERRORI_DOC_F_IN_SPEDIZIONE = 'S'
+		</IfEqual>
+		<IfEqual propertyName="inRicezione" propertyValue="true">
+			and errDoc.PT_ERRORI_DOC_F_IN_SPEDIZIONE != 'S'
+		</IfEqual>
+	</Query>     
+	<Output>
+		<Parameter propertyName="progressivo"/>
+		<Parameter propertyName="barcode"/>
+		<Parameter propertyName="erroreDescr"/>
+		<Parameter propertyName="dataIns"/>
+		<Parameter propertyName="daAutorizzare"/>
+		<Parameter propertyName="dataAutorizzazione"/>
+		<Parameter propertyName="inSpedizione"/>
+	</Output>
+</Access>
+
+<Access name="updateDac" type="DAOTableAccess" tableName="CEPE_PT_TESTATA">
+  <Bindings>
+	<Parameter propertyName="idDac" dbColumnName="PT_TESTATA_N_PROGR" primaryKey="true"/>
+	
+	<Parameter propertyName="codTipoSpedizione" dbColumnName="PT_MEZZOSP_N_MEZZOSP"/>
+	<Parameter propertyName="dataRicezioneDocumenti" dbColumnName="PT_TESTATA_D_DOCUMENTI"/>
+	<Parameter propertyName="noteAutore" dbColumnName="PT_TESTATA_X_NOTE_INS"/>
+	<Parameter propertyName="noteOperatore" dbColumnName="PT_TESTATA_X_NOTE_UPD"/>
+	<Parameter propertyName="uffDestinatario" dbColumnName="PT_TESTATA_N_UFFICIO_DEST"/>
+	
+	<Parameter propertyName="codUtenteUpd" dbColumnName="PT_TESTATA_C_UTENTE_UPD"/>
+	<Parameter propertyName="dataOraUpd" dbColumnName="PT_TESTATA_D_UPD"/>
+  </Bindings>
+</Access>
+  
+<Access name="dac" type="DAOTableAccess" tableName="CEPE_PT_TESTATA">
+  <Bindings>
+  
+	<Parameter propertyName="idDac" dbColumnName="PT_TESTATA_N_PROGR" primaryKey="true"/>
+	
+	<Parameter propertyName="tipoDac" dbColumnName="PT_TIPOPRIT_N_TIPOPRIT"/>
+	<Parameter propertyName="stato" dbColumnName="PT_STATO_N_STATO"/>
+	<Parameter propertyName="esito" dbColumnName="PT_ESITO_N_ESITO"/>
+	<Parameter propertyName="ubicazione" dbColumnName="PT_UFFICIO_N_UFFICIO"/>
+	<Parameter propertyName="azione" dbColumnName="PT_AZIONE_N_AZIONE"/>
+	<Parameter propertyName="dataOraCambioStato" dbColumnName="PT_TESTATA_D_CAMBIOSTATO"/>
+	<Parameter propertyName="dataOraEmissione" dbColumnName="PT_TESTATA_D_DALAVORARE"/>
+	<Parameter propertyName="uffMittente" dbColumnName="PT_TESTATA_N_UFFICIO_MITT"/>
+	<Parameter propertyName="uffDestinatario" dbColumnName="PT_TESTATA_N_UFFICIO_DEST"/>
+	<Parameter propertyName="codUtenteMittente" dbColumnName="PT_TESTATA_C_UTENTE_MITT"/>
+	<Parameter propertyName="codTipoSpedizione" dbColumnName="PT_MEZZOSP_N_MEZZOSP"/>
+	<Parameter propertyName="noteAutore" dbColumnName="PT_TESTATA_X_NOTE_INS"/>
+	<Parameter propertyName="noteOperatore" dbColumnName="PT_TESTATA_X_NOTE_UPD"/>
+	<Parameter propertyName="isAutoSpuntata" dbColumnName="PT_TESTATA_F_AUTOSPUNTATA"/>
+	<Parameter propertyName="dataRicezioneDocumenti" dbColumnName="PT_TESTATA_D_DOCUMENTI"/>
+	<Parameter propertyName="codUtenteLavorazione" dbColumnName="PT_TESTATA_C_UTENTE_LAV"/>
+	
+	<Parameter propertyName="agenteRiferimento_codAgente" dbColumnName="AGE_C_AGE"/>
+	<Parameter propertyName="agenteRiferimento_serverReplica" dbColumnName="SERVER_C_REPLICA" notNullValue="0"/>
+	<Parameter propertyName="agenteRiferimento_codRete" dbColumnName="RETEVEND_C_RETE"/>
+
+	<Parameter propertyName="dataOraIns" dbColumnName="PT_TESTATA_D_EMISSIONE"/>
+	<Parameter propertyName="codUtenteIns" dbColumnName="PT_TESTATA_C_UTENTE_INS"/>
+	<Parameter propertyName="codUtenteUpd" dbColumnName="PT_TESTATA_C_UTENTE_UPD"/>
+	<Parameter propertyName="dataOraIns" dbColumnName="PT_TESTATA_D_INS"/>
+	<Parameter propertyName="dataOraUpd" dbColumnName="PT_TESTATA_D_UPD"/>
+	<Parameter propertyName="flagReplica" dbColumnName="F_REPLICA"/>
+	<Parameter propertyName="versione" dbColumnName="PT_TESTATA_VERSIONE"/>
+	<Parameter propertyName="validita" propertyType="StringType" propertyValue="S" dbColumnName="PT_TESTATA_F_VALIDITA"/>
+  </Bindings>
+</Access>
+<Access name="dacSede" type="DAOTableAccess" tableName="CEPE_PT_TESTATA2">
+  <Bindings>
+	<Parameter propertyName="idDac" 			dbColumnName="PT_TESTATA_N_PROGR" primaryKey="true"/>
+
+	<Parameter propertyName="box"			 		dbColumnName="PT_TESTATA_N_BOX"/>
+	<Parameter propertyName="uffLavorazione" 		dbColumnName="PT_TESTATA_N_UFFICIO_LAV"/>
+	<Parameter propertyName="oraSpedizione" 		dbColumnName="PT_TESTATA_ORA_SPEDIZIONE"/>
+	<Parameter propertyName="reso" 					dbColumnName="PT_TESTATA_F_RESI"/>
+	<Parameter propertyName="dataOraSpuntaDb" 		dbColumnName="PT_TESTATA_D_SPUNTA"/>
+	<Parameter propertyName="uffSpunta" 			dbColumnName="PT_TESTATA_N_UFFICIO_SPUNTA"/>
+	<Parameter propertyName="codUtenteSpunta"		dbColumnName="PT_TESTATA_C_UTENTE_SPUNTA"/>
+	<Parameter propertyName="dataOraLavorazione"	dbColumnName="PT_TESTATA_D_LAV"/>
+  </Bindings>
+</Access>
+  
+
+<Access name="updateDacRete" type="DAOTableAccess" tableName="CEPE_PT_RETEP_TESTATA">
+  <Bindings>
+	<Parameter propertyName="idDac" dbColumnName="PT_TESTATA_N_PROGR" primaryKey="true"/>
+	
+	<Parameter propertyName="codUtenteUpd" dbColumnName="PT_TESTATA_C_UTENTE_UPD"/>
+	<Parameter propertyName="dataOraUpd" dbColumnName="PT_TESTATA_D_UPD"/>
+  </Bindings>
+</Access>  
+<Access name="loadDacRete" type="DAOTableAccess" tableName="CEPE_PT_RETEP_TESTATA">
+  <Bindings>
+	<Parameter propertyName="idDac" dbColumnName="PT_TESTATA_N_PROGR" primaryKey="true"/>
+	
+	<Parameter propertyName="agenteRiferimento_codAgente" dbColumnName="PT_TESTATA_C_AGENTE_MITT"/>
+	<Parameter propertyName="agenteRiferimento_codArea" dbColumnName="AGE_C_AREA"/>
+	<Parameter propertyName="agenteRiferimento_codAgenzia" dbColumnName="AGZPI_C_AGZ"/>
+	<Parameter propertyName="agenteRiferimento_indirizzoAgenzia" dbColumnName="AGZPI_X_IND_AGZ"/>
+	<Parameter propertyName="agenteRiferimento_comuneAgenzia" dbColumnName="AGZPI_X_COMU"/>
+	<Parameter propertyName="agenteRiferimento_capAgenzia" dbColumnName="CAP_C_AVVIAM_POSTL"/>
+	<Parameter propertyName="agenteRiferimento_provAgenzia" dbColumnName="PROV_C_PROV"/>
+	<Parameter propertyName="agenteRiferimento_telAgenzia" dbColumnName="AGZPI_X_NUM_TEL_AGZ"/>
+	
+	<Parameter propertyName="agenteRiferimento_codAgente" dbColumnName="AGE_C_AGE"/>
+	<Parameter propertyName="agenteRiferimento_serverReplica" dbColumnName="SERVER_C_REPLICA"/>
+	<Parameter propertyName="agenteRiferimento_codRete" dbColumnName="RETEVEND_C_RETE"/>
+	
+  </Bindings>
+</Access>  
+<Access name="dacRete" type="DAOTableAccess" tableName="CEPE_PT_RETEP_TESTATA">
+  <Bindings>
+	<Parameter propertyName="idDac" dbColumnName="PT_TESTATA_N_PROGR" primaryKey="true"/>
+	
+	<Parameter propertyName="agenteRiferimento_codAgente" dbColumnName="PT_TESTATA_C_AGENTE_MITT"/>
+	<Parameter propertyName="agenteRiferimento_codArea" dbColumnName="AGE_C_AREA"/>
+	<Parameter propertyName="agenteRiferimento_codAgenzia" dbColumnName="AGZPI_C_AGZ"/>
+	<Parameter propertyName="agenteRiferimento_indirizzoAgenzia" dbColumnName="AGZPI_X_IND_AGZ"/>
+	<Parameter propertyName="agenteRiferimento_comuneAgenzia" dbColumnName="AGZPI_X_COMU"/>
+	<Parameter propertyName="agenteRiferimento_capAgenzia" dbColumnName="CAP_C_AVVIAM_POSTL"/>
+	<Parameter propertyName="agenteRiferimento_provAgenzia" dbColumnName="PROV_C_PROV"/>
+	<Parameter propertyName="agenteRiferimento_telAgenzia" dbColumnName="AGZPI_X_NUM_TEL_AGZ"/>
+	
+	<Parameter propertyName="agenteRiferimento_codAgente" dbColumnName="AGE_C_AGE"/>
+	<Parameter propertyName="agenteRiferimento_serverReplica" dbColumnName="SERVER_C_REPLICA"/>
+	<Parameter propertyName="agenteRiferimento_codRete" dbColumnName="RETEVEND_C_RETE"/>
+	
+	<Parameter propertyName="codUtenteIns" dbColumnName="PT_TESTATA_C_UTENTE_INS"/>
+	<Parameter propertyName="codUtenteUpd" dbColumnName="PT_TESTATA_C_UTENTE_UPD"/>
+	<Parameter propertyName="dataOraIns" dbColumnName="PT_TESTATA_D_INS"/>
+	<Parameter propertyName="dataOraUpd" dbColumnName="PT_TESTATA_D_UPD"/>
+	<Parameter propertyName="flagReplica" dbColumnName="F_REPLICA"/>
+	<Parameter propertyName="validita" propertyType="StringType" propertyValue="S" dbColumnName="PT_TESTATA_F_VALIDITA"/>
+  </Bindings>
+</Access>  
+
+<Access name="legameDocumento" type="DAOTableAccess" tableName="CEPE_PT_PRIT">
+  <Bindings>
+	<Parameter propertyName="idDac" dbColumnName="PT_TESTATA_N_PROGR" primaryKey="true"/>
+	<Parameter propertyName="idDocumento" dbColumnName="PT_DETTAGLIO_N_PROGR" primaryKey="true"/>
+
+	<Parameter propertyName="contestoAggregatore" dbColumnName="PT_PRIT_CONTESTO_AGGR"/>
+	<Parameter propertyName="codAggregatore" dbColumnName="PT_PRIT_COD_AGGREGATORE" notNullValue="X"/>
+
+	<Parameter propertyName="agenteRiferimento_codAgente" dbColumnName="AGE_C_AGE"/>
+	<Parameter propertyName="agenteRiferimento_serverReplica" dbColumnName="SERVER_C_REPLICA" notNullValue="0"/>
+	<Parameter propertyName="agenteRiferimento_codRete" dbColumnName="RETEVEND_C_RETE"/>
+	
+	<Parameter propertyName="codUtenteIns" dbColumnName="PT_PRIT_C_UTENTE_INS"/>
+	<Parameter propertyName="codUtenteUpd" dbColumnName="PT_PRIT_C_UTENTE_UPD"/>
+	<Parameter propertyName="dataOraIns" dbColumnName="PT_PRIT_D_INS"/>
+	<Parameter propertyName="dataOraUpd" dbColumnName="PT_PRIT_D_UPD"/>
+	<Parameter propertyName="flagReplica" dbColumnName="F_REPLICA"/>
+	<Parameter propertyName="validita" propertyType="StringType" propertyValue="S" dbColumnName="PT_PRIT_F_VALIDITA"/>
+  </Bindings>
+</Access>  
+<Access name="updateDataOraLegameDocumento" type="DAOTableAccess" tableName="CEPE_PT_PRIT">
+  <Bindings>
+	<Parameter propertyName="idDac" dbColumnName="PT_TESTATA_N_PROGR" primaryKey="true"/>
+	<Parameter propertyName="idDocumento" dbColumnName="PT_DETTAGLIO_N_PROGR" primaryKey="true"/>
+
+	<Parameter propertyName="codUtenteUpd" dbColumnName="PT_PRIT_C_UTENTE_UPD"/>
+	<Parameter propertyName="dataOraUpd" dbColumnName="PT_PRIT_D_UPD"/>
+  </Bindings>
+</Access>  
+<Access name="legameDocumentoSede" type="DAOTableAccess" tableName="CEPE_PT_PRIT2">
+  <Bindings>
+	<Parameter propertyName="idDac" dbColumnName="PT_TESTATA_N_PROGR" primaryKey="true"/>
+	<Parameter propertyName="idDocumento" dbColumnName="PT_DETTAGLIO_N_PROGR" primaryKey="true"/>
+
+	<Parameter propertyName="codCassetta" 			dbColumnName="PT_PRIT_N_CASSETTA"/>
+	<Parameter propertyName="nonPervenuto"			dbColumnName="PT_PRIT_F_NON_PERVENUTO"/>
+	<Parameter propertyName="aggiuntoInRicezione"	dbColumnName="PT_PRIT_F_AGGIUNTO_IN_RIC"/>
+	<Parameter propertyName="isErroreSmistamento"	dbColumnName="PT_PRIT_F_ERR_SMISTAMENTO"/>
+	<Parameter propertyName="reso"					dbColumnName="PT_PRIT_F_RESO"/>
+  </Bindings>
+</Access>  
+
+<Access name="erroreDocumento" type="DAOTableAccess" tableName="CEPE_PT_ERRORI_DOCUMENTO" identityProperty="progressivo">
+  <Bindings>
+		<Parameter propertyName="progressivo" 			dbColumnName="PROGRESSIVO" primaryKey="true"/>
+		<Parameter propertyName="idDac" 				dbColumnName="PT_TESTATA_N_PROGR" foreignKey="idDac"/>
+		<Parameter propertyName="barcode" 				dbColumnName="PT_DETTAGLIO_X_BARCODE"/>
+		<Parameter propertyName="codErrore"				dbColumnName="PT_ERRORI_N_ERRORE"/>
+		<Parameter propertyName="dataIns"				dbColumnName="PT_ERRORI_DOC_D_INS"/>
+		<Parameter propertyName="dataAutorizzazione"	dbColumnName="PT_ERRORI_DOC_D_AUTORIZZAZIONE"/>
+		<Parameter propertyName="inSpedizione"			dbColumnName="PT_ERRORI_DOC_F_IN_SPEDIZIONE"/>
+		<Parameter propertyName="parametroUno"			dbColumnName="PT_ERRORI_X_PARAM_1"/>
+		
+  </Bindings>
+</Access>  
+
+<Access name="autorizzaErroreDocumento" type="DAOTableAccess" tableName="CEPE_PT_ERRORI_DOCUMENTO">
+  <Bindings>
+		<Parameter propertyName="progressivo" 			dbColumnName="PROGRESSIVO" primaryKey="true"/>
+		<Parameter propertyName="dataAutorizzazione"	dbColumnName="PT_ERRORI_DOC_D_AUTORIZZAZIONE"/>
+  </Bindings>
+</Access>  
+
+<Access name="documento" type="DAOTableAccess" tableName="CEPE_PT_DETTAGLIO">
+  <Bindings>
+	<Parameter propertyName="idDocumento" dbColumnName="PT_DETTAGLIO_N_PROGR" primaryKey="true"/>
+	<Parameter propertyName="idDac" dbColumnName="PT_DETTAGLIO_N_TESTATA_CORR" foreignKey="idDac"/>
+
+	<Parameter propertyName="barcode" dbColumnName="PT_DETTAGLIO_X_BARCODE" notNullValue="X"/>
+
+	<Parameter propertyName="contestoAggregatore" dbColumnName="PT_DETTAGLIO_CONTESTO_AGGR"/>
+	<Parameter propertyName="codAggregatore" dbColumnName="PT_DETTAGLIO_COD_AGGREGATORE" notNullValue="X"/>
+	<Parameter propertyName="contestoAggregatoreOriginale" dbColumnName="PT_DETT_ORIG_CONTESTO_AGGR"/>
+	<Parameter propertyName="codAggregatoreOriginale" dbColumnName="PT_DETT_ORIG_COD_AGGREGATORE"/>
+	
+	<Parameter propertyName="cliente_codMediolanum" dbColumnName="CODIFCLIMEDL_C_CLI_MEDL"/>
+	<Parameter propertyName="cliente_cognome" dbColumnName="PT_DETTAGLIO_X_CLI_COGN"/>
+	<Parameter propertyName="cliente_nome" dbColumnName="PT_DETTAGLIO_X_CLI_NOME"/>
+	<Parameter propertyName="numeroContratto" dbColumnName="PT_DETTAGLIO_N_CONTR"/>
+	<Parameter propertyName="descrContratto" dbColumnName="PT_DETTAGLIO_X_DESCR_CONTR"/>
+	<Parameter propertyName="noteAutore" dbColumnName="PT_DETTAGLIO_X_NOTE_INS"/>
+	<Parameter propertyName="noteOperatore" dbColumnName="PT_DETTAGLIO_X_NOTE_UPD"/>
+	<Parameter propertyName="codProdotto" dbColumnName="PT_PRODOTTO_N_PRODOTTO"/>
+	<Parameter propertyName="codOperazione" dbColumnName="PT_OPERAZIONE_N_OPERAZIONE"/>
+	<Parameter propertyName="idReportAdeguatezza" dbColumnName="ID_REPORT_ADEGUATEZZA"/>
+	<Parameter propertyName="spese" dbColumnName="PT_DETTAGLIO_I_SPESE"/>
+	<Parameter propertyName="stato" dbColumnName="PT_STATODETT_N_STATODETT"/>
+	<Parameter propertyName="esito" dbColumnName="PT_ESITODETT_N_ESITODETT"/>
+	<Parameter propertyName="ubicazione" dbColumnName="PT_UFFICIO_N_UFFICIO"/>
+	<Parameter propertyName="azione" dbColumnName="PT_AZIONE_N_AZIONE"/>
+	
+	<Parameter propertyName="dataOraCambioStato" dbColumnName="PT_DETTAGLIO_D_CAMBIOSTATO"/>
+	<Parameter propertyName="agente_nominativo" dbColumnName="PT_DETTAGLIO_X_AGE_MITT"/>
+	<Parameter propertyName="agente_codAgente" dbColumnName="PT_DETTAGLIO_C_AGE_MITT"/>
+	<Parameter propertyName="agente_codRete" dbColumnName="PT_DETTAGLIO_C_RETE_MITT"/>
+	
+	<Parameter propertyName="agenteRiferimento_codAgente" dbColumnName="AGE_C_AGE"/>
+	<Parameter propertyName="agenteRiferimento_serverReplica" dbColumnName="SERVER_C_REPLICA" notNullValue="0"/>
+	<Parameter propertyName="agenteRiferimento_codRete" dbColumnName="RETEVEND_C_RETE"/>
+	
+	<Parameter propertyName="codInforeteEsterno" dbColumnName="PT_DETTAGLIO_C_DOC"/>
+	<Parameter propertyName="nomeRisorsaEsterna" dbColumnName="PROGRESSIVI_C_TABELLA"/>
+
+	<Parameter propertyName="datiAssegno_idDocumento" dbColumnName="PT_DETT_PADRE_ASS_N_PROGR"/>
+	<Parameter propertyName="datiAssegno_idMezzoPg" dbColumnName="PT_DETT_MEZZOPG_ASS_N_PROGR"/>
+	
+	<Parameter propertyName="dataOraIns" dbColumnName="PT_DETTAGLIO_D_EMISSIONE"/>
+	<Parameter propertyName="codUtenteIns" dbColumnName="PT_DETTAGLIO_C_UTENTE_INS"/>
+	<Parameter propertyName="codUtenteUpd" dbColumnName="PT_DETTAGLIO_C_UTENTE_UPD"/>
+	<Parameter propertyName="dataOraIns" dbColumnName="PT_DETTAGLIO_D_INS"/>
+	<Parameter propertyName="dataOraUpd" dbColumnName="PT_DETTAGLIO_D_UPD"/>
+	<Parameter propertyName="flagReplica" dbColumnName="F_REPLICA"/>
+	<Parameter propertyName="validita" propertyType="StringType" propertyValue="S" dbColumnName="PT_DETTAGLIO_F_VALIDITA"/>
+  </Bindings>
+</Access>  
+<Access name="datiDocumentoPadreAssegno" type="DAOTableAccess" tableName="CEPE_PT_DETTAGLIO">
+  <Bindings>
+	<Parameter propertyName="idDocumento" dbColumnName="PT_DETTAGLIO_N_PROGR" primaryKey="true"/>
+
+	<Parameter propertyName="esito" dbColumnName="PT_ESITODETT_N_ESITODETT"/>
+
+	<Parameter propertyName="cliente_codMediolanum" dbColumnName="CODIFCLIMEDL_C_CLI_MEDL"/>
+	<Parameter propertyName="cliente_cognome" dbColumnName="PT_DETTAGLIO_X_CLI_COGN"/>
+	<Parameter propertyName="cliente_nome" dbColumnName="PT_DETTAGLIO_X_CLI_NOME"/>
+	<Parameter propertyName="numeroContratto" dbColumnName="PT_DETTAGLIO_N_CONTR"/>
+	<Parameter propertyName="codProdotto" dbColumnName="PT_PRODOTTO_N_PRODOTTO"/>
+	<Parameter propertyName="codOperazione" dbColumnName="PT_OPERAZIONE_N_OPERAZIONE"/>
+	<Parameter propertyName="spese" dbColumnName="PT_DETTAGLIO_I_SPESE"/>
+
+	<Parameter propertyName="agente_nominativo" dbColumnName="PT_DETTAGLIO_X_AGE_MITT"/>
+	<Parameter propertyName="agente_codAgente" dbColumnName="PT_DETTAGLIO_C_AGE_MITT"/>
+	<Parameter propertyName="agente_codRete" dbColumnName="PT_DETTAGLIO_C_RETE_MITT"/>
+	
+  	<Parameter propertyName="contestoAggregatore" dbColumnName="PT_DETTAGLIO_CONTESTO_AGGR"/>
+	<Parameter propertyName="codAggregatore" dbColumnName="PT_DETTAGLIO_COD_AGGREGATORE" notNullValue="X"/>
+	<Parameter propertyName="contestoAggregatoreOriginale" dbColumnName="PT_DETT_ORIG_CONTESTO_AGGR"/>
+	<Parameter propertyName="codAggregatoreOriginale" dbColumnName="PT_DETT_ORIG_COD_AGGREGATORE"/>
+  </Bindings>
+</Access>  
+<Access name="datiDocumentoPadreAssegnoSede" type="DAOTableAccess" tableName="CEPE_PT_DETTAGLIO2">
+  <Bindings>
+	<Parameter propertyName="idDocumento" dbColumnName="PT_DETTAGLIO_N_PROGR" primaryKey="true"/>
+
+	<Parameter propertyName="codCassetta" dbColumnName="PT_DETTAGLIO_N_CASSETTA"/>
+  </Bindings>
+</Access>  
+
+<Access name="documentoCpyRete" type="DAOTableAccess" tableName="CEPE_PT_DETTAGLIO_CPYRETE">
+  <Bindings>
+	<Parameter propertyName="idDocumento" dbColumnName="PT_DETTAGLIO_N_PROGR" primaryKey="true"/>
+
+	<Parameter propertyName="numeroContratto" dbColumnName="PT_DETTAGLIO_N_CONTR"/>
+	<Parameter propertyName="codProdotto" dbColumnName="PT_PRODOTTO_N_PRODOTTO"/>
+	<Parameter propertyName="codOperazione" dbColumnName="PT_OPERAZIONE_N_OPERAZIONE"/>
+	<Parameter propertyName="agente_codAgente" dbColumnName="PT_DETTAGLIO_C_AGE_MITT"/>
+	<Parameter propertyName="agente_nominativo" dbColumnName="PT_DETTAGLIO_X_AGE_MITT"/>
+	<Parameter propertyName="cliente_codMediolanum" dbColumnName="CODIFCLIMEDL_C_CLI_MEDL"/>
+	<Parameter propertyName="cliente_cognome" dbColumnName="PT_DETTAGLIO_X_CLI_COGN"/>
+	<Parameter propertyName="cliente_nome" dbColumnName="PT_DETTAGLIO_X_CLI_NOME"/>
+
+	<Parameter propertyName="datiAssegno_idDocumento" dbColumnName="PT_DETT_PADRE_ASS_N_PROGR"/>
+	<Parameter propertyName="datiAssegno_idMezzoPg" dbColumnName="PT_DETT_MEZZOPG_ASS_N_PROGR"/>
+  </Bindings>
+</Access>  
+<Access name="documentoSede" type="DAOTableAccess" tableName="CEPE_PT_DETTAGLIO2">
+  <Bindings>
+	<Parameter propertyName="idDocumento" dbColumnName="PT_DETTAGLIO_N_PROGR" primaryKey="true"/>
+
+	<Parameter propertyName="isInBusta"			dbColumnName="PT_DETTAGLIO_F_INBUSTA"/>
+	<Parameter propertyName="uffDestinatario"	dbColumnName="PT_DETTAGLIO_N_UFFICIO_DEST"/>
+	<Parameter propertyName="codCassetta"		dbColumnName="PT_DETTAGLIO_N_CASSETTA"/>
+	<Parameter propertyName="nonPervenuto"		dbColumnName="PT_DETTAGLIO_F_NON_PERVENUTO"/>
+	<Parameter propertyName="reso"				dbColumnName="PT_DETTAGLIO_F_RESO"/>
+  </Bindings>
+</Access>  
+<Access name="esitoFirmaClienteDocumento" type="DAOTableAccess" tableName="CEPE_PT_CF">
+  <Bindings>
+	<Parameter propertyName="idDocumento" 					dbColumnName="PT_DETTAGLIO_N_PROGR" primaryKey="true"/>
+	<Parameter propertyName="esitoFirmaCliente"  			dbColumnName="PT_CF_CONTROLLO_C_CONTROLLO"/>
+	<Parameter propertyName="codUtenteEsitoFirmaCliente"  	dbColumnName="PT_CF_C_UTENTE_CTRL"/>
+	<Parameter propertyName="dataOraEsitoFirmaCliente"  	dbColumnName="PT_CF_D_UPD"/>
+  </Bindings>
+</Access>  
+<Access name="esitoFirmaAgenteDocumento" type="DAOTableAccess" tableName="CEPE_PT_CF_AGENTE">
+  <Bindings>
+	<Parameter propertyName="idDocumento" 					dbColumnName="PT_DETTAGLIO_N_PROGR" primaryKey="true"/>
+	<Parameter propertyName="esitoFirmaAgente"  			dbColumnName="PT_CF_CONTROLLO_C_CONTROLLO"/>
+	<Parameter propertyName="codUtenteEsitoFirmaAgente"  	dbColumnName="PT_CF_C_UTENTE_CTRL"/>
+	<Parameter propertyName="dataOraEsitoFirmaAgente"  		dbColumnName="PT_CF_D_UPD"/>
+  </Bindings>
+</Access>  
+<Access name="tipoControlloFirmeDocumento" type="DAOTableAccess" tableName="CEPE_PT_RETEP_OPERAZIONE">
+  <Bindings>
+	<Parameter propertyName="codOperazione" 			dbColumnName="PT_OPERAZIONE_N_PT_OPERAZIONE" primaryKey="true"/>
+	<Parameter propertyName="tipoControlloFirmeCliente" dbColumnName="PT_OPERAZIONE_F_CNTRLFIRME"/>
+	<Parameter propertyName="tipoControlloFirmeAAF"		dbColumnName="PT_OPERAZIONE_F_CNTRLFIRME_AAF"/>
+	<Parameter propertyName="tipoControlloFirmePF" 		dbColumnName="PT_OPERAZIONE_F_CNTRLFIRME_PF"/>
+  </Bindings>
+</Access>  
+
+<Access name="mezzoDiPagamento" type="DAOTableAccess" tableName="CEPE_PT_DETT_MEZZOPG" orderBy="PT_DETT_MEZZOPG_N_PROGR desc">
+  <Bindings>
+	<Parameter propertyName="idDocumento" dbColumnName="PT_DETTAGLIO_N_PROGR" primaryKey="true" foreignKey="idDocumento"/>
+	<Parameter propertyName="idMezzoPg" dbColumnName="PT_DETT_MEZZOPG_N_PROGR" primaryKey="true"/>
+	
+	<Parameter propertyName="codTipoPagamento" dbColumnName="PT_MEZZOPG_N_MEZZOPG"/>
+	<Parameter propertyName="codTipoPagamentoSuDB" dbColumnName="PT_MEZZOPG_N_MEZZOPG" fieldType="1"/>
+	
+	<Parameter propertyName="importo" dbColumnName="PT_DETT_MEZZOPG_I_IMPORTO"/>
+	<Parameter propertyName="codDivisa" dbColumnName="DIV_C_DIV"/>
+	<Parameter propertyName="numAssegno" dbColumnName="PT_DETT_MEZZOPG_N_ASS"/>
+	<Parameter propertyName="banca" dbColumnName="PT_DETT_MEZZOPG_X_BANCA"/>
+	
+	<Parameter propertyName="agenteRiferimento_codAgente" dbColumnName="AGE_C_AGE"/>
+	<Parameter propertyName="agenteRiferimento_serverReplica" dbColumnName="SERVER_C_REPLICA" notNullValue="0"/>
+	<Parameter propertyName="agenteRiferimento_codRete" dbColumnName="RETEVEND_C_RETE"/>
+
+	<Parameter propertyName="idDocumentoAssegno" dbColumnName="PT_DETTAGLIO_ASS_N_PROGR"/>
+
+	<Parameter propertyName="luogoEmissione" dbColumnName="LUOGO_EMISSIONE_ASSEGNO"/>
+	<Parameter propertyName="dataEmissione" dbColumnName="DATA_EMISSIONE_ASSEGNO"/>
+	<Parameter propertyName="flagTrasferibile" dbColumnName="FLG_ASSEGNO_TRASFERIBILE"/>
+	<Parameter propertyName="beneficiariAssegno" dbColumnName="BENEFICIARI_ASSEGNO"/>
+
+	<Parameter propertyName="codUtenteIns" dbColumnName="PT_DETT_MEZZOPG_C_UTENTE_INS"/>
+	<Parameter propertyName="codUtenteUpd" dbColumnName="PT_DETT_MEZZOPG_C_UTENTE_UPD"/>
+	<Parameter propertyName="dataOraIns" dbColumnName="PT_DETT_MEZZOPG_D_INS"/>
+	<Parameter propertyName="dataOraUpd" dbColumnName="PT_DETT_MEZZOPG_D_UPD"/>
+	<Parameter propertyName="flagReplica" dbColumnName="F_REPLICA"/>
+	<Parameter propertyName="validita" propertyType="StringType" propertyValue="S" dbColumnName="PT_DETT_MEZZOPG_F_VALIDITA"/>
+  </Bindings>
+</Access>  
+<Access name="datiAssegnoNonSuMOM" type="DAOTableAccess" tableName="CEPE_PT_DETT_MEZZOPG">
+  <Bindings>
+	<Parameter propertyName="idDocumento" dbColumnName="PT_DETTAGLIO_N_PROGR" 				primaryKey="true"/>
+	<Parameter propertyName="idDocumentoAssegno" dbColumnName="PT_DETTAGLIO_ASS_N_PROGR"  	primaryKey="true"/>
+
+	<Parameter propertyName="codTipoPagamento" dbColumnName="PT_MEZZOPG_N_MEZZOPG"/>
+
+	<Parameter propertyName="luogoEmissione" dbColumnName="LUOGO_EMISSIONE_ASSEGNO"/>
+	<Parameter propertyName="dataEmissione" dbColumnName="DATA_EMISSIONE_ASSEGNO"/>
+	<Parameter propertyName="flagTrasferibile" dbColumnName="FLG_ASSEGNO_TRASFERIBILE"/>
+  </Bindings>
+</Access>  
+<Access name="mezzoDiPagamentoCpyRete" type="DAOTableAccess" tableName="CEPE_PT_DETT_MEZPG_CPYRETE" orderBy="PT_DETT_MEZZOPG_N_PROGR desc">
+  <Bindings>
+	<Parameter propertyName="idDocumento" dbColumnName="PT_DETTAGLIO_N_PROGR" primaryKey="true" foreignKey="idDocumento"/>
+	<Parameter propertyName="idMezzoPg" dbColumnName="PT_DETT_MEZZOPG_N_PROGR" primaryKey="true"/>
+
+	<Parameter propertyName="codTipoPagamento" dbColumnName="PT_MEZZOPG_N_MEZZOPG"/>
+	<Parameter propertyName="importo" dbColumnName="PT_DETT_MEZZOPG_I_IMPORTO"/>
+	<Parameter propertyName="codDivisa" dbColumnName="DIV_C_DIV"/>
+	<Parameter propertyName="numAssegno" dbColumnName="PT_DETT_MEZZOPG_N_ASS"/>
+	<Parameter propertyName="banca" dbColumnName="PT_DETT_MEZZOPG_X_BANCA"/>
+
+	<Parameter propertyName="idDocumentoAssegno" dbColumnName="PT_DETTAGLIO_ASS_N_PROGR"/>
+	
+	<Parameter propertyName="luogoEmissione" dbColumnName="LUOGO_EMISSIONE_ASSEGNO"/>
+	<Parameter propertyName="dataEmissione" dbColumnName="DATA_EMISSIONE_ASSEGNO"/>
+	<Parameter propertyName="flagTrasferibile" dbColumnName="FLG_ASSEGNO_TRASFERIBILE"/>
+  </Bindings>
+</Access>  
+
+<Access name="regoleControlli" type="DAOQueryAccess" queryType="0" maxResultRows="1"
+		OutputCommandDataModel="com.atosorigin.wfem.types.StringType">
+	<Query>
+		select 	isnull(PT_OPERAZIONE_F_CNTRLDATIRICH,'N')+
+			   	isnull(PT_OPERAZIONE_F_CNTRLCLIAGE,'N')+
+			   	isnull(PT_OPERAZIONE_F_CNTRLMEZZOPG,'N')+
+			   	isnull(PT_OPERAZIONE_F_CNTRLSPESE,'N')
+		from 	CEPE_PT_RETEP_OPERAZIONE
+		where 	PT_OPERAZIONE_N_PT_OPERAZIONE = ?
+	</Query>
+	<Input>
+		<Parameter propertyName="codOperazione"/>
+	</Input>
+</Access>
+
+<Access name="aggiornaPlicoDocumento" type="DAOTableAccess" tableName="CEPE_PT_DETTAGLIO">
+  <Bindings>
+	<Parameter propertyName="idDocumento"		dbColumnName="PT_DETTAGLIO_N_PROGR" primaryKey="true"/>
+
+	<Parameter propertyName="contestoAggregatore" dbColumnName="PT_DETTAGLIO_CONTESTO_AGGR"/>
+	<Parameter propertyName="codAggregatore"	dbColumnName="PT_DETTAGLIO_COD_AGGREGATORE" notNullValue="X"/>
+  </Bindings>
+</Access>  
+<Access name="aggiornaPlicoDocumentoSede" type="DAOTableAccess" tableName="CEPE_PT_DETTAGLIO2">
+  <Bindings>
+	<Parameter propertyName="idDocumento"		dbColumnName="PT_DETTAGLIO_N_PROGR" primaryKey="true"/>
+	<Parameter propertyName="nonPervenuto"		dbColumnName="PT_DETTAGLIO_F_NON_PERVENUTO"/>
+  </Bindings>
+</Access>  
+<Access name="aggiornaPlicoDocumentoInBusta" type="DAOTableAccess" tableName="CEPE_PT_PRIT">
+  <Bindings>
+	<Parameter propertyName="idDocumento"			dbColumnName="PT_DETTAGLIO_N_PROGR" primaryKey="true"/>
+	<Parameter propertyName="idDac"					dbColumnName="PT_TESTATA_N_PROGR"	primaryKey="true"/>
+
+	<Parameter propertyName="contestoAggregatore"	dbColumnName="PT_PRIT_CONTESTO_AGGR"/>
+	<Parameter propertyName="codAggregatore"		dbColumnName="PT_PRIT_COD_AGGREGATORE" notNullValue="X"/>
+  </Bindings>
+</Access>
+
+<Access name="esisteDacCorrenteOffline" type="DAOQueryAccess" queryType="1" maxResultRows="1"
+		OutputCommandDataModel="com.atosorigin.wfem.types.StringType">
+	<Query>
+		select 	PT_TESTATA_N_PROGR
+		from   	CEPE_PT_TESTATA   
+		where  	PT_STATO_N_STATO in (1,2) 
+		and    	PT_UFFICIO_N_UFFICIO in (1,2)    
+		and    	PT_TESTATA_N_UFFICIO_DEST = 2
+		and    	PT_TIPOPRIT_N_TIPOPRIT = 1    
+		and    	PT_TESTATA_F_VALIDITA = 'S'
+		and		(F_REPLICA is null or F_REPLICA = 'D')
+		and    	PT_TESTATA_C_UTENTE_MITT = <p>contextUserCode</p>
+		order by PT_TESTATA_D_INS desc
+	</Query> 
+</Access>  
+
+<Access name="esisteDacCorrenteOnline" type="DAOQueryAccess" queryType="1" maxResultRows="1"
+		OutputCommandDataModel="com.atosorigin.wfem.types.StringType">
+	<Query>
+		select 	PT_TESTATA_N_PROGR
+		from   	CEPE_PT_TESTATA   
+		where  	PT_STATO_N_STATO = 1 
+		and    	PT_TESTATA_N_UFFICIO_DEST = 2
+		and    	PT_TIPOPRIT_N_TIPOPRIT = <p>tipoDac</p>    
+		and    	PT_TESTATA_F_VALIDITA = 'S'
+		and    	PT_TESTATA_C_UTENTE_MITT = <p>contextUserCode</p>
+		and		PT_UFFICIO_N_UFFICIO = <p>ufficio</p>
+		<IfEqual propertyName="isAutoSpuntata" propertyValue="true">and	PT_TESTATA_F_AUTOSPUNTATA = 'S'</IfEqual>
+		<IfNotEqual propertyName="isAutoSpuntata" propertyValue="true">and (PT_TESTATA_F_AUTOSPUNTATA is null or PT_TESTATA_F_AUTOSPUNTATA = 'N')</IfNotEqual>
+		order by PT_TESTATA_D_INS desc
+	</Query> 
+</Access>  
+
+<Access name="ultimaDacInviata" type="DAOQueryAccess" queryType="1" maxResultRows="1"
+		OutputCommandDataModel="com.atosorigin.wfem.types.StringType">
+	<Query>
+		select	T.PT_TESTATA_N_PROGR 
+		from	CEPE_PT_TESTATA T 
+		where	T.PT_TIPOPRIT_N_TIPOPRIT = <p>tipoDac</p>
+		and		T.PT_TESTATA_C_UTENTE_MITT = <p>contextUserCode</p>
+		and		T.PT_STATO_N_STATO = 2
+		and		T.F_REPLICA = 'S'
+		and		T.PT_TESTATA_F_VALIDITA = 'S'
+		and 	T.PT_TESTATA_D_CAMBIOSTATO = (  select 	max(TT.PT_TESTATA_D_CAMBIOSTATO) 
+											 	from	CEPE_PT_TESTATA TT 
+												where	TT.PT_TIPOPRIT_N_TIPOPRIT = <p>tipoDac</p>
+												and		TT.PT_TESTATA_C_UTENTE_MITT = <p>contextUserCode</p>
+												and		TT.PT_STATO_N_STATO = 2
+												and		TT.F_REPLICA = 'S'
+												and		TT.PT_TESTATA_F_VALIDITA = 'S')
+	</Query> 
+</Access>
+
+<Access name="lavoraDac" type="DAOTableAccess" tableName="CEPE_PT_TESTATA">
+  <Bindings>
+	<Parameter propertyName="idDac" 				dbColumnName="PT_TESTATA_N_PROGR" primaryKey="true"/>
+	<Parameter propertyName="statoSpedita"			dbColumnName="PT_STATO_N_STATO"   primaryKey="true" propertyValue="2" propertyType="IntegerType"/>
+
+	<Parameter propertyName="stato" 				dbColumnName="PT_STATO_N_STATO"/>
+	<Parameter propertyName="azione"				dbColumnName="PT_AZIONE_N_AZIONE"/>
+	<Parameter propertyName="esito" 				dbColumnName="PT_ESITO_N_ESITO"/>
+	<Parameter propertyName="ubicazione" 			dbColumnName="PT_UFFICIO_N_UFFICIO"/>
+	<Parameter propertyName="dataOraCambioStato" 	dbColumnName="PT_TESTATA_D_CAMBIOSTATO"/>
+	<Parameter propertyName="codUtenteLavorazione"	dbColumnName="PT_TESTATA_C_UTENTE_LAV"/>
+	
+	<Parameter propertyName="codUtenteUpd"			dbColumnName="PT_TESTATA_C_UTENTE_UPD"/>
+	<Parameter propertyName="dataOraUpd"			dbColumnName="PT_TESTATA_D_UPD"/>
+  </Bindings>
+</Access>  
+<Access name="lavoraDacSenzaDocumenti" type="DAOTableAccess" tableName="CEPE_PT_TESTATA">
+  <Bindings>
+	<Parameter propertyName="idDac" 				dbColumnName="PT_TESTATA_N_PROGR" primaryKey="true"/>
+	<Parameter propertyName="statoLavorata"			dbColumnName="PT_STATO_N_STATO"   primaryKey="true" propertyValue="4" propertyType="IntegerType"/>
+	<Parameter propertyName="esitoSenzaDoc"			dbColumnName="PT_ESITO_N_ESITO"   primaryKey="true" propertyValue="4" propertyType="IntegerType"/>
+
+	<Parameter propertyName="stato" 				dbColumnName="PT_STATO_N_STATO"/>
+	<Parameter propertyName="azione"				dbColumnName="PT_AZIONE_N_AZIONE"/>
+	<Parameter propertyName="esito" 				dbColumnName="PT_ESITO_N_ESITO"/>
+	<Parameter propertyName="ubicazione" 			dbColumnName="PT_UFFICIO_N_UFFICIO"/>
+	<Parameter propertyName="dataOraCambioStato" 	dbColumnName="PT_TESTATA_D_CAMBIOSTATO"/>
+	<Parameter propertyName="codUtenteLavorazione"	dbColumnName="PT_TESTATA_C_UTENTE_LAV"/>
+	
+	<Parameter propertyName="codUtenteUpd"			dbColumnName="PT_TESTATA_C_UTENTE_UPD"/>
+	<Parameter propertyName="dataOraUpd"			dbColumnName="PT_TESTATA_D_UPD"/>
+  </Bindings>
+</Access>  
+
+<Access name="lavoraDacSede" type="DAOTableAccess" tableName="CEPE_PT_TESTATA2">
+  <Bindings>
+	<Parameter propertyName="idDac" 				dbColumnName="PT_TESTATA_N_PROGR" primaryKey="true"/>
+
+	<Parameter propertyName="uffLavorazione" 		dbColumnName="PT_TESTATA_N_UFFICIO_LAV"/>
+	<Parameter propertyName="dataOraLavorazione"	dbColumnName="PT_TESTATA_D_LAV"/>
+  </Bindings>
+</Access>  
+
+<Access name="lavoraDocumento" type="DAOTableAccess" tableName="CEPE_PT_DETTAGLIO">
+  <Bindings>
+	<Parameter propertyName="idDocumento" dbColumnName="PT_DETTAGLIO_N_PROGR" primaryKey="true"/>
+	<Parameter propertyName="idDac" dbColumnName="PT_DETTAGLIO_N_TESTATA_CORR" foreignKey="idDac"/>
+
+	<Parameter propertyName="stato"  dbColumnName="PT_STATODETT_N_STATODETT"/>
+	<Parameter propertyName="azione" dbColumnName="PT_AZIONE_N_AZIONE"/>
+	<Parameter propertyName="esito"  dbColumnName="PT_ESITODETT_N_ESITODETT"/>
+	<Parameter propertyName="ubicazione" dbColumnName="PT_UFFICIO_N_UFFICIO"/>
+
+	<Parameter propertyName="codUtenteUpd" dbColumnName="PT_DETTAGLIO_C_UTENTE_UPD"/>
+	<Parameter propertyName="dataOraUpd" dbColumnName="PT_DETTAGLIO_D_UPD"/>
+  </Bindings>
+</Access>  
+
+<Access name="rigaEsitoFirmaCliente" type="DAOTableAccess" tableName="CEPE_PT_CF">
+  <Bindings>
+	<Parameter propertyName="idDocumento" dbColumnName="PT_DETTAGLIO_N_PROGR" primaryKey="true"/>
+
+	<Parameter propertyName="esitoFirmaCliente" dbColumnName="PT_CF_CONTROLLO_C_CONTROLLO"/>
+	<Parameter propertyName="cliente_codMediolanum" dbColumnName="CODIFCLIMEDL_C_CLI_MEDL"/>
+
+	<Parameter propertyName="dataOraCambioStato" dbColumnName="PT_CF_D_CONTROLLO"/>
+	<Parameter propertyName="codUtenteEsitoFirmaCliente" dbColumnName="PT_CF_C_UTENTE_CTRL"/>
+	<Parameter propertyName="codUtenteIns" dbColumnName="PT_CF_C_UTENTE_INS"/>
+	<Parameter propertyName="codUtenteUpd" dbColumnName="PT_CF_C_UTENTE_UPD"/>
+	<Parameter propertyName="dataOraIns" dbColumnName="PT_CF_D_INS"/>
+	<Parameter propertyName="dataOraUpd" dbColumnName="PT_CF_D_UPD"/>
+	<Parameter propertyName="validita" propertyType="StringType" propertyValue="S" dbColumnName="PT_CF_F_VALIDITA"/>
+  </Bindings>
+</Access>  
+<Access name="rigaEsitoFirmaAgente" type="DAOTableAccess" tableName="CEPE_PT_CF_AGENTE">
+  <Bindings>
+	<Parameter propertyName="idDocumento" dbColumnName="PT_DETTAGLIO_N_PROGR" primaryKey="true"/>
+
+	<Parameter propertyName="esitoFirmaAgente" dbColumnName="PT_CF_CONTROLLO_C_CONTROLLO"/>
+	<Parameter propertyName="ufficio" dbColumnName="PT_UFFICIO_N_UFFICIO"/>
+	<Parameter propertyName="agente_codAgente" dbColumnName="AGE_C_AGE"/>
+	<Parameter propertyName="agente_codMediolanum" dbColumnName="CODIFCLIMEDL_C_CLI_MEDL"/>
+	<Parameter propertyName="agente_tipoAgente"    dbColumnName="AGE_TIPO_AGENTE"/>
+
+	<Parameter propertyName="dataOraCambioStato" dbColumnName="PT_CF_D_CONTROLLO"/>
+	<Parameter propertyName="codUtenteEsitoFirmaAgente" dbColumnName="PT_CF_C_UTENTE_CTRL"/>
+	<Parameter propertyName="codUtenteIns" dbColumnName="PT_CF_C_UTENTE_INS"/>
+	<Parameter propertyName="codUtenteUpd" dbColumnName="PT_CF_C_UTENTE_UPD"/>
+	<Parameter propertyName="dataOraIns" dbColumnName="PT_CF_D_INS"/>
+	<Parameter propertyName="dataOraUpd" dbColumnName="PT_CF_D_UPD"/>
+  </Bindings>
+</Access>  
+
+<Access name="loadNumContiCorrentiCliente" type="DAOQueryAccess" queryType="0" connectionCacheReference="IQ_PRIT">
+ <Query>
+	select	count(*)  
+	from 	INR_LEGAMECONTRCLI
+	where	CODIFCLIMEDL_C_CLI_MEDL = ?
+	and		TIPPROD_C_TIP_PROD = 'CC'
+ </Query>
+ <Input>
+	<Parameter propertyName="codMediolanum"/>
+ </Input>
+ <Output>
+	<Parameter propertyName="numContiCorrenti"/>
+ </Output> 
+</Access>
+
+<Access name="esisteBarcode" type="DAOQueryAccess" queryType="0" OutputCommandDataModel="com.atosorigin.wfem.types.IntegerType">
+ <Query>
+	select	count(*)  
+	from 	CEPE_PT_DETTAGLIO
+	where	PT_DETTAGLIO_X_BARCODE = ?
+	and		PT_DETTAGLIO_N_PROGR != ?
+ </Query>
+ <Input>
+	<Parameter propertyName="barcode"/>
+	<Parameter propertyName="idDocumento"/>
+ </Input>
+</Access>  
+
+<Access name="loadStoriaDocumento" type="DAOQueryAccess" queryType="1"
+		OutputCommandDataModel="prgm.ita.p.dac.model.DacTestataModel">
+ <Query>
+	select	T.PT_TESTATA_N_PROGR
+	,		T.PT_TESTATA_C_UTENTE_INS
+	,		T.PT_TESTATA_N_UFFICIO_MITT
+	,		T.PT_TESTATA_D_DALAVORARE
+	,		T.PT_TESTATA_N_UFFICIO_DEST
+	,		T2.PT_TESTATA_D_LAV
+	,		T2.PT_TESTATA_N_UFFICIO_LAV
+	,		T.PT_TESTATA_C_UTENTE_LAV
+	,		T2.PT_TESTATA_D_SPUNTA
+	,		T2.PT_TESTATA_N_UFFICIO_SPUNTA
+	,		T2.PT_TESTATA_C_UTENTE_SPUNTA
+	,		T.PT_STATO_N_STATO
+	,		T.PT_TESTATA_D_CAMBIOSTATO
+	,		T.PT_TIPOPRIT_N_TIPOPRIT
+	from 	CEPE_PT_TESTATA T, CEPE_PT_TESTATA2 T2, CEPE_PT_PRIT P, CEPE_PT_DETTAGLIO D
+	where	T.PT_TESTATA_N_PROGR *= T2.PT_TESTATA_N_PROGR
+	and		P.PT_TESTATA_N_PROGR = T.PT_TESTATA_N_PROGR
+	and		P.PT_DETTAGLIO_N_PROGR = <p>idDocumento</p>
+	and		P.PT_DETTAGLIO_N_PROGR = D.PT_DETTAGLIO_N_PROGR
+	order by T.PT_TIPOPRIT_N_TIPOPRIT asc, T.PT_TESTATA_D_CAMBIOSTATO asc
+ </Query>
+ <Output>
+	<Parameter propertyName="idDac"/>
+	<Parameter propertyName="codUtenteIns"/>
+	<Parameter propertyName="uffMittente"/>
+	<Parameter propertyName="dataOraEmissione"/>
+	<Parameter propertyName="uffDestinatario"/>
+	<Parameter propertyName="dataOraLavorazione"/>
+	<Parameter propertyName="uffLavorazione"/>
+	<Parameter propertyName="codUtenteLavorazione"/>
+	<Parameter propertyName="dataOraSpuntaDb"/>
+	<Parameter propertyName="uffSpunta"/>
+	<Parameter propertyName="codUtenteSpunta"/>
+	<Parameter propertyName="stato"/>
+	<Parameter propertyName="dataOraCambioStato"/>
+	<Parameter propertyName="tipoDac"/>
+ </Output> 
+</Access>
+
+<Access name="loadPlicoDocumento" type="DAOQueryAccess" queryType="0"
+		OutputCommandDataModel="prgm.ita.p.dac.model.DocumentoModel">
+ <Query>
+	select	D.PT_DETTAGLIO_N_PROGR
+	,		case D.PT_DETTAGLIO_X_BARCODE when 'X' then '' else D.PT_DETTAGLIO_X_BARCODE end
+	,		D.PT_DETTAGLIO_N_CONTR
+	,		D.PT_PRODOTTO_N_PRODOTTO
+	,		D.PT_OPERAZIONE_N_OPERAZIONE
+	,		D.PT_STATODETT_N_STATODETT
+	,		D.PT_UFFICIO_N_UFFICIO
+	,		D.PT_ESITODETT_N_ESITODETT
+	,		D.PT_DETTAGLIO_D_CAMBIOSTATO
+	,		D.PT_DETTAGLIO_C_AGE_MITT
+	,		D.PT_DETTAGLIO_X_AGE_MITT
+	,		D.PT_DETT_PADRE_ASS_N_PROGR
+	,		D.PT_DETTAGLIO_CONTESTO_AGGR
+	,		case D.PT_DETTAGLIO_COD_AGGREGATORE when 'X' then '' else D.PT_DETTAGLIO_COD_AGGREGATORE end
+	,		D.PT_DETT_ORIG_CONTESTO_AGGR
+	,		D.PT_DETT_ORIG_COD_AGGREGATORE
+	from 	CEPE_PT_DETTAGLIO D 
+	where 	D.PT_DETTAGLIO_COD_AGGREGATORE = ?
+	and		D.PT_DETTAGLIO_N_PROGR != ?
+ </Query>
+ <Input>
+	<Parameter propertyName="codAggregatore"/>
+	<Parameter propertyName="idDocumento"/>
+ </Input>
+ <Output>
+	<Parameter propertyName="idDocumento"/>
+	<Parameter propertyName="barcode"/>
+	<Parameter propertyName="numeroContratto"/>
+	<Parameter propertyName="codProdotto"/>
+	<Parameter propertyName="codOperazione"/>
+	<Parameter propertyName="stato"/>
+	<Parameter propertyName="ubicazione"/>
+	<Parameter propertyName="esito"/>
+	<Parameter propertyName="dataOraCambioStato"/>
+	<Parameter propertyName="agente_codAgente"/>
+	<Parameter propertyName="agente_nominativo"/>		
+	<Parameter propertyName="datiAssegno_idDocumento"/>
+	<Parameter propertyName="contestoAggregatore"/>
+	<Parameter propertyName="codAggregatore"/>
+	<Parameter propertyName="contestoAggregatoreOriginale"/>
+	<Parameter propertyName="codAggregatoreOriginale"/>
+ </Output> 
+</Access>
+
+<Access name="loadDescrizioneOperazione" type="DAOQueryAccess" queryType="0"
+		OutputCommandDataModel="com.atosorigin.wfem.types.StringType">
+ <Query>
+	select	PT_OPERAZIONE_X_PT_OPERAZIONE
+	from 	CEPE_PT_RETEP_OPERAZIONE
+	where	PT_OPERAZIONE_N_PT_OPERAZIONE = ?
+ </Query>
+ <Input>
+	<Parameter propertyName="codOperazione"/>
+ </Input>
+</Access>
+
+<Access name="getIdDocumentoAssegno" type="DAOQueryAccess" queryType="0" maxResultRows="1"
+		OutputCommandDataModel="com.atosorigin.wfem.types.StringType">
+	<Query>
+		select 	PT_DETTAGLIO_N_PROGR
+		from   	CEPE_PT_DETTAGLIO   
+		where  	PT_DETT_PADRE_ASS_N_PROGR = ?
+		and		PT_DETT_MEZZOPG_ASS_N_PROGR = ?
+		and		PT_PRODOTTO_N_PRODOTTO = 0
+		and		PT_OPERAZIONE_N_OPERAZIONE = 0
+	</Query> 
+ <Input>
+	<Parameter propertyName="datiAssegno_idDocumento"/>
+	<Parameter propertyName="datiAssegno_idMezzoPg"/>
+ </Input>
+</Access>  
+
+<Access name="getContatore" type="DAOCallableAccess" store="sp_get_progressivi">
+   <Input>
+		<Parameter propertyName="nomeRisorsa"/>
+		<Parameter propertyName="utente"/>
+		<Parameter propertyName="incremento"/>
+		<Parameter propertyName="progressivo"/>
+   </Input>
+   <Output>
+		<Parameter propertyName=""/>
+		<Parameter propertyName=""/>
+		<Parameter propertyName=""/>
+		<Parameter propertyName="progressivo"/>
+   </Output>
+</Access>
+
+<Access name="loadAgevolazioneData" type="DAOQueryAccess" queryType="0" maxResultRows="1">
+	<Query>
+		select	ID_DEROGA, ID_ATTIVITA, 'GESTITO'
+		from	CEPE_CRLEVE_MOV_DEROG_GEST
+		where	ID_DEROGA = (select convert(NUMERIC,ID_AGEVOLAZIONE) from PDF_INSTANCE where PDF_INSTANCE_ID = ?)
+	</Query>     
+	<Input>
+		<Parameter propertyName="codInforeteEsterno"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="idAgevolazione"/>
+		<Parameter propertyName="idAttivitaAgevolazione"/>
+		<Parameter propertyName="tipoAgevolazione"/>
+	</Output>
+</Access> 
+
+<Access name="isProtectionSpecialist" type="DAOQueryAccess" queryType="1" maxResultRows="1" connectionCacheReference="PRGM"
+		OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType">
+	<Query>
+		select 	case when count(*) = 0 then 'N' else 'S' end as isProtectionSpecialist
+		from 	PRGM_USERS_ROLES_COMPLETE 
+		where 	C_USER = <p>contextUserCode</p>
+		and 	P_ROLE in (2260, 2262)
+	</Query> 
+ </Access> 
+
+<Access name="elencoBC" type="DAOQueryAccess" queryType="1" connectionCacheReference="SER_MIFID"
+		OutputCommandDataModel="prgm.ita.p.dac.model.AgenteBCModel">
+	<Query>
+		select  cogest.COD_AGENT_COGEST, age.AGE_M_NOME
+    	from    SOGG_TRKEVEN.DETT_ACCOR_COGEST cogest
+    	left outer join (select AGE_C, AGE_M_NOME from CLL.AGE where GSTD_F_ESIST = 'S') age on age.AGE_C = cogest.COD_AGENT_COGEST
+		where 	cogest.COD_RUOLO_AGENT = 'BC'
+		and		cogest.GSTD_F_ESIST = 'S'
+		and		sysdate between cogest.DAT_ATTIVZ_ACCOR and cogest.DAT_REVO_ACCOR
+    	and     cogest.COD_STATO_ACCOR='ATT'
+		and	    cogest.COD_AGENT_TITRE = <p>contextUserCode</p>
+		order by 2
+	</Query> 
+	<Output>
+		<Parameter propertyName="codAgente"/>
+		<Parameter propertyName="nominativo"/>
+	</Output>
+</Access> 
+
+<Access name="loadDatiDacAgenteBC" type="DAOQueryAccess" queryType="0" maxResultRows="1">
+	<Query>
+		select 	t.PT_TESTATA_N_PROGR, count(*) as numDocumentiInDac
+		from   	CEPE_PT_TESTATA t, CEPE_PT_DETTAGLIO d
+		where  	t.PT_STATO_N_STATO = 1 
+		and    	t.PT_TESTATA_N_UFFICIO_DEST = 2
+		and    	t.PT_TIPOPRIT_N_TIPOPRIT = 1  
+		and    	t.PT_TESTATA_F_VALIDITA = 'S'
+		and    	t.PT_TESTATA_C_UTENTE_MITT = ?
+		and		t.PT_UFFICIO_N_UFFICIO = 1
+		and 	(t.PT_TESTATA_F_AUTOSPUNTATA is null or t.PT_TESTATA_F_AUTOSPUNTATA = 'N')
+		and		t.PT_TESTATA_N_PROGR = d.PT_DETTAGLIO_N_TESTATA_CORR
+		group by t.PT_TESTATA_N_PROGR
+		order by 1 desc
+	</Query> 
+	<Input>
+		<Parameter propertyName="codAgente"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="idDac"/>
+		<Parameter propertyName="numDocumentiInDac"/>
+	</Output>
+</Access>  
+
+</DAO-Object>

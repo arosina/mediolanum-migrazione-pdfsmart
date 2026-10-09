@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="ArchiviaContrattoDigitale" connectionCacheReference="CEPE">
+<Access name="esitoElaborazioneArchivia" type="DAOTableAccess" tableName="PDF_POSTCOMP_DATA" connectionCacheReference="CEPE">
+   <Bindings>
+	<Parameter propertyName="pdfInstanceId" 	dbColumnName="PDF_INSTANCE_ID" primaryKey="true"/>
+	<Parameter propertyName="dataElabArchivia" 	dbColumnName="DATA_ELAB_ARCH"/>
+	<Parameter propertyName="infoArchivia" 	dbColumnName="ARCH_INFO"/>		
+   </Bindings>
+</Access>
+<Access name="scriviContratto" type="DAOOSBAccess" serviceName="Filenet/px/Filenet_RDV">
+   <Input>
+   	<![CDATA[   		
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wsg="http://wsgdi.p8.blueeye.it">
+		   <soapenv:Header/>
+		   <soapenv:Body>
+		      <wsg:addObject>
+		         <wsg:in0 cdata="true" propertyName="xmlRequest">		         	 
+				 </wsg:in0>
+		      </wsg:addObject>
+		   </soapenv:Body>
+		</soapenv:Envelope> 		
+	]]>			
+   </Input>
+   <Output>
+   		<![CDATA[			     
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+			   <soapenv:Body>
+			      <addObjectResponse xmlns="http://wsgdi.p8.blueeye.it">
+			         <addObjectReturn propertyName="xmlResponse" cdata="true">			      
+				  	 </addObjectReturn>
+      			   </addObjectResponse>
+   			   </soapenv:Body>	
+   			</soapenv:Envelope>	
+		]]>
+   </Output>
+</Access>
+</DAO-Object>

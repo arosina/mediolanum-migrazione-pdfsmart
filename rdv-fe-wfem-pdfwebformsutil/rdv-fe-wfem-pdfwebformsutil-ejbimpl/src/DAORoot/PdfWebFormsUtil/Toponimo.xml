@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="Toponimo">	
+
+<Access name="toponimoAccess" type="DAOQueryAccess" queryType="1"  connectionCacheReference="DBAZ_SOGG"
+		OutputCommandDataModel="prgm.pdfwebformsutil.drivers.autocompletion.toponimo.ToponimoAutocompleteModel">
+	<Query>
+		select COD, DESCR 
+		from DAICREF.CCB_ANAGRAFICA_DECOD
+		where TIPO = 'TIPO-VIA-INFORETE' 
+		and nvl(trim(COD),' ') != ' ' 
+		and ATTIVO = 'S'
+		<IfNotNull propertyName="autocompleteTerm">AND DESCR LIKE TRIM(UPPER(<p>autocompleteTerm%</p>))</IfNotNull> 
+		<IfNotNull propertyName="descrizioneToponimo">AND DESCR = TRIM(UPPER(<p>descrizioneToponimo</p>))</IfNotNull> 
+		order by DESCR
+	</Query> 
+	<Output>
+		<Parameter propertyName="codiceToponimo"/>
+		<Parameter propertyName="descrizioneToponimo"/>
+	</Output>
+</Access>
+
+</DAO-Object>

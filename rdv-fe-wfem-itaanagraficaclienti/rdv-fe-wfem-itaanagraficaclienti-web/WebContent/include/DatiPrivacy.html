@@ -1,0 +1,108 @@
+<!--------  DATI PRIVACY ------->
+<%template.setPrefix("datiPrivacy");%>
+
+<table style="width:98%;border-collapse:collapse;border-spacing:0;">
+  <tr>
+    <td>
+      <table class="text">
+      	<tr>
+      		<td>
+	      		<b>Riguardo al trattamento dei dati personali per:</b><br><br>
+	      		(i) ricevere informazioni e promozioni su prodotti e servizi di Banca Mediolanum S.p.A., delle altre Società in premessa, 
+	      		attraverso contatto telefonico, fax, messaggi SMS, posta cartacea e posta elettronica, app, social media, servizi di messaggistica istantanea
+				e mediante ogni altro strumento di comunicazione personale;<br><br>
+				(ii) a partecipare a ricerche di mercato o di rilevazione del grado di soddisfazione della clientela sulla qualità dei servizi resi e 
+				sull'attività svolta da Banca Mediolanum S.p.A. e/o delle Società indicate in premessa; <span class="mtory">(*)</span>
+      		<td>
+      	</tr>
+      	<tr>
+      		<td>
+      			<table style="margin-left:auto;margin-right:auto;"><tr>
+				    <td style="<%=model.fch(template.getPrefix(),"flagLiberatoria")%>"><%=template.field("flagLiberatoria","labelposition='left' onchange='gestioneFlagLiberatoria();'")%></td>
+      			</tr></table>
+      		</td>
+      	</tr>
+      </tr></table>    
+    </td>
+  </tr>
+  <tr><td style="height:1;"></td></tr>
+  <tr>
+    <td>
+      <table class="text">
+      	<tr>
+      		<td>
+      		<b>Riguardo al trattamento dei dati personali per:</b><br><br>
+			ricevere da Banca Mediolanum S.p.A. informazioni e promozioni su prodotti e servizi delle altre Società del Gruppo Mediolanum, 
+			non indicate in premessa ed il cui elenco aggiornato è consultabile sul sito di Banca Mediolanum S.p.a. nella sezione "Privacy", 
+			attraverso contatto telefonico, fax, messaggi SMS, posta cartacea e posta elettronica, app, social media, servizi di messaggistica 
+			istantanea e mediante ogni altro strumento di comunicazione personale. <span class="mtory">(*)</span>
+      		<td>
+      	</tr>
+      	<tr>
+      		<td>
+      			<table style="margin-left:auto;margin-right:auto;"><tr>
+				    <td style="<%=model.fch(template.getPrefix(),"flagCarte")%>"><%=template.field("flagCarte","labelposition='left' onchange='gestioneFlagCarte();'")%></td>
+      			</tr></table>
+      		</td>
+      	</tr>
+      </tr></table>    
+    </td>
+  </tr>
+  <tr><td style="height:1;"></td></tr>
+  <tr>
+    <td>
+      <table class="text">
+      	<tr>
+      		<td>
+      		<b>Profilazione:</b><br><br>
+			Riguardo al trattamento dei dati personali per profilazione che consenta a Banca Mediolanum S.p.A. e/o alle altre Società in premessa 
+			di valutare le iniziative coerenti al mio profilo, anche mediante una selezione automatizzata delle stesse e/o sistemi di 
+			tracciamento (tra cui i cosiddetti tracking pixel), al fine di propormi comunicazioni su prodotti, servizi e promozioni in linea con le 
+			mie esigenze <span class="mtory">(*)</span>
+      		<td>
+      	</tr>
+      	<tr>
+      		<td>
+      			<table style="margin-left:auto;margin-right:auto;"><tr>
+				    <td style="<%=model.fch(template.getPrefix(),"flagProfilazione")%>"><%=template.field("flagProfilazione","labelposition='left' onchange='gestioneFlagProfilazione();'")%></td>
+      			</tr></table>
+      		</td>
+      	</tr>
+      </tr></table>    
+    </td>
+  </tr>
+  <tr><td style="height:1;"></td></tr>
+  <tr>
+    <td>
+      <table class="text">
+      	<tr>
+      		<td>
+      		<b>Estensione benefici sui rapporti cointestati:</b><br><br>
+      		Nel caso di rapporti cointestati, attualmente o in futuro per permettere agli altri eventuali miei cointestatari di desumere il mio livello personale 
+      		di patrimonio detenuto presso le società Titolari, anche in base ai rapporti a me singolarmente o diversamente intestati presso le società Titolari,
+      		in modo da far accedere i cointestatari a eventuali condizioni migliorative a me riservate <span class="mtory">(*)</span>
+      		<td>
+      	</tr>
+      	<tr>
+      		<td>
+      			<table style="margin-left:auto;margin-right:auto;"><tr>
+	    			<td style="<%=model.fch(template.getPrefix(),"flagExtraUE")%>"><%=template.field("flagExtraUE","labelposition='left' onchange='gestioneFlagExtraUE();'")%></td>
+      			</tr></table>
+      		</td>
+      	</tr>
+      </tr></table>    
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <table style="display:none;"><tr>
+		<td><%=template.field("dataLiberatoria","modality='read'")%></td>
+	    <td><%=template.field("dataCarte","modality='read'")%></td>
+	    <td><%=template.field("dataProfilazione","modality='read'")%></td>
+	    <td><%=template.field("dataExtraUE","modality='read'")%></td>
+      </tr></table>
+    </td>
+  </tr>
+</table>
+<%template.restorePrefix();%>
+<!------------------------------------------->

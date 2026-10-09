@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="QasLogger" connectionCacheReference="PRGM">
+
+<Access name="log" type="DAOTableAccess" tableName="PRGM_SRUN_SVC_INSTANCES">
+   <Bindings>
+	 <Parameter propertyName="instanceId" 	dbColumnName="C_SVC_INSTANCE"/>
+	 <Parameter propertyName="serviceName"  dbColumnName="X_SERVICE_ID"/>
+	 <Parameter propertyName="userCode"  	dbColumnName="C_USER"/>
+	 <Parameter propertyName="startTime"  	dbColumnName="D_START_TIME"/>
+	 <Parameter propertyName="endTime"  	dbColumnName="D_END_TIME"/>
+	 <Parameter propertyName="duration"  	dbColumnName="N_DURATION_MS"/>
+	 <Parameter propertyName="xmlSend"  	dbColumnName="X_SEND_XML_INPUT"/>
+	 <Parameter propertyName="xmlReceive"  	dbColumnName="X_SEND_XML_OUTPUT"/>
+	 <Parameter propertyName="status"  		dbColumnName="X_STATUS_CODE"/>
+	 <Parameter propertyName="message"  	dbColumnName="X_STATUS_MESSAGE"/>
+	 <Parameter propertyName="severity"  	dbColumnName="X_STATUS_SEVERITY"/>
+	 <Parameter propertyName="source"  		dbColumnName="X_STATUS_SOURCE"/>
+	 <Parameter propertyName="otherStatus"  dbColumnName="A_STATUS"/>
+	 <Parameter propertyName="inAppInfo"  	dbColumnName="X_INPUT_APP_INFO"/>
+	 <Parameter propertyName="outAppInfo"  	dbColumnName="X_OUTPUT_APP_INFO"/>
+	 <Parameter propertyName="linkedUser"  	dbColumnName="AGE_C_AGE"/>
+   </Bindings>
+</Access>
+
+<Access name="isServiceDisabled" type="DAOQueryAccess" queryType="0"
+	OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType">
+	<Query> 
+		select 	IS_SRV_DISABLED 
+		from 	PRGM_SRUN_SERVICES
+		where 	X_SERVICE_ID = ?
+	</Query> 
+    <Input>
+		<Parameter propertyName="serviceName"/> 
+    </Input>
+</Access>  				
+
+<Access name="loadServiceInfo" type="DAOQueryAccess" queryType="0">
+	<Query> 
+		select 	X_SERVICE_DESC, MAILTO_ONERR, ERR_MAIL_FREQ_MINUTES, APPL_ERR_CODE_TO_TRACE, 
+				(select count(*) from PRGM_SRUN_TRACE_ACTIVE 
+				 where X_SERVICE_ID = ? and (C_USER = ? or C_USER = '*')) as NUM_TRC_ATT
+		from 	PRGM_SRUN_SERVICES
+		where 	X_SERVICE_ID = ? 
+	</Query> 
+    <Input>
+		<Parameter propertyName="serviceName"/> 
+		<Parameter propertyName="userCode"/> 
+		<Parameter propertyName="serviceName"/> 
+    </Input>
+   <Output>
+	<Parameter propertyName="serviceDescr"/>
+	<Parameter propertyName="mailToOnError"/>
+	<Parameter propertyName="mailErrFreqMinutes"/>
+	<Parameter propertyName="applErrCodeToTrace"/>
+	<Parameter propertyName="numTraceElements"/>
+   </Output>
+</Access>  				
+
+<Access name="resetServiceErrors" type="DAOTableAccess" tableName="PRGM_SRUN_SERVICES_ERR">
+   <Bindings>
+	 <Parameter propertyName="serviceName" 	dbColumnName="X_SERVICE_ID" primaryKey="true"/>
+   </Bindings>
+</Access>
+
+<Access name="serviceError" type="DAOTableAccess" tableName="PRGM_SRUN_SERVICES_ERR">
+   <Bindings>
+	 <Parameter propertyName="serviceName" 	dbColumnName="X_SERVICE_ID" primaryKey="true"/>
+	 <Parameter propertyName="status" 		dbColumnName="ERR_STATUS" primaryKey="true"/>
+	 <Parameter propertyName="startTime" 	dbColumnName="ERR_TIME"/>
+   </Bindings>
+</Access>
+  				
+</DAO-Object>

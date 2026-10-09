@@ -1,0 +1,144 @@
+<!--------  RESIDENZA e DOMICILIO------->
+<table style="width:98%;border-collapse:collapse;border-spacing:0;">
+  <tr>
+     <td style="vertical-align:top;">
+	     	<table style="width:100%;">
+			  	<tr>
+			  		<td>
+				  		<table class="text" style="width:100%;"><tr>
+				  			<td><hr style="line-height:1px;width:5;color:#1A458F;"></td>
+				  			<td style="white-space: nowrap;font-weight:bold;">&nbsp;<img src="<%=template.getWebApp()%>/images/section.gif">
+								<% if(model.getIsDitta().booleanValue()){ %>
+           	  						&nbsp;Sede legale ditta / Indirizzo di residenza libero professionista<span class="mtory">(*)</span>&nbsp;
+								<% }else if(model.getIsPersonaGiuridica().booleanValue()){ %>
+           	  						&nbsp;Sede legale&nbsp;
+		      					<% }else{ %>				  			
+				  					&nbsp;Indirizzo di residenza<span class="mtory">(*)</span>&nbsp;
+				  				<% } %>
+				  			</td>
+				  			<td style="width:100%;"><hr style="height:1px;width:100%;color:#1A458F;"></td>
+				  		</tr></table>
+			  		</td>
+			  	</tr>
+	     		<tr>
+	     			<td id="indirizzoResidenzaCont">
+				        <%	
+				        	template.savePrefix();
+				        	template.setPrefix("residenza_indirizzo");
+				        %>
+					    <%@ include file="../include/Indirizzo.html"%>
+					    <%template.restorePrefix();%>
+				     </td>
+				</tr>
+				<tr>
+					<td id="codFiscaliResidenzeFiscaliCont" >
+						<table class="text">
+							<%
+								String modalityNazioneSecondaResidenzaFiscale = "";
+								if(model.getCittadinanza().equals(Costanti.COD_NAZIONE_US_UIC) || 
+								   model.getSecondaCittadinanza().equals(Costanti.COD_NAZIONE_US_UIC)){
+									modalityNazioneSecondaResidenzaFiscale = " modality='read'"; 
+								}
+							%>
+							<tr>
+								<td style="<%=model.fch(template.getPrefix(),"residenza_codNazioneResidenzaFiscale1")%>"><%=template.field("residenza_codNazioneResidenzaFiscale1","style='width:200;'")%></td>
+								<td style="<%=model.fch(template.getPrefix(),"residenza_codNazioneResidenzaFiscale2")%>"><%=template.field("residenza_codNazioneResidenzaFiscale2","onchange='aggiornaInfoResidenzeFiscali();' style='width:200;'"+modalityNazioneSecondaResidenzaFiscale)%></td>
+								<%  String cfStyle = "display:none;";
+									String caption = template.getProperty("AnagraficaCliente.residenza_codFiscaleResidenzaFiscale2");
+									if(model.getResidenza().getCodFiscaleResidenza2Released().booleanValue()){
+										cfStyle = "";
+										if (model.getResidenza().getCodFiscaleResidenza2Required().booleanValue()){
+											caption += "<span class=\"mtory\"> (*)</span>";
+										}	
+									} 
+								%>
+								<td style="<%=model.fch(template.getPrefix(),"residenza_codFiscaleResidenzaFiscale2")%><%=cfStyle%>"><%=template.field("residenza_codFiscaleResidenzaFiscale2","labelcode='"+caption+"' style='width:200;' maxlength='"+model.getResidenza().getCodFiscaleResidenza2Digits()+"'")%></td>
+							</tr>
+							<tr>
+								<td>(indicare in questo campo solo l'eventuale residenza fiscale Italiana)</td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td><%=template.field("residenza_codNazioneResidenzaFiscale3","onchange='aggiornaInfoResidenzeFiscali();' style='width:200;'")%></td>
+								<%  cfStyle = "display:none;";
+									caption = template.getProperty("AnagraficaCliente.residenza_codFiscaleResidenzaFiscale3");
+									if(model.getResidenza().getCodFiscaleResidenza3Released().booleanValue()){
+										cfStyle = "";
+										if (model.getResidenza().getCodFiscaleResidenza3Required().booleanValue()){
+											caption += "<span class=\"mtory\"> (*)</span>";
+										}
+									}
+								%>
+								<td style="<%=model.fch(template.getPrefix(),"residenza_codFiscaleResidenzaFiscale3")%><%=cfStyle%>"><%=template.field("residenza_codFiscaleResidenzaFiscale3","labelcode='"+caption+"' style='width:200;' maxlength='"+model.getResidenza().getCodFiscaleResidenza3Digits()+"'")%></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			  	<tr>
+			  		<td style="padding-left: 30px;">
+				  		<table class="text"><tr>
+				  			<td>
+								<% if(model.getIsDitta().booleanValue()){ %>
+           	  						Indirizzo di domicilio diverso da sede legale / residenza libero professionista
+								<% }else if(model.getIsPersonaGiuridica().booleanValue()){ %>
+           	  						&nbsp;Sede legale diversa da sede operativa&nbsp;
+		      					<% }else{ %>				  			
+				  					Indirizzo di domicilio diverso da residenza
+				  				<% } %>
+				  			</td>
+				  			<td style="<%=model.fch(template.getPrefix(),"domicilioDiversoDaResidenza")%>">
+				  				<table class="text" style="text-align: center;">
+				  					<tr>
+				  						<td>Si</td>
+					  					<td>No</td>
+				  					</tr>
+				  					<tr>
+				  						<td><input <%=model.getDomicilioDiversoDaResidenza().equals("S")?"checked":""%> type="radio" name="domicilioDiversoDaResidenza" value="S" 
+				  									onclick="manageDomicilioDiversoDaResidenza(event,this);" <%=modificabile?"":"disabled"%>></input>
+				  						</td>
+					  					<td><input <%=model.getDomicilioDiversoDaResidenza().equals("N")?"checked":""%> type="radio" name="domicilioDiversoDaResidenza" value="N" 
+					  								onclick="manageDomicilioDiversoDaResidenza(event,this);" <%=modificabile?"":"disabled"%>></input>
+					  					</td>
+				  					</tr>
+				  				</table>
+				  			</td>
+		  					<td style="padding-left:10px;"><%=template.inlineAnchor("domicilioDiversoDaResidenza")%></td>
+				  			<input style="display:none;" type="text" id="domicilioDiversoDaResidenzaOriginalValue" value="<%=model.getDomicilioDiversoDaResidenza()%>"></input>
+				  		</tr></table>
+			  		</td>
+			  	</tr>
+			  	<% boolean showIndirizzoDiDomicilio = !model.getDomicilio().getIndirizzo().isEmpty() || model.getDomicilioDiversoDaResidenza().equals("S"); %>
+			  	<tr>
+			  		<td id="indirizzoDomicilioTitleCont" <%=(showIndirizzoDiDomicilio?"":"style='display:none;'")%>>
+				  		<table class="text" style="width:100%;"><tr>
+				  			<td><hr style="line-height:1px;width:5;color:#1A458F;"></td>
+				  			<td style="white-space: nowrap;font-weight:bold;">&nbsp;<img src="<%=template.getWebApp()%>/images/section.gif">
+								<% if(model.getIsDitta().booleanValue()){ %>
+           	  						&nbsp;Indirizzo di domicilio&nbsp;
+								<% }else if(model.getIsPersonaGiuridica().booleanValue()){ %>
+           	  						&nbsp;Indirizzo sede operativa&nbsp;
+		      					<% }else{ %>				  			
+				  					&nbsp;Indirizzo di domicilio&nbsp;
+				  				<% } %>
+				  			</td>
+				  			<td style="width:100%;"><hr style="height:1px;width:100%;color:#1A458F;"></td>
+				  		</tr></table>
+			  		</td>
+			  	</tr>
+	     		<tr>
+	     			<td id="indirizzoDomicilioCont" <%=(showIndirizzoDiDomicilio?"":"style='display:none;'")%>>
+				        <%	
+				        	template.savePrefix();
+				        	template.setPrefix("domicilio_indirizzo");
+				        %>
+					    <%@ include file="../include/Indirizzo.html"%>
+					    <%template.restorePrefix();%>
+				     </td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+<!------------------------------------------->

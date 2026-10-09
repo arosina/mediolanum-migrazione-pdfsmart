@@ -1,0 +1,32 @@
+<table width="100%" height="100%">
+  <tr>
+    <td align="center">
+		<table width="80%">
+		  <tr>
+		    <td width="20%" class="label"><b>Cliente</b></td><td class="value"><b><%=documento.getCliente().getNominativoConCodMediolanum()%></b></td>
+		  </tr>
+	      <% if(!documento.getEsitoFirmaCliente().isNull()){ %>
+		      <tr>
+		    	  <td colspan="2">
+		    	  	<table width="100%"><tr>
+				    	<td class="label">Esito:</td><td class="value"><%=prgm.ita.p.dac.facade.Esiti.getColoredDescrEsitoFirme(documento.getEsitoFirmaCliente().toString())%></td>
+				    	<td class="label">Eseguito da:</td><td class="value"><%=documento.getCodUtenteEsitoFirmaCliente()%></td>
+				    	<td class="label">Il:</td><td class="value"><%=documento.getDataOraEsitoFirmaCliente()%></td>
+			    	</tr></table>
+		    	  </td>
+		      </tr>
+	      <% }else if(!documento.getEsito().isNull() && documento.getHasControlloFirmeClienteAttivo().booleanValue()){ %>
+			  <tr>
+			    <td colspan="2" align="right" class="text" style="color:red;"><b>Firma da esitare &#9658;&#9658;</b></td>
+			  </tr>
+	      <% } %>
+		</table>	
+	</td>
+  </tr>
+  <tr><td><hr></td></tr>
+  <tr>
+    <td id="firmeClienteCont" height="100%">
+	
+	</td>
+  </tr>
+</table>

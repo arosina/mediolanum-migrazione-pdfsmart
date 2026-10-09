@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="VERFICA_CODPROMO">
+
+	<Access name="QARC_VERFICA_CODPROMO" type="DAOQASAccess" trace="true" compactEmpty="true">
+	   <Input>
+	   	<![CDATA[
+			<OFX>
+				<QArc-DB-Oracle-PKG_CONTO_DEPOSITO.SP_VERIFICACODPROMOQARCMSGSRQV1>
+					<wpc><In>
+						<I_COD_PROMO propertyName="codicePromo"></I_COD_PROMO>
+					</In></wpc>
+				</QArc-DB-Oracle-PKG_CONTO_DEPOSITO.SP_VERIFICACODPROMOQARCMSGSRQV1>
+			</OFX>
+		]]>
+	   </Input>
+	   <Output>
+	   	<![CDATA[
+			<OFX>
+				<QArc-DB-Oracle-PKG_CONTO_DEPOSITO.SP_VERIFICACODPROMOQARCMSGSRSV1>
+					<STATUS>
+					<CODE>0</CODE> 
+					<SEVERITY>INFO</SEVERITY> 
+					<MESSAGE /> 
+					<SOURCE /> 
+					</STATUS>
+				<DS>
+					<PS>
+						<I_COD_PROMO propertyName="codicePromo"></I_COD_PROMO> 
+						<O_CF_CLI propertyName="flagCodiceValido"></O_CF_CLI> 
+					</PS>
+					<RS>
+						<Page>
+							<Total>0</Total> 
+							<Count>0</Count> 
+							<Page>0</Page> 
+							<Size>0</Size> 
+							<Rows>0</Rows> 
+						</Page>
+					</RS>
+				</DS>
+				</QArc-DB-Oracle-PKG_CONTO_DEPOSITO.SP_VERIFICACODPROMOQARCMSGSRSV1>
+			</OFX>
+		]]>
+	   </Output>
+	</Access>
+
+</DAO-Object>

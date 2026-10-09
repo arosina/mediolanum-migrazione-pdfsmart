@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="RicercaPopup" connectionCacheReference="SER_MIFID">
+	
+	
+	<Access name="ricercaPopup" type="DAOQueryAccess" queryType="1" maxResultRows="50" OutputCommandDataModel="prgm.pdfwebformspolizzeutil.popup.RicercaPopupModel" connectionCacheReference="SER_MIFID">
+		<Query> 
+			SELECT CLI.CLI_C,
+				CASE  
+					CLI_C_SESSO 
+					WHEN 'M' THEN CLI.CLI_X_CF 
+					WHEN 'F' THEN CLI.CLI_X_CF 
+					ELSE CLI.CLI_N_PIVA 
+				END,
+				CLI.CLI_M_NOM, 
+				CLI.CLI_M_COGN,
+				TRIM(CLI.CLI_M_COGN) || ' ' || TRIM(CLI.CLI_M_NOM)
+					FROM CLL.CLI 
+					WHERE   GSTD_F_ESIST = 'S'
+					AND CLI_C_PERS_FISICA = 'G'
+					AND NVL(TRIM(CLI_C_NCG),'#') NOT IN ('SMM','SFF')
+					
+					AND NVL(TRIM(CLI_S_BLOCCO_BAN),'#') != 'K'
+					AND NVL(TRIM(CLI_C_COD_BLOCCO),'#') != 'R'					
+					
+					<IfNotNull propertyName="escludiXxx">
+						AND NVL(TRIM(CLI_C_CLIE_SEGN),'#') != <p>escludiXxx</p>
+					</IfNotNull>	
+					
+									
+					<IfNotNull propertyName="codiceCliente">
+						AND CLI.CLI_C  LIKE<p>%codiceCliente%</p>
+					</IfNotNull>			
+					
+					<IfNotNull propertyName="ragioneSociale">
+						AND (UPPER(CLI.CLI_M_COGN) LIKE UPPER(<p>%ragioneSociale%</p>) OR UPPER(CLI.CLI_M_NOM) LIKE UPPER(<p>%ragioneSociale%</p>))
+					</IfNotNull>
+					<IfNotNull propertyName="codiceFiscale">
+						AND (UPPER(CLI.CLI_X_CF) LIKE UPPER(<p>%codiceFiscale%</p>) OR CLI.CLI_N_PIVA LIKE <p>%codiceFiscale%</p> )
+					</IfNotNull>			
+		</Query>
+		<Output>
+			<Parameter propertyName="codiceCliente"/>            
+			<Parameter propertyName="codiceFiscale"/>      
+			<Parameter propertyName="nome"/>           
+			<Parameter propertyName="cognome"/>        
+			<Parameter propertyName="ragioneSociale"/>    
+		</Output>
+	</Access>
+		
+</DAO-Object>

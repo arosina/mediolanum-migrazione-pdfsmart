@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="EquivalentiFreeze">
+
+	<Access name="isFondoCollocabile" type="DAOQueryAccess" queryType="0" connectionCacheReference="SER_MIFID" OutputCommandDataModel="com.atosorigin.wfem.types.IntegerType">
+		<Query>
+			select (trunc(nvl(dat_fine_sscr_aggiu,sysdate)) - trunc(sysdate)) 
+			from cat_prod.DETT_OPERT_PROD 
+			where cod_prod_contnre = ?
+				AND cod_tipo_sist_orig_disp = ?
+				AND COD_ISIN = ?
+				and gstd_f_esist='S'
+				and dat_iniz_colloc_bmed &lt; trunc(sysdate)
+                and nvl(dat_fine_colloc_bmed, to_date('99991231', 'YYYYMMDD')) &gt; trunc(sysdate)				
+		</Query>   
+		<Input>
+			<Parameter propertyName="tariffa"/>
+			<Parameter propertyName="origine"/>
+			<Parameter propertyName="isin"/>
+		</Input>				
+	</Access>
+
+</DAO-Object>

@@ -1,0 +1,122 @@
+<table width="100%" cellpadding="0" cellspacing="0">
+    
+    <tr>
+    	<td>
+	       <%@ include file="./DatiDettaglioTestata.html"%>
+		</td>    	
+    </tr>
+
+   <tr>
+      <td align="center">
+      	<table width="99%" cellpadding="0" cellspacing="0">
+      	<tr>
+      		<td style="border-bottom: 2px solid #1A458F;font-size: 8px;">&nbsp;&nbsp;</td>
+      		<td rowspan="2" valign="middle" class="text" nowrap="nowrap">
+				<img src="<%=template.getWebApp()%>/images/section.gif">&nbsp;<b>Dati dettaglio</b>&nbsp;
+      		</td>
+      		<td style="border-bottom: 2px solid #1A458F;font-size: 8px;" width="100%">&nbsp;</td>
+      	</tr>
+      	<tr>
+      		<td style="font-size: 8px;">&nbsp;</td>
+      		<td style="font-size: 8px;">&nbsp;</td>
+      	</tr>
+      	</table>
+      </td>
+   </tr>
+   
+   <tr>
+      <td id="dettaglioCont">
+    	
+    	  <table width="100%" cellpadding="0" cellspacing="0">
+		    
+	        <tr>
+	            <td>
+		            <table cellpadding="0" cellspacing="0">
+		              <tr>
+					    <td <%=documento.changedStyle("numeroContratto")%>><%=template.field("numeroContratto","onchange='changeDoc();'")%></td>
+					    <td>
+				        <% if(!readonly &&
+				        	   modalityCampoElettronico.equals("")){ %>
+						        <table><tr>
+							      <td><img title="Cerca contratti" src="<%=template.getWebApp()%>/images/search.gif" style="cursor:pointer;" onclick="loadContratto();"></td>
+							      <td><img title="Pulisci dati contratto" src="<%=template.getWebApp()%>/images/clear.gif" style="cursor:pointer;" onclick="clearContratto();"></td>
+							    </tr></table>
+					    <% } %>
+					    </td>
+		              </tr>
+		            </table>
+	            </td>
+	            <td>
+			        <table width="100%" cellpadding="0" cellspacing="0">
+			          <tr>
+		                <% if(documento.getUfficio().equals(prgm.ita.p.dac.facade.Costanti.UFFICIO_RETE)){ %>
+		                	<td>
+					          <table cellpadding="0" cellspacing="0">
+					           <tr>
+							     <td style="width:20px;"></td>
+							     <td><%=template.field("spese","onchange='changeDoc();'")%></td>
+							   </tr>
+							  </table>
+							</td>
+				        <% } %>
+					    <td style="padding-left: 60;">
+					    	<table><tr>
+					    		<td class="text" style="color:red;"><b><%=documento.getAgente().getMsgAgenteNonIscrittoAlboOAM()%></b></td>
+					    	</tr></table>
+					    </td>
+			          </tr>
+			        </table>
+	            </td>
+		    </tr>
+		    
+	        <tr>
+	            <% if(readonly){ %>
+				    <td <%=documento.changedStyle("codProdotto")%>>
+				    	<table width="100%">
+				    		<tr>
+				    			<td class="text">Prodotto</td>
+				    			<td class="outputField" style='width:300;'><%=documento.getDescValue("codProdotto")%></td>
+				    		</tr>
+				    	</table>
+				    </td>
+	            <% }else{ %>
+				    <td <%=documento.changedStyle("codProdotto")%>><%=template.field("codProdotto","style='width:300;' onchange='loadOperazioni();'"+modalityCampoElettronico)%></td>
+	            <% } %>
+			    <td id="codOperazioneCont">
+			      <table cellpadding="0" cellspacing="0">
+			        <tr>
+					    <td id="waitCodOperLoader" style="width:20px;visibility:hidden;"><img src="<%=template.getWebApp()%>/images/waitMedium.gif"></td>
+			            <% if(readonly){ %>
+						    <td <%=documento.changedStyle("codOperazione")%>>
+						    	<table width="100%">
+						    		<tr>
+						    			<td class="text">Operazione</td>
+						    			<td class="outputField" style='width:300;'><%=documento.getDescValue("codOperazione")%></td>
+						    		</tr>
+						    	</table>
+						    </td>
+			            <% }else{ %>
+						    <td <%=documento.changedStyle("codOperazione")%>><%=template.field("codOperazione","onchange='changeDoc();onChangeOperazioni(this);' style='width:300;'"+modalityCampoElettronico)%></td>
+	    		        <% } %>
+			        	<td style="display:none;"><%=template.field("cassetteOperazioniProdotto")%></td>
+			        	<script>try{document.getElementById("documento_codOperazione").className = classNameMandInputField;}catch(e){}</script>
+			        </tr>
+			      </table>
+			    </td>
+		    </tr>
+		    
+		    <tr>
+		    	<% if(readonly){ %>
+			    	<td id="idReportAdeguatezzaCont" <%=documento.getIdReportAdeguatezza().isNull()?"style='visibility:hidden;'":""%>><%=template.field("idReportAdeguatezza","modality='read' labelwidth='80' size='55'")%></td>
+	            <% }else{ %>
+			    	<td id="idReportAdeguatezzaCont" <%=documento.isDocumentoReportAdeguatezza()?"":"style='visibility:hidden;'"%>><%=template.field("idReportAdeguatezza","onchange='changeDoc();' labelwidth='80' size='55' type='num'")%></td>
+   		        <% } %>
+		    	<td></td>
+		    </tr>
+		    
+    	  </table>
+    	  
+	  </td>
+   </tr>
+   
+</table>

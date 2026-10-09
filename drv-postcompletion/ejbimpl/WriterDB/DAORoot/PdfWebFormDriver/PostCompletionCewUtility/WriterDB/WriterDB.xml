@@ -1,0 +1,637 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<DAO-Object name = "WriterDB" connectionCacheReference = "CEPE">
+
+<Access name="loadInfoProdotto" type="DAOQueryAccess" queryType="0">
+	<Query>
+		SELECT PROD_C_PROD, PROD_X_PROD, PROD_C_VERS, DISP_C_RAMO, DISP_NAME, PROD_C_PROD_REGOLE, 
+			   TIPDISP_C_TIPDISP, TIPDISP_C_TIPDISP_ONLINE, TIPDISP_C_TIPDISP_SWITCH, 
+			   TIPPROD_C_TIP_PROD, PRIT_C_PRODOTTO, PRIT_C_OPERAZIONE, PRIT_C_OPERAZIONE_RID, PRIT_C_OPERAZIONE_ADG,
+			   SOCPROD_C_SOC_PROD, SRUN_SERVICE_NAME, PRIT_C_PRODOTTO_DIGITALE
+		FROM   CEPE_INFO_PRODOTTI
+		WHERE  PROD_C_PROD = ?
+	</Query>   
+	<Input>
+	<Parameter propertyName="codProdotto"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="codProdotto"/>
+		<Parameter propertyName="descrProdotto"/>
+		<Parameter propertyName="versioneProdotto"/>
+		<Parameter propertyName="codRamoProdotto"/>
+		<Parameter propertyName="nomeDisposizione"/>
+		<Parameter propertyName="codProdottoRegole"/>
+		<Parameter propertyName="tipoDisposizione"/>
+		<Parameter propertyName="tipoDisposizioneOnline"/>
+		<Parameter propertyName="tipoDisposizioneSwitch"/>
+		<Parameter propertyName="tipoProdotto"/>
+		<Parameter propertyName="pritCodProdotto"/>
+		<Parameter propertyName="pritCodOperazione"/>
+		<Parameter propertyName="pritCodOperazioneRid"/>
+		<Parameter propertyName="pritCodOperazioneAdeguatezza"/>		
+		<Parameter propertyName="codSocietaProdotto"/>
+		<Parameter propertyName="srunServiceName"/>
+		<Parameter propertyName="pritCodProdottoDigitale"/>
+	</Output>
+</Access>  
+
+<Access name="getContatore" type="DAOCallableAccess" store="sp_get_progressivi"
+		connectionCacheReference="CEPE">
+   <Input>
+	<Parameter propertyName="nomeRisorsa"/>
+	<Parameter propertyName="utente"/>
+	<Parameter propertyName="incremento"/>
+	<Parameter propertyName="progressivo"/>
+   </Input>
+   <Output>
+	<Parameter propertyName=""/>
+	<Parameter propertyName=""/>
+	<Parameter propertyName=""/>
+	<Parameter propertyName="progressivo"/>
+   </Output>
+</Access>
+
+<Access name = "InrDisp" type = "DAOTableAccess" tableName = "INR_DISP">
+  <Bindings>
+    <Parameter propertyName = "codDisposizione"          dbColumnName = "DISP_C_DISP" primaryKey = "true"/>
+    <Parameter propertyName = "codAgente"                dbColumnName = "AGE_C_AGE"/>
+    <Parameter propertyName = "codRete"                  dbColumnName = "RETEVEND_C_RETE"/>
+    <Parameter propertyName = "tipoStatoDisposizione"    dbColumnName = "TIPDISPSTATO_C_TIPDISPSTATO"/>
+    <Parameter propertyName = "tipoDisposizione"         dbColumnName = "TIPDISP_C_TIPDISP"/>
+    <Parameter propertyName = "codDivisa"                dbColumnName = "DIV_C_DIV"/>
+    <Parameter propertyName = "codAgenteSplit"           dbColumnName = "AGE_C_AGE_SPLIT"/>
+    <Parameter propertyName = "dispAgenteSplit"          dbColumnName = "DISP_P_AGE_SPLIT"/>
+    <Parameter propertyName = "socProdotto"              dbColumnName = "SOCPROD_C_SOC_PROD"/>
+    <Parameter propertyName = "tipoProdotto"             dbColumnName = "TIPPROD_C_TIP_PROD"/>
+    <Parameter propertyName = "codComune"                dbColumnName = "COMU_C_COMU"/>
+    <Parameter propertyName = "dataRegistrazione"        dbColumnName = "DISP_D_REGISTRAZIONE"/>
+    <Parameter propertyName = "dataModulo"               dbColumnName = "DISP_D_STAMPA_MOD"/>
+    <Parameter propertyName = "numeroRichiesteAllegato"  dbColumnName = "DISP_N_RICH_ALLEG"/>
+    <Parameter propertyName = "copieStampabili"          dbColumnName = "DISP_N_COPIE_STAMP"/>
+    <Parameter propertyName = "dataSottoscrizione"       dbColumnName = "DISP_D_SOTT" notNullValue = "01-01-1900"/>
+    <Parameter propertyName = "firma"                    dbColumnName = "DISP_C_FIRME"/>
+    <Parameter propertyName = "ordine"                   dbColumnName = "DISP_C_ORDINE" notNullValue = " "/>
+    <Parameter propertyName = "dataVariazione"           dbColumnName = "DISP_D_VARIAZIONE"/>
+    <Parameter propertyName = "dataTrasmissione"         dbColumnName = "DISP_D_TRASMIS"/>
+    <Parameter propertyName = "dataElaborazione"         dbColumnName = "DISP_D_LAV"/>
+    <Parameter propertyName = "dataValidazione"	         dbColumnName = "DISP_D_VALIDAZIONE"/>
+    <Parameter propertyName = "dataRich"                 dbColumnName = "DISP_D_RIC"/>
+    <Parameter propertyName = "totMov"                   dbColumnName = "DISP_I_TOT_MOV"/>
+    <Parameter propertyName = "serverReplica"            dbColumnName = "SERVER_C_REPLICA"/>
+    <Parameter propertyName = "dataElaborazioneSede"     dbColumnName = "DISP_D_ELAB_SEDE"/>
+    <Parameter propertyName = "codAgenteMittente"        dbColumnName = "AGE_C_MITT"/>
+    <Parameter propertyName = "versioneDisposizione"     dbColumnName = "DISP_C_VERS"/>
+    <Parameter propertyName = "provenienzaDisposizione"  dbColumnName = "DISP_C_PROVENIENZA"/>
+    <Parameter propertyName = "linea"  				     dbColumnName = "LINEA"/>
+    <Parameter propertyName = "numeroContoCorrente"	     dbColumnName = "DISP_C_CONTR"/>
+    <Parameter propertyName = "comune"  				 dbColumnName = "COMU_X_COMU"/>
+    <Parameter propertyName = "codiceSwitch"	         dbColumnName = "DISP_C_SWITCH"/>
+  </Bindings>
+</Access>
+
+ <Access name = "InrDispSquadra" type = "DAOTableAccess" tableName = "INR_DISPSQUADRA">
+    <Bindings>
+      <Parameter propertyName = "codDisposizione"         dbColumnName = "DISP_C_DISP" primaryKey = "true"/>
+      <Parameter propertyName = "codRete"                 dbColumnName = "RETEVEND_C_RETE" primaryKey = "true"/>
+      <Parameter propertyName = "codPotenziale"           dbColumnName = "ASSGNCLIAGE_C_POTZLE" primaryKey = "true"/>
+      <Parameter propertyName = "codRuoloCliProd"         dbColumnName = "RUOLOCLIPROD_C_RUOLO_CLI_PROD" primaryKey = "true"/>
+      <Parameter propertyName = "codAgente"               dbColumnName = "AGE_C_AGE" primaryKey = "true"/>
+      <Parameter propertyName = "codClienteMediolanum"    dbColumnName = "CODIFCLIMEDL_C_CLI_MEDL"/>
+      <Parameter propertyName = "tipoStatoDisposizione"   dbColumnName = "TIPDISPSTATO_C_TIPDISPSTATO"/>
+      <Parameter propertyName = "dataInizio"              dbColumnName = "DISPSQUADRA_D_INI"/>
+      <Parameter propertyName = "dataFine"                dbColumnName = "DISPSQUADRA_D_FIN"/>
+      <Parameter propertyName = "dataVariazione"          dbColumnName = "DISPSQUADRA_D_VARIAZIONE"/>
+      <Parameter propertyName = "codProgressivo"          dbColumnName = "DISPSQUADRA_C_PROGR"/>
+      <Parameter propertyName = "serverReplica"           dbColumnName = "SERVER_C_REPLICA"/>
+    </Bindings>
+  </Access>
+  
+<Access name = "InrDispContr" type = "DAOTableAccess" tableName = "INR_DISPCONTR">
+  <Bindings>
+    <Parameter propertyName = "codContratto"             dbColumnName = "DISPCONTR_C_DISPCONTR"/>
+    <Parameter propertyName = "codDisposizione"          dbColumnName = "DISP_C_DISP" primaryKey = "true"/>
+    <Parameter propertyName = "codAgente"                dbColumnName = "AGE_C_AGE" primaryKey = "true"/>
+    <Parameter propertyName = "codRete"                  dbColumnName = "RETEVEND_C_RETE" primaryKey = "true"/>
+    <Parameter propertyName = "tipoStatoDisposizione"    dbColumnName = "TIPDISPSTATO_C_TIPDISPSTATO"/>
+    <Parameter propertyName = "serverReplica"            dbColumnName = "SERVER_C_REPLICA"/>
+    <Parameter propertyName = "codProd"                  dbColumnName = "PROD_C_PROD"/>
+    <Parameter propertyName = "tipoContratto"            dbColumnName = "DISPCONTR_C_TIP_CONTR"/>
+    <Parameter propertyName = "codClasse"                dbColumnName = "DISPCONTR_C_CLASSE"/>
+    <Parameter propertyName = "codTipoQuota"             dbColumnName = "DISPCONTR_C_TIP_QUOTA"/>
+  </Bindings>
+</Access>
+  
+<Access name = "InrDispInd" type = "DAOTableAccess" tableName = "INR_DISPIND">
+  <Bindings>
+    <Parameter propertyName = "codDispInd"               dbColumnName = "DISPIND_C_DISPIND"/>
+    <Parameter propertyName = "codRete"                  dbColumnName = "RETEVEND_C_RETE" primaryKey = "true"/>
+    <Parameter propertyName = "codAgente"                dbColumnName = "AGE_C_AGE" primaryKey = "true"/>
+    <Parameter propertyName = "codDisposizione"          dbColumnName = "DISP_C_DISP" primaryKey = "true"/>
+    <Parameter propertyName = "tipoStatoDisposizione"    dbColumnName = "TIPDISPSTATO_C_TIPDISPSTATO"/>
+    <Parameter propertyName = "codNazione"               dbColumnName = "NAZ_C_NAZ"/>
+    <Parameter propertyName = "codProvincia"             dbColumnName = "PROV_C_PROV"/>
+    <Parameter propertyName = "codComune"                dbColumnName = "COMU_C_COMU"/>
+    <Parameter propertyName = "codCap"                   dbColumnName = "CAP_C_CAP"/>
+    <Parameter propertyName = "nominativo"               dbColumnName = "DISPIND_X_NOMINATIVO"/>
+    <Parameter propertyName = "presso"                   dbColumnName = "DISPIND_X_LOC"/>
+    <Parameter propertyName = "indirizzo"                dbColumnName = "DISPIND_X_IND" notNullValue = " "/>
+    <Parameter propertyName = "dataVariazione"           dbColumnName = "DISPIND_D_VARIAZIONE"/>
+    <Parameter propertyName = "prefisso"                 dbColumnName = "DISPIND_X_PREF"/>
+    <Parameter propertyName = "telefono"                 dbColumnName = "DISPIND_X_TEL"/>
+    <Parameter propertyName = "codIndirizzo"             dbColumnName = "DISPIND_C_IND"/>
+    <Parameter propertyName = "toponimoIndirizzo"        dbColumnName = "DISPIND_X_TIPO_IND"/>
+    <Parameter propertyName = "numeroCivico"             dbColumnName = "DISPIND_X_NUM_IND"/>
+    <Parameter propertyName = "serverReplica"            dbColumnName = "SERVER_C_REPLICA"/>
+    <Parameter propertyName = "comune"                   dbColumnName = "COMU_X_COMU"/>
+  </Bindings>
+</Access>
+  
+<Access name = "InrDispMezzoPG" type = "DAOTableAccess" tableName = "INR_DISPMEZZOPG">
+  <Bindings>
+    <Parameter propertyName = "codDisposizione"             dbColumnName = "DISP_C_DISP" primaryKey = "true" foreignKey="codDisposizione"/>
+    <Parameter propertyName = "codDispMezzoPG"              dbColumnName = "DISPMEZZOPG_C_DISPMEZZOPG"/>
+    <Parameter propertyName = "codAgente"                   dbColumnName = "AGE_C_AGE" primaryKey = "true"/>
+    <Parameter propertyName = "codRete"                     dbColumnName = "RETEVEND_C_RETE" primaryKey = "true"/>
+    <Parameter propertyName = "tipoStatoDisposizione"       dbColumnName = "TIPDISPSTATO_C_TIPDISPSTATO"/>
+    <Parameter propertyName = "codAbi"                      dbColumnName = "DISPMEZZOPG_C_ABI"/>
+    <Parameter propertyName = "codCab"                      dbColumnName = "DISPMEZZOPG_C_CAB"/>
+    <Parameter propertyName = "codDivisa"                   dbColumnName = "DIV_C_DIV" notNullValue = "EUR"/>
+    <Parameter propertyName = "importoDivisa"               dbColumnName = "DISPMEZZOPG_I_DIV" notNullValue = "0"/>
+    <Parameter propertyName = "dataValuta"                  dbColumnName = "DISPMEZZOPG_D_VLT"/>
+    <Parameter propertyName = "descrIntestatario"           dbColumnName = "DISPMEZZOPG_X_INTEST"/>
+    <Parameter propertyName = "codCC"                       dbColumnName = "DISPMEZZOPG_C_CC"/>
+    <Parameter propertyName = "numAssgn"                    dbColumnName = "DISPMEZZOPG_N_ASSGN"/>
+    <Parameter propertyName = "nota"                        dbColumnName = "DISPMEZZOPG_X_NOTA"/>
+    <Parameter propertyName = "dataVariazione"              dbColumnName = "DISPMEZZOPG_D_VARIAZIONE"/>
+    <Parameter propertyName = "serverReplica"               dbColumnName = "SERVER_C_REPLICA"/>
+    <Parameter propertyName = "descrBanca"                  dbColumnName = "DISPMEZZOPG_X_BANCA" notNullValue = " "/>
+    <Parameter propertyName = "codOperazione"               dbColumnName = "DISPOPERZ_C_DISPOPERZ" primaryKey = "true" foreignKey="codOperazione"/>
+    <Parameter propertyName = "codTipoMezzoPG"              dbColumnName = "TIPMEZZOPG_C_TIP_MEZZOPG"/>
+    <Parameter propertyName = "flagCCApertura"              dbColumnName = "DISPMEZZOPG_F_CC_APER"/>
+    <Parameter propertyName = "codPotenziale"               dbColumnName = "ASSGNCLIAGE_C_POTZLE"/>
+    <Parameter propertyName = "cognomeIntestatario"         dbColumnName = "DISPMEZZOPG_X_COGN_INTEST"/>
+    <Parameter propertyName = "nomeIntestatario"            dbColumnName = "DISPMEZZOPG_X_NOME_INTEST"/>
+    <Parameter propertyName = "filiale"                     dbColumnName = "DISPMEZZOPG_X_FIL"/>
+    <Parameter propertyName = "citta"                       dbColumnName = "DISPMEZZOPG_X_CITTA"/>
+    <Parameter propertyName = "descrFondo"                  dbColumnName = "DISPMEZZOPG_X_FONDO"/>
+    <Parameter propertyName = "codFondo"                    dbColumnName = "DISPMEZZOPG_C_FONDO"/>
+    <Parameter propertyName = "codCC1"                      dbColumnName = "DISPMEZZOPG_C_CC1"/>
+    <Parameter propertyName = "piTranche"                   dbColumnName = "DISPMEZZOPG_P_TRANCHE"/>
+    <Parameter propertyName = "numeroRate"                  dbColumnName = "DISPMEZZOPG_N_RATA_UNI"/>
+    <Parameter propertyName = "importoRata"                 dbColumnName = "DISPMEZZOPG_I_RATA"/>
+    <Parameter propertyName = "tipoModalitaPagamento"       dbColumnName = "DISPMEZZOPG_TIP_MODPG"/>
+    <Parameter propertyName = "tipoAzioneModalitaPagamento" dbColumnName = "DISPMEZZOPG_TIP_AZ_MODPG"/>
+    <Parameter propertyName = "dataSospensione"             dbColumnName = "DISPMEZZOPG_D_SOSP_MODPG"/>
+    <Parameter propertyName = "numeroQuote"                 dbColumnName = "DISPMEZZOPG_N_QUOTE"/>
+    <Parameter propertyName = "codDisposizioneCCApertura"   dbColumnName = "DISPMEZZOPG_DISP_CC_APERTURA"/>
+    <Parameter propertyName = "flagAccreditoStipendio"      dbColumnName = "DISPMEZZOPG_F_AUX1"/>
+    <Parameter propertyName = "prefissoIban"       	  	    dbColumnName = "DISPMEZZOPG_C_PREF_IBAN"/>
+  </Bindings>
+</Access>
+  
+<Access name = "InrDispOperz" type = "DAOTableAccess" tableName = "INR_DISPOPERZ">
+  <Bindings>
+    <Parameter propertyName = "codOperazione"           dbColumnName = "DISPOPERZ_C_DISPOPERZ"/>
+    <Parameter propertyName = "codDisposizione"         dbColumnName = "DISP_C_DISP" primaryKey = "true"/>
+    <Parameter propertyName = "codAgente"               dbColumnName = "AGE_C_AGE" primaryKey = "true"/>
+    <Parameter propertyName = "codRete"                 dbColumnName = "RETEVEND_C_RETE" primaryKey = "true"/>
+    <Parameter propertyName = "codContratto"            dbColumnName = "DISPCONTR_C_DISPCONTR" foreignKey="codContratto" primaryKey="true"/>
+    <Parameter propertyName = "serverReplica"           dbColumnName = "SERVER_C_REPLICA"/>
+    <Parameter propertyName = "tipoOperazione"          dbColumnName = "DISPTIPOPERZ_C_TIP_OPERZ" primaryKey = "true"/>
+    <Parameter propertyName = "tipoStatoDisposizione"   dbColumnName = "TIPDISPSTATO_C_TIPDISPSTATO"/>
+    <Parameter propertyName = "codPeriodoVersato"       dbColumnName = "DISPOPERZ_C_PERIO_VERSA"/>
+    <Parameter propertyName = "giorniScadenza"          dbColumnName = "DISPOPERZ_X_GG_SCAD"/>
+    <Parameter propertyName = "codPartzPg"              dbColumnName = "DISPOPERZ_C_PARTZ_PG"/>
+    <Parameter propertyName = "durataVersamento"        dbColumnName = "DISPOPERZ_X_DUR_VERSA"/>
+    <Parameter propertyName = "codUniDur"               dbColumnName = "DISPOPERZ_C_UNI_DUR"/>
+    <Parameter propertyName = "eta"                     dbColumnName = "DISPOPERZ_N_ETA"/>
+    <Parameter propertyName = "codTipoQuotaCons"        dbColumnName = "DISPOPERZ_C_TIP_QUOTA_CONS"/>
+    <Parameter propertyName = "codPercCons"             dbColumnName = "DISPOPERZ_C_PERCCONS"/>
+    <Parameter propertyName = "codProdCons"             dbColumnName = "PROD_C_PROD_CONS"/>
+    <Parameter propertyName = "flagIstat"               dbColumnName = "DISPOPERZ_F_ISTAT"/>
+    <Parameter propertyName = "flagDistr"               dbColumnName = "DISPOPERZ_F_DISTR"/>
+    <Parameter propertyName = "dataInizio"              dbColumnName = "DISPOPERZ_D_INIZ"/>
+    <Parameter propertyName = "dataFine"                dbColumnName = "DISPOPERZ_D_FINE"/>
+    <Parameter propertyName = "flagCambio"              dbColumnName = "DISPOPERZ_F_CAMBIO"/>
+    <Parameter propertyName = "flagAdesioneRevoca"      dbColumnName = "DISPOPERZ_C_TIPORICHIESTA"/>
+  </Bindings>
+</Access>
+
+<Access name = "InrDispFondiCli" type = "DAOTableAccess" tableName = "INR_DISPFONDICLI">
+  <Bindings>
+    <Parameter propertyName = "codDisposizione"         dbColumnName = "DISP_C_DISP" primaryKey = "true" foreignKey="codDisposizione"/>
+    <Parameter propertyName = "codAgente"               dbColumnName = "AGE_C_AGE" primaryKey = "true"/>
+    <Parameter propertyName = "codRete"                 dbColumnName = "RETEVEND_C_RETE" primaryKey = "true"/>
+    <Parameter propertyName = "serverReplica"           dbColumnName = "SERVER_C_REPLICA"/>
+    <Parameter propertyName = "codRuoloCliProd"         dbColumnName = "RUOLOCLIPROD_C_RUOLO_CLI_PROD" primaryKey = "true" />
+    <Parameter propertyName = "tipoStatoDisposizione"   dbColumnName = "TIPDISPSTATO_C_TIPDISPSTATO"/>
+    <Parameter propertyName = "codClienteMediolanum"    dbColumnName = "CODIFCLIMEDL_C_CLI_MEDL"/>
+    <Parameter propertyName = "codPotenziale"           dbColumnName = "ASSGNCLIAGE_C_POTZLE"/>
+    <Parameter propertyName = "infoFinanziaria"         dbColumnName = "DISPFONDI_F_INVOBI"/>
+    <Parameter propertyName = "esperienza"              dbColumnName = "DISPFONDICLI_F_INVOBI1"/>
+    <Parameter propertyName = "altriInvestimenti"       dbColumnName = "DISPFONDICLI_F_INVOBI2"/>
+    <Parameter propertyName = "obiettivo"               dbColumnName = "DISPFONDICLI_F_INVOBI3"/>
+    <Parameter propertyName = "rischio"                 dbColumnName = "DISPFONDICLI_F_INVOBI4"/>
+    <Parameter propertyName = "abilitazioneInternet"    dbColumnName= "DISPFONDICLI_F_SMATER"/>
+    <Parameter propertyName = "flagPoliticamenteEsposto"      	dbColumnName = "DISPFONDICLI_F_PESPOSTO"/>
+    <Parameter propertyName = "motivazionePoliticamenteEsposto"   dbColumnName = "DISPFONDICLI_X_MOTIVAZIONE"/>
+    
+  </Bindings>
+</Access>
+  
+<Access name = "InrDispFondi" type = "DAOTableAccess" tableName = "INR_DISPFONDI">
+  <Bindings>
+    <Parameter propertyName = "codDisposizione"        dbColumnName = "DISP_C_DISP" primaryKey = "true"/>
+    <Parameter propertyName = "codAgente"              dbColumnName = "AGE_C_AGE" primaryKey = "true"/>
+    <Parameter propertyName = "codRete"                dbColumnName = "RETEVEND_C_RETE" primaryKey = "true"/>
+    <Parameter propertyName = "serverReplica"          dbColumnName = "SERVER_C_REPLICA"/>
+    <Parameter propertyName = "tipoStatoDisposizione"  dbColumnName = "TIPDISPSTATO_C_TIPDISPSTATO"/>
+    <Parameter propertyName = "codAgevol"              dbColumnName = "DISPFONDI_C_AGEVOL"/>
+    <Parameter propertyName = "flagCCAgevol"           dbColumnName = "DISPFONDI_F_CC_AGEVOL"/>
+    <Parameter propertyName = "codCCAgevol"            dbColumnName = "DISPFONDI_C_CC_AGEVOL"/>
+    <Parameter propertyName = "flagIntenz"             dbColumnName = "DISPFONDI_F_INTENZ"/>
+    <Parameter propertyName = "impIntenz"              dbColumnName = "DISPFONDI_I_INTENZ"/>
+    <Parameter propertyName = "codFondo"               dbColumnName = "DISPFONDI_C_FONDO"/>
+    <Parameter propertyName = "codRif"                 dbColumnName = "DISPFONDI_C_RIF"/>
+    <Parameter propertyName = "relativoImpresa"        dbColumnName = "DISPFONDI_F_OPZ1"/>
+    <Parameter propertyName = "regimeAmministrativo"   dbColumnName = "DISPFONDI_F_OPZ2"/>
+    <Parameter propertyName = "flagEmissione"          dbColumnName = "DISPFONDI_F_EMISSIONE"/>
+    <Parameter propertyName = "codVers"                dbColumnName = "DISPFONDI_C_VERS"/>
+    <Parameter propertyName = "numeroCertificato"  	   dbColumnName = "DISPFONDI_X_NUM_CERT"/>
+ 	<Parameter propertyName = "numeroQuoteCertificato" dbColumnName = "DISPFONDI_N_QUOTE_CERT"/>
+ 	<Parameter propertyName = "tipoCertificato"  	   dbColumnName = "DISPFONDI_C_TIPO_CERT"/>
+ 	<Parameter propertyName = "codAgenteCertifLiq" 	   dbColumnName = "DISPFONDI_C_AGE_CERT_LIQ"/>
+ 	<Parameter propertyName = "idIstanza" 	 		   dbColumnName = "ID_ISTANZA "/>
+  </Bindings>
+</Access>
+  
+<Access name = "InrDispFondiSott" type = "DAOTableAccess" tableName = "INR_DISPFONDISOTT">
+  <Bindings>
+    <Parameter propertyName = "codDisposizione"        dbColumnName = "DISP_C_DISP" primaryKey = "true"/>
+    <Parameter propertyName = "codAgente"              dbColumnName = "AGE_C_AGE" primaryKey = "true"/>
+    <Parameter propertyName = "codRete"                dbColumnName = "RETEVEND_C_RETE" primaryKey = "true"/>
+    <Parameter propertyName = "serverReplica"          dbColumnName = "SERVER_C_REPLICA"/>
+    <Parameter propertyName = "tipoVersamento"  		 dbColumnName = "DISP_C_TIPO_VERSAMENTO"/>
+    <Parameter propertyName = "codComparto"  		     dbColumnName = "DISP_C_COMPARTO"/>
+    <Parameter propertyName = "descrComparto"  		 dbColumnName = "DISP_X_COMPARTO"/>
+    <Parameter propertyName = "codServizio"  		     dbColumnName = "DISP_C_SERVIZIO"/>
+    <Parameter propertyName = "importo"  		    	 dbColumnName = "DISP_I_DIV"/>
+    <Parameter propertyName = "cadenzaLoi"  		     dbColumnName = "DISP_C_CADENZA_LOI"/>
+    <Parameter propertyName = "importoLoi"  		     dbColumnName = "DISP_I_LOI"/>
+    <Parameter propertyName = "percentualeConsolida"   dbColumnName = "DISP_C_PERC_CONS"/>
+    <Parameter propertyName = "ccConsolidamento"       dbColumnName = "DISP_C_CC_CONS"/>
+    <Parameter propertyName = "codFondoCons"  		 dbColumnName = "DISP_C_PROD_CONS"/>
+    <Parameter propertyName = "numeroMandatoCons"		 dbColumnName = "DISP_C_MANDATO_CONS"/>
+    <Parameter propertyName = "codDispMezzoPG"         dbColumnName = "DISP_C_TIP_MEZZOPG"/>
+    <Parameter propertyName = "importoAlimentazione"   dbColumnName = "DISP_I_ALIMENTAZIONE"/>
+    <Parameter propertyName = "importoRata"   		 dbColumnName = "DISP_I_RATA"/>
+    <Parameter propertyName = "numeroRate"   			 dbColumnName = "DISP_N_RATA"/>
+    <Parameter propertyName = "flagISTAT"   			 dbColumnName = "DISP_F_ISTAT"/>
+    <Parameter propertyName = "flagRaddoppio"   		 dbColumnName = "DISP_F_RADD_VERS"/>
+    <Parameter propertyName = "flagDistribuzione"		 dbColumnName = "DISP_F_DISTR"/>
+    <Parameter propertyName = "tipoCertificato"		 dbColumnName = "DISP_C_CERT"/>
+    <Parameter propertyName = "certificatoPresso"		 dbColumnName = "DISP_C_EMISS_PRESSO"/>
+    <Parameter propertyName = "emissioneCertABI"		 dbColumnName = "DISP_C_EMISS_ABI"/>
+    <Parameter propertyName = "emissioneCertCAB"		 dbColumnName = "DISP_C_EMISS_CAB"/>
+    <Parameter propertyName = "emissioneCertIndirizzo" dbColumnName = "DISP_C_EMISS_IND"/>
+    <Parameter propertyName = "tipoSottoscrizione" 	 dbColumnName = "DISP_C_TIPO_SOTTOSCRIZIONE"/>
+    <Parameter propertyName = "numeroQuote"   		 dbColumnName = "DISP_N_QUOTE"/>
+    <Parameter propertyName = "flagServizio"   		 dbColumnName = "DISP_F_SERVIZIO"/>
+ 	  <Parameter propertyName = "tipoRimborso"  		 dbColumnName = "DISP_C_TIPO_RIMBORSO"/>
+ 	  <Parameter propertyName = "revocaRID"  		 	 dbColumnName = "DISP_F_REV_RID"/>
+  </Bindings>
+</Access>
+
+<Access name = "InrDispVitaCli" type = "DAOTableAccess" tableName = "INR_DISPVITACLI">
+   <Bindings>
+     <Parameter propertyName = "codDisposizione"          	dbColumnName = "DISP_C_DISP" primaryKey = "true"/>
+     <Parameter propertyName = "codAgente"                	dbColumnName = "AGE_C_AGE" primaryKey = "true"/>
+     <Parameter propertyName = "codRete"                  	dbColumnName = "RETEVEND_C_RETE" primaryKey = "true"/>
+     <Parameter propertyName = "codRuoloCliProd"          	dbColumnName = "RUOLOCLIPROD_C_RUOLO_CLI_PROD" primaryKey = "true"/>
+     <Parameter propertyName = "tipoStatoDisposizione"    	dbColumnName = "TIPDISPSTATO_C_TIPDISPSTATO"/>
+     <Parameter propertyName = "codClienteMediolanum"     	dbColumnName = "CODIFCLIMEDL_C_CLI_MEDL"/>
+     <Parameter propertyName = "codPotenziale"            	dbColumnName = "ASSGNCLIAGE_C_POTZLE"/>
+     <Parameter propertyName = "serverReplica"            	dbColumnName = "SERVER_C_REPLICA"/>
+     <Parameter propertyName = "lavoratoreDipendente"     	dbColumnName = "DISPVITACLI_FLAG_LAV_DIPEND"/>
+     <Parameter propertyName = "abilitazioneInternet"     	dbColumnName = "DISPVITACLI_F_SMATER"/>
+     <Parameter propertyName = "titoloStudio"              	dbColumnName = "DISPVITACLI_C_TIT_STUD"/>
+     <Parameter propertyName = "professione"               	dbColumnName = "DISPVITACLI_C_COND_PROF"/>
+     <Parameter propertyName = "primaOccupazione"           dbColumnName = "DISPVITACLI_F_PRIMA_OCCUPAZ"/>   
+     <Parameter propertyName = "tipoRelazioneContraenteAssicurando"               	dbColumnName = "C_REL_CONTR_ASSIC"/>
+     <Parameter propertyName = "descrizioneTipoRelazioneContraenteAssicurando"      dbColumnName = "X_ALTRO_REL_CONTR_ASSIC"/>        
+   </Bindings>
+</Access>
+
+<Access name = "InrDispVita" type = "DAOTableAccess" tableName = "INR_DISPVITA">
+   <Bindings>
+     <Parameter propertyName = "codDisposizione"               dbColumnName = "DISP_C_DISP" primaryKey = "true"/>
+     <Parameter propertyName = "codAgente"                     dbColumnName = "AGE_C_AGE" primaryKey = "true"/>
+     <Parameter propertyName = "codRete"                       dbColumnName = "RETEVEND_C_RETE" primaryKey = "true"/>
+     <Parameter propertyName = "tipoStatoDisposizione"         dbColumnName = "TIPDISPSTATO_C_TIPDISPSTATO"/>
+     <Parameter propertyName = "dataDecorrenza"                dbColumnName = "DISPVITA_D_DECR"/>
+     <Parameter propertyName = "codTipoBeneficiario"           dbColumnName = "TIPBENEFC_C_TIP_BENEFC"/>
+     <Parameter propertyName = "descrBeneficiario"             dbColumnName = "DISPVITA_X_BENEFC"/>
+     <Parameter propertyName = "codTipoBeneficiarioMorte"      dbColumnName = "TIPBENEFC_C_TIP_BENEFC_MORTE"/>
+     <Parameter propertyName = "descrBeneficiarioMorte"        dbColumnName = "DISPVITA_X_BENEFC_MORTE"/>
+     <Parameter propertyName = "flagDivisioneImp"              dbColumnName = "DISPVITA_C_DIVS"/>
+     <Parameter propertyName = "serverReplica"                 dbColumnName = "SERVER_C_REPLICA"/>
+     <Parameter propertyName = "codAgevolazione"               dbColumnName = "DISPVITA_C_C1"/>
+     <Parameter propertyName = "codConvenzione"                dbColumnName = "DISPVITA_C_CONV"/>
+     <Parameter propertyName = "propostaAbbinata1"             dbColumnName = "DISPVITA_PROPO_ABB1"/>
+     <Parameter propertyName = "propostaAbbinata2"             dbColumnName = "DISPVITA_PROPO_ABB2"/>
+     <Parameter propertyName = "codDispAbb1"                   dbColumnName = "DISPVITA_C_DISP_ABB1"/>
+     <Parameter propertyName = "importo"                       dbColumnName = "DISPVITA_I_IMP"/>
+     <Parameter propertyName = "codDivisa"                     dbColumnName = "DIV_C_DIV"/>
+     <Parameter propertyName = "flag2"                         dbColumnName = "DISPVITA_F_FLAG2"/>
+     <Parameter propertyName = "percentuale1"                  dbColumnName = "DISPVITA_PERC1"/>
+     <Parameter propertyName = "importoDistr"                  dbColumnName = "DISPVITA_I_DISTR"/>
+     <Parameter propertyName = "importoDistr1"                 dbColumnName = "DISPVITA_I_DISTR1"/>
+     <Parameter propertyName = "descrPianoPens"                dbColumnName = "DISPVITA_X_PIANOPENS"/>
+     <Parameter propertyName = "numContrPens"                  dbColumnName = "DISPVITA_N_CONTRPENS"/>
+     <Parameter propertyName = "societaPensione"               dbColumnName = "DISPVITA_X_SOCPENS"/>
+     <Parameter propertyName = "flag1"                         dbColumnName = "DISPVITA_F_FLAG1"/>
+     <Parameter propertyName = "descr1"                       dbColumnName = "DISPVITA_X_DESCR1"/>
+     <Parameter propertyName = "fondo1"                        dbColumnName = "DISPVITA_C_FONDO1"/>
+     <Parameter propertyName = "fondo2"                        dbColumnName = "DISPVITA_C_FONDO2"/>
+     <Parameter propertyName = "fondo3"                        dbColumnName = "DISPVITA_C_FONDO3"/>
+     <Parameter propertyName = "fondo4"                        dbColumnName = "DISPVITA_C_FONDO4"/>
+     <Parameter propertyName = "fondoPartenza1"                dbColumnName = "DISPVITA_C_FONDO_PARTZ_1"/>
+     <Parameter propertyName = "fondoDestinazione1"            dbColumnName = "DISPVITA_C_FONDO_DEST_1"/>
+     <Parameter propertyName = "fondoDestinazione7"            dbColumnName = "DISPVITA_C_FONDO_DEST_7"/>
+     <Parameter propertyName = "flagBC"                        dbColumnName = "DISPVITA_F_BIGCHALL"/>
+     <Parameter propertyName = "flagIntenz"                    dbColumnName = "DISPVITA_F_INTENZ"/>
+     <Parameter propertyName = "impIntenz"                     dbColumnName = "DISPVITA_I_INTENZ"/>
+     <Parameter propertyName = "pensioneDataIstituzione"       dbColumnName = "DISPVITA_D_ISTITUZIONE"/>
+     <Parameter propertyName = "pensioneDataIscrizione"        dbColumnName = "DISPVITA_D_ISCRIZIONE"/>
+     <Parameter propertyName = "anniContribuzione"             dbColumnName = "DISPVITA_C_ANNI_CONTR"/>
+     <Parameter propertyName = "flagGaranziaCompl"             dbColumnName = "DISPVITA_FLAG_GARANZIA"/>
+     <Parameter propertyName = "periodicitaTfr"                  dbColumnName = "DISPVITA_C_PERIODO_TFR"/>
+     <Parameter propertyName = "flagTfr"                     dbColumnName = "DISPVITA_FLAG_TFR"/>
+     <Parameter propertyName = "flagContrAzienda"             dbColumnName = "DISPVITA_FLAG_CONTR_AZ"/>
+     <Parameter propertyName = "formaPensionistica"            dbColumnName = "DISPVITA_C_FORMA_PENS"/>
+     <Parameter propertyName = "flagSchedaCosti"               dbColumnName = "DISPVITA_F_SCHEDA_COSTI"/>
+     <Parameter propertyName = "ratingQuestionario"            dbColumnName = "DISPVITA_I_RATING_QUESTIONARIO"/>
+     <Parameter propertyName = "denomAltroFondo"               dbColumnName = "DISPVITA_X_DENOM_ALTRO_FONDO"/>
+     <Parameter propertyName = "flagProfiloCoerente"           dbColumnName = "DISPVITA_F_PROFILO_COERENTE"/>
+     <Parameter propertyName = "risposteQuestionario"          dbColumnName = "DISPVITA_X_RISPOSTE_QUEST"/>
+     <Parameter propertyName = "alboCovip"                     dbColumnName = "DISPVITA_I_ALBO_COVIP"/>
+     <Parameter propertyName = "flagManleva"                  dbColumnName = "DISPVITA_F_MANLEVA"/>
+     <Parameter propertyName = "beneficiarioTerzo"           dbColumnName = "DISPVITA_F_BENEFICIARIO_TERZO"/>   
+     <Parameter propertyName = "noComunicazioneBeneficiario"           dbColumnName = " DISPVITA_F_NO_COMUNICAZ_BENEF"/>   
+ </Bindings>
+</Access>
+
+<Access name="InrDispVitaBenef" type="DAOTableAccess" tableName="INR_DISPVITABENEF">
+ <Bindings>
+	<Parameter propertyName="codDisposizione"					dbColumnName="DISP_C_DISP" 					primaryKey="true" />
+	<Parameter propertyName="codAgente" 						dbColumnName="AGE_C_AGE" 					primaryKey="true" />
+	<Parameter propertyName="codRete" 							dbColumnName="RETEVEND_C_RETE" 				primaryKey="true" />
+	<Parameter propertyName="codiceFiscale" 					dbColumnName="DISPVITABENEF_X_CF"			primaryKey="true" />
+	<Parameter propertyName="tipologiaBeneficiario"				dbColumnName="DISPVITABENEF_C_TIPO_BENEF" 	primaryKey="true" />
+	<Parameter propertyName="nominativo"						dbColumnName="DISPVITABENEF_X_COGNOME" />
+	<Parameter propertyName="percentualeRipartizione" 			dbColumnName="DISPVITABENEF_P_RIPART" />
+	<Parameter propertyName="codiceCliente"						dbColumnName="CODIFCLIMEDL_C_CLI_MEDL" />
+	<Parameter propertyName="tipologiaPersona" 					dbColumnName="DISPVITABENEF_C_TIPO_PERS" />
+	<Parameter propertyName="invioComunicazione" 				dbColumnName="DISPVITABENEF_C_INV_COMUNZ" />
+	<Parameter propertyName="nome"								dbColumnName="DISPVITABENEF_X_NOME" />
+	<Parameter propertyName="sesso"								dbColumnName="DISPVITABENEF_F_SESSO" />
+	<Parameter propertyName="dataNascita"						dbColumnName="DISPVITABENEF_D_NASC" />
+	<Parameter propertyName="comuneDiNascita" 					dbColumnName="DISPVITABENEF_X_COMU_NASC" />
+	<Parameter propertyName="codiceComuneNascita"				dbColumnName="DISPVITABENEF_C_COMU_NASC" />
+	<Parameter propertyName="provinciaNascita" 					dbColumnName="DISPVITABENEF_C_PROV_NASC" />
+	<Parameter propertyName="nazioneNascita"					dbColumnName="DISPVITABENEF_X_NAZ_NASC" />
+	<Parameter propertyName="toponimoIndirizzoResidenza" 		dbColumnName="DISPVITABENEF_X_TIPO_IND_RES" />
+	<Parameter propertyName="indirizzoResidenza"				dbColumnName="DISPVITABENEF_X_IND_RES" />
+	<Parameter propertyName="numeroCivicoResidenza"				dbColumnName="DISPVITABENEF_X_NUM_IND_RES" />
+	<Parameter propertyName="capResidenza" 						dbColumnName="DISPVITABENEF_C_CAP_RES" />
+	<Parameter propertyName="comuneResidenza"					dbColumnName="DISPVITABENEF_X_COMU_RES" />
+	<Parameter propertyName="codiceComuneResidenza" 			dbColumnName="DISPVITABENEF_C_COMU_RES" />
+	<Parameter propertyName="provinciaResidenza"				dbColumnName="DISPVITABENEF_C_PROV_RES" />
+	<Parameter propertyName="nazioneResidenza" 					dbColumnName="DISPVITABENEF_X_NAZ_RES" />
+	<Parameter propertyName="tipoTelefono" 						dbColumnName="DISPVITABENEF_C_TIPO_TEL" />
+	<Parameter propertyName="prefissoInternazionaleTelefono"	dbColumnName="DISPVITABENEF_X_PREF_INTERN" />
+	<Parameter propertyName="prefissoTelefono" 					dbColumnName="DISPVITABENEF_X_PREF_TEL" />
+	<Parameter propertyName="numeroTelefono"					dbColumnName="DISPVITABENEF_X_NUM_TEL" />
+	<Parameter propertyName="email" 							dbColumnName="DISPVITABENEF_X_EMAIL" />
+	<Parameter propertyName="numeroIscrizioneCCIA" 				dbColumnName="DISPVITABENEF_C_NUMISCR_CCIAA" />
+	<Parameter propertyName="dataIscrizioneCCIA"				dbColumnName="DISPVITABENEF_D_ISCR_CCIAA" />
+	<Parameter propertyName="provinciaIscrizioneCCIA" 			dbColumnName="DISPVITABENEF_C_PROVISCR_CCIAA" />
+	
+	
+	<Parameter propertyName="tipoRelazioneBeneficiarioContraente"				dbColumnName="C_REL_BENEF_CONTR" />
+	<Parameter propertyName="descrizioneTipoRelazioneBeneficiarioContraente" 	dbColumnName="X_ALTRO_REL_BENEF_CONTR" />
+	<Parameter propertyName="tipoRelazioneBeneficiarioAssicurando"				dbColumnName="C_REL_BENEF_ASSIC" />
+	<Parameter propertyName="descrizioneTipoRelazioneBeneficiarioAssicurando" 	dbColumnName="X_ALTRO_REL_BENEF_ASSIC" />
+ </Bindings>
+</Access>
+
+<Access name="InrDispFondiMedbox" type="DAOTableAccess" tableName="INR_DISPFONDIMEDBOX">
+ <Bindings>
+	<Parameter propertyName="codDisposizione" 		dbColumnName="DISP_C_DISP" primaryKey="true" />
+	<Parameter propertyName="codAgente" 			dbColumnName="AGE_C_AGE" primaryKey="true" />
+	<Parameter propertyName="codRete" 				dbColumnName="RETEVEND_C_RETE" primaryKey="true" />
+	<Parameter propertyName="tipoFondo" 			dbColumnName="FONDO_C_TIPO"	primaryKey="true" />
+	<Parameter propertyName="isinFondo" 			dbColumnName="ANAISIN_C_TIT_ISIN" primaryKey="true" />
+	<Parameter propertyName="percentuale" 			dbColumnName="FONDO_PERC_SOTT" />
+	<Parameter propertyName="importo" 				dbColumnName="FONDO_IMPORTO_SOTT" />
+	<Parameter propertyName="isinFondoConsRend" 	dbColumnName="FONDO_ISIN_FONDO_CONS_REND" />
+	<Parameter propertyName="percIncrQuota" 		dbColumnName="FONDO_PERC_INCR_QUOTA" />
+	<Parameter propertyName="flagReinvSuCali" 		dbColumnName="FONDO_F_REINV_CALI" />
+	<Parameter propertyName="quote" 				dbColumnName="FONDO_QUOTE_SOTT" />
+	<Parameter propertyName="tipoOperazione" 		dbColumnName="DISPFONDIMEDBOX_F_TIP_RISC" />
+ </Bindings>
+</Access>  
+<Access name = "InrDispProfilInv" type = "DAOTableAccess" tableName = "INR_DISPPROFILINV">
+    <Bindings>
+      <Parameter propertyName = "codProfiloInvestimento"  dbColumnName = "DISPPROFILINV_C_PROFILINV"/>
+      <Parameter propertyName = "codDisposizione"         dbColumnName = "DISP_C_DISP" primaryKey = "true"/>
+      <Parameter propertyName = "codAgente"               dbColumnName = "AGE_C_AGE" primaryKey = "true"/>
+      <Parameter propertyName = "codRete"                 dbColumnName = "RETEVEND_C_RETE" primaryKey = "true"/>
+      <Parameter propertyName = "codTipoProfilo"          dbColumnName = "DISPPROFILINV_C_TIP_PROFIL"/>
+      <Parameter propertyName = "prcIntrapr"              dbColumnName = "DISPPROFILINV_P_INTRAPR"/>
+      <Parameter propertyName = "prcDina"                 dbColumnName = "DISPPROFILINV_P_DINA"/>
+      <Parameter propertyName = "prcProtz"                dbColumnName = "DISPPROFILINV_P_PROTZ"/>
+      <Parameter propertyName = "prcCresc"                dbColumnName = "DISPPROFILINV_P_CRESC"/>
+      <Parameter propertyName = "prcModer"                dbColumnName = "DISPPROFILINV_P_MODER"/>
+      <Parameter propertyName = "prcLiqui"                dbColumnName = "DISPPROFILINV_P_LIQUI"/>
+      <Parameter propertyName = "prcFondo7"               dbColumnName = "DISPPROFILINV_P_FONDO7"/>
+      <Parameter propertyName = "serverReplica"           dbColumnName = "SERVER_C_REPLICA"/>
+      <Parameter propertyName = "tipoStatoDisposizione"   dbColumnName = "TIPDISPSTATO_C_TIPDISPSTATO"/>
+      <Parameter propertyName = "flagIntrapr"   		  dbColumnName = "DISPPROFILINV_F_INTRAPR"/>
+	  <Parameter propertyName = "flagDina"   			  dbColumnName = "DISPPROFILINV_F_DINA"/>	
+	  <Parameter propertyName = "flagProtz"               dbColumnName = "DISPPROFILINV_F_PROTZ"/>
+	  <Parameter propertyName = "flagCresc"               dbColumnName = "DISPPROFILINV_F_CRESC"/>
+	  
+    </Bindings>
+  </Access>
+  
+  <Access name = "DispAdeguatezza" type = "DAOTableAccess" tableName = "CEPE_DISP_ADEGUATEZZA">
+	  <Bindings>
+	    <Parameter propertyName = "codDisposizione"				dbColumnName = "DISP_C_DISP" primaryKey = "true"/>
+	    <Parameter propertyName = "flagInadg"              		dbColumnName = "ADG_F_INADG"/>
+	    <Parameter propertyName = "codAgente"              		dbColumnName = "AGE_C_AGE"/>
+	    <Parameter propertyName = "codRete"                		dbColumnName = "RETEVEND_C_RETE"/>
+	    <Parameter propertyName = "orizzonteTemporale"     		dbColumnName = "ADG_N_ORZ_TEMP"/>
+	    <Parameter propertyName = "tolleranzaVolatilita"     	dbColumnName = "ADG_N_TLL_VOLAT"/> 
+	  </Bindings>
+	</Access>
+	
+	<Access name="InrDispVitaRefTerzo" type="DAOTableAccess" tableName="INR_DISPVITAREFTERZO">
+ 		<Bindings>
+			<Parameter propertyName="codDisposizione"					dbColumnName="DISP_C_DISP" 					primaryKey="true" />
+			<Parameter propertyName="codAgente" 						dbColumnName="AGE_C_AGE" 					primaryKey="true" />
+			<Parameter propertyName="codRete" 							dbColumnName="RETEVEND_C_RETE" 				primaryKey="true" />
+			<Parameter propertyName="codiceFiscale" 					dbColumnName="DISPVITAREFTERZO_X_CF"		 />
+			<Parameter propertyName="cognome"				    		dbColumnName="DISPVITAREFTERZO_X_COGNOME" />
+			<Parameter propertyName="nome"								dbColumnName="DISPVITAREFTERZO_X_NOME" />
+			<Parameter propertyName="toponimoIndirizzoResidenza" 		dbColumnName="DISPVITAREFTERZO_X_TIP_IND_RES" />
+			<Parameter propertyName="indirizzoResidenza"				dbColumnName="DISPVITAREFTERZO_X_IND_RES" />
+			<Parameter propertyName="numeroCivicoResidenza"				dbColumnName="DISPVITAREFTERZO_X_NUM_IND_RES" />
+			<Parameter propertyName="capResidenza" 						dbColumnName="DISPVITAREFTERZO_C_CAP_RES" />
+			<Parameter propertyName="comuneResidenza"					dbColumnName="DISPVITAREFTERZO_X_COMU_RES" />
+			<Parameter propertyName="codiceComuneResidenza" 			dbColumnName="DISPVITAREFTERZO_C_COMU_RES" />
+			<Parameter propertyName="provinciaResidenza"				dbColumnName="DISPVITAREFTERZO_C_PROV_RES" />
+			<Parameter propertyName="nazioneResidenza" 					dbColumnName="DISPVITAREFTERZO_X_NAZ_RES" />
+			<Parameter propertyName="prefissoInternazionaleTelefono"	dbColumnName="DISPVITAREFTERZO_X_PREF_INTERN" />
+			<Parameter propertyName="prefissoTelefono" 					dbColumnName="DISPVITAREFTERZO_X_PREF_TEL" />
+			<Parameter propertyName="numeroTelefono"					dbColumnName="DISPVITAREFTERZO_X_NUM_TEL" />
+			<Parameter propertyName="email" 							dbColumnName="DISPVITAREFTERZO_X_EMAIL" />
+	 	</Bindings>
+	</Access>
+	
+	<Access name="InrDispVitaTitolari" type="DAOTableAccess" tableName="INR_DISPVITATITOLARI">
+ 		<Bindings>
+			<Parameter propertyName="codDisposizione"					dbColumnName="DISP_C_DISP" 					primaryKey="true" />
+			<Parameter propertyName="codAgente" 						dbColumnName="AGE_C_AGE" 					primaryKey="true" />
+			<Parameter propertyName="codRete" 							dbColumnName="RETEVEND_C_RETE" 				primaryKey="true" />
+			<Parameter propertyName="codiceFiscale" 					dbColumnName="DISPVITATITOLARI_X_CF"		primaryKey="true" />
+			<Parameter propertyName="codiceFiscaleBeneficiario"			dbColumnName="DISPVITABENEF_X_CF" 			primaryKey="true" />
+			<Parameter propertyName="tipologiaBeneficiario"				dbColumnName="DISPVITABENEF_C_TIPO_BENEF"	primaryKey="true" />
+			<Parameter propertyName="codiceCliente" 					dbColumnName="CODIFCLIMEDL_C_CLI_MEDL" />
+			<Parameter propertyName="cognome"				    		dbColumnName="DISPVITATITOLARI_X_COGNOME" />
+			<Parameter propertyName="nome"								dbColumnName="DISPVITATITOLARI_X_NOME" />
+			<Parameter propertyName="sesso"								dbColumnName="DISPVITATITOLARI_F_SESSO" />
+			<Parameter propertyName="dataNascita"						dbColumnName="DISPVITATITOLARI_D_NASC" />
+			<Parameter propertyName="comuneDiNascita" 					dbColumnName="DISPVITATITOLARI_X_COMU_NASC" />
+			<Parameter propertyName="codiceComuneNascita"				dbColumnName="DISPVITATITOLARI_C_COMU_NASC" />
+			<Parameter propertyName="provinciaNascita" 					dbColumnName="DISPVITATITOLARI_C_PROV_NASC" />
+			<Parameter propertyName="nazioneNascita"					dbColumnName="DISPVITATITOLARI_X_NAZ_NASC" />
+			<Parameter propertyName="toponimoIndirizzoResidenza" 		dbColumnName="DISPVITATITOLARI_X_TIP_IND_RES" />
+			<Parameter propertyName="indirizzoResidenza"				dbColumnName="DISPVITATITOLARI_X_IND_RES" />
+			<Parameter propertyName="numeroCivicoResidenza"				dbColumnName="DISPVITATITOLARI_X_NUM_IND_RES" />
+			<Parameter propertyName="capResidenza" 						dbColumnName="DISPVITATITOLARI_C_CAP_RES" />
+			<Parameter propertyName="comuneResidenza"					dbColumnName="DISPVITATITOLARI_X_COMU_RES" />
+			<Parameter propertyName="codiceComuneResidenza" 			dbColumnName="DISPVITATITOLARI_C_COMU_RES" />
+			<Parameter propertyName="provinciaResidenza"				dbColumnName="DISPVITATITOLARI_C_PROV_RES" />
+			<Parameter propertyName="nazioneResidenza" 					dbColumnName="DISPVITATITOLARI_X_NAZ_RES" />
+			<Parameter propertyName="tipoTelefono" 						dbColumnName="DISPVITATITOLARI_C_TIPO_TEL" />
+			<Parameter propertyName="prefissoInternazionaleTelefono"	dbColumnName="DISPVITATITOLARI_X_PREF_INTERN" />
+			<Parameter propertyName="prefissoTelefono" 					dbColumnName="DISPVITATITOLARI_X_PREF_TEL" />
+			<Parameter propertyName="numeroTelefono"					dbColumnName="DISPVITATITOLARI_X_NUM_TEL" />
+			<Parameter propertyName="email" 							dbColumnName="DISPVITATITOLARI_X_EMAIL" />
+			<Parameter propertyName="tipoRelazioneTitolareContraente"				dbColumnName="C_REL_TITOLARE_CONTR" />
+			<Parameter propertyName="descrizioneTipoRelazioneTitolareContraente" 	dbColumnName="X_ALTRO_REL_TITOLARE_CONTR" />
+			<Parameter propertyName="tipoRelazioneTitolareAssicurando"				dbColumnName="C_REL_TITOLARE_ASSIC" />
+			<Parameter propertyName="descrizioneTipoRelazioneTitolareAssicurando" 	dbColumnName="X_ALTRO_REL_TITOLARE_ASSIC" />
+	 	</Bindings>
+	</Access>
+
+	<Access name="InrDispVitaSocieta" type="DAOTableAccess" tableName="INR_DISPVITASOCIETA">
+	    <Bindings>
+			<Parameter propertyName = "codDisposizione"         dbColumnName = "DISP_C_DISP" primaryKey = "true"/>
+			<Parameter propertyName = "codRete"                 dbColumnName = "RETEVEND_C_RETE" primaryKey = "true"/>
+			<Parameter propertyName = "codAgente"               dbColumnName = "AGE_C_AGE" primaryKey = "true"/>
+			<Parameter propertyName = "tipoSocieta"             dbColumnName = "DISPVITASOCIETA_C_TIP_SOC" primaryKey = "true"/>
+			<Parameter propertyName = "tipoStatoDisposizione"   dbColumnName = "TIPDISPSTATO_C_TIPDISPSTATO"/>
+			<Parameter propertyName = "serverReplica"           dbColumnName = "SERVER_C_REPLICA"/>
+			<Parameter propertyName = "codClienteMediolanum"    dbColumnName = "CODIFCLIMEDL_C_CLI_MEDL"/>
+			<Parameter propertyName = "codPotenziale"           dbColumnName = "ASSGNCLIAGE_C_POTZLE"/>
+			<Parameter propertyName = "denominazioneSoc"        dbColumnName = "DISPVITASOCIETA_X_DENOM_SOC"/>
+			<Parameter propertyName = "partitaIva" 		      	dbColumnName = "DISPVITASOCIETA_C_PIVA"/>
+			<Parameter propertyName = "toponimo"                dbColumnName = "DISPVITASOCIETA_C_TOPONIMO"/>
+			<Parameter propertyName = "indirizzo"               dbColumnName = "DISPVITASOCIETA_X_INDIRIZZO"/>
+			<Parameter propertyName = "numeroCivico"            dbColumnName = "DISPVITASOCIETA_X_NUM_CIVICO"/>
+			<Parameter propertyName = "cap"        			  	dbColumnName = "DISPVITASOCIETA_C_CAP"/>
+			<Parameter propertyName = "comune"    			  	dbColumnName = "COMU_X_COMU"/>
+			<Parameter propertyName = "localita"     			dbColumnName = "DISPVITASOCIETA_X_LOCALITA"/>
+			<Parameter propertyName = "nazione"        		  	dbColumnName = "NAZ_C_NAZ"/>
+			<Parameter propertyName = "provincia"        		dbColumnName = "PROV_C_PROV"/>
+			<Parameter propertyName = "prefisso"     			dbColumnName = "DISPVITASOCIETA_X_PREF_TEL"/>
+			<Parameter propertyName = "telefono"     			dbColumnName = "DISPVITASOCIETA_X_NUM_TEL"/>
+	    </Bindings>
+  	</Access>
+  	
+  	<Access name="CepeDispOp" type="DAOTableAccess" tableName="CEPE_DISPOP">
+    	<Bindings>
+			<Parameter propertyName = "codDisposizione"         		dbColumnName = "DISP_C_DISP" primaryKey = "true"/>
+			<Parameter propertyName = "codAgente"               		dbColumnName = "AGE_C_AGE" primaryKey = "true"/>
+			<Parameter propertyName = "codRete"                 		dbColumnName = "RETEVEND_C_RETE" primaryKey = "true"/>
+			<Parameter propertyName = "tipoStatoDisposizione"   		dbColumnName = "TIPDISPSTATO_C_TIPDISPSTATO"  notNullValue = " "/>
+			<Parameter propertyName = "serverReplica"           		dbColumnName = "SERVER_C_REPLICA"/>
+			<Parameter propertyName = "idOp"			       			dbColumnName = "DISPOP_N_IDOP"/>     
+			<Parameter propertyName = "dataInserimento"	       			dbColumnName = "DISPOP_D_INS"/>
+			<Parameter propertyName = "sceltaDossier"					dbColumnName = "DISPOP_C_SCELTADOSSIER"/>
+			<Parameter propertyName = "numDossier"       				dbColumnName = "DISPOP_C_DOSSIER"/>
+			<Parameter propertyName = "numSottorubrica"         		dbColumnName = "DISPOP_C_SOTTORUBRICA"/>
+			<Parameter propertyName = "codMediolanumIntSottorubrica"	dbColumnName = "CODIFCLIMEDL_C_CLI_MEDL"/>
+			<Parameter propertyName = "numeroConto"       				dbColumnName = "DISPOP_C_CONTO"/>
+			<Parameter propertyName = "importoRichiesto"      			dbColumnName = "DISPOP_I_RICHIESTO"/> 
+			<Parameter propertyName = "importoPrenotato"      			dbColumnName = "DISPOP_I_PRENOTATO"/> 
+			<Parameter propertyName = "numTitoli"      					dbColumnName = "DISPOP_N_TITOLI"/> 
+			<Parameter propertyName = "controValore"             		dbColumnName = "DISPOP_I_CTRV"/>
+			<Parameter propertyName = "codProd"             			dbColumnName = "PROD_C_PROD"/>
+		</Bindings>
+	</Access>
+	
+	<Access name="InrDispCli" type="DAOTableAccess" tableName="INR_DISPCLI">
+    	<Bindings>
+			<Parameter propertyName = "codDisposizione"           dbColumnName = "DISP_C_DISP" primaryKey = "true"/>
+			<Parameter propertyName = "codAgente"                 dbColumnName = "AGE_C_AGE" primaryKey = "true"/>
+			<Parameter propertyName = "codRete"                   dbColumnName = "RETEVEND_C_RETE" primaryKey = "true"/>
+			<Parameter propertyName = "serverReplica"             dbColumnName = "SERVER_C_REPLICA"/>
+			<Parameter propertyName = "tipoStatoDisposizione"     dbColumnName = "TIPDISPSTATO_C_TIPDISPSTATO"/>
+			<Parameter propertyName = "codClienteMediolanum"      dbColumnName = "CODIFCLIMEDL_C_CLI_MEDL"/>
+			<Parameter propertyName = "codPotenziale"             dbColumnName = "ASSGNCLIAGE_C_POTZLE"/>
+			<Parameter propertyName = "dataVariazione"            dbColumnName = "DISPCLI_D_VARIAZIONE"/>
+			<Parameter propertyName = "ruoloCliProd"              dbColumnName = "RUOLOCLIPROD_C_RUOLO_CLI_PROD" primaryKey = "true"/>
+			<Parameter propertyName = "clienteBusinessClub"       dbColumnName = "DISPCLI_F_BSN_CLB"/>
+			<Parameter propertyName = "numPercettoriReddito"      dbColumnName = "DISPCLI_N_PERC_REDD"/>
+			<Parameter propertyName = "dataInizioProfessione"     dbColumnName = "DISPCLI_D_INI_PROF"/>
+			<Parameter propertyName = "redditoNetto"              dbColumnName = "DISPCLI_C_REDD_NETTO"/>
+			<Parameter propertyName = "dataAbitazione"            dbColumnName = "DISPCLI_D_INI_ABTZ"/>
+			<Parameter propertyName = "proprietaAbitazione"       dbColumnName = "DISPCLI_F_PROPRI"/>
+			<Parameter propertyName = "titolarietaCC"             dbColumnName = "DISPCLI_F_TITLR_CC"/>
+			<Parameter propertyName = "dataInizioTitolCC"         dbColumnName = "DISPCLI_D_INI_TITLR_CC"/>
+			<Parameter propertyName = "pressoBanca"               dbColumnName = "DISPCLI_X_BANCA"/>
+			<Parameter propertyName = "pressoFiliale"             dbColumnName = "DISPCLI_X_FILIALE"/>
+			<Parameter propertyName = "conoscenzaClientePeriodo"  dbColumnName = "DISPCLI_C_PERIO"/>
+			<Parameter propertyName = "valutazioneCliente"        dbColumnName = "DISPCLI_C_VALUT"/>
+			<Parameter propertyName = "codAgevolazione"           dbColumnName = "DISPCLI_C_AGEVOL"/>
+			<Parameter propertyName = "mutuo"                     dbColumnName = "DISPCLI_F_MUTUO"/>
+			<Parameter propertyName = "cartaCredito"              dbColumnName = "DISPCLI_F_CARTACRED"/>
+			<Parameter propertyName = "descrCartaCredito"         dbColumnName = "DISPCLI_X_CARTACRED"/>
+			<Parameter propertyName = "impAbtz"                   dbColumnName = "DISPCLI_I_ABTZ"/>
+			<Parameter propertyName = "codGradParentela"          dbColumnName = "DISPCLI_C_GRADO_PAREN"/>
+			<Parameter propertyName = "codPerioRuolo"             dbColumnName = "DISPCLI_C_PERIORUOLO"/>
+			<Parameter propertyName = "codValutRuolo"             dbColumnName = "DISPCLI_C_VALUTRUOLO"/>
+			<Parameter propertyName = "prefCellIntern"            dbColumnName = "DISPCLI_X_PREF_CELL_INTERN"/>
+			<Parameter propertyName = "prefCell"                  dbColumnName = "DISPCLI_X_PREF_CELL"/>
+			<Parameter propertyName = "cell"                      dbColumnName = "DISPCLI_X_CELL"/>
+			<Parameter propertyName = "flagAdesBorsaMob"          dbColumnName = "DISPCLI_F_ADES_BORSA_MOB"/>
+			<Parameter propertyName = "flagAbilitazioneSMS"       dbColumnName = "DISPCLI_F_AUX1"/>
+			<Parameter propertyName = "flagLibrettoAssegni"       dbColumnName = "DISPCLI_F_ASSEGNI"/>
+			<Parameter propertyName = "flagCodiceSegretoDaSms"    dbColumnName = "DISPCLI_F_PIN"/>
+    	</Bindings>
+  	</Access>
+
+	<Access name="InrDispTerzoPagatore" type="DAOTableAccess" tableName="INR_DISPTERZOPAGATORE">
+		<Bindings>
+			<Parameter propertyName="pdfInstanceId"						dbColumnName="DISP_C_DISP" primaryKey="true" />
+			<Parameter propertyName="codAgente"							dbColumnName="AGE_C_AGE"  primaryKey="true" />
+			<Parameter propertyName="ndgCliente"						dbColumnName="CODIFCLIMEDL_C_CLI_MEDL" />
+			<Parameter propertyName="codPotenzialeCliente"				dbColumnName="ASSGNCLIAGE_C_POTZLE" />
+			<Parameter propertyName="relazioneContraenteTerzoPagatore"	dbColumnName="C_REL_CONTR_TERZOPAG" />
+			<Parameter propertyName="altraRelazione"					dbColumnName="X_ALTRO_REL_CONTR_TERZOPAG" />
+		</Bindings>
+	</Access>
+
+</DAO-Object>

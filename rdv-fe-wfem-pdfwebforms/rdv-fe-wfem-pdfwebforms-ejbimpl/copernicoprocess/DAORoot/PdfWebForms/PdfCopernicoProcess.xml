@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="PdfCopernicoProcess" connectionCacheReference="CEPE">
+
+<Access name="loadIdDispoBasketDaAccettare" type="DAOQueryAccess" queryType="0"
+		OutputCommandDataModel="prgm.pdfwebforms.model.PdfDataModel">
+	<Query>
+		select 	PDF_INSTANCE_ID
+		from 	PDF_INSTANCE
+		where 	ID_CARRELLO = ?
+		and		STATO = '02'
+		and		IN_BASKET = 'S'
+		order by ORDINE_COMPILAZIONE_BASKET asc	
+	</Query>     
+	<Input>
+		<Parameter propertyName="idCarrello"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="pdfInstanceId"/>
+	</Output>
+</Access>
+
+<Access name="verificaPin2" type="DAOQASAccess" serviceName="IB-COM-PinControl">
+   <Input>
+   	<![CDATA[
+		   	<OFX>
+				<SIGNONMSGSRQV1>
+					<SONRQ>
+						<USERID>9555559</USERID>
+						<USERPASS>6111116</USERPASS>
+						<GENUSERKEY>1</GENUSERKEY>
+						<APPID>INT</APPID>
+						<APPDATALIST>
+							<APPROOT>
+								<WHEREIS>
+									<HTTP_REFERER/>
+									<PATH_INFO/>
+									<REMOTE_ADDR>172.16.210.00</REMOTE_ADDR>
+								</WHEREIS>
+								<SESSION>
+									<PAGE/>
+									<OPERCODE/>
+									<ISOPER/>
+									<pPg/>
+									<DefaultPage/>
+								</SESSION>
+								<PINCONTROL>
+									<USERCODE>00000000000</USERCODE>
+									<PASSWORD/>
+									<POS1/>
+									<POS2/>
+									<PWDPOS1/>
+									<PWDPOS2/>
+								</PINCONTROL>
+							</APPROOT>
+						</APPDATALIST>
+					</SONRQ>
+				</SIGNONMSGSRQV1>
+				<IB-COM-PinControlQARCMSGSRQV1>
+					<UserCode propertyName="subjCod" appInfo="true"></UserCode>
+					<isOper>0</isOper>
+					<Password></Password>
+					<Pos1 propertyName="signData_digit1DaChiedere"></Pos1>
+					<Pos2 propertyName="signData_digit2DaChiedere"></Pos2>
+					<PwdPos1 propertyName="signData_digit1Digitato"></PwdPos1>
+					<PwdPos2 propertyName="signData_digit2Digitato"></PwdPos2>
+					<Level>2</Level>
+					<I_TIPO_VERIFICA>OAM</I_TIPO_VERIFICA>
+				</IB-COM-PinControlQARCMSGSRQV1>			
+			</OFX>
+		]]>
+   </Input>
+   <Output>
+   	<![CDATA[
+			<OFX>
+				<IB-COM-PinControlQARCMSGSRSV1>
+					<Response propertyName="signData_esitoChiamataServizio"></Response>
+				</IB-COM-PinControlQARCMSGSRSV1>				
+			</OFX>
+	]]>
+   </Output>
+</Access>
+
+<Access name="verificaOtp" type="DAOQASAccess" serviceName="GEN-FD-VERIFICAPIN">
+   <Input>
+   	<![CDATA[
+		   	<OFX>
+				<SIGNONMSGSRQV1>
+					<SONRQ>
+						<USERID>9555559</USERID>
+						<USERPASS>6111116</USERPASS>
+						<GENUSERKEY>1</GENUSERKEY>
+						<APPID>INT</APPID>
+						<APPDATALIST>
+							<APPROOT>
+								<WHEREIS>
+									<HTTP_REFERER/>
+									<PATH_INFO/>
+									<REMOTE_ADDR>172.16.210.00</REMOTE_ADDR>
+								</WHEREIS>
+								<SESSION>
+									<PAGE/>
+									<OPERCODE/>
+									<ISOPER/>
+									<pPg/>
+									<DefaultPage/>
+								</SESSION>
+								<PINCONTROL>
+									<USERCODE>00000000000</USERCODE>
+									<PASSWORD/>
+									<POS1/>
+									<POS2/>
+									<PWDPOS1/>
+									<PWDPOS2/>
+								</PINCONTROL>
+							</APPROOT>
+						</APPDATALIST>
+					</SONRQ>
+				</SIGNONMSGSRQV1>
+				<GEN-FD-VERIFICAPINQARCMSGSRQV1>
+					<SUBJCOD propertyName="subjCod" appInfo="true"></SUBJCOD>
+					<SUBJTYPE>F</SUBJTYPE>
+					<TIPOPIN>SMS</TIPOPIN>		
+					<VSESS propertyName="signData_otpGenerato"></VSESS>
+					<PIN propertyName="signData_otpDigitato"></PIN>
+				</GEN-FD-VERIFICAPINQARCMSGSRQV1>
+			</OFX>
+		]]>
+   </Input>
+   <Output>
+   	<![CDATA[
+			<OFX>
+				<GEN-FD-VERIFICAPINQARCMSGSRSV1>
+					<ESITO propertyName="signData_esitoChiamataServizio"></ESITO>
+					<MESSAGE propertyName="signData_messaggioChiamataServizio"></MESSAGE>
+					<CHIAVE propertyName="signData_chiaveVerificaPin"></CHIAVE>
+				</GEN-FD-VERIFICAPINQARCMSGSRSV1>
+			</OFX>
+	]]>
+   </Output>
+</Access>
+
+<Access name="accodaMilestone" type="DAOOSBAccess" serviceName="canale-cliente-be-osb-gestoreMilestoneAccodatore-prj/PS/PS_WS_GestoreMilestoneAccodatore" operationName="accodaMilestone">
+   <Input>
+   		<![CDATA[
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://canale.cliente.milestone.accodatore.service.bmed.it/v1" xmlns:v3="http://common.schema.bmed.it/v3">
+			   <soapenv:Header>
+			      <v1:requestHeader>
+			         <v1:idOperazione>
+			            <v1:codiceApplicazioneChiamante>PDFWF</v1:codiceApplicazioneChiamante>
+			            <v1:codiceOperazione propertyName="uuid"></v1:codiceOperazione>
+			         </v1:idOperazione>
+			         <v1:idConversazione propertyName="uuid"></v1:idConversazione>
+			         <v1:timeStamp propertyName="timestamp"></v1:timeStamp>
+			         <v1:contestoChiamante>
+			            <v1:idApplicazioneChiamante>PDFWF</v1:idApplicazioneChiamante>
+			            <v1:canale>ITN</v1:canale>
+			         </v1:contestoChiamante>
+			      </v1:requestHeader>
+			   </soapenv:Header>
+			   <soapenv:Body>
+			      <v11:accodaMilestone>
+					<cod_cli propertyName="ndg"></cod_cli>
+					<cod_prodotto_padre propertyName="pdfCodProdottoMilestone"></cod_prodotto_padre>
+					<cod_tipo_operaz propertyName="pdfCodOperazioneMilestone"></cod_tipo_operaz>
+					<ide_origine propertyName="pdfInstanceId"></ide_origine>
+					<tipo_milestone>accettazioneCopernicoSmart</tipo_milestone>
+					<richiesta_milestone>creaMilestone</richiesta_milestone>
+					<cod_canale_operaz>P</cod_canale_operaz>
+					<profilo>209</profilo>				
+					<imp_operaz propertyName="importo"></imp_operaz>
+					<codGestore propertyName="descr"></codGestore>
+					<numUtenza propertyName="tag1"></numUtenza>
+					<nomeContribuente propertyName="tag2"></nomeContribuente>
+					<descTag3 propertyName="vendente"></descTag3>
+			      </v11:accodaMilestone>
+			   </soapenv:Body>
+			</soapenv:Envelope>
+		]]>
+   </Input>
+   <Output>
+		<![CDATA[
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+			</soapenv:Envelope>
+		]]>
+   </Output>
+</Access>
+
+<Access name="loadTagMilestone" type="DAOQueryAccess" queryType="0" connectionCacheReference="SER_MIFID" maxResultRows="1">
+ <Query>
+	select  A.COD_TIPO_PROD_TMLN
+	,       A.COD_TIPO_OPERAZ_TMLN
+	,		(select tag.DES_TAG from SOGG_POSIZDISP.DETT_OPERZ_MILESTONE_TAG tag where tag.COD_TIPO_OPERAZ_TMLN=A.COD_TIPO_OPERAZ_TMLN and tag.PRG_TAG=1) as tag1
+	,		(select tag.DES_TAG from SOGG_POSIZDISP.DETT_OPERZ_MILESTONE_TAG tag where tag.COD_TIPO_OPERAZ_TMLN=A.COD_TIPO_OPERAZ_TMLN and tag.PRG_TAG=2) as tag2
+	from    SOGG_POSIZDISP.LEGM_TIPO_DISP_SIST_ORIG A
+	where 	A.GSTD_F_ESIST = 'S'
+	and		A.COD_TIPO_SIST_ORIG_DISP = 'PRT' 
+	and		A.COD_TIPO_PROD_TMLN is not null
+	and		A.COD_TIPO_OPERAZ_TMLN is not null
+	and		A.COD_PROD_SIST_ORIG = ? 
+	and 	A.COD_TIPO_OPERZ_PROD_SIST_ORIG = ?
+ </Query> 
+ <Input>
+	<Parameter propertyName="pdfCodProdottoPrit"/>
+	<Parameter propertyName="pdfCodOperazionePrit"/>
+ </Input>
+ <Output>
+	<Parameter propertyName="pdfCodProdottoMilestone" propertyType="IntegerType"/>
+	<Parameter propertyName="pdfCodOperazioneMilestone" propertyType="IntegerType"/>
+	<Parameter propertyName="tag1" propertyType="StringType"/>
+	<Parameter propertyName="tag2" propertyType="StringType"/>
+ </Output>
+</Access> 
+
+<Access name="loadPdfAnagrafica" type="DAOQueryAccess" queryType="0" maxResultRows="1"
+		OutputCommandDataModel="com.atosorigin.wfem.types.ByteArrayType">
+ <Query>
+	select 	top 1 PDF
+	from 	CEPE_PDF_CONTRATTI 
+	where 	DISP_C_DISP = ?
+ </Query> 
+ <Input>
+	<Parameter propertyName="chiave"/>
+ </Input>
+</Access> 
+
+<Access name="loadPdfCompilabile" type="DAOQueryAccess" queryType="0" maxResultRows="1"
+		OutputCommandDataModel="com.atosorigin.wfem.types.ByteArrayType">
+ <Query>
+	select 	top 1 PDF_CONTENT
+	from 	PDF_INSTANCE 
+	where 	PDF_INSTANCE_ID = ?
+ </Query> 
+ <Input>
+	<Parameter propertyName="chiave"/>
+ </Input>
+</Access> 
+
+<Access name="loadPdfComunicazione" type="DAOQueryAccess" queryType="0" maxResultRows="1"
+		OutputCommandDataModel="com.atosorigin.wfem.types.ByteArrayType">
+ <Query>
+	select 	top 1 PDF_CONTENT
+	from 	COMUNICAZIONI_COPERNICO 
+	where 	ID_COMUNICAZIONE = ?
+ </Query> 
+ <Input>
+	<Parameter propertyName="chiaveAsNum"/>
+ </Input>
+</Access> 
+
+<Access name="inviaNotificaApp" type="DAOOSBAccess" serviceName="soggetto/comunicazioni/NotificheService/v1" operationName="gestioneInvioAlert">
+   <Input>
+   		<![CDATA[
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://comunicazioni.soggetto.be.schema.bmed.it/Notifiche/v1">
+			   <soapenv:Header/>
+			   <soapenv:Body>
+			      <v11:gestioneInvioAlert>
+			         <v11:addressMailBCC></v11:addressMailBCC>
+			         <v11:addressMailCC></v11:addressMailCC>
+			         <v11:addressMailFrom></v11:addressMailFrom>
+			         <v11:codiceCliente propertyName="codiceCliente"></v11:codiceCliente>
+			         <v11:contratto></v11:contratto>
+			         <v11:corpo propertyName="corpo"></v11:corpo>
+			         <v11:gstdMNomUltModf></v11:gstdMNomUltModf>
+			         <v11:gstdXUser></v11:gstdXUser>
+			         <v11:isPilota></v11:isPilota>
+			         <v11:numeroCellulare></v11:numeroCellulare>
+			         <v11:prefissoCellulare></v11:prefissoCellulare>
+			         <v11:progressivoIstanza></v11:progressivoIstanza>
+			         <v11:provenienza>NOTIFICA</v11:provenienza>
+			         <v11:riferimento></v11:riferimento>
+			         <v11:soggetto></v11:soggetto>
+			         <v11:tipoAlert>1100</v11:tipoAlert>
+			      </v11:gestioneInvioAlert>
+			   </soapenv:Body>
+			</soapenv:Envelope>
+		]]>
+   </Input>
+   <Output>
+		<![CDATA[
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+			</soapenv:Envelope>
+		]]>
+   </Output>
+</Access>
+
+<Access name="verificaProprietaPdf" type="DAOQueryAccess" queryType="1"
+		OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType">
+ <Query>
+	select 	case when count(*) > 0 then 'S' else 'N' end
+	from 	PDF_INSTANCE 
+	where 	PDF_INSTANCE_ID = <p>chiave</p>
+	and 	CLI1_NDG =  lpad(<p>contextUserCode</p>, 11, '0')
+ </Query> 
+</Access> 
+
+</DAO-Object>
+

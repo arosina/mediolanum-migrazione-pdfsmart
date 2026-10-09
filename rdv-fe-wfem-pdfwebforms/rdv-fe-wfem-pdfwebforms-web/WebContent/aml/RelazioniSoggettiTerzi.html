@@ -1,0 +1,96 @@
+<tr><td style="height:20px;text-align:center;"><div style="border-bottom:solid 1px #333333;height:1px;"></div></td></tr>
+
+<tr>
+	<td><table class="testo">
+		<tr><td>
+			<b>Relazioni tra soggetti terzi</b>
+		</td></tr>
+		<tr><td>
+			Di seguito sono elencati i soggetti terzi per i quali è necessario indicare le relazioni che intercorrono tra di loro
+		</td></tr>
+	</table></td>
+	</td>
+</tr>
+<% for(int assIdx=0;assIdx<relazioni.getElencoSoggetti().size();assIdx++){ 
+	SoggettoRelazioneModel assicurato = (SoggettoRelazioneModel)relazioni.getElencoSoggetti().get(assIdx);
+	if(!assicurato.getIsAssicurato().booleanValue() || assicurato.getElencoBeneficiariAssicurato().size() == 0)
+		continue;
+ %>
+<tr>
+	<td class="soggettoterzo">Soggetto terzo: <%=Tools.capitalize(assicurato.getNome().toString())%>&nbsp;<%=Tools.capitalize(assicurato.getCognome().toString())%> (<%=assicurato.getNdg()%>)</td>
+</tr>
+	<% for(int benefIdx=0;benefIdx<assicurato.getElencoBeneficiariAssicurato().size();benefIdx++){ 
+		SoggettoRelazioneModel beneficiario = (SoggettoRelazioneModel)assicurato.getElencoBeneficiariAssicurato().get(benefIdx);
+	%>
+	<tr>
+		<td>
+			<table class="accordion" width="100%" onclick="openCloseAccordion(<%=globalSoggAccordionStatusIdx%>);">
+				<tr>
+					<td valign="middle" align="center" style="padding-top:10;width:25px;">
+						<div class="sublu<%=relazioni.isClose(globalSoggAccordionStatusIdx)?" giublu":""%>" id="accordionSoggetti<%=globalSoggAccordionStatusIdx%>"></div>
+					</td>
+					<td id="accordionTitle<%=globalSoggAccordionStatusIdx%>">
+						<%=Tools.capitalize(beneficiario.getNome().toString())%>&nbsp;<%=Tools.capitalize(beneficiario.getCognome().toString())%>
+						&nbsp;<%=relazioni.drawBeneficiarioIcons(beneficiario)%>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<table id="accordionSoggettiCont<%=globalSoggAccordionStatusIdx%>" class="testo" width="100%" style="table-layout:fixed;<%=relazioni.isClose(globalSoggAccordionStatusIdx)?"display:none;":""%>">
+				<% if(beneficiario.getIsPersonaFisica().booleanValue()){ %>
+					<tr><td>Nome</td><td>Cognome</td></tr>
+					<tr><td class="inputField"><%=Tools.capitalize(beneficiario.getNome().toString())%></td><td class="inputField"><%=Tools.capitalize(beneficiario.getCognome().toString())%></td></tr>
+					<tr><td>Codice Cliente</td><td>Codice Fiscale</td></tr>
+					<tr><td class="inputField"><%=beneficiario.getNdg()%></td><td class="inputField"><%=beneficiario.getCodiceFiscalePartitaIva()%></td></tr>
+				<% }else{ %>
+					<tr><td>Codice Cliente</td><td>Ragione sociale</td></tr>
+					<tr><td class="inputField"><%=beneficiario.getNdg()%></td><td class="inputField"><%=Tools.capitalize(beneficiario.getCognome().toString())%></td></tr>
+					<tr><td>Partita Iva</td><td></td></tr>
+					<tr><td class="inputField"><%=beneficiario.getCodiceFiscalePartitaIva()%></td><td></td></tr>
+				<% } %>
+				<tr><td colspan="2">Che tipo di relazione intercorre con il cliente?</td></tr>
+				<tr><td colspan="2"><%=template.field("amlModel_relazioni_elencoSoggetti"+assIdx+"_elencoBeneficiariAssicurato"+benefIdx+"_codTipoRelazioneAssicurando","style='width:100%;' modality='read'")%></td></tr>
+				<% if(beneficiario.getCodTipoRelazioneAssicurando().equals(SoggettoRelazioneModel.COD_TIPO_RELAZIONE_ALTRO)){ %>
+					<tr>
+						<td colspan="2">
+							<table width="100%">
+								<tr>
+									<td class="testo">Tipo di relazione</td>												
+								</tr>
+								<tr>
+									<td>
+										<%=template.field("amlModel_relazioni_elencoSoggetti"+assIdx+"_elencoBeneficiariAssicurato"+benefIdx+"_descrTipoRelazioneAssicurando",
+															"modality='read' upper='false' type='all' style='width:100%;'")%></td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				<% } %>
+				<% if(beneficiario.getCodTipoRelazioneAssicurando().equals(SoggettoRelazioneModel.COD_TIPO_RELAZIONE_AZIENDALE) || 
+				      beneficiario.getCodTipoRelazioneAssicurando().equals(SoggettoRelazioneModel.COD_TIPO_RELAZIONE_ALTRO)){ %>
+					<tr>
+						<td colspan="2">
+							<table width="100%">
+								<tr>
+									<td class="testo">Fornire maggiori informazioni sulla relazione</td>												
+								</tr>
+								<tr>
+									<td>
+										<%=template.field("amlModel_relazioni_elencoSoggetti"+assIdx+"_elencoBeneficiariAssicurato"+benefIdx+"_informazioniRelazioneAssicurando",
+											"onchange='onChangeInformazioniRelazioneAssicurando(this,"+globalSoggAccordionStatusIdx+");' "+
+											"placeholder='Fornire maggiori informazioni' "+
+											"rows='2' upper='false' type='all' style='width:100%;'")%></td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				<% } %>
+			</table>
+		</td>
+	</tr>
+	<% globalSoggAccordionStatusIdx++; %>
+	<% } %>				
+<% } %>

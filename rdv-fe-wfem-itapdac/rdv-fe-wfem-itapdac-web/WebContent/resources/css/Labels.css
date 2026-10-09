@@ -1,0 +1,19 @@
+.label{
+	color: #1A458F;
+	font-size: 8pt;
+	font-family: Arial;
+	background-color: #F0F0F0;
+	text-align: left; 
+	border: 1px solid #E0E0E0;
+}
+.value{
+	font-weight: lighter;
+	font-size: 8pt;
+	color: #1A458F;
+	font-family: Arial;
+	background-color: #0000000;
+	text-align: left;
+	align: right; 
+	border: 1px solid #E0E0E0;
+	font-weight: bold;
+}

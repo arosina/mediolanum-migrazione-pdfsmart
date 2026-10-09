@@ -1,0 +1,23 @@
+@font-face {
+  font-family: 'Mediolanum Sans Regular';
+  src: url('../fonts/mediolanumsans-regular.eot');
+  src: url('../fonts/mediolanumsans-regular.eot') format('embedded-opentype'),
+       url('../fonts/mediolanumsans-regular.woff') format('woff'),
+       url('../fonts/mediolanumsans-regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Mediolanum Sans Bold';
+  src: url('../fonts/mediolanumsans-bold.eot');
+  src: url('../fonts/mediolanumsans-bold.eot') format('embedded-opentype'),
+       url('../fonts/mediolanumsans-bold.woff') format('woff'),
+       url('../fonts/mediolanumsans-bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Mediolanum Sans Light';
+  src: url('../fonts/mediolanumsans-light.eot');
+  src: url('../fonts/mediolanumsans-light.eot') format('embedded-opentype'),
+       url('../fonts/mediolanumsans-light.woff') format('woff'),
+       url('../fonts/mediolanumsans-light.ttf') format('truetype');
+}

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="PosizioneWealthServices">	
+<Access name="recuperaPosizioneWealth" type="DAOOSBAccess" serviceName="service/soggetto/posizioneInformativa/PosizioneWealthService/v1" operationName="recuperaPosizioneWealth">
+	   <Input>
+	   <![CDATA[
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://soggetto.posizioneInformativa.be.schema.bmed.it/PosizioneWealth/v1">
+			<soapenv:Header></soapenv:Header>
+	        	<soapenv:Body>
+					<v11:recuperaPosizioneWealth>
+						<v11:recuperaPosizioneWealth>
+							<v11:codiceCliente propertyName="codiceCliente"></v11:codiceCliente>
+						</v11:recuperaPosizioneWealth>
+					</v11:recuperaPosizioneWealth>
+				</soapenv:Body>
+			</soapenv:Envelope>
+		]]>
+	   </Input>
+	   <Output>
+		<![CDATA[
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://soggetto.posizioneInformativa.be.schema.bmed.it/PosizioneWealth/v1">
+	   			<soapenv:Header></soapenv:Header>
+	   			<soapenv:Body>
+	      			<v11:recuperaPosizioneWealthResponse>
+	         			<v11:recuperaPosizioneWealthResult>
+	            			<v11:attivo propertyName="flagAttivoWealth"></v11:attivo>
+	            			<v11:eleggibilita propertyName="flagPotenzialeWealth"></v11:eleggibilita>
+	            			<v11:tipoWealth propertyName="tipoWealth"></v11:tipoWealth>
+	         			</v11:recuperaPosizioneWealthResult>
+	      			</v11:recuperaPosizioneWealthResponse>
+	   			</soapenv:Body>
+	  		</soapenv:Envelope>
+		]]>
+	   </Output>
+	</Access>
+	
+	<Access name="recuperaPosizioneWealthLite" type="DAOOSBAccess" serviceName="service/soggetto/posizioneInformativa/PosizioneWealthService/v1" operationName="recuperaPosizioneWealthLite" markNillable="true"> 
+		<Input>
+			<![CDATA[
+				<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://soggetto.posizioneInformativa.be.schema.bmed.it/PosizioneWealth/v1">
+   					<soapenv:Header>  						
+				   	</soapenv:Header>
+				   	<soapenv:Body>
+				      	<v11:recuperaPosizioneWealthLite>
+				         	<v11:listaClienti>
+				            	<v11:codiceCliente propertyName="codiceCliente" />
+				         	</v11:listaClienti>
+				         	<v11:praticheDigitali propertyName="praticheDigitali" />
+				      	</v11:recuperaPosizioneWealthLite>
+				   	</soapenv:Body>
+				</soapenv:Envelope>
+			]]>
+		</Input>
+		<Output>
+			<![CDATA[
+				<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+					<soapenv:Body xmlns:v11="http://soggetto.posizioneInformativa.be.schema.bmed.it/PosizioneWealth/v1" xmlns:v1="http://common.schema.bmed.it/v1">
+				    	<v11:recuperaPosizioneWealthLiteResponse>
+				        	<v11:listaTipoWealth propertyName="listaTipoWealth">
+				            	<v11:codiceCliente propertyName="codiceCliente" />
+				            	<v11:tipoWealth propertyName="tipoWealth" />
+				            	<v11:flagAddendum propertyName="flagAddendum" />
+				            	<v11:percentualeMassimaTitoli propertyName="percentualeMassimaTitoli" />
+				            	<v11:contrNAddebito propertyName="contrNAddebito" />
+				            	<v11:contrNServizio propertyName="contrNServizio" />
+				         	</v11:listaTipoWealth>
+				      	</v11:recuperaPosizioneWealthLiteResponse>
+				   	</soapenv:Body>
+				</soapenv:Envelope>
+			]]>
+		</Output>
+	</Access>		
+</DAO-Object>

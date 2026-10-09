@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="PdfBaseDriver" connectionCacheReference="CEPE">
+
+<Access name="getCounter" type="DAOCallableAccess" store="sp_get_progressivi">
+   <Input>
+		<Parameter propertyName="resourceName"/>
+		<Parameter propertyName="#contextUserCode"/>
+		<Parameter propertyName="increment" propertyType="IntegerType" propertyValue="1"/>
+		<Parameter propertyName="counter"/>
+   </Input>
+   <Output>
+		<Parameter propertyName=""/>
+		<Parameter propertyName=""/>
+		<Parameter propertyName=""/>
+		<Parameter propertyName="counter"/>
+   </Output>
+</Access>
+
+<Access name="isContoScudato" type="DAOQueryAccess" queryType="0" maxResultRows="1"
+		OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType" connectionCacheReference="SER_MIFID"> 
+	<Query> 
+		select case when CONTR_C_CAT = '0099' then 'S' else 'N' end	 
+		from CLL.CONTR 
+		where contr_n like '001/'|| ? || '/%'
+		and prod_c = 'BAN01'
+	</Query>     
+    <Input> 
+    	<Parameter propertyName="numeroConto"/> 
+	</Input> 
+</Access> 
+
+<Access name="prenotaContoTecnico" type="DAOQASAccess" serviceName="MQ-PrenCC">
+   <Input>
+   	<![CDATA[
+		   	<OFX>
+				<MQ-PrenCCQARCMSGSRQV1>
+					<DATAIN>
+						<FIL>001</FIL>
+						<CAT propertyName="categoria"></CAT>
+						<SCAT propertyName="sottocategoria"></SCAT>
+					</DATAIN>
+				</MQ-PrenCCQARCMSGSRQV1>
+			</OFX>
+		]]>
+   </Input>
+   <Output>
+   	<![CDATA[
+			<OFX>
+				<MQ-PrenCCQARCMSGSRSV1>
+					<DATAOUT>
+						<CONTO 		propertyName="numeroContoTecnicoPrenotato"></CONTO>
+						<CIN 		propertyName="cin"></CIN>
+						<IBAN_PAESE propertyName="ibanPaese"></IBAN_PAESE>
+						<IBAN_CIN1 	propertyName="ibanCin1"></IBAN_CIN1>
+						<IBAN_CIN2 	propertyName="ibanCin2"></IBAN_CIN2>
+						<IBAN_ABI 	propertyName="ibanAbi"></IBAN_ABI>
+						<IBAN_CAB 	propertyName="ibanCab"></IBAN_CAB>
+						<IBAN_CONTO propertyName="ibanConto"></IBAN_CONTO>
+					</DATAOUT>
+				</MQ-PrenCCQARCMSGSRSV1>
+			</OFX>
+	]]>
+   </Output>
+</Access>
+
+<Access name="readProfiloMifid" type="DAOOSBAccess" serviceName="service/soggetto/posizionedispositiva/QuestionarioPcpService/v1" 
+		OutputCommandDataModel="prgm.pdfwebforms.drivers.model.ProfiloMifidModel" dataFormatter="prgm.pdfwebforms.drivers.model.ProfiloMifidModel"
+		operationName="getPcpCliente" osbName="OSB12C">
+<Input>
+	<![CDATA[	
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://anagrafica.soggetto.be.schema.bmed.it/QuestionarioPcp/v1">
+		   <soapenv:Header>
+		      <v1:requestHeader>
+		         <v1:idOperazione>
+		            <v1:codiceApplicazioneChiamante>PDFWF</v1:codiceApplicazioneChiamante>
+		            <v1:codiceOperazione></v1:codiceOperazione>
+		         </v1:idOperazione>
+		         <v1:idConversazione propertyName="idConversazione"></v1:idConversazione>
+		         <v1:timeStamp propertyName="timeStamp"></v1:timeStamp>
+		         <v1:contestoChiamante>
+		            <v1:idApplicazioneChiamante>PDFWF</v1:idApplicazioneChiamante>
+		            <v1:canale></v1:canale>
+		            <v1:utente></v1:utente>
+		            <v1:ndgCliente></v1:ndgCliente>
+		            <v1:numeroRapporto></v1:numeroRapporto>
+		         </v1:contestoChiamante>
+		      </v1:requestHeader>
+		   </soapenv:Header>
+		   <soapenv:Body>
+		      <v11:getPcpCliente>
+		        <v11:metadata>
+		            <v11:abiCode></v11:abiCode>
+		            <v11:callerDataId></v11:callerDataId>
+		            <v11:channelCode></v11:channelCode>
+		            <v11:companyCode></v11:companyCode>
+		            <v11:familyBankerCode></v11:familyBankerCode>
+		            <v11:familyBanker>false</v11:familyBanker>
+		            <v11:inputCommonDataVestion></v11:inputCommonDataVestion>
+		            <v11:ip></v11:ip>
+		            <v11:keyHole>true</v11:keyHole>
+		            <v11:keylog></v11:keylog>
+		            <v11:operatorCode></v11:operatorCode>
+		            <v11:placeCode></v11:placeCode>
+		            <v11:statusCode>3</v11:statusCode>
+		            <v11:swift></v11:swift>
+		            <v11:timeStamp propertyName="timeStamp"></v11:timeStamp>
+		            <v11:userAgent></v11:userAgent>
+		            <v11:userId propertyName="userId"></v11:userId>
+		            <v11:userIdKeyHole></v11:userIdKeyHole>
+		            <v11:versionBs></v11:versionBs>
+		         </v11:metadata>
+		         <v11:idCliente propertyName="idCliente"></v11:idCliente>
+		         <v11:flagProvvisorio propertyName="flagProvvisorio"></v11:flagProvvisorio>
+		      </v11:getPcpCliente>
+		   </soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+</Input>
+<Output>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+		   <soapenv:Body>
+		      <ns1:getPcpClienteResponse xmlns:ns1="http://anagrafica.soggetto.be.schema.bmed.it/QuestionarioPcp/v1">
+		         <ns1:responseMetaData xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+		         <ns1:infoPcpCliente>
+		            <ns1:dataFineValiditaPCP propertyName="dataScadenza" dataFormatter="formattaData"></ns1:dataFineValiditaPCP>
+		            <ns1:indicatoriPCP propertyName="indicatoriPCP">
+		               <ns1:codiceIndicatore propertyName="codiceIndicatore"></ns1:codiceIndicatore>
+		               <ns1:valoreIndicatore propertyName="valoreIndicatore"></ns1:valoreIndicatore>
+		            </ns1:indicatoriPCP>
+		         </ns1:infoPcpCliente>
+		      </ns1:getPcpClienteResponse>
+		   </soapenv:Body>
+		</soapenv:Envelope>	
+	]]>
+</Output>
+</Access>
+
+<Access name="loadSaldoConto" type="DAOQASAccess" serviceName="MQ-SaldoK51">
+   <Input>
+   	<![CDATA[
+			<OFX>
+				<SIGNONMSGSRQV1>
+					<SONRQ>
+						<USERID>9555559</USERID>
+						<USERPASS>6111116</USERPASS>
+						<GENUSERKEY>1</GENUSERKEY>
+						<APPID>INT</APPID>
+						<APPDATALIST>
+							<APPROOT>
+								<WHEREIS>
+									<HTTP_REFERER/>
+									<PATH_INFO/>
+									<REMOTE_ADDR>172.16.210.00</REMOTE_ADDR>
+								</WHEREIS>
+								<SESSION>
+									<PAGE/>
+									<OPERCODE/>
+									<ISOPER/>
+									<pPg/>
+									<DefaultPage/>
+								</SESSION>
+								<PINCONTROL>
+									<USERCODE>00000000000</USERCODE>
+									<PASSWORD/>
+									<POS1/>
+									<POS2/>
+									<PWDPOS1/>
+									<PWDPOS2/>
+								</PINCONTROL>
+							</APPROOT>
+						</APPDATALIST>
+					</SONRQ>
+				</SIGNONMSGSRQV1>
+				<MQ-SaldoK51QARCMSGSRQV1>
+					<DATAIN> 
+						<Ser>1</Ser> 
+						<Fil>1</Fil> 
+						<Conto propertyName="numeroConto"></Conto> 
+					</DATAIN> 
+				</MQ-SaldoK51QARCMSGSRQV1>
+			</OFX>
+		]]>
+   </Input>
+   <Output>
+   	<![CDATA[
+			<OFX>
+				<MQ-SaldoK51QARCMSGSRSV1>
+					<DATAOUT>
+						<SALDOCONTABILE propertyName="saldoContabile" propertyType="StringType"></SALDOCONTABILE>
+						<SEGNOCONTABILE propertyName="segnoSaldoContabile" propertyType="StringType"></SEGNOCONTABILE>
+						<SALDODISP propertyName="saldoDisponibile" propertyType="StringType"></SALDODISP>
+						<SEGNODISP propertyName="segnoSaldoDisponibile" propertyType="StringType"></SEGNODISP>
+					</DATAOUT>
+				</MQ-SaldoK51QARCMSGSRSV1>
+			</OFX>		
+	]]>
+   </Output>
+</Access>
+
+<Access name="getNumeroOrdineFondi" type="DAOQASAccess" serviceName="FD-FOL-AssociaNuovoContr">
+   <Input>
+   	<![CDATA[
+		   	<OFX>
+				<SIGNONMSGSRQV1>
+					<SONRQ>
+						<USERID>9555559</USERID>
+						<USERPASS>6111116</USERPASS>
+						<GENUSERKEY>1</GENUSERKEY>
+						<APPID>INT</APPID>
+						<APPDATALIST>
+							<APPROOT>
+								<WHEREIS>
+									<HTTP_REFERER/>
+									<PATH_INFO/>
+									<REMOTE_ADDR>172.16.210.00</REMOTE_ADDR>
+								</WHEREIS>
+								<SESSION>
+									<PAGE/>
+									<OPERCODE/>
+									<ISOPER/>
+									<pPg/>
+									<DefaultPage/>
+								</SESSION>
+								<PINCONTROL>
+									<USERCODE propertyName="ndg"></USERCODE>
+									<PASSWORD/>
+									<POS1/>
+									<POS2/>
+									<PWDPOS1/>
+									<PWDPOS2/>
+								</PINCONTROL>
+							</APPROOT>
+						</APPDATALIST>
+					</SONRQ>
+				</SIGNONMSGSRQV1>
+				<FD-FOL-AssociaNuovoContrQARCMSGSRQV1>
+					<Root>
+						<CODICE_CLIENTE propertyName="ndg"></CODICE_CLIENTE>
+						<TIPO_MANDATO propertyName="tipoMandato"></TIPO_MANDATO>
+					</Root>
+				</FD-FOL-AssociaNuovoContrQARCMSGSRQV1>
+			</OFX>
+		]]>
+   </Input>
+   <Output>
+   	<![CDATA[
+			<OFX>
+				<FD-FOL-AssociaNuovoContrQARCMSGSRSV1>
+					<Root>
+						<CONTRATTO propertyName="numeroOrdine" propertyType="StringType"></CONTRATTO>
+					</Root>
+				</FD-FOL-AssociaNuovoContrQARCMSGSRSV1>
+			</OFX>
+	]]>
+   </Output>
+</Access>
+
+<Access name="loadStatoFB" type="DAOQueryAccess" queryType="0" maxResultRows="1" connectionCacheReference="ARC">
+	<Query>
+		SELECT 	s.COD_STATO_SOGG
+		, 		sg.COD_STATO_GIURID
+ 		FROM ARC_STRUTTURA_RETE r
+		INNER JOIN ARC_STATO_SOGGETTO s ON s.N_STATO_SOGG = r.N_STATO_SOGG
+		INNER JOIN ARC_ANAG_SOGGETTO aas ON aas.N_ANAG_SOGG = r.N_ANAG_SOGG
+		INNER JOIN ARC_STATO_GIURIDICO sg ON sg.N_STATO_GIURID = r.N_STATO_GIURID
+		WHERE r.FLG_ANNULLATO = 'N'
+		AND s.FLG_ANNULLATO = 'N'
+		AND sg.FLG_ANNULLATO = 'N'
+		AND	r.COD_TIPO_STRUTT IN (0,1)
+		AND aas.COD_SOGGETTO = ?
+	</Query>
+	<Input>
+		<Parameter propertyName="codiceAgente"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="codStato"/>
+		<Parameter propertyName="codStatoGiuridico"/>
+	</Output>
+</Access>
+
+<Access name="loadDataValiditaMandatoFB" type="DAOQueryAccess" queryType="0" connectionCacheReference="ARC"
+		OutputCommandDataModel="com.atosorigin.wfem.types.DateType">
+	<Query>
+		select min(DT_DECORR_MOV) IniMand
+		  from ARC_ANAG_SOGGETTO aas
+			   inner join ARC_MOV_STRUTTURA ams on ams.N_ANAG_SOGG = aas.N_ANAG_SOGG
+			   inner join ARC_STATO_GIURIDICO asg on asg.N_STATO_GIURID = ams.N_STATO_GIURID
+		 where aas.COD_SOGGETTO = ? 
+		   and asg.COD_STATO_GIURID = ?
+		   and aas.FLG_ANNULLATO = 'N'
+	  group by aas.COD_SOGGETTO	
+	</Query>
+	<Input>
+		<Parameter propertyName="codiceAgente"/>
+		<Parameter propertyName="codStatoGiuridico"/>	
+	</Input>
+</Access>
+
+<Access name="loadBloccoCliente" type="DAOQueryAccess" queryType="0" maxResultRows="1"
+		OutputCommandDataModel="com.atosorigin.wfem.types.StringType" connectionCacheReference="DBAZ_SOGG">
+	<Query>
+		select 'DECEDUTO' as bloccoCliente
+ 		from 	CLL.CLI c
+    	inner join CLL.CLI_EXT e on c.CLI_C = e.CLI_C
+		where 	c.CLI_C = ?
+		and		(c.CLI_C_COD_BLOCCO = '9' or c.CLI_S_BLOCCO_BAN = 'D' or e.COD_STATUS2 ='D')
+    	union
+ 		select 	'REVOCATO' as bloccoCliente
+ 		from 	CLL.CLI c
+		where 	c.CLI_C = ?
+		and		(c.CLI_C_COD_BLOCCO = 'R' or c.CLI_S_BLOCCO_BAN = 'K')
+	</Query>
+	<Input>
+		<Parameter propertyName="ndg"/>
+		<Parameter propertyName="ndg"/>
+	</Input>
+</Access>
+
+</DAO-Object>

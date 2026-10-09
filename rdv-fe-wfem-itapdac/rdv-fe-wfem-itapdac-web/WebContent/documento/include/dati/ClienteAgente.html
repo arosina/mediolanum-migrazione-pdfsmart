@@ -1,0 +1,107 @@
+<table width="100%" cellpadding="0" cellspacing="0">
+
+   <tr>
+      <td align="center">
+      
+      	<table width="99%" cellpadding="0" cellspacing="0">
+      	<tr>
+      		<td style="border-bottom: 2px solid #1A458F; font-size: 8px;">&nbsp;&nbsp;</td>
+      		<td rowspan="2" valign="middle" class="text" nowrap="nowrap">
+				<img src="<%=template.getWebApp()%>/images/section.gif">&nbsp;<b>Cliente / Family Banker</b>&nbsp;
+      		</td>
+      		<td style="border-bottom: 2px solid #1A458F; font-size: 8px;" width="100%">&nbsp;</td>
+      	</tr>
+      	<tr>
+      		<td style="font-size: 8px;">&nbsp;</td>
+      		<td style="font-size: 8px;">&nbsp;</td>
+      	</tr>
+      	</table>
+      </td>
+   </tr>
+   
+   <tr>
+      <td id="cliAgeCont">
+      
+    	  <table width="100%">
+    	  
+        	<% if(readonly || documento.getUfficio().equals(Costanti.UFFICIO_RETE)){ %>
+	    	    <%=template.hidden("cliente_codMediolanum")%>
+	    	    <%=template.hidden("cliente_cognome")%>
+	    	    <%=template.hidden("cliente_nome")%>
+    	    <% }else{ %>
+	    	    <%=template.hidden("cliente_nominativoConCodMediolanum")%>
+	    	<% } %>
+    	    <%=template.hidden("agente_codRete")%>
+    	    <%=template.hidden("agente_codAgente")%>
+    	    <%=template.hidden("agente_nominativo")%>
+    	    <%=template.hidden("agente_codMediolanum")%>
+    	    <tr>
+    	    
+    	      <td width="55%"> <!-- CLIENTE -->
+    	        <table cellpadding="0" cellspacing="0">
+    	          <tr>
+		        	<% if(readonly || documento.getUfficio().equals(Costanti.UFFICIO_RETE)){ %>
+				    	<td <%=documento.changedStyle("cliente")%>><%=template.field("cliente_nominativoConCodMediolanum","modality='read' style='width:300;'")%></td>
+				    <% }else{ %>
+					    <td <%=documento.changedStyle("cliente")%>>
+					      <table cellpadding="0" cellspacing="0"><tr>
+					      	<td><%=template.field("cliente_codMediolanum","modality='read' size='9' labelwidth='50'")%></td>
+					      	<td><%=template.field("cliente_cognome","onchange='changeDoc();' size='25' labelwidth='40'")%></td>
+					      	<td><%=template.field("cliente_nome","onchange='changeDoc();' size='20' labelwidth='40'")%></td>
+					      </tr></table>
+					    </td>
+				    <% } %>
+				    <td style="width:10;">
+			        	<% if(documento.getUfficio().equals(Costanti.UFFICIO_RETE) && documento.getCliente().getCognome().hasTypeErrors()){ %>
+					    	<%=template.inlineAnchor("documento_cliente_cognome")%>
+					    <% } %>
+				    </td>
+				    <td>
+			        <% if(!readonly && modalityCampoElettronico.equals("")){ %>
+				        <table cellpadding="0" cellspacing="0">
+				           <tr>
+				            <td style="width:3;"></td>
+							<td><img title="Cerca clienti" src="<%=template.getWebApp()%>/images/search.gif" style="cursor:pointer;" onclick="loadCliente();"></td>
+							<td><img title="Pulisci dati cliente" src="<%=template.getWebApp()%>/images/clear.gif" style="cursor:pointer;" onclick="clearCliente();"></td>
+					       </tr>
+					    </table>
+				    <% } %>
+				    </td>
+    	          </tr>
+    	        </table>
+    	      </td>
+    	      
+    	      <td width="1%"></td>
+    	      
+    	      <td width="44%"> <!-- AGENTE -->
+    	        <table cellpadding="0" cellspacing="0">
+    	          <tr>
+				    <td <%=documento.changedStyle("agente")%>><%=template.field("agente_nominativoConCodice","modality='read' style='width:250;'")%></td>
+				    <td style="width:10;">
+				    	<% if(documento.getAgente().getCodAgente().hasTypeErrors()){ %>
+				    		<%=template.inlineAnchor("documento_agente_codAgente")%>
+				    	<% } %>
+				    </td>
+				    <td>
+				    <% if(!readonly && 
+				       	  com.atosorigin.wfem.controller.Configuration.getInstance().isOnlineEnvironment() && 
+				       	  canMakeForOther &&
+				       	  modalityCampoElettronico.equals("")){ %>
+					        <table id="agenteModificabileTable" cellpadding="0" cellspacing="0">
+					          <tr>
+					            <td style="width:3;"></td>
+						        <td><img title="Cerca Family Banker" src="<%=template.getWebApp()%>/images/search.gif" style="cursor:pointer;" onclick="loadAgente();"></td>
+						        <td><img title="Pulisci dati Family Banker" src="<%=template.getWebApp()%>/images/clear.gif" style="cursor:pointer;" onclick="clearAgente();"></td>
+						      </tr>
+						    </table>
+					<% } %>
+				    </td>
+    	          </tr>
+    	        </table>
+    	      </td>
+    	      
+    	    </tr>
+    	  </table>
+	  </td>
+   </tr>
+</table>

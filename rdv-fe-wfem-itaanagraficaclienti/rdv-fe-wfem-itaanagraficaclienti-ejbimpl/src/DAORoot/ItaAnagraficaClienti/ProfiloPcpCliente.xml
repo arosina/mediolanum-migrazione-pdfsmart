@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="ProfiloPcpCliente" connectionCacheReference="CEPE">
+
+<Access name="getPcpCliente" type="DAOOSBAccess" serviceName="service/soggetto/posizionedispositiva/QuestionarioPcpService/v1" 
+		OutputCommandDataModel="prgm.ita.anagraficaclienti.pcp.ProfiloPcpClienteModel" dataFormatter="prgm.ita.anagraficaclienti.pcp.ProfiloPcpClienteModel"
+		operationName="getPcpCliente" osbName="OSB12C">
+<Input>
+	<![CDATA[	
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://anagrafica.soggetto.be.schema.bmed.it/QuestionarioPcp/v1">
+		   <soapenv:Header>
+		      <v1:requestHeader>
+		         <v1:idOperazione>
+		            <v1:codiceApplicazioneChiamante>ANAGCLI</v1:codiceApplicazioneChiamante>
+		            <v1:codiceOperazione></v1:codiceOperazione>
+		         </v1:idOperazione>
+		         <v1:idConversazione propertyName="idConversazione"></v1:idConversazione>
+		         <v1:timeStamp propertyName="timeStamp"></v1:timeStamp>
+		         <v1:contestoChiamante>
+		            <v1:idApplicazioneChiamante>ANAGCLI</v1:idApplicazioneChiamante>
+		            <v1:canale></v1:canale>
+		            <v1:utente></v1:utente>
+		            <v1:ndgCliente></v1:ndgCliente>
+		            <v1:numeroRapporto></v1:numeroRapporto>
+		         </v1:contestoChiamante>
+		      </v1:requestHeader>
+		   </soapenv:Header>
+		   <soapenv:Body>
+		      <v11:getPcpCliente>
+		        <v11:metadata>
+		            <v11:abiCode></v11:abiCode>
+		            <v11:callerDataId></v11:callerDataId>
+		            <v11:channelCode></v11:channelCode>
+		            <v11:companyCode></v11:companyCode>
+		            <v11:familyBankerCode></v11:familyBankerCode>
+		            <v11:familyBanker>false</v11:familyBanker>
+		            <v11:inputCommonDataVestion></v11:inputCommonDataVestion>
+		            <v11:ip></v11:ip>
+		            <v11:keyHole>true</v11:keyHole>
+		            <v11:keylog></v11:keylog>
+		            <v11:operatorCode></v11:operatorCode>
+		            <v11:placeCode></v11:placeCode>
+		            <v11:statusCode>3</v11:statusCode>
+		            <v11:swift></v11:swift>
+		            <v11:timeStamp propertyName="timeStamp"></v11:timeStamp>
+		            <v11:userAgent></v11:userAgent>
+		            <v11:userId propertyName="userId"></v11:userId>
+		            <v11:userIdKeyHole></v11:userIdKeyHole>
+		            <v11:versionBs></v11:versionBs>
+		         </v11:metadata>
+		         <v11:idCliente propertyName="idCliente"></v11:idCliente>
+		         <v11:flagProvvisorio propertyName="flagProvvisorio"></v11:flagProvvisorio>
+		      </v11:getPcpCliente>
+		   </soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+</Input>
+<Output>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+		   <soapenv:Body>
+		      <ns1:getPcpClienteResponse xmlns:ns1="http://anagrafica.soggetto.be.schema.bmed.it/QuestionarioPcp/v1">
+		         <ns1:responseMetaData xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+		         <ns1:infoPcpCliente>
+		         	<ns1:dataInizioValiditaPCP 	propertyName="dataInizioValiditaPCP" dataFormatter="formattaData"></ns1:dataInizioValiditaPCP>
+		            <ns1:dataFineValiditaPCP 	propertyName="dataFineValiditaPCP" 	 dataFormatter="formattaData"></ns1:dataFineValiditaPCP>
+		            <ns1:indicatoriPCP propertyName="indicatoriPCP">
+		               <ns1:codiceIndicatore propertyName="codiceIndicatore"></ns1:codiceIndicatore>
+		               <ns1:valoreIndicatore propertyName="valoreIndicatore"></ns1:valoreIndicatore>
+		            </ns1:indicatoriPCP>
+		         </ns1:infoPcpCliente>
+		      </ns1:getPcpClienteResponse>
+		   </soapenv:Body>
+		</soapenv:Envelope>	
+	]]>
+</Output>
+</Access>	
+
+</DAO-Object>

@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="PdfWebFormsQuestionarioLight">
+
+<Access name="loadIdQuestionarioLightTargetMarketForInserimentoMOM" type="DAOOSBAccess" 
+		serviceName="service/soggetto/posizionedispositiva/QuestionarioPostvenditaService/v1" operationName="getQuestionariPostvendita">
+<Input>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://soggetto.posizionedispositiva.schema.bmed.it/QuestionarioPostVendita/v1">
+		   <soapenv:Header>
+		      <v1:requestHeader>
+		         <v1:contestoChiamante>
+				  <v1:idApplicazioneChiamante>PDFWF</v1:idApplicazioneChiamante>
+		          <v1:utente propertyName="utente"></v1:utente>
+		         </v1:contestoChiamante>
+		      </v1:requestHeader>
+		   </soapenv:Header>
+		   <soapenv:Body>
+		      <v11:getQuestionariPostvendita>
+				<v11:metadata>
+		            <v11:abiCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:callerDataId append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:channelCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:companyCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:familyBankerCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:familyBanker>false</v11:familyBanker>
+		            <v11:inputCommonDataVestion append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:ip append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:keyHole>false</v11:keyHole>
+		            <v11:keylog append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:operatorCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:placeCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:statusCode>0</v11:statusCode>
+		            <v11:swift append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+				  	<v11:timeStamp propertyName="now"></v11:timeStamp>
+		            <v11:userAgent append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+				  	<v11:userId propertyName="utente"></v11:userId>
+		            <v11:userIdKeyHole append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:versionBs append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+				</v11:metadata>
+		        <v11:codPropDisp propertyName="idReportAdeguatezza"></v11:codPropDisp>
+		        <v11:codCanale>MOM</v11:codCanale>
+		      </v11:getQuestionariPostvendita>
+		   </soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+</Input>
+<Output>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+			<soapenv:Body xmlns:v11="http://soggetto.posizionedispositiva.schema.bmed.it/QuestionarioPostVendita/v1" xmlns:v1="http://common.schema.bmed.it/v1">
+				<v1:getQuestionariPostvenditaResponse xmlns:v1="http://soggetto.posizionedispositiva.schema.bmed.it/QuestionarioPostVendita/v1">
+					<v1:questionario>
+						<v1:idQuestionario propertyName="idQLTM"></v1:idQuestionario>
+					</v1:questionario>
+				</v1:getQuestionariPostvenditaResponse>
+			</soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+</Output>
+</Access>
+
+<Access name="aggiornaQuestionarioPostvendita" type="DAOOSBAccess" 
+		serviceName="service/soggetto/posizionedispositiva/QuestionarioPostvenditaService/v1" operationName="aggiornaQuestionarioPostvendita">
+<Input>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://soggetto.posizionedispositiva.schema.bmed.it/QuestionarioPostVendita/v1">
+		   <soapenv:Header>
+		      <v1:requestHeader>
+		         <v1:idOperazione>
+		            <v1:codiceApplicazioneChiamante>PDFWF</v1:codiceApplicazioneChiamante>
+		            <v1:codiceOperazione/>
+		         </v1:idOperazione>
+		         <v1:idConversazione/>
+		         <v1:timeStamp propertyName="now"></v1:timeStamp>
+		         <v1:contestoChiamante>
+		            <v1:idApplicazioneChiamante>PDFWF</v1:idApplicazioneChiamante>
+		            <v1:canale/>
+		          	<v1:utente propertyName="utente"></v1:utente>
+		            <v1:ndgCliente/>
+		            <v1:numeroRapporto/>
+		         </v1:contestoChiamante>
+		      </v1:requestHeader>
+		   </soapenv:Header>
+		   <soapenv:Body>
+		      <v11:aggiornaQuestionarioPostvendita>
+				<v11:metadata>
+		            <v11:abiCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:callerDataId append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:channelCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:companyCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:familyBankerCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:familyBanker>false</v11:familyBanker>
+		            <v11:inputCommonDataVestion append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:ip append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:keyHole>false</v11:keyHole>
+		            <v11:keylog append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:operatorCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:placeCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:statusCode>0</v11:statusCode>
+		            <v11:swift append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+				  	<v11:timeStamp propertyName="now"></v11:timeStamp>
+		            <v11:userAgent append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+				  	<v11:userId propertyName="utente"></v11:userId>
+		            <v11:userIdKeyHole append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:versionBs append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+				</v11:metadata>
+		        <v11:idQuestionario propertyName="idQuestionarioIdd"></v11:idQuestionario>
+		        <v11:codPropDisp propertyName="pdfInstanceId"></v11:codPropDisp>
+		        <v11:codSistemaChiamante>PDFPREVIEW</v11:codSistemaChiamante>
+		      </v11:aggiornaQuestionarioPostvendita>
+		   </soapenv:Body>
+		</soapenv:Envelope>	
+	]]>
+</Input>
+<Output>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+		   <soapenv:Body xmlns:v11="http://soggetto.posizionedispositiva.schema.bmed.it/QuestionarioPostVendita/v1" xmlns:v1="http://common.schema.bmed.it/v1">
+		      <v1:aggiornaQuestionarioPostvenditaResponse xmlns:v1="http://soggetto.posizionedispositiva.schema.bmed.it/QuestionarioPostVendita/v1">
+		         <v1:codiceRisposta></v1:codiceRisposta>
+		      </v1:aggiornaQuestionarioPostvenditaResponse>
+		   </soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+</Output>
+</Access>
+
+<Access name="getInfoPCPPerTMPolizze" type="DAOOSBAccess" 
+		serviceName="service/soggetto/posizionedispositiva/QuestionarioPcpService/v1" operationName="getInfoPCPPerTMPolizze" markNillable="true">
+<Input>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://anagrafica.soggetto.be.schema.bmed.it/QuestionarioPcp/v1">
+		   <soapenv:Header>
+		      <v1:requestHeader>
+		         <v1:idOperazione>
+		         		<v1:codiceApplicazioneChiamante>PCA_INVASS_PF</v1:codiceApplicazioneChiamante>
+		 	    		<v1:codiceOperazione/>
+		         </v1:idOperazione>         
+		         <v1:contestoChiamante>
+		            <v1:idApplicazioneChiamante>INVASS</v1:idApplicazioneChiamante>
+						<v1:canale/>
+						<v1:utente/>
+						<v1:ndgCliente/>
+						<v1:numeroRapporto/>
+		         </v1:contestoChiamante>
+		      </v1:requestHeader>
+		   </soapenv:Header>
+		   <soapenv:Body>
+		      <v11:getInfoPCPPerTMPolizze>
+		         <v11:metadata>
+						<v11:abiCode/>
+						<v11:callerDataId/>
+						<v11:channelCode/>
+						<v11:companyCode/>
+						<v11:familyBankerCode/>
+						<v11:familyBanker>false</v11:familyBanker>
+						<v11:inputCommonDataVestion/>
+						<v11:ip/>
+						<v11:keyHole>true</v11:keyHole>
+						<v11:keylog/>
+						<v11:operatorCode/>
+						<v11:placeCode/>
+						<v11:statusCode>3</v11:statusCode>
+						<v11:swift/>
+						<v11:timeStamp propertyName="now"></v11:timeStamp>
+						<v11:userAgent/>
+						<v11:userId propertyName="utente"></v11:userId>
+						<v11:userIdKeyHole/>
+						<v11:versionBs/>
+		         </v11:metadata>
+		         <v11:codiceCliente propertyName="codiceCliente"></v11:codiceCliente>
+		      </v11:getInfoPCPPerTMPolizze>
+		   </soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+</Input>
+<Output>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://anagrafica.soggetto.be.schema.bmed.it/QuestionarioPcp/v1">
+			<soapenv:Body>
+			      <v11:getInfoPCPPerTMPolizzeResponse>
+			      	 <v11:codiceRisposta propertyName="codiceRisposta"></v11:codiceRisposta>
+			      	 <v11:messaggioRisposta propertyName="messaggioRisposta"></v11:messaggioRisposta>
+			         <v11:infoPCPPerTMPolizze>
+						<v11:codicePCP propertyName="codicePCP"></v11:codicePCP>
+			            <v11:indicatori propertyName="indicatori">
+			               <v11:idIndicatore propertyName="idIndicatore"></v11:idIndicatore>
+			               <v11:nomeIndicatore propertyName="nomeIndicatore"></v11:nomeIndicatore>
+			               <v11:descrizioneIndicatore propertyName="descrizioneIndicatore"></v11:descrizioneIndicatore>
+			               <v11:flagPCA propertyName="flagQuestionarioLight"></v11:flagPCA>
+			               <v11:idValoreIndicatore propertyName="idValoreIndicatore"></v11:idValoreIndicatore>
+			               <v11:nomeValoreIndicatore propertyName="nomeValoreIndicatore"></v11:nomeValoreIndicatore>
+			            </v11:indicatori>
+			            <v11:domande propertyName="domande">
+			               <v11:idDomanda propertyName="idDomanda"></v11:idDomanda>
+			               <v11:nomeDomanda propertyName="nomeDomanda"></v11:nomeDomanda>
+			               <v11:descrizioneDomanda propertyName="descrizioneDomanda"></v11:descrizioneDomanda>
+			               <v11:flagReadOnly propertyName="flagReadOnly"></v11:flagReadOnly>
+			               <v11:flagDaValidare propertyName="flagDaValidare"></v11:flagDaValidare>					              
+			               <v11:flagQuestionarioLight propertyName="flagQuestionarioLight"></v11:flagQuestionarioLight>
+			               <v11:flagHaRisposteSelezionabili propertyName="flagHaRisposteSelezionabili"></v11:flagHaRisposteSelezionabili>
+			               <v11:risposte propertyName="risposte">
+			                  <v11:idRisposta propertyName="idRisposta"></v11:idRisposta>
+			                  <v11:valoreRisposta propertyName="valoreRisposta"></v11:valoreRisposta>
+			                  <v11:descrizioneRisposta propertyName="descrizioneRisposta"></v11:descrizioneRisposta>
+			                  <v11:flagSelezionabile propertyName="flagSelezionabile"></v11:flagSelezionabile>
+			               </v11:risposte>
+			            </v11:domande>
+			         </v11:infoPCPPerTMPolizze>
+			      </v11:getInfoPCPPerTMPolizzeResponse>
+			</soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+</Output>
+</Access>
+
+</DAO-Object>

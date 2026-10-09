@@ -1,0 +1,125 @@
+<!--------  INFO PERSONALI ------->
+<%template.setPrefix("infoPersonali");%>
+
+<%=template.hidden("segnalatore_codAgente")%>
+<%=template.hidden("segnalatore_codInforete")%>
+<%=template.hidden("segnalatore_codPotenziale")%>
+<%=template.hidden("segnalatore_codMediolanum")%>
+<%=template.hidden("segnalatore_cognome")%>
+<%=template.hidden("segnalatore_nome")%>
+
+<table style="width:98%;border-collapse:collapse;border-spacing:0;">
+  <%template.setPrefix("infoDitta");%>
+  <tr>
+    <td>
+      <table style="background-color:#d0e4ef;<%=(model.getIsDitta().booleanValue()?"":"display:none;")%>">
+      	<tr>
+		    <td style="width:15%;<%=model.fch(template.getPrefix(),"numeroIscrizioneREA")%>"><%=template.field("numeroIscrizioneREA","type='num' maxlength='14'")%></td>
+		    <td style="width:18%;<%=model.fch(template.getPrefix()+"_luogoRilascioCCIAA","provincia")%>"><%=template.field("luogoRilascioCCIAA_provincia","type='alfa' size='3' maxlength='2'")%></td>
+		    <td style="width:15%;<%=model.fch(template.getPrefix(),"dataIscrizione")%>"><%=template.field("dataIscrizione")%></td>
+		    <td class="text" style="width:52%;">Nel caso di censimento/variazione ditta &egrave; necessario compilare questi campi</td>
+      	</tr>
+      </table>    
+    </td>
+  </tr>
+  
+  <%template.setPrefix("infoPersonali");%>
+  <tr>
+    <td>
+      <table style="border-spacing:1;"><tr>
+	    <td style="<%=model.fch(template.getPrefix(),"codStatoCivile")%>"><%=template.field("codStatoCivile","showcode='true'")%></td>
+        <td style="vertical-align:bottom;"><img onclick="openHelpCodStatoCivile();" src="<%=template.getWfemLayoutWebApp()%>/images/typeMessage.png" style="cursor:pointer;" title="Stati civili"></td>
+	    <td style="width: 10px;"></td>
+	    <td style="<%=model.fch(template.getPrefix(),"codTitoloStudio")%>"><%=template.field("codTitoloStudio","showcode='true'")%></td>
+        <td style="vertical-align:bottom;"><img onclick="openHelpCodTitoloStudio();" src="<%=template.getWfemLayoutWebApp()%>/images/typeMessage.png" style="cursor:pointer;" title="Titoli di studio"></td>
+	    <td style="width: 10px;"></td>
+      </tr></table>    
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <table style="border-spacing:8;">
+      	<tr>
+		   	<td style="padding-left:0;<%=model.fch(template.getPrefix(),"haFigli")%>"><%=template.field("haFigli")%></td>
+		    <td style="<%=model.fch(template.getPrefix(),"numeroFamiliari")%>"><%=template.field("numeroFamiliari","maxlength='2' style='width: 30pt;'")%></td>
+		    <td style="<%=model.fch(template.getPrefix(),"percettoriDiReddito")%>"><%=template.field("percettoriDiReddito","type='num' maxlength='2' style='width: 30pt;'")%></td>
+		    <td style="<%=model.fch(template.getPrefix(),"attualeAbitazione")%>"><%=template.field("attualeAbitazione")%></td>
+		    <td style="<%=model.fch(template.getPrefix(),"flagMutuo")%>"><%=template.field("flagMutuo")%></td>
+      	</tr>
+      </table>    
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <table style="border-collapse:collapse;border-spacing:1;">
+        <tr>      
+      	    <% if(model.getIsProspect().booleanValue()){ %>
+			    <td style="<%=model.fch(template.getPrefix(),"codOrigine")%>"><%=template.field("codOrigine","showcode='true' modality='read'")%></td>
+      		<% }else if(model.getInfoPersonali().getCodOrigine().equals(Costanti.CODICE_ORIGINE_MEMBER_GET_MEMBER) ||
+      					model.getInfoPersonali().getCodOrigine().equals(Costanti.CODICE_ORIGINE_IMF) ||
+      				    model.getInfoPersonali().getCodOrigine().equals(Costanti.CODICE_ORIGINE_MFORYOU)){ %>
+			    <td style="<%=model.fch(template.getPrefix(),"codOrigine")%>"><%=template.field("codOrigine","modality='read'")%></td>
+      		<% }else if(model.getIsBozza().booleanValue()){ %>
+			    <td style="<%=model.fch(template.getPrefix(),"codOrigine")%>"><%=template.field("codOrigine","showcode='true' onchange='gestioneOrigine();'")%></td>
+		    <% }else{ %>
+		    	 <td style="<%=model.fch(template.getPrefix(),"codOrigine")%>"><%=template.field("codOrigine","modality='read'")%></td>
+		    <% } %>
+		    <td>
+		      <table id="referralDiv" style="border-collapse:collapse;border-spacing:0;<%=model.fch(template.getPrefix(),"referral")%>;display: none;"><tr>
+		    	<td><%=template.field("referral","showcode='true'"+(model.getIsBozza().booleanValue()?"":" modality='read'"))%></td>
+		      </tr></table>
+		    </td>
+		    <td style="width:10px;"></td>
+		    <td>
+		      <table id="segnalatoreDiv" style="border-collapse:collapse;border-spacing:0;<%=model.fch(template.getPrefix(),"segnalatore")%>;display: none;">
+		      <tr>
+	               <td style="vertical-align:bottom;<%=(model.getIsBozza().booleanValue()?"":"display:none;")%>">
+	                  <img title="Clienti" src="<%=template.getWebApp()%>/images/search.gif" onclick="loadSegnalatore('<%=model.getAgente().getCodAgente()%>');" style="cursor:pointer;">
+					  <img title="Pulisci" src="<%=template.getWebApp()%>/images/clear.gif" onclick="clearSegnalatore();" style="cursor:pointer;"> 
+	               </td>
+			       <% 
+			        	String textSegnalatore = "Cliente presentatore";
+			        	if(model.getInfoPersonali().getCodOrigine().equals(Costanti.CODICE_ORIGINE_MFORYOU))
+			        		textSegnalatore = "Cliente segnalatore";
+			        	if(model.getInfoPersonali().getCodOrigine().equals(Costanti.CODICE_ORIGINE_GLOBAL_SPECIALIST))
+			        		textSegnalatore = "Global Specialist segnalatore";
+			        	textSegnalatore += "<span class=\"mtory\">(*)</span>";
+			       %>
+			       <td><%=template.field("segnalatore_nominativoConCodice","labelcode='"+textSegnalatore+"' modality='read' size='50'")%></td>
+			       <td><%=template.inlineAnchor("infoPersonali_segnalatore_codMediolanum")%></td>
+		      </tr>
+		      </table>
+		    </td>
+        </tr>
+      </table>    
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <table <%=(model.getIsDitta().booleanValue()?"":"style='display:none;'")%>>
+          <tr>
+		       <td style="<%=model.fch(template.getPrefix(),"codSottogruppoAttivita")%>"><%=template.field("codSottogruppoAttivita","style='width:750;'")%></td>
+	      </tr>
+	      <tr>
+	      	   <td>
+	      	   	<table style="border-collapse:collapse;border-spacing:0;"><tr>
+			       <td style="<%=model.fch(template.getPrefix(),"codAteco")%>"><%=template.field("codAteco","maxlength='8' style='width:75;'")%></td>
+			       <td style="vertical-align:bottom;padding-left:5px;"><img onclick="openHelpCodAteco();" src="<%=template.getWfemLayoutWebApp()%>/images/typeMessage.png" style="cursor:pointer;" title="Elenco codici ATECO"></td>
+	      	   	</tr></table>
+	      	   </td>
+	      </tr>
+	    </table>    
+    </td>
+  </tr>
+
+</table>
+
+<script>
+gestioneOrigine();
+</script>
+
+<%template.restorePrefix();%>
+<!------------------------------------------->

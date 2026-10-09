@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="Firme" connectionCacheReference="IQ_PRIT">
+
+<Access name="loadContiCorrentiCliente" type="DAOQueryAccess" queryType="0" 
+		OutputCommandDataModel="prgm.ita.p.dac.model.ContoCorrenteModel" connectionCacheReference="SER_MIFID">
+ <Query>
+	SELECT LRTPC.COD_RUOLO_CONTR_CLI, SUBSTR(CONTR.CONTR_N,5,8) AS CONTR, CASE WHEN FLG_CONTR_APER = 'C' THEN 1 ELSE 0 END AS IS_CHIUSO
+		FROM SOGG_POSIZINFORM.DETT_CONTR_BANCA CONTR
+		INNER JOIN CLL.CONTRCLI CONTRCLI ON CONTRCLI.PROD_C = CONTR.PROD_C AND CONTRCLI.CONTR_N = CONTR.CONTR_N
+		INNER JOIN CAT_PROD.DETT_PROD_TECN DPT ON DPT.PROD_C = CONTR.PROD_C
+		INNER JOIN SOGG_POSIZINFORM.DOM_STATO_CONTR DSCMP ON CAST(DSCMP.COD_STATO_CONTR AS CHAR(3)) = CONTR.COD_STATO_CONTR_EFFETV AND DSCMP.COD_TIPO_PROD_CONTR = DPT.COD_TIPO_PROD_CONTR
+		INNER JOIN SOGG_POSIZINFORM.LEGM_RUOLO_TIPO_PROD_CONTR LRTPC ON LRTPC.COD_TIPO_PROD_CONTR = DPT.COD_TIPO_PROD_CONTR AND LRTPC.COD_RUOLO_CONTR_CLI = CONTRCLI.CONTRCLI_C_RUOLO_CONTR
+		WHERE 1 = 1
+		AND CONTRCLI.CLI_C = ?
+		AND DPT.COD_TIPO_PROD_CONTR IN ('CC')
+		AND CONTR.GSTD_F_ESIST = 'S'
+		AND CONTRCLI.GSTD_F_ESIST = 'S'
+		AND DSCMP.GSTD_F_ESIST = 'S'
+		AND DPT.GSTD_F_ESIST = 'S'
+ </Query>
+ <Input>
+	<Parameter propertyName="codMediolanum"/>
+ </Input>
+ <Output>
+	<Parameter propertyName="ruoloSulConto"/>
+	<Parameter propertyName="numeroConto"/>
+	<Parameter propertyName="isChiuso"/>
+ </Output> 
+</Access>
+
+<Access name="firmeContoCorrente" type="DAOQASAccess">
+   <Input>
+   	<![CDATA[
+		<OFX>
+			<CED-TRN-RicercaDocumentiQARCMSGSRQV1>
+				<IB-COM-RichiestaDocumentazioneRapporto>
+					<TESTATA>
+						<CODISTITUTO>088</CODISTITUTO>
+						<CODFILIALE>001</CODFILIALE>
+					</TESTATA>
+					<PARAMETRIRICHIESTADOC>
+						<CODSERVIZIO>01</CODSERVIZIO>
+						<NUMCONTO propertyName="numeroConto"></NUMCONTO>
+						<CODSOTTODEPOSITO>00000</CODSOTTODEPOSITO>
+						<FORMATORAPPTITOLI>N</FORMATORAPPTITOLI>
+						<CODICEDOC>000-00</CODICEDOC>
+					</PARAMETRIRICHIESTADOC>
+				</IB-COM-RichiestaDocumentazioneRapporto>
+			</CED-TRN-RicercaDocumentiQARCMSGSRQV1>
+		</OFX>
+		]]>
+   </Input>
+   <Output>
+   	<![CDATA[
+		<OFX>
+			<CED-TRN-RicercaDocumentiQARCMSGSRSV1>
+				<IB-COM-ElencoDocumentazioneRapporto>
+					<STATUS>
+						<CODE propertyName="srvCode"></CODE>
+						<SEVERITY propertyName="srvSeverity"></SEVERITY>
+						<MESSAGE propertyName="srvMessage"></MESSAGE>
+					</STATUS>
+					<ELENCODETTAGLIDOCUMENTI propertyName="firmeDelConto">
+						<LINKDOCUMENTO propertyName="urlDocumento"></LINKDOCUMENTO>
+						<LINKFIRMA propertyName="urlFirma"></LINKFIRMA>
+					</ELENCODETTAGLIDOCUMENTI>
+				</IB-COM-ElencoDocumentazioneRapporto>
+			</CED-TRN-RicercaDocumentiQARCMSGSRSV1>
+		</OFX>
+		]]>
+   </Output>
+</Access>
+
+<Access name="firmeCliente" type="DAOQASAccess">
+   <Input>
+   	<![CDATA[
+		<OFX>
+			<CED-TRN-RicercaDocumentiQARCMSGSRQV1>
+				<IB-COM-RichiestaDocumentazioneRapporto>
+					<TESTATA>
+						<SESSIONID></SESSIONID>
+						<CODISTITUTO>088</CODISTITUTO>
+						<CODFILIALE>001</CODFILIALE>
+					</TESTATA>
+					<PARAMETRIRICHIESTADOC>
+						<CODSERVIZIO></CODSERVIZIO>
+						<NDG propertyName="codMediolanum"></NDG>
+						<CODSOTTODEPOSITO></CODSOTTODEPOSITO>
+						<FORMATORAPPTITOLI></FORMATORAPPTITOLI>
+						<CODICEDOC></CODICEDOC>
+					</PARAMETRIRICHIESTADOC>
+				</IB-COM-RichiestaDocumentazioneRapporto>
+			</CED-TRN-RicercaDocumentiQARCMSGSRQV1>
+		</OFX>
+		]]>
+   </Input>
+   <Output>
+   	<![CDATA[
+		<OFX>
+			<CED-TRN-RicercaDocumentiQARCMSGSRSV1>
+				<IB-COM-ElencoDocumentazioneRapporto>
+					<STATUS>
+						<CODE propertyName="srvCode"></CODE>
+						<SEVERITY propertyName="srvSeverity"></SEVERITY>
+						<MESSAGE propertyName="srvMessage"></MESSAGE>
+					</STATUS>
+					<ELENCODETTAGLIDOCUMENTI propertyName="firmeDelConto">
+						<LINKDOCUMENTO propertyName="urlDocumento"></LINKDOCUMENTO>
+						<LINKFIRMA propertyName="urlFirma"></LINKFIRMA>
+					</ELENCODETTAGLIDOCUMENTI>
+				</IB-COM-ElencoDocumentazioneRapporto>
+			</CED-TRN-RicercaDocumentiQARCMSGSRSV1>
+		</OFX>
+		]]>
+   </Output>
+</Access>
+
+</DAO-Object>

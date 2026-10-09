@@ -1,0 +1,64 @@
+  <% 
+  	template.savePrefix();
+  	template.setPrefix("residenza");
+  	
+  	StringType flagPep = model.getResidenza().getFlagPep();
+  	StringType originalFlagPep = model.getDatiApplicativi().getClienteCaricato() == null ? flagPep : model.getDatiApplicativi().getClienteCaricato().getResidenza().getFlagPep();
+  	FlagPepFrontendStatus flagPepFrontendStatus = FlagPepFrontendStatus.flagPepFrontendStatus(model, modificabile, flagPep, originalFlagPep);
+  %>
+  <tr>
+    <td id="motivazionePepDiv">
+      <table>
+          <tr>
+			 <td style="padding-bottom: 5px;<%=model.fch("residenza","flagPep")%>">
+			 	<table class="text">
+			 		<tr>
+			 			<td style="padding-top: 20px;">Dich. PEP <span class="mtory">(*)</span></td>
+			 			<td><%=template.inlineAnchor("residenza_flagPep")%></td>
+			 			<td>
+			 				<table class="text">
+			 					<tr><td style="padding-left: 5px;">SI</td></tr>
+			 					<tr><td><input type="radio" name="residenza_flagPep" value="<%=flagPepFrontendStatus.getFlagPepSiValue()%>" onclick="gestioneMotivazionePep(true);" <%=flagPepFrontendStatus.getFlagPepEnabled()%> <%=flagPepFrontendStatus.getFlagPepSiChecked()%>></input></td></tr>
+			 				</table>
+			 			</td>
+			 			<td>
+			 				<table class="text">
+			 					<tr><td style="padding-left: 5px;">NO</td></tr>
+			 					<tr><td><input type="radio" name="residenza_flagPep" value="<%=flagPepFrontendStatus.getFlagPepNoValue()%>" onclick="gestioneMotivazionePep(false);" <%=flagPepFrontendStatus.getFlagPepEnabled()%> <%=flagPepFrontendStatus.getFlagPepNoChecked()%>></input></td></tr>
+			 				</table>
+			 			</td>
+			 		</tr>
+			 	</table>
+			 </td>
+			 <!-- 
+					Con FATCA: Se l'anagrafica ha già impostato la motivazione pep ma non corrisponde a nessun valore nella tendina
+					ne lasciamo inalterata la valorizzazione e creiamo una tendina "finta"
+	 		 --> 
+			 <td id='tdMotivazionePep' style="<%=model.fch("residenza","motivazionePep")%>">
+			 <% if(model.getDatiApplicativi().isMotivazionePepNonCongruente()){ %>
+			 	<table>
+			 		<tr>
+			 			<td class="text" style="padding-top: 20px;">
+							<select class="inputField" disabled="disabled" style="width:200px;">
+								<option value="" selected=""><%=model.getResidenza().getMotivazionePep()%></option>
+							</select>
+			 			</td>
+			 	        <td valign="bottom"><img onclick="openHelpMotivazionePep();" src="<%=template.getWfemLayoutWebApp()%>/images/typeMessage.png" style="cursor:pointer;" title="Motivazioni PEP"></td>
+			 		</tr>
+			 	</table>
+			 <% }else{ %>
+			 	<table>
+			 		<tr>
+			 			<td><%=template.field("motivazionePep",""+flagPepFrontendStatus.getMotivazionePepEnabled())%></td>
+			 	        <td valign="bottom"><img onclick="openHelpMotivazionePep();" src="<%=template.getWfemLayoutWebApp()%>/images/typeMessage.png" style="cursor:pointer;" title="Motivazioni PEP"></td>
+					</tr>
+				</table>			 	
+			 <% } %>
+			 </td>
+          </tr>
+      </table>
+    </td>
+  </tr>
+  <% 
+  	template.restorePrefix();
+  %>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="ConvenzioneDerogaDC" connectionCacheReference="CEPE">
+
+<Access name="getConvenzioneDerogaDoubleChance" type="DAOQueryAccess" queryType="1" 
+		OutputCommandDataModel="com.atosorigin.wfem.types.StringType">
+	<Query>
+		select 	CONVENZIONE 
+		from 	CEPE_GEST_TASSI_CONVENZIONI_DC
+		where 	PROD_C_PROD = <p>prodotto</p>      
+		and		DATA_INIZIO &lt;= convert(varchar(8),<p>dataSottoscrizione</p>,112)
+		and		(DATA_FINE is null or DATA_FINE &gt;= convert(varchar(8),<p>dataSottoscrizione</p>,112))
+		and		FLAG_VALIDITA = 'S' 
+		<IfNotNull propertyName="tipologia">and TIPOLOGIA = <p>tipologia</p></IfNotNull>
+		<IfNotNull propertyName="durata">and DURATA = <p>durata</p></IfNotNull>
+	</Query>
+</Access>
+ 
+</DAO-Object>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="CodiceFiscale">	
+
+<Access name="loadCodiceComune" type="DAOQueryAccess" queryType="1"	connectionCacheReference="SER_MIFID" 
+		OutputCommandDataModel="com.atosorigin.wfem.command.MapCommandDataModel">
+	<Query>
+		SELECT  
+			COD_FISC_COMU
+		FROM 	
+			CLL.ANAG_CATAST_COMUN  
+		WHERE		
+			GSTD_F_ESIST = 'S'
+		AND DEN_COMU = upper(<p>comune</p>)
+		AND COD_PROV = upper(<p>provincia</p>)
+	</Query> 
+	<Output>
+		<Parameter propertyName="codiceComune"/>	 
+	</Output> 
+</Access>
+
+</DAO-Object>

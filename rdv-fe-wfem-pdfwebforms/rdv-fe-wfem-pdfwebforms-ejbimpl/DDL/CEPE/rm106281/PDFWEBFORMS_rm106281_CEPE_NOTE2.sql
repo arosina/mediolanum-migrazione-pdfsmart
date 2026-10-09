@@ -1,0 +1,10 @@
+use CEPE
+go
+
+update PDF_ANAG set NOTE_DI_CONFIGURAZIONE = 'Note catalogo moduli'||CHAR(13)||CHAR(10)||NOTE from CEPE_CATM_MODULO where PDF_ANAG.PDF_ID = CEPE_CATM_MODULO.ID_MODULO
+and PDF_ANAG.NOTE_DI_CONFIGURAZIONE is null and CEPE_CATM_MODULO.NOTE is not null
+go
+
+PRINT "note migrate"
+go
+

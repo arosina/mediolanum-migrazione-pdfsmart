@@ -1,0 +1,7 @@
+use CEPE
+go
+
+update PDF_MODALITA_SOTTOSCRIZIONE set X_MODALITA_DI_SOTTOSCRIZIONE='Digitale' where MODALITA_DI_SOTTOSCRIZIONE='CARTA_DIGITALE'
+go
+
+PRINT "modalita di sottoscrizione aggiornata"

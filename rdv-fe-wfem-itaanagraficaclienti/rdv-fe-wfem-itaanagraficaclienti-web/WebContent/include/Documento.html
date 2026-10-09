@@ -1,0 +1,93 @@
+<!--------  DOCUMENTO ------->
+<%template.setPrefix("documento");%>
+
+<%
+   savModality = template.getModality();
+   if(model.getIsDitta().booleanValue() && model.getClienteTitolare() != null && !model.getClienteTitolare().getDocumento().getTipoDocumento().isNull())
+   	  template.setModality(template.READ_MODALITY);
+%>
+
+<table width="98%" cellpadding="0" cellspacing="0">
+  <tr>
+    <td>
+      <table>
+	      <tr>
+		    <td style="width:20px;"></td>
+		    <% 	String fmode = "";
+		    	if(model.getDocumento().getTipoDocumento().hasTypeErrors() || model.getDocumento().getTipoDocumento().hasTypeWarnings()){
+		    	  fmode = " modality='update'";
+		    	}else{
+			    	com.atosorigin.wfem.coddesc.CodDescDataList tipiDoc = model.getDocumento().getCodDescDataList("tipoDocumento");
+			    	if(tipiDoc != null){
+			    		com.atosorigin.wfem.coddesc.CodDescData tipoDoc = tipiDoc.getCodDesc(model.getDocumento().getTipoDocumento().toString());
+			    		if(tipoDoc != null && !tipoDoc.isValid())
+			    			fmode = " modality='update'";
+			    	}
+		    	}
+		    %>
+		    <td style="<%=model.fch(template.getPrefix(),"tipoDocumento")%>"><%=template.field("tipoDocumento","showcode='true' onchange='gestioneTipoDocumento(true);'"+fmode)%></td>
+	        <td valign="bottom"><img onclick="openHelpTipoDocumento();" src="<%=template.getWfemLayoutWebApp()%>/images/typeMessage.png" style="cursor:pointer;" title="Tipi documento"></td>
+		    <td style="width: 10px;"></td>
+		    <% 	fmode = "";
+		    	if(model.getDocumento().getNumeroDocumento().hasTypeErrors() || model.getDocumento().getNumeroDocumento().hasTypeWarnings())
+		    	  fmode = " modality='update'";
+		    %>
+		    <td style="<%=model.fch(template.getPrefix(),"numeroDocumento")%>"><%=template.field("numeroDocumento","maxlength='15'"+fmode)%></td>
+	      </tr>
+      </table>    
+    </td>
+  </tr>
+  <tr><td style="height:20;"></td></tr>
+  <tr>
+    <td>
+      <table>
+	      <tr>
+		    <td id="tabLoadLuogo" align="right" style="padding-right:3px;padding-top:5px;width:20px;">
+			    <%if(template.getModality() == template.READ_MODALITY){%>
+			    &nbsp;
+			    <%}else{%>
+			    <img title="Comuni" src="<%=template.getWebApp()%>/images/search.gif" onclick="loadComuneDocumento();" style="cursor:pointer;">
+			    <%}%>
+		    </td>
+		    <% 	fmode = "";
+		    	if(model.getDocumento().getLuogoRilascio().getComune().hasTypeErrors() || model.getDocumento().getLuogoRilascio().getComune().hasTypeWarnings())
+		    	  fmode = " modality='update'";
+		    %>
+		    <td id="documentoLuogoRilascioCont" style="<%=model.fch(template.getPrefix()+"_luogoRilascio","comune")%>">		    	
+		    	<%=template.field("luogoRilascio_comune","style='width:250px;' maxlength='50'"+fmode)%>
+		    </td>
+		    <td>&nbsp;</td>
+		    <% 	fmode = "";
+		    	if(model.getDocumento().getDataRilascio().hasTypeErrors() || model.getDocumento().getDataRilascio().hasTypeWarnings())
+		    	  fmode = " modality='update'";
+		    %>
+		    <td style="<%=model.fch(template.getPrefix(),"dataRilascio")%>"><%=template.field("dataRilascio",""+fmode)%></td>
+		    <td>&nbsp;</td>
+		    <% 	fmode = "";
+		    	if(model.getDocumento().getDataScadenza().hasTypeErrors() || model.getDocumento().getDataScadenza().hasTypeWarnings())
+		    	  fmode = " modality='update'";
+		    %>
+		    <td style="<%=model.fch(template.getPrefix(),"dataScadenza")%>"><%=template.field("dataScadenza",""+fmode)%></td>
+	      </tr>
+	      <tr style="height:40;">
+		    <td style="width:20px;"></td>
+	      	<td style="width:320;" class="text" id="messaggioPatenteUCOCont"><%=(model.getDocumento().getTipoDocumento().equals(Costanti.TIPO_DOCUMENTO_PATENTE)?messaggioPatenteUCO:"")%></td>
+		    <td colspan="4"></td>
+	      </tr>
+      </table>    
+    </td>
+  </tr>
+</table>
+
+<input type='hidden' name='documento_luogoRilascio_provincia' id='documento_luogoRilascio_provincia' value="">
+<input type='hidden' name='documento_luogoRilascio_codComune' id='documento_luogoRilascio_codComune' value="">
+<input type='hidden' name='documento_luogoRilascio_cap' id='documento_luogoRilascio_cap' value="">
+<input type='hidden' name='documento_luogoRilascio_codNazione' id='documento_luogoRilascio_codNazione' value="">
+
+<script>
+gestioneTipoDocumento(false);
+</script>
+
+<%template.setModality(savModality);%>
+<%template.restorePrefix();%>
+<!------------------------------------------->

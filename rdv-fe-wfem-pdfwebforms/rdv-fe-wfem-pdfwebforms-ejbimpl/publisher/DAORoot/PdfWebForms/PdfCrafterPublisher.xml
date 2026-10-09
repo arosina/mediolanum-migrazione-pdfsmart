@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="PdfCrafterPublisher" connectionCacheReference="CEPE">
+
+<Access name="configurazioneCrafter" type="DAOTableAccess" tableName="PDF_CONFIG">
+	<Bindings>
+		<Parameter propertyName="sezione"			dbColumnName="SEZIONE" 		propertyType="StringType" propertyValue="PUBLISHER" primaryKey="true"/>
+		<Parameter propertyName="parametro"			dbColumnName="PARAMETRO"  	propertyType="StringType" propertyValue="AREE_CRAFTER" primaryKey="true"/>
+		<Parameter propertyName="attivo"			dbColumnName="ATTIVO"  		propertyType="StringType" propertyValue="S"/>
+		<Parameter propertyName="areeConfigurate"	dbColumnName="VALORE"/>
+	</Bindings>
+</Access> 
+
+<Access name="popolaPerAree" type="DAOQueryAccess" queryType="1"
+		OutputCommandDataModel="prgm.pdfwebforms.publisher.model.PdfAnagKeyModel">
+ <Query>
+	select 	PDF_ID
+	from 	PDF_ANAG
+	where 	upper(AREA) in (<ToString>filtro</ToString>)
+ </Query> 
+ <Output>
+	<Parameter propertyName="pdfId"/>
+ </Output> 
+</Access> 
+
+<Access name="popolaPerIndicatori" type="DAOQueryAccess" queryType="1"
+		OutputCommandDataModel="prgm.pdfwebforms.publisher.model.PdfAnagKeyModel">
+ <Query>
+	select 	PDF_ID
+	from 	PDF_ANAG
+	where 	PDF_ID in (<ToString>filtro</ToString>)
+	or		upper(CODE) in (<ToString>filtro</ToString>)
+	or		upper(MOM_CODE) in (<ToString>filtro</ToString>)
+ </Query> 
+ <Output>
+	<Parameter propertyName="pdfId"/>
+ </Output> 
+</Access> 
+
+</DAO-Object>

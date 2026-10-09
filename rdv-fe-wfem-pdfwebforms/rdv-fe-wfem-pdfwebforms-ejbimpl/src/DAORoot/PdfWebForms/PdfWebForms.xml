@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="PdfWebForms" connectionCacheReference="CEPE">
+
+<Access name="isProtectionSpecialistEsterno" type="DAOQueryAccess" queryType="1"  connectionCacheReference="PRGM"
+		OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType">
+ <Query>
+	select 	case when count(*) = 0 then 'N' else 'S' end as isProtectionSpecialistEsterno
+	from 	PRGM_USERS_ROLES_COMPLETE 
+	where 	C_USER = <p>codAgenteCollegato</p>
+	and 	P_ROLE = 2260
+ </Query> 
+</Access> 
+
+<Access name="loadPdfKeyFromApplReference" type="DAOQueryAccess" queryType="0" maxResultRows="2">
+ <Query>
+	select 	PDF_CODE, PDF_ENVIRONMENT, ACROFORM_VERSION 
+	from 	PDF_APPL_REFERENCED_CODE 
+	where 	APPL_REFERENCE = ?
+ </Query> 
+ <Input>
+	<Parameter propertyName="pdfApplReferenceCode"/>
+ </Input> 
+ <Output>
+	<Parameter propertyName="pdfCode"/>
+	<Parameter propertyName="pdfEnvironment"/>
+	<Parameter propertyName="acroformVersion"/>
+ </Output> 
+</Access> 
+
+<Access name="loadPdfIdFromCode" type="DAOQueryAccess" queryType="0" maxResultRows="2">
+ <Query>
+	select 	PDF_ID, MOM_CODE
+	from 	PDF_ANAG 
+	where 	CODE = ?
+ </Query> 
+ <Input>
+	<Parameter propertyName="pdfCode"/>
+ </Input> 
+ <Output>
+	<Parameter propertyName="pdfId"/>
+	<Parameter propertyName="pdfMomCode"/>
+ </Output> 
+</Access> 
+
+<Access name="loadPdfIdFromMomCodeOnCatalog" type="DAOQueryAccess" queryType="0" maxResultRows="1">
+ <Query>
+	select 	PDF_ID, CODE
+	,		case when AREA = 'CATALOGO_OPERAZIONI' then 1 else 2 end
+	from 	PDF_ANAG 
+	where 	MOM_CODE = ?
+	and		AREA in ('CATALOGO_MODULI','CATALOGO_OPERAZIONI')
+	order by 3 asc
+ </Query> 
+ <Input>
+	<Parameter propertyName="pdfCode"/>
+ </Input> 
+ <Output>
+	<Parameter propertyName="pdfId"/>
+	<Parameter propertyName="pdfCode"/>
+ </Output> 
+</Access> 
+
+<Access name="loadPdfIdFromMomCode" type="DAOQueryAccess" queryType="0" maxResultRows="2">
+ <Query>
+	select 	PDF_ID, CODE
+	from 	PDF_ANAG 
+	where 	MOM_CODE = ?
+ </Query> 
+ <Input>
+	<Parameter propertyName="pdfCode"/>
+ </Input> 
+ <Output>
+	<Parameter propertyName="pdfId"/>
+	<Parameter propertyName="pdfCode"/>
+ </Output> 
+</Access> 
+
+<Access name="loadCodeFromPdfId" type="DAOQueryAccess" queryType="0" maxResultRows="1">
+ <Query>
+	select 	CODE
+	from 	PDF_ANAG 
+	where 	PDF_ID = ?
+ </Query> 
+ <Input>
+	<Parameter propertyName="pdfId"/>
+ </Input> 
+ <Output>
+	<Parameter propertyName="pdfCode"/>
+ </Output> 
+</Access> 
+
+<Access name="initPdfCurrentPubblicationId" type="DAOQueryAccess" queryType="1" maxResultRows="1">
+ <Query>
+	select 	top 1 PUBLICATION_ID 
+	from 	PDF_PUBLICATION 
+	where 	PDF_ID = <p>pdfId</p> 
+	and		(IS_ARCHIVED is null or IS_ARCHIVED = 'N')
+	and		START_DATE &lt;= getdate()
+	<IfNotNull propertyName="momVersion">and MOM_VERSION = <p>momVersion</p></IfNotNull>
+	<IfNotNull propertyName="acroformVersion">and ACROFORM_VERSION = <p>acroformVersion</p></IfNotNull>
+	order by START_DATE desc, PUBLISH_TIME desc
+ </Query> 
+ <Output>
+	<Parameter propertyName="pdfPublicationId"/>
+ </Output> 
+</Access> 
+
+<Access name="loadPdf" type="DAOQueryAccess" queryType="0" maxResultRows="1"
+		OutputCommandDataModel="com.atosorigin.wfem.types.ByteArrayType">
+ <Query>
+	select 	top 1 CONTENT
+	from 	PDF_PUBLICATION 
+	where 	PDF_ID = ? 
+	and		PUBLICATION_ID = ?
+ </Query> 
+ <Input>
+	<Parameter propertyName="pdfId"/>
+	<Parameter propertyName="pdfPublicationId"/>
+ </Input> 
+</Access> 
+<Access name="loadPdfOnWork" type="DAOQueryAccess" queryType="0" maxResultRows="1"
+		OutputCommandDataModel="com.atosorigin.wfem.types.ByteArrayType">
+ <Query>
+	select 	top 1 CONTENT 
+	from 	PDF_PUBLICATION_WORK 
+	where 	PDF_ID = ? 
+ </Query> 
+ <Input>
+	<Parameter propertyName="pdfId"/>
+ </Input> 
+</Access> 
+
+<Access name="loadPdfPageImage" type="DAOQueryAccess" queryType="0" maxResultRows="1"
+		OutputCommandDataModel="com.atosorigin.wfem.types.ByteArrayType">
+ <Query>
+	select 	top 1 PAGE_IMG 
+	from 	PDF_PAGE 
+	where 	PDF_ID = ? 
+	and		PUBLICATION_ID = ?
+	and		PAGE_NUM = ?
+ </Query> 
+ <Input>
+	<Parameter propertyName="pdfId"/>
+	<Parameter propertyName="pdfPublicationId"/>
+	<Parameter propertyName="pageImgIdx"/>
+ </Input> 
+</Access> 
+<Access name="loadPdfPageImageOnWork" type="DAOQueryAccess" queryType="0" maxResultRows="1"
+		OutputCommandDataModel="com.atosorigin.wfem.types.ByteArrayType">
+ <Query>
+	select 	top 1 PAGE_IMG
+	from 	PDF_PAGE_WORK
+	where 	PDF_ID = ? 
+	and		PAGE_NUM = ?
+ </Query> 
+ <Input>
+	<Parameter propertyName="pdfId"/>
+	<Parameter propertyName="pageImgIdx"/>
+ </Input> 
+</Access> 
+
+<Access name="getPdfBarcode" type="DAOCallableAccess" store="sp_get_progressivi">
+   <Input>
+		<Parameter propertyName="resourceName" propertyType="StringType" propertyValue="BARCODE"/>
+		<Parameter propertyName="momCode"/>
+		<Parameter propertyName="increment" propertyType="IntegerType" propertyValue="1"/>
+		<Parameter propertyName="barcode"/>
+   </Input>
+   <Output>
+		<Parameter propertyName=""/>
+		<Parameter propertyName=""/>
+		<Parameter propertyName=""/>
+		<Parameter propertyName="barcode"/>
+   </Output>
+</Access>
+
+<Access name="pdfConfig" type="DAOTableAccess" tableName="PDF_CONFIG">
+   <Bindings>
+	<Parameter propertyName="sezione"		dbColumnName="SEZIONE" 		primaryKey="true"/>
+	<Parameter propertyName="parametro"		dbColumnName="PARAMETRO" 	primaryKey="true"/>
+	<Parameter propertyName="valore" 		dbColumnName="VALORE"/>	 
+	<Parameter propertyName="descrizione" 	dbColumnName="DESCRIZIONE"/>	
+	<Parameter propertyName="attivo" propertyType="StringType" propertyValue="S"	dbColumnName="ATTIVO"/> 
+   </Bindings>
+</Access>
+
+<Access name="tracciaPresaVisioneMaterialePrecontrattuale" type="DAOOSBAccess" 
+		serviceName="ib-be-osb-area-personale-documenti-prj/PS/PS_AreaPersonaleDocumenti" operationName="trackingInfo">
+<Input>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:head="http://bmed.nmon/mw/header" xmlns:are="http://bmed.nmon/mw/areaPersonaleDocumenti">
+		   <soapenv:Header>
+		      <head:MWHeader>
+		         <head:webCookie></head:webCookie>
+		      </head:MWHeader>
+		   </soapenv:Header>
+		   <soapenv:Body>
+		      <are:TrackingInfoRequest>
+		         <are:actionID propertyName="actionID"></are:actionID>
+		         <are:channel>PDF</are:channel>
+		         <are:clickType propertyName="clickType"></are:clickType>
+		         <are:codiceTipoDocumentoNMol></are:codiceTipoDocumentoNMol>
+		         <are:customerCode propertyName="ndg"></are:customerCode>
+		         <are:url propertyName="url"></are:url>
+		         <are:descrizione propertyName="title"></are:descrizione>
+		      </are:TrackingInfoRequest>
+		   </soapenv:Body>
+		</soapenv:Envelope>	
+	]]>
+</Input>
+<Output>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+		   <soapenv:Body xmlns:head="http://bmed.nmon/mw/header" xmlns:are="http://bmed.nmon/mw/areaPersonaleDocumenti">
+		      <ns2:TrackingInfoResponse xmlns:ns2="http://bmed.nmon/mw/areaPersonaleDocumenti">
+		         <ns2:esitoCode propertyName="esitoCode"></ns2:esitoCode>
+		      </ns2:TrackingInfoResponse>
+		   </soapenv:Body>
+		</soapenv:Envelope>	
+	]]>
+</Output>
+</Access>
+
+</DAO-Object>

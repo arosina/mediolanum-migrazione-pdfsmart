@@ -1,0 +1,11 @@
+<!--------  MODIFICA MyHome Driver --------------->
+<td>
+ <% if(model.getCodPotenziale().isNull() || model.getIsBozza().booleanValue()){ %>
+ 	 <%=template.action("salvaBozzaAction","style='width: 95;'")%>
+ <%}%>
+</td>
+
+<td>
+	<%=template.action("confermaAction","style='width: 95;'")%>
+</td> 
+<!------------------------------------------->

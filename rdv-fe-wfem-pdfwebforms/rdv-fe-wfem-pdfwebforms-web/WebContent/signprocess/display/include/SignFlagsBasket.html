@@ -1,0 +1,150 @@
+<%
+	String dispoSpeak = " "+personaCorrente.readCognomeNome()+" - Codice Cliente: "+personaCorrente.getNdg()+". ";
+	if(!model.isMultiPdf()){
+		dispoSpeak += "Firma del modulo "+(model.getPdfData().getPdfTitle().isNull()?model.getPdfAnag().getPdfDescr():model.getPdfData().getPdfTitle())+". ";
+	}else{
+		String dispoTitle = ""+(model.mainPdfData().getPdfTitle().isNull()?model.mainPdfAnag().getPdfDescr():model.mainPdfData().getPdfTitle());
+		dispoSpeak += "Firma della dispositiva "+dispoTitle+". ";
+		if(!model.getPdfAnag().getPdfDescr().equalsIgnoreCase(dispoTitle))
+			dispoSpeak += "Firma del modulo "+model.getPdfAnag().getPdfDescr()+". ";
+	}
+	DoubleType importo = model.mainPdfData().read(PdfPredefinedFields.IMPORTO)==null ? new DoubleType():new DoubleType(model.mainPdfData().read(PdfPredefinedFields.IMPORTO).toString());
+	if(importo != null && !importo.isNull())
+		dispoSpeak += "Importo "+importo+" euro. ";
+	if(!model.getLastSpeakOnPageLoad().equals(dispoSpeak)){
+		model.setLastSpeakOnPageLoad(dispoSpeak);
+%>
+	<div style="position:absolute;top:-9999;left:-9999;">
+		<span id="speakOnLoad-describedby" style="display:none;"><%=dispoSpeak%></span>
+		<input id="speakOnLoad" tabindex="0" type="text" aria-describedby="speakOnLoad-describedby" aria-hidden="true"></input>
+	</div>
+<% } %>
+
+<% 
+	boolean mostraOtp = SignUtility.mostraOtp(model);
+	String rowheight="auto auto 1fr auto auto auto auto auto";
+%>
+<div style="width:100%;height:100%;display:grid;grid-template-columns:100%;grid-template-rows:<%=rowheight%>;">
+
+	<div style="display:grid;grid-template-columns: 1fr 210px;padding-bottom:10;">
+		<div>
+			<div style="text-align:left;">
+				<div class="titolo">Firma del modulo</div>
+				<div class="testo"><%=personaCorrente.readCognomeNome()%> - Codice Cliente: <%=personaCorrente.getNdg()%></div>
+				<% String title = model.getPdfData().getPdfTitle().isNull()?model.getPdfAnag().getPdfDescr().toString() : model.getPdfData().getPdfTitle().toString(); %>
+				<div class="testo"><%=title%></div>
+			</div>
+		</div>
+		<div style="text-align:left;">
+			<% if(htmlMaterialePrecontrattuale.length() > 0){ %>
+				<div class="linkAperturaConIcona">
+					<div><img alt="" src="<%=template.getWebApp()%>/images/visualizza_pdf.png"></div>
+					<div>
+						<span role="link" tabindex="0" onclick="openMaterialePrecontrattualeDialog();">
+							Materiale precontrattuale obbligatorio
+						</span>
+					</div>
+				</div>
+			<% } %>
+			<% if(htmlMaterialePrecontrattualeAccessorio.length() > 0){ %>
+				<div class="linkAperturaConIcona">
+					<div><img alt="" src="<%=template.getWebApp()%>/images/visualizza_pdf.png"></div>
+					<div>
+						<span role="link" tabindex="0" onclick="openMaterialePrecontrattualeAccessorioDialog();">
+							Materiale precontrattuale accessorio
+						</span>
+					</div>
+				</div>
+			<% } %>
+			<% if(hasReportAdeguatezza){ %>
+				<%
+					String linkReportAdeguatezzaText = linkReportAdeguatezzaTextEND; 
+					if(model.getStatoRecueroReportAdeguatezza().equals("WAIT"))
+						linkReportAdeguatezzaText = linkReportAdeguatezzaTextWAIT;
+					else if(model.getStatoRecueroReportAdeguatezza().equals("ERROR"))
+						linkReportAdeguatezzaText = linkReportAdeguatezzaTextERROR;
+					String linkReportAdeguatezzaStyle = model.getStatoRecueroReportAdeguatezza().equals("WAIT") ? "": "style='text-decoration:underline;cursor:pointer;'";
+				%>
+				<div class="linkAperturaConIcona">
+					<div><img alt="" src="<%=template.getWebApp()%>/images/visualizza_pdf.png"></div>
+					<div>
+						<span role="link" tabindex="0" onclick="openReportAdeguatezza(this);"
+						  <%=linkReportAdeguatezzaStyle%> 
+						  statoReportAdeguatezza="<%=model.getStatoRecueroReportAdeguatezza()%>">
+						  <%=linkReportAdeguatezzaText%>
+						 </span>
+					</div>
+				</div>
+			<% } %>
+			<% if(showLinkRaccomandazioneIdd){ %>
+				<div class="linkAperturaConIcona">
+					<div><img alt="" src="<%=template.getWebApp()%>/images/visualizza_pdf.png"></div>
+					<div>
+						<span role="link" tabindex="0" onclick="openRaccomandazioneIddOnSign(this);">
+							Raccomandazione personalizzata e Modulo Unico Precontrattuale (Mup) per prodotti assicurativi IVASS n.40/2018
+						</span>
+					</div>
+				</div>
+			<% } %>
+			<div>
+				<div class="linkAperturaConIcona">
+					<div><img alt="" src="<%=template.getWebApp()%>/images/ricerca.png"></div>
+					<div>
+						<span role="link" tabindex="0" id="linkLeggiIlContratto" onclick="showLeggiIlContrattoAlert();">
+							Leggi il contratto
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div>
+	<% if(!personaCorrente.isAgente() && model.isFirstSignPage() && !model.mainPdfAnag().getTipoPriips().isNull()){ %>
+		<div class="testo" style="text-align: left;padding-bottom:10px;">
+			Dichiaro di aver già ricevuto il materiale contrattuale dal mio Family Banker prima della sottoscrizione, e di averlo
+			letto attentamente comprendendone il contenuto al fine di assumere consapevolmente la decisione per
+			sottoscrivere la presente Proposta. Qualora non avessi già provveduto, chiedo di salvare su supporto durevole
+			il suddetto materiale.
+		</div>
+	<% } %>
+	</div>
+	
+	<div id="pageBody" tabindex="-1" style="display:grid;grid-template-rows: 1fr;">
+		<%PdfHtmlDrawer.drawPdfForSign((java.io.Writer)out,request.getAttribute("BrowserInstance").toString(),template,model,personaCorrente);%>
+	</div>
+	
+	<div class="line">&nbsp;</div>
+
+	<div>
+		<%if(isLastPdfInDispo){%>
+			<div class="testo" style="text-align:left;padding:3;display:none;" id="presaVisioneCont">
+				Hai completato la presa visione del contratto di <%=model.getPdfData().getPdfTitle().isNull()?model.mainPdfAnag().getPdfDescr().toString():model.getPdfData().getPdfTitle().toString()%>
+				e di tutte le clausole contrattuali ad esso collegate
+			</div>
+		<% } %>
+	</div>
+	
+	<div>
+		<table width="100%" cellpadding="0" cellspacing="0">
+			<tr>
+				<td style="padding:10;padding-top:3;">
+					<table>
+						<tr>
+							<td><div class="normalButton whiteButton" onclick="doZoomIn();" aria-label="zoom più">Zoom +</div></td>
+							<td><div class="normalButton whiteButton" onclick="doZoomOut();" aria-label="zoom meno">Zoom -</div></td>
+						</tr>
+					</table>
+				</td>				
+				<td align="right" style="padding:10;padding-top:3;">
+					<table>
+						<tr>
+							<td><div class="normalButton" onclick="doVerificaOtp();">Avanti</div></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</div>
+	
+</div>

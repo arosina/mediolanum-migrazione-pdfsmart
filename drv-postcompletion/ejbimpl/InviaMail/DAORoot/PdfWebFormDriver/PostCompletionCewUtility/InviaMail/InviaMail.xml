@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DAO-Object name="InviaMail" connectionCacheReference="INFO" >
+<Access name="esitoElaborazioneInvioMail" type="DAOTableAccess" tableName="PDF_POSTCOMP_DATA" connectionCacheReference="CEPE">
+   <Bindings>
+	<Parameter propertyName="pdfInstanceId" 	dbColumnName="PDF_INSTANCE_ID" primaryKey="true"/>
+	<Parameter propertyName="dataElabInvio" 	dbColumnName="DATA_ELAB_INVIO"/>
+	<Parameter propertyName="infoInvio" 	dbColumnName="INVIO_INFO"/>		
+   </Bindings>
+</Access>
+<Access name="INFO_MAIL_QUEUE" type="DAOTableAccess" tableAccessType="0" tableName="INFO_MAIL_QUEUE" identityProperty="mailId">
+  	<Bindings>
+	   	<Parameter propertyName="mailId" 			dbColumnName="MAIL_ID" 				fieldType="0" primaryKey="true"/>
+	   	<Parameter propertyName="mailStatus" 		dbColumnName="MAIL_STATUS" 			fieldType="2"/>
+	   	<Parameter propertyName="schedTime" 		dbColumnName="D_SCHED_TIME" 		fieldType="2"/>
+	   	<Parameter propertyName="userIns" 			dbColumnName="C_USER" 				fieldType="2"/>
+	   	<Parameter propertyName="from" 				dbColumnName="X_MAIL_FROM" 			fieldType="2"/>
+	   	<Parameter propertyName="fromAlias" 		dbColumnName="X_MAIL_FROM_ALIAS" 	fieldType="2"/>
+	   	<Parameter propertyName="subject" 			dbColumnName="X_MAIL_SUBJECT" 		fieldType="2"/>
+	   	<Parameter propertyName="body" 				dbColumnName="X_MAIL_BODY" 			fieldType="2"/>
+	   	<Parameter propertyName="to" 				dbColumnName="X_MAIL_TO" 			fieldType="2"/>
+	   	<Parameter propertyName="cc" 				dbColumnName="X_MAIL_CC" 			fieldType="2"/>
+	   	<Parameter propertyName="bcc" 				dbColumnName="X_MAIL_BCC" 			fieldType="2"/>
+	   	<Parameter propertyName="contentType" 		dbColumnName="X_MAIL_CONTENT_TYPE" 	fieldType="2"/>
+	   	<Parameter propertyName="templateName" 		dbColumnName="TEMPLATE_NAME" 		fieldType="2"/>
+	   	<Parameter propertyName="variablesInDb" 	dbColumnName="F_VARIABLES_IN_DB" 	fieldType="2"/>
+	</Bindings>
+</Access>
+
+<Access name="INFO_MAIL_QUEUE_ATTACHMENTS" type="DAOTableAccess" tableAccessType="0" tableName="INFO_MAIL_QUEUE_ATTACHMENTS">
+  	<Bindings>
+	   	<Parameter propertyName="mailId" 			dbColumnName="MAIL_ID" 				fieldType="0"/>
+	   	<Parameter propertyName="fileName" 			dbColumnName="FILE_NAME" 			fieldType="0"/>
+	</Bindings>
+</Access>
+
+<Access name="update_mailStaus" type="DAOTableAccess" tableAccessType="0" tableName="INFO_MAIL_QUEUE">
+  	<Bindings>
+	   	<Parameter propertyName="mailId" 			dbColumnName="MAIL_ID" 				fieldType="0" primaryKey="true"/>
+	   	<Parameter propertyName="mailStatus" 		dbColumnName="MAIL_STATUS" 			fieldType="2"/>
+	</Bindings>
+</Access>
+
+<Access name="loadPath" type="DAOQueryAccess" queryType="1" OutputCommandDataModel="com.atosorigin.wfem.types.StringType">
+		<Query>
+			select C_VALORE
+			from  PB_LOG_INI_SEDE
+			WHERE C_PROCESSO=(SELECT C_PROCESSO FROM PB_LOG_STATO WHERE JAVA_CLASS_NAME = 'prgm.inforetecontrolweb.process.pdfwebformssigned.PdfWebFormsSignedProcess')
+			and C_SEZIONE='setting'
+			and C_VOCE='filePath'
+	</Query>   
+</Access>
+</DAO-Object> 

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="OperativitaResidentiEstero" connectionCacheReference="SER_MIFID">	
+
+<Access name="controlliUSPerson" type="DAOOSBAccess" serviceName="ib-be-osb-utilitydispositive-prj/PS/ps_UtilityDispo" operationName="controlliUSPerson" keepAttrs="true" dataFormatter="prgm.pdfwebformsutil.drivers.dao.XmlFormatter">	                                                              
+	<Input>
+		<![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:head="http://bmed.nmon/mw/header" xmlns:util="http://bmed.nmon/mw/utilityDisp">
+			   <soapenv:Header>
+			      <head:MWHeader>
+			         <head:webCookie propertyName="webCookie"></head:webCookie>
+			      </head:MWHeader>
+			   </soapenv:Header>
+			   <soapenv:Body>
+			      <util:controlliUSPersonRequest>
+			         <util:famigliaProdotto propertyName="famigliaProdotto"></util:famigliaProdotto>
+			         <util:tipoOperazione propertyName="tipoOperazione"></util:tipoOperazione>
+			         <util:canale propertyName="canale"></util:canale>
+			         <util:codiceCliente propertyName="codiceCliente"></util:codiceCliente>
+			         <!--Optional:-->
+			         <util:SGR propertyName="sgr"></util:SGR>
+			      </util:controlliUSPersonRequest>
+			   </soapenv:Body>
+			</soapenv:Envelope>]]>
+	</Input>
+	<Output>
+		<![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:util="http://bmed.nmon/mw/utilityDisp">
+		   <soapenv:Header/>
+		   <soapenv:Body>
+		      <util:controlliUSPersonResponse>
+		         <util:esito propertyName="esito"></util:esito>
+		         <util:codiceMotivazioneErrore propertyName="codiceMotivazioneErrore"></util:codiceMotivazioneErrore>
+		         <util:messaggioErrore propertyName="messaggioErrore"></util:messaggioErrore>
+		      </util:controlliUSPersonResponse>
+		   </soapenv:Body>
+		</soapenv:Envelope>]]>
+	</Output>
+</Access>
+</DAO-Object>

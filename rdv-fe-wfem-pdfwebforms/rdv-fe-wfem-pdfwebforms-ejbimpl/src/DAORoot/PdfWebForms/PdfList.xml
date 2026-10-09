@@ -1,0 +1,483 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="PdfList" connectionCacheReference="CEPE">
+
+<Access name="pdfDescrAutocomplete" maxResultRows="20"  type="DAOQueryAccess" queryType="1"
+		OutputCommandDataModel="prgm.pdfwebforms.dataentryutil.PdfDescrAutocompleteModel">
+ <Query>
+	select 	distinct 
+			A.CODE as pdfCode
+	, 		A.DESCR as pdfDescr
+	from 	PDF_ANAG A, PDF_PUBLICATION P
+	where 	A.PDF_ID = P.PDF_ID
+	and		(A.START_DATE is null or A.START_DATE &lt;= getDate()) 
+	and		(A.END_DATE is null or dateadd(dd,+1,A.END_DATE) &gt;= getDate()) 
+	and 	P.PUBLICATION_ID = (select P2.PUBLICATION_ID from PDF_PUBLICATION P2 where (P2.IS_ARCHIVED is null or P2.IS_ARCHIVED = 'N') and P2.PDF_ID = A.PDF_ID and P2.START_DATE &lt;= getdate() having P2.START_DATE = max(P2.START_DATE) and P2.PUBLISH_TIME = max(P2.PUBLISH_TIME))
+	<IfNotNull propertyName="pdfDescr">and (
+					str_replace(
+						str_replace(
+							str_replace(
+								str_replace(
+									str_replace(
+										str_replace(
+											str_replace(
+												str_replace(
+													str_replace(upper(A.DESCR),'[','%')
+												,']','%')
+											,'-','%')
+										,'_','%')
+									,'/','%')
+								,'(','%')
+							,')','%')
+						,'.','%')
+					,' ','%')
+			   		like upper(<p>%pdfDescrForLike%</p>) 
+				or  str_replace(
+						str_replace(
+							str_replace(
+								str_replace(
+									str_replace(
+										str_replace(
+											str_replace(
+												str_replace(
+													str_replace(upper(A.CODE),'[','%')
+												,']','%')
+											,'-','%')
+										,'_','%')
+									,'/','%')
+								,'(','%')
+							,')','%')
+						,'.','%')
+					,' ','%')
+					like upper(<p>%pdfDescrForLike%</p>)
+			) 
+	</IfNotNull>
+	<IfNotNull propertyName="areas">and A.AREA in (<ToString>areas</ToString>)</IfNotNull>
+	order by 1
+ </Query> 
+ <Output>
+	<Parameter propertyName="pdfCode"/>
+	<Parameter propertyName="pdfDescr"/>
+ </Output> 
+</Access> 
+
+<Access name="pdfList" type="DAOQueryAccess" queryType="1" 
+		OutputCommandDataModel="prgm.pdfwebforms.publisher.model.PdfAnagModel">
+ <Query>
+	select 	distinct 
+			A.PDF_ID as pdfId
+	,		A.CODE as pdfCode
+	, 		A.DESCR as pdfDescr
+	,		A.IS_STAMPA_ENABLED
+	,		A.IS_CARTA_LIBERA_ENABLED
+	,		A.IS_CARTA_CHIMICA_ENABLED
+	,		A.IS_FIRMA_DIGTALE_ENABLED
+	,		A.IS_COPERNICO_ENABLED
+	,		(select P2.PUBLICATION_ID from PDF_PUBLICATION P2 where (P2.IS_ARCHIVED is null or P2.IS_ARCHIVED = 'N') and P2.PDF_ID = A.PDF_ID and P2.START_DATE &lt;= getdate() having P2.START_DATE = max(P2.START_DATE) and P2.PUBLISH_TIME = max(P2.PUBLISH_TIME))
+	,		(select P2.EDITION from PDF_PUBLICATION P2 where (P2.IS_ARCHIVED is null or P2.IS_ARCHIVED = 'N') and P2.PDF_ID = A.PDF_ID and P2.START_DATE &lt;= getdate() having P2.START_DATE = max(P2.START_DATE) and P2.PUBLISH_TIME = max(P2.PUBLISH_TIME))
+	from 	PDF_ANAG A, PDF_PUBLICATION P
+	where 	A.PDF_ID = P.PDF_ID
+	and		(A.START_DATE is null or A.START_DATE &lt;= getDate()) 
+	and		(A.END_DATE is null or dateadd(dd,+1,A.END_DATE) &gt;= getDate()) 
+	and 	P.PUBLICATION_ID = (select P2.PUBLICATION_ID from PDF_PUBLICATION P2 where (P2.IS_ARCHIVED is null or P2.IS_ARCHIVED = 'N') and P2.PDF_ID = A.PDF_ID and P2.START_DATE &lt;= getdate() having P2.START_DATE = max(P2.START_DATE) and P2.PUBLISH_TIME = max(P2.PUBLISH_TIME))
+	<IfNotNull propertyName="pdfDescr">and (
+					str_replace(
+						str_replace(
+							str_replace(
+								str_replace(
+									str_replace(
+										str_replace(
+											str_replace(
+												str_replace(
+													str_replace(upper(A.DESCR),'[','%')
+												,']','%')
+											,'-','%')
+										,'_','%')
+									,'/','%')
+								,'(','%')
+							,')','%')
+						,'.','%')
+					,' ','%')
+			   		like upper(<p>%pdfDescrForLike%</p>) 
+				or  str_replace(
+						str_replace(
+							str_replace(
+								str_replace(
+									str_replace(
+										str_replace(
+											str_replace(
+												str_replace(
+													str_replace(upper(A.CODE),'[','%')
+												,']','%')
+											,'-','%')
+										,'_','%')
+									,'/','%')
+								,'(','%')
+							,')','%')
+						,'.','%')
+					,' ','%')
+					like upper(<p>%pdfDescrForLike%</p>)
+			) 
+	</IfNotNull>
+	<IfNotNull propertyName="areas">and A.AREA in (<ToString>areas</ToString>)</IfNotNull>
+	order by 3
+ </Query> 
+ <Output>
+	<Parameter propertyName="pdfId"/>
+	<Parameter propertyName="pdfCode"/>
+	<Parameter propertyName="pdfDescr"/>
+	<Parameter propertyName="pdfIsStampaEnabled"/>
+	<Parameter propertyName="pdfIsCartaLiberaEnabled"/>
+	<Parameter propertyName="pdfIsCartaChimicaEnabled"/>
+	<Parameter propertyName="pdfIsFirmaDigitaleEnabled"/>
+	<Parameter propertyName="pdfIsCopernicoEnabled"/>
+	<Parameter propertyName="pdfPubIdCorrente"/>
+	<Parameter propertyName="pdfEdition"/>
+ </Output> 
+</Access> 
+
+<Access name="pdfDraftList" type="DAOQueryAccess" queryType="1"
+		OutputCommandDataModel="prgm.pdfwebforms.model.PdfInstanceModel">
+ <Query>
+	select 	I.PDF_INSTANCE_ID
+	,		I.PDF_ID
+	,		I.CODE
+	,		I.PUBLICATION_ID
+	,		(select P2.EDITION from PDF_PUBLICATION P2 where P2.PDF_ID = I.PDF_ID and P2.PUBLICATION_ID = I.PUBLICATION_ID)
+	, 		I.DESCR
+	,		I.CREATION_USER
+	,		I.CREATION_TIME
+	,		I.STATO
+	,		isnull((select M.X_MODALITA_DI_SOTTOSCRIZIONE from PDF_MODALITA_SOTTOSCRIZIONE M where M.MODALITA_DI_SOTTOSCRIZIONE = I.MODALITA_DI_SOTTOSCRIZIONE),isnull(MODALITA_DI_SOTTOSCRIZIONE,'non spec.'))
+	
+	,		I.COD_AGENTE
+	,		<IfEqual propertyName="isSede" propertyValue="true">(select sogg.DENOMINAZIONE from PARC..ARC_ANAG_SOGGETTO sogg WHERE right('0000000000' + sogg.COD_SOGGETTO, 10) = I.COD_AGENTE)</IfEqual><IfNotEqual propertyName="isSede" propertyValue="true">null</IfNotEqual>
+	
+	,		I.CLI1_NDG
+	,		I.CLI1_ID_CENSIMENTO
+	,		I.CLI1_ASSGNCLIAGE_C_POTZLE
+	,		I.CLI1_COGNOME
+	,		I.CLI1_NOME
+		 
+	,		I.CLI2_NDG	 
+	,		I.CLI2_ID_CENSIMENTO
+	,		I.CLI2_ASSGNCLIAGE_C_POTZLE
+	,		I.CLI2_COGNOME
+	,		I.CLI2_NOME
+		 
+	,		I.CLI3_NDG	 
+	,		I.CLI3_ID_CENSIMENTO	 
+	,		I.CLI3_ASSGNCLIAGE_C_POTZLE
+	,		I.CLI3_COGNOME
+	,		I.CLI3_NOME
+	
+	,		I.CLI4_NDG	 
+	,		I.CLI4_ID_CENSIMENTO	 
+	,		I.CLI4_ASSGNCLIAGE_C_POTZLE
+	,		I.CLI4_COGNOME
+	,		I.CLI4_NOME
+	
+	,		I.CLI5_NDG	 
+	,		I.CLI5_ID_CENSIMENTO	 
+	,		I.CLI5_ASSGNCLIAGE_C_POTZLE
+	,		I.CLI5_COGNOME
+	,		I.CLI5_NOME
+	
+	,		I.CLI6_NDG	 
+	,		I.CLI6_ID_CENSIMENTO	 
+	,		I.CLI6_ASSGNCLIAGE_C_POTZLE
+	,		I.CLI6_COGNOME
+	,		I.CLI6_NOME
+	
+	,		I.CLI7_NDG	 
+	,		I.CLI7_ID_CENSIMENTO	 
+	,		I.CLI7_ASSGNCLIAGE_C_POTZLE
+	,		I.CLI7_COGNOME
+	,		I.CLI7_NOME
+	
+	,		I.CLI8_NDG	 
+	,		I.CLI8_ID_CENSIMENTO	 
+	,		I.CLI8_ASSGNCLIAGE_C_POTZLE
+	,		I.CLI8_COGNOME
+	,		I.CLI8_NOME
+	
+	,		I.CLI9_NDG	 
+	,		I.CLI9_ID_CENSIMENTO	 
+	,		I.CLI9_ASSGNCLIAGE_C_POTZLE
+	,		I.CLI9_COGNOME
+	,		I.CLI9_NOME
+	
+	from 	PDF_INSTANCE I
+	where  	I.STATO = '01'
+	and		<IfEqual propertyName="isRete" 			propertyValue="true">(I.CREATION_USER = <p>contextUserCode</p> or (I.COD_AGENTE = <p>contextUserCode</p> and I.CREATION_USERTYPE='ASSISTENTEFB'))</IfEqual>
+			<IfEqual propertyName="isSede" 			propertyValue="true">(I.CREATION_USER = <p>contextUserCode</p>)</IfEqual>
+			<IfEqual propertyName="isAssistenteFB" 	propertyValue="true">(I.COD_AGENTE = <p>contextCurrentLinkedUserCode</p> and (I.CREATION_USERTYPE='ASSISTENTEFB' or I.CREATION_USERTYPE='RETE'))</IfEqual>
+			<IfEqual propertyName="isOtherUser" 	propertyValue="true">(1 = 2)</IfEqual>
+	<IfNotNull propertyName="pdfEnvironment">and I.ENVIRONMENT in (<ToString>pdfEnvironment</ToString>)</IfNotNull>
+	<IfNotNull propertyName="cli1_ndg">and I.CLI1_NDG = (select right('00000000000' + <p>cli1_ndg</p>, 11))</IfNotNull>
+	order by I.CREATION_TIME desc
+ </Query> 
+ <Output>
+	<Parameter propertyName="pdfInstanceId"/>
+	<Parameter propertyName="pdfAnag_pdfId"/>
+	<Parameter propertyName="pdfAnag_pdfCode"/>
+	<Parameter propertyName="pdfAnag_pdfPublicationId"/>
+	<Parameter propertyName="pdfAnag_pdfEdition"/>
+	<Parameter propertyName="pdfAnag_pdfDescr"/>
+	<Parameter propertyName="pdfCreationUser"/>
+	<Parameter propertyName="pdfCreationTime"/>
+	<Parameter propertyName="pdfStatus"/>
+	<Parameter propertyName="pdfCompilationMode"/>
+	
+	<Parameter propertyName="codAgente"/>
+	<Parameter propertyName="nominativoAgente"/>
+
+	<Parameter propertyName="cli1_ndg"/>	 
+	<Parameter propertyName="cli1_idCensimento"/>
+	<Parameter propertyName="cli1_codPotenziale"/>
+	<Parameter propertyName="cli1_cognome"/>
+	<Parameter propertyName="cli1_nome"/>
+		 
+	<Parameter propertyName="cli2_ndg"/>	 
+	<Parameter propertyName="cli2_idCensimento"/>
+	<Parameter propertyName="cli2_codPotenziale"/>
+	<Parameter propertyName="cli2_cognome"/>
+	<Parameter propertyName="cli2_nome"/>
+		 
+	<Parameter propertyName="cli3_ndg"/>	 
+	<Parameter propertyName="cli3_idCensimento"/>	 
+	<Parameter propertyName="cli3_codPotenziale"/>
+	<Parameter propertyName="cli3_cognome"/>
+	<Parameter propertyName="cli3_nome"/>
+		 
+	<Parameter propertyName="cli4_ndg"/>	 
+	<Parameter propertyName="cli4_idCensimento"/>	 
+	<Parameter propertyName="cli4_codPotenziale"/>
+	<Parameter propertyName="cli4_cognome"/>
+	<Parameter propertyName="cli4_nome"/>
+		 
+	<Parameter propertyName="cli5_ndg"/>	 
+	<Parameter propertyName="cli5_idCensimento"/>	 
+	<Parameter propertyName="cli5_codPotenziale"/>
+	<Parameter propertyName="cli5_cognome"/>
+	<Parameter propertyName="cli5_nome"/>
+		 
+	<Parameter propertyName="cli6_ndg"/>	 
+	<Parameter propertyName="cli6_idCensimento"/>	 
+	<Parameter propertyName="cli6_codPotenziale"/>
+	<Parameter propertyName="cli6_cognome"/>
+	<Parameter propertyName="cli6_nome"/>
+		 
+	<Parameter propertyName="cli7_ndg"/>	 
+	<Parameter propertyName="cli7_idCensimento"/>	 
+	<Parameter propertyName="cli7_codPotenziale"/>
+	<Parameter propertyName="cli7_cognome"/>
+	<Parameter propertyName="cli7_nome"/>
+		 
+	<Parameter propertyName="cli8_ndg"/>	 
+	<Parameter propertyName="cli8_idCensimento"/>	 
+	<Parameter propertyName="cli8_codPotenziale"/>
+	<Parameter propertyName="cli8_cognome"/>
+	<Parameter propertyName="cli8_nome"/>
+		 
+	<Parameter propertyName="cli9_ndg"/>	 
+	<Parameter propertyName="cli9_idCensimento"/>	 
+	<Parameter propertyName="cli9_codPotenziale"/>
+	<Parameter propertyName="cli9_cognome"/>
+	<Parameter propertyName="cli9_nome"/>
+ </Output> 
+</Access> 
+
+<Access name="pdfCompletedList" type="DAOQueryAccess" queryType="1" maxResultRows="50" 
+		OutputCommandDataModel="prgm.pdfwebforms.model.PdfInstanceModel">
+ <Query>
+	select 	I.PDF_INSTANCE_ID
+	,		I.PDF_ID
+	,		I.CODE
+	,		I.PUBLICATION_ID
+	,		(select P2.EDITION from PDF_PUBLICATION P2 where P2.PDF_ID = I.PDF_ID and P2.PUBLICATION_ID = I.PUBLICATION_ID)
+	, 		I.DESCR
+	,		I.COMPLETION_USER
+	,		I.COMPLETION_TIME
+	,		I.STATO
+	,		I.MODALITA_DI_SOTTOSCRIZIONE
+	,		isnull((select M.X_MODALITA_DI_SOTTOSCRIZIONE from PDF_MODALITA_SOTTOSCRIZIONE M where M.MODALITA_DI_SOTTOSCRIZIONE = I.MODALITA_DI_SOTTOSCRIZIONE),MODALITA_DI_SOTTOSCRIZIONE) as pdfCompilationModeDescr
+	
+	,		I.COD_AGENTE
+	,		<IfEqual propertyName="isSede" propertyValue="true"><IfNull propertyName="nominativoAgente">(select sogg.DENOMINAZIONE from PARC..ARC_ANAG_SOGGETTO sogg WHERE right('0000000000' + sogg.COD_SOGGETTO, 10) = I.COD_AGENTE)</IfNull><IfNotNull propertyName="nominativoAgente">sogg.DENOMINAZIONE</IfNotNull></IfEqual><IfNotEqual propertyName="isSede" propertyValue="true">null</IfNotEqual>
+	
+	,		I.CLI1_NDG
+	,		I.CLI1_ID_CENSIMENTO
+	,		I.CLI1_ASSGNCLIAGE_C_POTZLE
+	,		I.CLI1_COGNOME
+	,		I.CLI1_NOME
+		 
+	,		I.CLI2_NDG	 
+	,		I.CLI2_ID_CENSIMENTO
+	,		I.CLI2_ASSGNCLIAGE_C_POTZLE
+	,		I.CLI2_COGNOME
+	,		I.CLI2_NOME
+		 
+	,		I.CLI3_NDG	 
+	,		I.CLI3_ID_CENSIMENTO	 
+	,		I.CLI3_ASSGNCLIAGE_C_POTZLE
+	,		I.CLI3_COGNOME
+	,		I.CLI3_NOME
+	
+	,		I.CLI4_NDG	 
+	,		I.CLI4_ID_CENSIMENTO	 
+	,		I.CLI4_ASSGNCLIAGE_C_POTZLE
+	,		I.CLI4_COGNOME
+	,		I.CLI4_NOME
+	
+	,		I.CLI5_NDG	 
+	,		I.CLI5_ID_CENSIMENTO	 
+	,		I.CLI5_ASSGNCLIAGE_C_POTZLE
+	,		I.CLI5_COGNOME
+	,		I.CLI5_NOME
+	
+	,		I.CLI6_NDG	 
+	,		I.CLI6_ID_CENSIMENTO	 
+	,		I.CLI6_ASSGNCLIAGE_C_POTZLE
+	,		I.CLI6_COGNOME
+	,		I.CLI6_NOME
+	
+	,		I.CLI7_NDG	 
+	,		I.CLI7_ID_CENSIMENTO	 
+	,		I.CLI7_ASSGNCLIAGE_C_POTZLE
+	,		I.CLI7_COGNOME
+	,		I.CLI7_NOME
+	
+	,		I.CLI8_NDG	 
+	,		I.CLI8_ID_CENSIMENTO	 
+	,		I.CLI8_ASSGNCLIAGE_C_POTZLE
+	,		I.CLI8_COGNOME
+	,		I.CLI8_NOME
+	
+	,		I.CLI9_NDG	 
+	,		I.CLI9_ID_CENSIMENTO	 
+	,		I.CLI9_ASSGNCLIAGE_C_POTZLE
+	,		I.CLI9_COGNOME
+	,		I.CLI9_NOME
+	
+	from 	PDF_INSTANCE I
+			<IfEqual propertyName="isSede" propertyValue="true"><IfNotNull propertyName="nominativoAgente">, PARC..ARC_ANAG_SOGGETTO sogg</IfNotNull></IfEqual>
+	where  	I.STATO = '03'
+	and		<IfEqual propertyName="isRete" 			propertyValue="true">(I.COMPLETION_USER = <p>contextUserCode</p> or (I.COD_AGENTE = <p>contextUserCode</p> and I.CREATION_USERTYPE='ASSISTENTEFB'))</IfEqual>
+			<IfEqual propertyName="isSede" 			propertyValue="true">(1 = 1)</IfEqual>
+			<IfEqual propertyName="isAssistenteFB" 	propertyValue="true">(I.COD_AGENTE = <p>contextCurrentLinkedUserCode</p> and (I.CREATION_USERTYPE='ASSISTENTEFB' or I.CREATION_USERTYPE='RETE'))</IfEqual>
+			<IfEqual propertyName="isOtherUser" 	propertyValue="true">(1 = 2)</IfEqual>
+	<IfEqual propertyName="isSede" propertyValue="true">
+		<IfNotNull propertyName="codAgente">
+			and I.COD_AGENTE = right('0000000000' + <p>codAgente</p>, 10) 
+		</IfNotNull>
+		<IfNotNull propertyName="nominativoAgente">
+			and	I.COD_AGENTE = right('0000000000' + sogg.COD_SOGGETTO, 10) 
+			and upper(sogg.DENOMINAZIONE) like upper(<p>%nominativoAgente%</p>) 
+		</IfNotNull>
+	</IfEqual>
+	<IfNotNull propertyName="cli1_cognome">
+		and (upper(I.CLI1_COGNOME) like upper(<p>cli1_cognome%</p>) or 
+		     upper(I.CLI2_COGNOME) like upper(<p>cli1_cognome%</p>) or 
+			 upper(I.CLI3_COGNOME) like upper(<p>cli1_cognome%</p>) or
+			 upper(I.CLI4_COGNOME) like upper(<p>cli1_cognome%</p>) or
+			 upper(I.CLI5_COGNOME) like upper(<p>cli1_cognome%</p>) or
+			 upper(I.CLI6_COGNOME) like upper(<p>cli1_cognome%</p>) or
+			 upper(I.CLI7_COGNOME) like upper(<p>cli1_cognome%</p>) or
+			 upper(I.CLI8_COGNOME) like upper(<p>cli1_cognome%</p>) or
+			 upper(I.CLI9_COGNOME) like upper(<p>cli1_cognome%</p>))
+	</IfNotNull>
+	<IfNotNull propertyName="cli1_nome">
+		and (upper(I.CLI1_NOME) like upper(<p>cli1_nome%</p>) or 
+			 upper(I.CLI2_NOME) like upper(<p>cli1_nome%</p>) or 
+			 upper(I.CLI3_NOME) like upper(<p>cli1_nome%</p>) or
+			 upper(I.CLI4_NOME) like upper(<p>cli1_nome%</p>) or
+			 upper(I.CLI5_NOME) like upper(<p>cli1_nome%</p>) or
+			 upper(I.CLI6_NOME) like upper(<p>cli1_nome%</p>) or
+			 upper(I.CLI7_NOME) like upper(<p>cli1_nome%</p>) or
+			 upper(I.CLI8_NOME) like upper(<p>cli1_nome%</p>) or
+			 upper(I.CLI9_NOME) like upper(<p>cli1_nome%</p>))
+	</IfNotNull>
+	<IfNotNull propertyName="pdfAnag_pdfDescr">
+		and (upper(I.DESCR) like upper(<p>%pdfAnag_pdfDescr%</p>) or 
+			 upper(I.CODE) like upper(<p>%pdfAnag_pdfDescr%</p>))
+	</IfNotNull>
+	<IfNotNull propertyName="dataInizio">and I.COMPLETION_TIME &gt;= convert(varchar(8),<p>dataInizio</p>,112)</IfNotNull>
+	<IfNotNull propertyName="dataFine">and I.COMPLETION_TIME &lt; convert(varchar(8),dateadd(dd,+1,<p>dataFine</p>),112)</IfNotNull>
+	<IfNotNull propertyName="pdfEnvironment">and I.ENVIRONMENT in (<ToString>pdfEnvironment</ToString>)</IfNotNull>
+	<IfNotNull propertyName="cli1_ndg">and I.CLI1_NDG = (select right('00000000000' + <p>cli1_ndg</p>, 11))</IfNotNull>
+	order by I.COMPLETION_TIME desc
+ </Query> 
+ <Output>
+	<Parameter propertyName="pdfInstanceId"/>
+	<Parameter propertyName="pdfAnag_pdfId"/>
+	<Parameter propertyName="pdfAnag_pdfCode"/>
+	<Parameter propertyName="pdfAnag_pdfPublicationId"/>
+	<Parameter propertyName="pdfAnag_pdfEdition"/>
+	<Parameter propertyName="pdfAnag_pdfDescr"/>
+	<Parameter propertyName="pdfCompletionUser"/>
+	<Parameter propertyName="pdfCompletionTime"/>
+	<Parameter propertyName="pdfStatus"/>
+	<Parameter propertyName="pdfCompilationMode"/>
+	<Parameter propertyName="pdfCompilationModeDescr"/>
+	
+	<Parameter propertyName="codAgente"/>
+	<Parameter propertyName="nominativoAgente"/>
+
+	<Parameter propertyName="cli1_ndg"/>	 
+	<Parameter propertyName="cli1_idCensimento"/>
+	<Parameter propertyName="cli1_codPotenziale"/>
+	<Parameter propertyName="cli1_cognome"/>
+	<Parameter propertyName="cli1_nome"/>
+		 
+	<Parameter propertyName="cli2_ndg"/>	 
+	<Parameter propertyName="cli2_idCensimento"/>
+	<Parameter propertyName="cli2_codPotenziale"/>
+	<Parameter propertyName="cli2_cognome"/>
+	<Parameter propertyName="cli2_nome"/>
+		 
+	<Parameter propertyName="cli3_ndg"/>	 
+	<Parameter propertyName="cli3_idCensimento"/>	 
+	<Parameter propertyName="cli3_codPotenziale"/>
+	<Parameter propertyName="cli3_cognome"/>
+	<Parameter propertyName="cli3_nome"/>
+		 
+	<Parameter propertyName="cli4_ndg"/>	 
+	<Parameter propertyName="cli4_idCensimento"/>	 
+	<Parameter propertyName="cli4_codPotenziale"/>
+	<Parameter propertyName="cli4_cognome"/>
+	<Parameter propertyName="cli4_nome"/>
+		 
+	<Parameter propertyName="cli5_ndg"/>	 
+	<Parameter propertyName="cli5_idCensimento"/>	 
+	<Parameter propertyName="cli5_codPotenziale"/>
+	<Parameter propertyName="cli5_cognome"/>
+	<Parameter propertyName="cli5_nome"/>
+		 
+	<Parameter propertyName="cli6_ndg"/>	 
+	<Parameter propertyName="cli6_idCensimento"/>	 
+	<Parameter propertyName="cli6_codPotenziale"/>
+	<Parameter propertyName="cli6_cognome"/>
+	<Parameter propertyName="cli6_nome"/>
+		 
+	<Parameter propertyName="cli7_ndg"/>	 
+	<Parameter propertyName="cli7_idCensimento"/>	 
+	<Parameter propertyName="cli7_codPotenziale"/>
+	<Parameter propertyName="cli7_cognome"/>
+	<Parameter propertyName="cli7_nome"/>
+		 
+	<Parameter propertyName="cli8_ndg"/>	 
+	<Parameter propertyName="cli8_idCensimento"/>	 
+	<Parameter propertyName="cli8_codPotenziale"/>
+	<Parameter propertyName="cli8_cognome"/>
+	<Parameter propertyName="cli8_nome"/>
+		 
+	<Parameter propertyName="cli9_ndg"/>	 
+	<Parameter propertyName="cli9_idCensimento"/>	 
+	<Parameter propertyName="cli9_codPotenziale"/>
+	<Parameter propertyName="cli9_cognome"/>
+	<Parameter propertyName="cli9_nome"/>
+ </Output> 
+</Access> 
+
+</DAO-Object>

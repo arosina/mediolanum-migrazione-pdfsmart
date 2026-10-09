@@ -1,0 +1,594 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="PersonalPirVariazionePianoPac" connectionCacheReference="SER_MIFID">
+
+<Access name="ricercaComparti" type="DAOQueryAccess" queryType="1" OutputCommandDataModel="prgm.pdfwebformsdrivers.personalpirvariazionepianopac.ver00001.model.FondoModel">
+	<Query> 
+		SELECT 
+			DISTINCT 
+			f.codice_fondo,
+			f.descr_fondo,
+			f.classe,
+			f.nome_fondo,      
+			f.isin,
+			f.cod_soc_gest,
+			f.tipologia,     
+			f.linea,
+			f.divisa,
+			f.prof_risch,
+			f.orizz_temp,
+			f.banca_dep,  
+			f.data_sott,
+			f.data_chius,
+			f.causale_chius,
+			f.isin_fus, 
+			f.cons_azion,
+			f.cons_obb,
+			f.pic_progr,
+			f.tipo_quota,      
+			f.blocco_operz,
+			f.link_kii2,
+			f.impo_min_sott,
+			NVL(flag.flg_pic_progr_in_essere,'N') as flg_pic_progr_in_essere,
+			saldi.posizul_i_numero_quote,
+			saldi.QUOTAZ_I_VAL_MERCATO,
+			saldi.ctv
+		FROM cll.ana_fondi_mdv f
+		JOIN cll.prof_fond_mdv prof ON (prof.codice_fondo = f.codice_fondo)
+		JOIN cll.polfondi leg ON (leg.prod_c_fondo = cast(f.codice_fondo as char(11))) 
+		LEFT JOIN (SELECT round(NVL ( NVL(saldo.posizul_i_numero_quote, 0) * NVL(quota.QUOTAZ_I_VAL_MERCATO, 0), 0),3) ctv,
+						saldo.posizul_i_numero_quote,
+						quota.QUOTAZ_I_VAL_MERCATO,
+						saldo.prod_c_fondo
+				   FROM cll.posizul saldo
+				   JOIN cll.v_quotaz quota on (trim(saldo.prod_c_fondo) = trim(quota.prodattfin_c))
+				  WHERE quota.quotaz_c_div = 'EUR'
+					AND saldo.contr_n = cast(<p>numeroContratto</p> as char(20))
+					AND saldo.prod_c = cast(<p>codProdottoPolizza</p> as char(11))
+				 ) saldi ON (cast(f.codice_fondo as char(11)) = saldi.prod_c_fondo)
+				 
+		LEFT JOIN (SELECT
+						pic.cod_isin,
+					   'S' AS flg_pic_progr_in_essere
+					 FROM cll.legm_pic_fondo_mdv PIC
+					 JOIN cll.pic_progr_mdv dcpoliz ON (pic.contr_n = cast(dcpoliz.contr_n as char(20)) AND pic.prod_c = dcpoliz.prod_c )
+					WHERE 1=1
+					  AND pic.contr_n = cast(<p>numeroContratto</p> as char(20))
+					  AND pic.prod_c = cast(<p>codProdottoPolizza</p> as char(11))
+					  AND pic.contr_n = DCPOLIZ.contr_n
+					  AND pic.prod_c = DCPOLIZ.prod_c
+					  AND dcpoliz.stato = '02'
+					GROUP BY pic.contr_n, pic.prod_c, pic.cod_isin
+				) flag ON (flag.cod_isin = f.ISIN)
+		WHERE 1 = 1
+		AND f.GSTD_F_ESIST = 'S'
+		AND prof.GSTD_F_ESIST = 'S'
+		AND leg.GSTD_F_ESIST = 'S'
+		<IfNotNull propertyName="denominazione">
+			AND (UPPER(f.descr_fondo) LIKE UPPER(<p>%denominazione%</p>)
+				 OR UPPER(f.isin) LIKE UPPER(<p>%denominazione%</p>))
+		</IfNotNull>
+		<IfNotNull propertyName="societa">
+			AND f.cod_soc_gest = <p>societa</p>
+		</IfNotNull>
+		<IfNotNull propertyName="tipologia">
+			AND f.tipologia = <p>tipologia</p>
+		</IfNotNull>
+		<IfNotNull propertyName="fondiSelezionati">
+		AND f.codice_fondo not in (<ToString>fondiSelezionati</ToString>)
+		</IfNotNull>
+		AND f.data_sott &lt;= sysdate 
+		AND f.data_chius &gt;= sysdate 
+		AND f.blocco_operz in ('N','D')
+		<IfEqual propertyName="tipologiaRicercaOICR" propertyValue="pic">
+			AND prof.profilo = 'LIBERO'
+			AND leg.prod_c_pol = cast(<p>codiceProdotto</p> as char(11))
+		</IfEqual>
+		<IfEqual propertyName="inPortafoglio" propertyValue="true">
+			AND saldi.ctv is not null
+		</IfEqual>
+		<IfEqual propertyName="inPortafoglio" propertyValue="false">
+			AND saldi.ctv is null
+		</IfEqual>
+		 order by f.descr_fondo
+	</Query>
+	<Output>
+		<Parameter propertyName="codiceFondo"/>            
+		<Parameter propertyName="descFondo"/>      
+		<Parameter propertyName="classe"/>           
+		<Parameter propertyName="denominazione"/>      
+		<Parameter propertyName="isin"/>             
+		<Parameter propertyName="sicav"/>        
+		<Parameter propertyName="tipologia"/>        
+		<Parameter propertyName="lineaFondo"/> 
+		<Parameter propertyName="codiceDivisa"/>    
+		<Parameter propertyName="profiloRischioMIFID"/>  
+		<Parameter propertyName="orizzonteTempMIFID"/>  
+			<Parameter propertyName="bancaDepositaria"/>  
+		<Parameter propertyName="dataSottoscrizione"/>   
+		<Parameter propertyName="dataChiusura"/>        
+		<Parameter propertyName="causaleChiusura"/>  
+		<Parameter propertyName="isinFusione"/>  
+		<Parameter propertyName="flagConsolidaAz"/>          
+		<Parameter propertyName="flagConsolidaOb"/>       
+		<Parameter propertyName="flagPicProgrammato"/>  
+		<Parameter propertyName="tipoQuota"/>       
+		<Parameter propertyName="bloccoOperazioni"/>    
+		<Parameter propertyName="linkKIID"/>     
+		<Parameter propertyName="importoMinimo"/>
+		<Parameter propertyName="flagPicProgrInEssere"/> 
+		<Parameter propertyName="numeroQuote"/> 
+		<Parameter propertyName="valoreQuota"/> 
+		<Parameter propertyName="controvaloreComparto"/>      
+	</Output>
+</Access>
+
+<Access name="numeroPolizzaAutocomplete" type="DAOQueryAccess" queryType="1" OutputCommandDataModel="prgm.pdfwebformsdrivers.personalpirvariazionepianopac.ver00001.autocompletion.NumeroPolizzaAutoCompleteModel">
+    <Query> 
+		SELECT DISTINCT	
+			leg.prod_c,
+			prod.descr,
+			contr.contr_n_poliz,
+			contr.contr_n,
+			leg.cli_c,
+			leg.contrcli_c_ruolo_contr,
+			contr.contr_d_emiss,
+			cli.cli_m_cogn,
+			cli.cli_m_nom,
+			APV.COD_PIANO_VERSMT as formacontrle_c_forma_contrle,
+			NVL(dettagliopolizze.flg_trasfor_pic,'N') as contrpolizvita_f_trasf_pic,
+			saldo.ctv as CONTROVALORE,
+            contr.contr_f_scudo_fiscale
+		FROM
+			cll.contr contr
+			JOIN cll.contrcli leg ON (leg.contr_n = contr.contr_n AND leg.prod_c = contr.prod_c)
+			JOIN cat_prod.dett_prod_tecn prod_tecn ON (prod_tecn.prod_c = leg.prod_c)
+			JOIN cll.condversa polizza ON (polizza.contr_n = leg.contr_n AND polizza.prod_c = leg.prod_c)
+			JOIN cll.dettagliopolizze dettagliopolizze ON (dettagliopolizze.contr_n = leg.contr_n AND dettagliopolizze.prod_c = leg.prod_c) 
+			JOIN cll.cli cli ON (cli.cli_c = leg.cli_c)
+			JOIN cll.cliage cliage ON (cliage.cli_c = cli.cli_c)
+			JOIN sogg_posizinform.dom_stato_contr st ON (trim(st.cod_stato_contr) = trim(contr.contr_c_stato)||trim(contr_c_motiv))
+			JOIN ( SELECT COD_CHIAV_NAT_PROD, DES_COMMRC_PROD as descr
+					FROM CAT_PROD.ANAG_PROD_SERVZ
+					WHERE gstd_f_esist = 'S'
+				 ) prod ON prod.COD_CHIAV_NAT_PROD = trim(leg.prod_c)
+			join (select * from CAT_PROD.ANAG_POL_VITA where COD_CATEG_PROD_VITA = 'UL' and FLG_PIR = 'S') APV on (APV.COD_PROD_POL_VITA = leg.prod_c)
+			LEFT JOIN (	SELECT 	round(NVL (sum( NVL(saldo.posizul_i_numero_quote, 0) * NVL(quota.QUOTAZ_I_VAL_MERCATO, 0) ), 0),3) ctv,
+								saldo.prod_c,
+								saldo.contr_n
+						FROM	cll.posizul saldo
+						JOIN	cll.contr contr ON (saldo.contr_n = contr.contr_n AND saldo.prod_c = contr.prod_c)
+						JOIN	cll.v_quotaz quota on (trim(saldo.prod_c_fondo) = trim(quota.prodattfin_c))
+						WHERE	quota.quotaz_c_div = 'EUR'
+						GROUP BY saldo.prod_c, saldo.contr_n, contr.contr_n_poliz
+						) saldo ON (saldo.prod_c = leg.prod_c AND saldo.contr_n = polizza.contr_n)
+			WHERE
+				cliage.cliage_d_fine = TO_DATE('31/12/9999','dd/mm/yyyy')
+			AND prod_tecn.cod_tipo_prod_contr = 'PV'
+			AND leg.contrcli_c_ruolo_contr in (CAST('01' AS CHAR(3)),CAST('04' AS CHAR(3)),CAST('05' AS CHAR(3)),CAST('07' AS CHAR(3)),CAST('09' AS CHAR(3)))
+			AND st.cod_tipo_prod_contr = 'PV'
+			AND st.flg_contr_aper = 'A'
+			<IfNotEqual propertyName="codiceAgente" propertyValue="0000000000">		
+				AND	CLIAGE.AGE_C  = LPAD(<p>codiceAgente</p>, 10, '0')
+			</IfNotEqual>
+			AND leg.cli_c = LPAD(<p>ndgCliente</p>,11,'0')
+			AND contr.GSTD_F_ESIST = 'S'
+			AND leg.GSTD_F_ESIST = 'S'
+			AND polizza.GSTD_F_ESIST = 'S'
+			AND dettagliopolizze.GSTD_F_ESIST = 'S'
+			<IfNotNull propertyName="numeroPolizza">
+				<IfNotNull propertyName="codProdottoPolizza">
+					and contr.contr_n_poliz =cast(<p>numeroPolizza</p> as char(20))
+					and leg.prod_c = cast(<p>codProdottoPolizza</p> as char(11))
+				</IfNotNull>
+			</IfNotNull> 
+			<IfNotNull propertyName="numeroContratto">
+				and contr.contr_n =cast(<p>numeroContratto</p> as char(20))
+			</IfNotNull>
+			<IfEqual propertyName="findOnlyPAC" propertyValue="true">
+				and APV.COD_PIANO_VERSMT = 'PAC'
+			</IfEqual>
+			and (((dettagliopolizze.TIP_INVESTIMENTO = '1' OR (dettagliopolizze.TIP_INVESTIMENTO = '4' AND NVL(dettagliopolizze.FLG_TRASFOR_PIC,'N') = 'S'))  AND dettagliopolizze.FLAG_PIC_PROGR = 'S') or (dettagliopolizze.TIP_INVESTIMENTO = '4' AND NVL(FLG_TRASFOR_PIC,'N') = 'N'))
+		ORDER BY contr.contr_n_poliz
+	</Query>
+	<Output>
+		<Parameter propertyName="codProdottoPolizza"/>
+		<Parameter propertyName="descrizioneProdotto"/>
+		<Parameter propertyName="numeroPolizza"/>
+		<Parameter propertyName="numeroContratto"/>
+		<Parameter propertyName="codiceCliente"/>
+		<Parameter propertyName="ruolo"/>
+		<Parameter propertyName="dataEmissione"/>
+		<Parameter propertyName="cognomeCliente"/>
+		<Parameter propertyName="nomeCliente"/>
+		<Parameter propertyName="formaContrattuale"/>
+		<Parameter propertyName="flagTrasformatoPic"/>
+		<Parameter propertyName="controvalorePolizza"/>
+		<Parameter propertyName="scudoFiscale"/>
+	</Output>
+</Access>
+
+<Access name="loadTipologiaFondo" type="DAOQueryAccess" queryType="0" connectionCacheReference="CEPE"
+	OutputCommandDataModel="com.atosorigin.wfem.command.MapCommandDataModel">
+	<Query>
+		SELECT TIPOLOGIA_FONDO_COD,TIPOLOGIA_FONDO_DESCR FROM CEPE_TIPOLOGIA_FONDO order by TIPOLOGIA_FONDO_DESCR
+	</Query>   
+	<Output>
+		<Parameter propertyName="cod"/>
+		<Parameter propertyName="descr"/>
+	</Output>
+</Access>
+
+<Access name="loadSicav" type="DAOQueryAccess" queryType="1" OutputCommandDataModel="com.atosorigin.wfem.command.MapCommandDataModel">
+	<Query>
+		SELECT 
+			DISTINCT 
+			cod_soc_gest as codice,
+			cod_soc_gest as descrizione
+		FROM cll.ana_fondi_mdv f
+		JOIN cll.prof_fond_mdv prof ON (prof.codice_fondo = f.codice_fondo)
+		JOIN cll.polfondi leg ON (leg.prod_c_fondo = cast(f.codice_fondo as char(11))) 
+		WHERE 1 = 1
+		AND f.GSTD_F_ESIST = 'S'
+		AND prof.GSTD_F_ESIST = 'S'
+		AND leg.GSTD_F_ESIST = 'S'
+		AND f.data_sott &lt;= sysdate 
+		AND f.data_chius &gt;= sysdate 
+		AND f.blocco_operz in ('N','D')
+		AND NVL(f.flg_partza_iis,'N') != 'S'
+		AND prof.profilo = 'LIBERO'
+		AND leg.prod_c_pol = cast(<p>codiceProdotto</p> as char(11))
+		order by cod_soc_gest
+	</Query>
+	<Output>
+		<Parameter propertyName="cod"/>
+		<Parameter propertyName="descr"/>
+	</Output>
+</Access>
+
+<Access name="checkFondoBloccato" type="DAOQueryAccess" OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType"  queryType="1">
+	<Query>
+		SELECT CASE
+					WHEN COUNT(*) > 0 THEN 'N'
+					ELSE 'S'
+				END
+		FROM cll.ana_fondi_mdv
+		WHERE isin = <p>isin</p>
+			AND blocco_operz IN ('N','D')
+			AND data_chius &gt; sysdate
+			AND data_sott &lt;=  sysdate
+			AND gstd_f_esist = 'S'
+	</Query>
+	<Input>
+		<Parameter propertyName="isin"/>
+	</Input>
+</Access>
+
+<Access name="leggiControvalorePerLineaFondo" type="DAOQueryAccess" queryType="0" OutputCommandDataModel="com.atosorigin.wfem.command.MapCommandDataModel">
+	<Query>
+		SELECT
+			medbox.linea,
+               round(NVL (sum( NVL(saldo.posizul_i_numero_quote, 0) * NVL(quota.QUOTAZ_I_VAL_MERCATO, 0) ), 0),3)
+		FROM
+               cll.posizul saldo
+               JOIN cll.v_quotaz quota ON cast (quota.prodattfin_c as char(11)) = saldo.prod_c_fondo 
+               JOIN cll.ana_fondi_mdv medbox ON (CAST(medbox.codice_fondo AS CHAR(11))= saldo.prod_c_fondo)  
+		WHERE
+               1=1
+               AND saldo.contr_n = CAST(? AS CHAR(20))
+               AND saldo.prod_c = CAST(? AS CHAR(11))
+               AND quota.quotaz_c_div = 'EUR'
+               AND saldo.gstd_f_esist = 'S'
+               AND medbox.gstd_f_esist = 'S'
+		GROUP BY
+               medbox.linea
+	</Query>
+	<Input>
+		<Parameter propertyName="numeroContratto"/>
+		<Parameter propertyName="codProdotto"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="linea"/>
+		<Parameter propertyName="controvalore"/>
+	</Output>
+</Access>
+
+<Access name="checkDecumulo" type="DAOQueryAccess" queryType="0" OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType">
+	<Query>
+ 	SELECT CASE 
+				WHEN COUNT(*) > 0 THEN 'S' 
+				ELSE 'N' 
+		   END 
+	FROM 
+              CLL.DETTAGLIOPOLIZZE
+	WHERE 
+   		GSTD_F_ESIST = 'S'
+		AND PROD_C = CAST(? AS CHAR(11))
+		AND CONTR_N = CAST(? AS CHAR(20))
+		AND FLAG_PIANO_DEC = 'D'
+			 	  
+</Query>
+	<Input> 
+		<Parameter propertyName="codProdotto"/> 
+		<Parameter propertyName="numeroContratto"/>
+    </Input> 
+</Access>
+
+<Access name="checkConsolida" type="DAOQueryAccess" queryType="0" OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType">
+		<Query>
+	 	SELECT CASE 
+					WHEN COUNT(*) > 0 THEN 'S' 
+					ELSE 'N' 
+			   END 
+		FROM 
+               CLL.DETTAGLIOPOLIZZE
+		WHERE 
+    		GSTD_F_ESIST = 'S'
+			AND PROD_C = CAST(? AS CHAR(11))
+			AND CONTR_N = CAST(? AS CHAR(20))
+			AND DETTAGLIOPOLIZZE_F_OPZIONE = 'C'			 	  
+	</Query>
+	<Input> 
+		<Parameter propertyName="codProdotto"/> 
+		<Parameter propertyName="numeroContratto"/>
+   	</Input> 
+</Access>
+
+<Access name="recuperaAnagraficaProdottoFondo" type="DAOQueryAccess" queryType="0" OutputCommandDataModel="com.atosorigin.wfem.types.StringType">
+	<Query>
+		SELECT 
+			COD_SURROG_PROD_SERVZ 
+		FROM 
+			CAT_PROD.VW_LEGM_APS_MIFID
+		WHERE 
+			ISIN = rpad(?,15,' ')
+			AND TIP_PROD = 'PV'
+			AND CHIAVE_NAT_PADRE = ?
+	</Query>   
+	<Input>
+		<Parameter propertyName="isin"/>
+		<Parameter propertyName="chiaveNaturaPadre"/>
+	</Input>
+</Access> 	
+
+<Access name="recuperaDescrizioneProdotto" type="DAOQueryAccess" queryType="0" 
+		OutputCommandDataModel="com.atosorigin.wfem.types.StringType">
+	<Query>
+		SELECT	TRIM(prod_x_descr_prod) || ' ' || TRIM(prod_c_conv)
+		FROM	cll.prod
+		WHERE	prod_c = 'ULFAPIR'
+	</Query>
+</Access>
+
+<Access name="leggiFlagBloccoFondo" type="DAOQueryAccess" queryType="0" OutputCommandDataModel="com.atosorigin.wfem.types.StringType">
+	<Query>
+		SELECT 
+			blocco_operz
+		FROM 
+			ana_fondi_mdv
+		WHERE 
+			isin = ?
+	</Query>   
+	<Input>
+		<Parameter propertyName="isin"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="flagBloccoFondo"/>
+	</Output>
+</Access>
+
+<Access name="leggiDatiPianoPac" type="DAOQueryAccess" queryType="0" 
+		OutputCommandDataModel="prgm.pdfwebformsdrivers.personalpirvariazionepianopac.ver00001.model.DatiPianoPacModel">
+	<Query>
+		SELECT
+			case when pag.modpg_i_rata is not null
+				then pag.modpg_i_rata
+				else case when cve.condversa_i_versa != 0
+				then cve.condversa_i_versa
+				else c.contr_i_bonus / cve.condversa_n_peridc_versa end
+				end AS importo_rata,
+			to_char(cve.condversa_n_peridc_versa) AS numero_rate_anno,
+			pag.modpg_n_cc as conto
+		FROM condversa cve
+		INNER JOIN dettagliopolizze poliz ON poliz.contr_n = cve.contr_n AND poliz.prod_c = cve.prod_c
+		INNER JOIN contr c on c.contr_n = cve.contr_n AND c.prod_c = cve.prod_c
+		LEFT JOIN modpg pag ON pag.contr_n = cve.contr_n AND pag.prod_c = cve.prod_c AND pag.gstd_f_esist = 'S'
+		WHERE poliz.gstd_f_esist = 'S'
+			AND cve.gstd_f_esist = 'S' 
+			AND CONDVERSA_C_TIP_VERSA = '004'
+			AND cve.condversa_n_peridc_versa > 0
+			AND c.CONTR_I_BONUS is not null
+			AND c.CONTR_I_BONUS > 0
+			AND cve.condversa_n_versa > 0
+			AND (poliz.FLG_TRASFOR_PIC = 'N' or poliz.FLG_TRASFOR_PIC is null)
+			AND cve.prod_c = CAST(? AS CHAR(11))
+			AND cve.contr_n = CAST(? AS CHAR(20))
+	</Query>
+	<Input>
+		<Parameter propertyName="codProdotto"/>
+		<Parameter propertyName="numeroContratto"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="importoRata"/>
+		<Parameter propertyName="numeroRateAnno"/>
+		<Parameter propertyName="conto"/>
+	</Output>
+</Access>
+
+<Access name="hasSddAttivi" type="DAOQueryAccess" queryType="0" OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType">
+	<Query>
+		SELECT	case when count(*) = 0 then 'N' else 'S' end as hasSddAttivi
+		FROM	cll.modpg mp
+		JOIN	cll.contr cn
+				ON mp.contr_n = cn.contr_n
+				AND mp.prod_c = cn.prod_c
+		WHERE	mp.gstd_f_esist = 'S'
+				AND cn.gstd_f_esist = 'S'
+				AND (mp.modpg_d_revoca_rid > TRUNC(CURRENT_DATE)+1 OR MODPG_D_REVOCA_RID = to_date('17530101','YYYYMMDD'))
+				AND cn.prod_c = CAST('ULFAPIR' AS CHAR(11))
+				AND cn.contr_n = CAST(? AS CHAR(20))
+	</Query>
+	<Input>
+		<Parameter propertyName="numeroContratto"/>
+	</Input>
+</Access>
+
+<Access name="hasSddSospesi" type="DAOQueryAccess" queryType="0" OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType">
+	<Query>
+		SELECT	case when count(*) = 0 then 'N' else 'S' end as hasSddSospesi
+		FROM	cll.modpg mp
+		JOIN	cll.contr cn
+				ON mp.contr_n = cn.contr_n
+				AND mp.prod_c = cn.prod_c
+		WHERE	mp.gstd_f_esist = 'S'
+				AND cn.gstd_f_esist = 'S'
+				AND mp.modpg_s_rid = '2'
+				AND cn.prod_c = CAST('ULFAPIR' AS CHAR(11))
+				AND cn.contr_n = CAST(? AS CHAR(20))
+	</Query>
+	<Input>
+		<Parameter propertyName="numeroContratto"/>
+	</Input>
+</Access>
+
+<Access name="isSddAttivoBancaEsterna" type="DAOQueryAccess" queryType="0" OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType">
+	<Query>
+		SELECT	case when mp.anabanca_c_abi = '03062' then 'N' else 'S' end as isSddAttivoBancaEsterna
+		FROM	cll.modpg mp
+		JOIN	cll.contr cn
+				ON mp.contr_n = cn.contr_n
+				AND mp.prod_c = cn.prod_c
+		WHERE	mp.gstd_f_esist = 'S'
+				AND cn.gstd_f_esist = 'S'
+				AND (mp.modpg_d_revoca_rid > TRUNC(CURRENT_DATE)+1 OR MODPG_D_REVOCA_RID = to_date('17530101','YYYYMMDD'))
+				AND cn.prod_c = CAST('ULFAPIR' AS CHAR(11))
+				AND cn.contr_n = CAST(? AS CHAR(20))
+	</Query>
+	<Input>
+		<Parameter propertyName="numeroContratto"/>
+	</Input>
+</Access>
+
+<Access name="loadDatiAltroCliente" type="DAOQueryAccess" queryType="0">
+	<Query>
+		select 	COD_CLI_POTENZ,
+				trim(CLI_M_COGN) || ' ' || trim(CLI_M_NOM) 
+		from	CLL.CLI
+		where	CLI_C = substr('00000000000' || ?, -11)
+		and		GSTD_F_ESIST = 'S'
+ 	</Query> 
+ 	<Input>
+		<Parameter propertyName="ndg"/> 
+ 	</Input>
+	<Output>
+		<Parameter propertyName="codPotenziale"/>
+		<Parameter propertyName="cognomeNome"/>
+	</Output>
+</Access>
+
+<Access name="recuperaResiduoPolizza" type="DAOOSBAccess" serviceName="service/soggetto/posizioneinformativa/PianiAccumuloService/v1" operationName="recuperaResiduoPolizza" >
+	<Input>
+		<![CDATA[
+			<soapenv:Envelope 	xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+			<soap:Header 	xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+			</soap:Header>
+			<soapenv:Body>
+				<v1:recuperaResiduoPolizzaRequest xmlns:v1="http://posizioneinformativa.soggetto.be.schema.bmed.it/PianiAccumulo/v1">					
+					<v1:metadata>
+						<v1:abiCode>string</v1:abiCode>
+						<v1:callerDataId>string</v1:callerDataId>
+						<v1:channelCode>string</v1:channelCode>
+						<v1:companyCode>string</v1:companyCode>
+						<v1:familyBankerCode>string</v1:familyBankerCode>
+						<v1:familyBanker>false</v1:familyBanker>
+						<v1:inputCommonDataVestion>string</v1:inputCommonDataVestion>
+						<v1:ip>string</v1:ip>
+						<v1:keyHole>true</v1:keyHole>
+						<v1:keylog>string</v1:keylog>
+						<v1:operatorCode>string</v1:operatorCode>
+						<v1:placeCode>string</v1:placeCode>
+						<v1:statusCode>100</v1:statusCode>
+						<v1:swift>string</v1:swift>
+						<v1:timeStamp>2013-11-23T15:44:07</v1:timeStamp>
+						<v1:userAgent>string</v1:userAgent>
+						<v1:userId>string</v1:userId>
+						<v1:userIdKeyHole>string</v1:userIdKeyHole>
+						<v1:versionBs>string</v1:versionBs>
+					</v1:metadata>
+					<v1:codProdotto propertyName="codProdotto"></v1:codProdotto>
+					<v1:codContratto propertyName="numeroContratto"></v1:codContratto>
+				</v1:recuperaResiduoPolizzaRequest>
+			</soapenv:Body>
+		</soapenv:Envelope>
+
+		]]>
+	</Input>
+	<Output>
+		<![CDATA[
+			<S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/">	
+				<S:Body>
+					<recuperaResiduoPolizzaResponse xmlns:ns3="http://fault.common.schema.bmed.it/v1" xmlns:ns2="http://common.schema.bmed.it/v1" xmlns="http://posizioneinformativa.soggetto.be.schema.bmed.it/PianiAccumulo/v1">			
+						<codProdotto propertyName="codProdotto"></codProdotto>
+						<codContratto propertyName="numeroContratto"></codContratto>
+						<numVersamentiPrevisti propertyName="numVersamentiPrevisti"></numVersamentiPrevisti>
+						<numRateSostenute propertyName="numRateSostenute"></numRateSostenute>
+						<numRateMancanti propertyName="numRateMancanti"></numRateMancanti>
+						<importoRata propertyName="importoRata"></importoRata>
+						<totalePiano propertyName="totalePiano"></totalePiano>
+						<versato propertyName="versato"></versato>
+						<residuo propertyName="residuo"></residuo>
+						<frazionamento propertyName="frazionamento"></frazionamento>
+						<dataInizioPiano propertyName="dataInizioPiano"></dataInizioPiano>
+						<progressivoMifid propertyName="progressivoMifid"></progressivoMifid>
+						<fondi propertyName="listaFondi">
+							<prodCFondo propertyName="prodCFondo"></prodCFondo>
+							<tipologiaFondo propertyName="tipologiaFondo"></tipologiaFondo>							
+							<residuoFondo propertyName="residuoFondo"></residuoFondo>
+						</fondi>
+					</recuperaResiduoPolizzaResponse>
+				</S:Body>
+		</S:Envelope>
+		]]>
+	</Output>
+</Access>
+
+<Access name="gradoRischioResidenzaFisica" type="DAOQueryAccess" queryType="0" connectionCacheReference="SER_MIFID"
+		OutputCommandDataModel="com.atosorigin.wfem.types.IntegerType">
+	<Query>
+		select distinct pae.COD_RISCH_RICLAGG  AS gradoRischioResidenzaFisica
+		from cll.v_indcli cli
+		inner join utly.dom_naz naz
+		on cli.NAZ_C_NAZ = naz.COD_NAZ_CLI
+		inner join cll.paestero pae
+		on naz.cod_naz_uic_cdcri = pae.paestero_c_uic
+		where naz.gstd_f_esist = 'S'
+		and pae.gstd_f_esist = 'S'
+		and cli.TIPIND_C_TIP_IND = '01'
+		and sysdate between naz.DAT_INIZ_VALID and naz.DAT_FINE_VALID
+		and cli.CLI_C = ?	
+	</Query>
+	<Input>
+		<Parameter propertyName="ndgCliente"/>
+	</Input>
+</Access>
+	
+<Access name="gradoRischioResidenzaFisicaProspect" type="DAOQueryAccess" queryType="0" connectionCacheReference="SER_MIFID"
+		OutputCommandDataModel="com.atosorigin.wfem.types.IntegerType">
+	<Query>
+		select distinct pae.COD_RISCH_RICLAGG AS gradoRischioResidenzaFisicaProspect
+		from cll.INR_INDCLI_ELETTR_REP cli
+		inner join utly.dom_naz naz
+		on cli.NAZ_C_NAZ = naz.COD_NAZ_CLI
+		inner join cll.paestero pae
+		on naz.cod_naz_uic_cdcri = pae.paestero_c_uic
+		WHERE naz.gstd_f_esist = 'S'
+		and pae.gstd_f_esist = 'S'
+		and cli.TIPIND_C_TIP_IND = '01'
+		and sysdate between naz.DAT_INIZ_VALID and naz.DAT_FINE_VALID
+		AND cli.ASSGNCLIAGE_C_POTZLE = ?	
+	</Query>
+	<Input>
+		<Parameter propertyName="codProspect"/>
+	</Input>
+</Access>
+</DAO-Object>

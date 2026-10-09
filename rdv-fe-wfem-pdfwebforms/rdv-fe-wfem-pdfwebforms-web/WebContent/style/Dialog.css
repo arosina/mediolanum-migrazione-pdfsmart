@@ -1,0 +1,103 @@
+/* Stili mydialog */
+.mydialogsplashscreen{
+	display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;	
+	z-index:20000;
+	position: absolute; 
+	left: 0; 
+	top: 0; 
+}
+.mydialog{
+	background-color: white; 
+	padding: 10;
+	border: 1px solid #a6c9e2;
+	-moz-border-radius: 5px; 
+	-webkit-border-radius: 5px; 
+	border-radius: 5px;	
+}
+.mydialogcontainer{
+    width: 100%;
+    height: 100%;
+	display: grid;
+	grid-template-columns: 100%;
+	grid-template-rows: auto 1fr auto;
+}
+.mydialogtitlebar{
+	height: 30px;
+	color: #192D6E;
+	margin: 0;
+	padding: 5;
+	font-family: 'Mediolanum Sans Bold';
+	font-size: 24px;
+	display: grid;
+	grid-template-columns: 1fr auto;	
+}
+.mydialogclosebutton{
+	cursor: pointer;
+}
+.mydialogcontent{
+	height: 100%;
+	padding-left: 5;
+	padding-right: 5;
+}
+.mydialog:focus {
+    outline: none;
+}
+
+/* Stili jquery */
+.ui-dialog { 
+	position: absolute; 
+	padding: .2em; 
+	width: 300px; 
+	overflow: hidden; 
+	padding:3px;
+	padding-left:5px;
+	padding-right:5px;
+}
+.ui-dialog .ui-dialog-titlebar{
+	height:30px;
+	background: none;
+	color:#192D6E;
+	border: none;
+}
+.ui-dialog .ui-dialog-titlebar .ui-dialog-title{
+	margin:0;
+	padding:0;
+	font-family: 'Mediolanum Sans Bold';
+	font-size: 24px;
+	font-weight: normal;
+}
+.ui-dialog .ui-dialog-titlebar-close{
+	background-image: none;
+	background: none;
+	height:26px;
+	width:26px;
+}
+.ui-dialog .ui-dialog-titlebar-close .ui-icon-closethick{
+	background-image: url(/PdfWebForms/images/chiudi_blu.png);
+	background-repeat: no-repeat;
+	background: url(/PdfWebForms/images/chiudi_blu.png) no-repeat;
+	height:24px;
+	width:24px;
+}
+.ui-dialog .ui-dialog-titlebar-close span{
+	background-image: none;
+	background-repeat: no-repeat;
+	background: none;
+	border: none;
+}
+.ui-dialog .ui-dialog-titlebar-close span:hover{
+	margin: 1px;
+}
+.ui-dialog .ui-dialog-titlebar a:hover{
+	border:none;
+}
+.ui-dialog .ui-dialog-content{
+	font-family: 'Mediolanum Sans Regular';
+	color: #333333;
+	font-size: 16px;
+	padding:5px;
+}

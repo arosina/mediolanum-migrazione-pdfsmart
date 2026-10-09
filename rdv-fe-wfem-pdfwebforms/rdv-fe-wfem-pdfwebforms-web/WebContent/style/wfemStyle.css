@@ -1,0 +1,87 @@
+.text{
+	font-family: Segoe UI;
+	font-style: normal; 
+	font-weight: normal; 
+	text-decoration: none;		
+	font-size: 8pt;
+	color: #666666;
+}
+.gridNoRows {
+	font-family: Segoe UI;
+	font-style: normal; 
+	font-weight: normal; 
+	text-decoration: none;		
+	font-size: 10pt;
+	font-weight: bold;
+	text-align: center;
+	vertical-align: top;
+	background-color: #ffffff;
+	border: none;
+}
+.gridPanel {
+	background-color: #ffffff;
+	border: none;
+}
+.gridBodyCell{
+	border-color: lightgrey;
+	border-width: 1px;
+	border-bottom-style: dotted;
+	border-right-style: dotted;
+	padding-left: 2px;
+	padding-right: 2px;
+	overflow:hidden;
+	font-family: Segoe UI;
+	font-style: normal; 
+	font-weight: normal; 
+	text-decoration: none;	
+	font-size: 8pt;
+	color: #666666;
+	background-color: #ffffff;
+}
+.gridHeader td{
+	background: none; 
+	background-color: #ffffff; 
+	font-size: 8pt;
+	border-color: lightgrey;
+	border-width: 1px;
+	border-top: solid 1px lightgrey;
+	border-bottom-style: solid;
+	border-right-style: solid;
+	text-align: center;
+	font-weight: bold;
+	vertical-align: middle;
+	overflow:hidden;
+}
+
+.inputField{
+	font-family: Segoe UI;
+	font-style: normal; 
+	font-weight: normal; 
+	text-decoration: none;	
+	font-size: 8pt;
+	color: #666666;
+	border: solid 1px silver;
+	font-weight: normal;
+}
+.outputField {
+	cursor: default;
+	font-family: Segoe UI;
+	font-style: normal; 
+	font-weight: normal; 
+	text-decoration: none;	
+	font-size: 8pt;
+	font-weight: normal;
+	color: #666666;
+	background-color : #ffffff;
+	border: none;
+}
+.fieldHasError {
+	font-family: Segoe UI;
+	font-style: normal; 
+	font-weight: normal; 
+	text-decoration: none;	
+	font-size: 8pt;
+	color: red;
+	border: solid 1px coral;
+	font-weight: bold;
+}

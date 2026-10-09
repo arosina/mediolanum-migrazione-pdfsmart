@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="FATCAServices">	
+<Access name="getFatcaInformation" type="DAOOSBAccess" serviceName="arch-be-osb-fatca-prj/PS/ps_fatca" operationName="getFatcaInformation" 
+		keepAttrs="true" dataFormatter="prgm.pdfwebformsutil.drivers.dao.XmlFormatter">
+	<Input>
+		<![CDATA[			
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:head="http://bmed.nmon/mw/header" xmlns:api="http://api.wsclient.FatcaService.osb.be.it">
+			   <soapenv:Header>
+			      <head:MWHeader>
+			         <head:webCookie propertyName="webCookie"></head:webCookie>
+			      </head:MWHeader>
+			   </soapenv:Header>
+			   <soapenv:Body>
+			      <api:getFatcaInformationRequest>
+			         <tipoSoggetto propertyName="tipoSoggetto">C</tipoSoggetto>
+			         <codiceCliente propertyName="codiceCliente"></codiceCliente>
+			         <cittadinanza1 propertyName="cittadinanza1"></cittadinanza1>
+			         <cittadinanza2 propertyName="cittadinanza2"></cittadinanza2>
+			         <nazioneResidenza propertyName="nazioneResidenza"></nazioneResidenza>
+			         <nazioneResidenzaFiscale1 propertyName="nazioneResidenzaFiscale1"></nazioneResidenzaFiscale1>
+			         <nazioneResidenzaFiscale2 propertyName="nazioneResidenzaFiscale2"></nazioneResidenzaFiscale2>			         
+			         <nazioneResidenzaFiscale3 propertyName="nazioneResidenzaFiscale3"></nazioneResidenzaFiscale3>
+			         <nazioneNascita propertyName="nazioneNascita"></nazioneNascita>
+			         <prefissoTelefInternaz propertyName="prefissoTelefInternaz"></prefissoTelefInternaz>			         
+			         <nazioneIndirizzoCorrispondenza propertyName="nazioneIndirizzoCorrispondenza"></nazioneIndirizzoCorrispondenza>
+			      </api:getFatcaInformationRequest>
+			   </soapenv:Body>
+			</soapenv:Envelope>			
+		]]>
+	</Input>
+	<Output>
+		<![CDATA[
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+			   <soapenv:Header/>
+			   <soapenv:Body xmlns:api="http://api.wsclient.FatcaService.osb.be.it" xmlns:head="http://bmed.nmon/mw/header">
+			      <api:getFatcaInformationResponse>
+			         <fatcaStatus propertyName="fatcaStatus"></fatcaStatus>
+			         <indizioForteNonSuperabile propertyName="indizioForteNonSuperabile"></indizioForteNonSuperabile>
+			         <indizioForteSuperabile propertyName="indizioForteSuperabile"></indizioForteSuperabile>
+			         <indizioDebole propertyName="indizioDebole"></indizioDebole>
+			         <TIN propertyName="tin"></TIN>
+			      </api:getFatcaInformationResponse>
+			   </soapenv:Body>
+			</soapenv:Envelope>
+		]]>
+	</Output>
+</Access>
+</DAO-Object>

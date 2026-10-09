@@ -1,0 +1,11 @@
+use CEPE
+go
+
+delete from INR_CE_DOMINIO where DOMINIO_C_TABELLA = 'RUOLO_PILOTA_MIFID2' 
+go
+
+insert into INR_CE_DOMINIO (DOMINIO_C_TABELLA, DOMINIO_C_CODICE, DOMINIO_X_DESCR, DOMINIO_F_VALIDITA)
+values ('RUOLO_PILOTA_MIFID2','1','Ruolo pilota MIFID2','S')
+go
+
+PRINT "Ruolo pilota Mifid2 inserito"

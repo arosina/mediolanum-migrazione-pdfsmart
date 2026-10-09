@@ -1,0 +1,26 @@
+package prgm.pdfwebforms.display;
+
+import com.atosorigin.wfem.command.CommandDataModel;
+import com.atosorigin.wfem.command.CommandException;
+import com.atosorigin.wfem.command.DisplayCommand;
+import com.atosorigin.wfem.command.UserSessionContext;
+
+import prgm.pdfwebforms.model.PdfModel;
+
+/***********************************************************************************************/
+/***********************************************************************************************/
+public class PdfAttachments extends DisplayCommand {
+
+	/***********************************************************************************************/
+	/***********************************************************************************************/
+	public CommandDataModel execute(UserSessionContext userSessionContext, CommandDataModel dataModel) throws CommandException {
+		return dataModel;
+	}
+
+	/***********************************************************************************************/
+	/***********************************************************************************************/
+	public Class getInputViewClass() {
+		return PdfModel.class;
+	}
+
+}

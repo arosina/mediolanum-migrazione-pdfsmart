@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="Toponimo">	
+
+<Access name="comuneNascitaAccess" type="DAOQueryAccess" queryType="1"  connectionCacheReference="DBAZ_SOGG"
+		OutputCommandDataModel="prgm.pdfwebformsutil.drivers.autocompletion.comune.ComuneNascitaAutocompleteModel">
+	<Query> 
+		select 	    COD_PROV, DEN_COMU
+		from 		CLL.ANAG_CATAST_COMUN
+		where		GSTD_F_ESIST = 'S'
+		<IfNotNull  propertyName="autocompleteTerm">
+			<IfEqual propertyName="autocompleteFieldName" propertyValue="provinciaComune">
+				and trim(COD_PROV) like upper(<p>autocompleteTerm%</p>)
+			</IfEqual>
+			<IfEqual propertyName="autocompleteFieldName" propertyValue="comune">
+				and trim(DEN_COMU) like upper(<p>autocompleteTerm%</p>)
+			</IfEqual>
+		</IfNotNull>
+		<IfNotNull  propertyName="provinciaComune">and trim(COD_PROV) = upper(<p>provinciaComune</p>)</IfNotNull>
+		<IfNotNull  propertyName="comune">and trim(DEN_COMU) = upper(<p>comune</p>)</IfNotNull>
+		order by DEN_COMU
+	</Query> 
+	<Output>
+		<Parameter propertyName="provinciaComune"/> 
+		<Parameter propertyName="comune"/> 
+	</Output> 
+</Access>
+
+</DAO-Object>

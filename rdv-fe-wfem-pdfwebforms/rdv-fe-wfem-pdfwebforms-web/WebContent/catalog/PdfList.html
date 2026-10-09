@@ -1,0 +1,118 @@
+<table height="100%" width="100%">
+  <% if(!model.isPrimaVolta() || model.getPdfList().size() > 0){ %>
+  
+	  <% if(!model.isFiltered()){ %>
+		  <tr>
+		  	<td align="center">
+				<form name="ricercaListForm" method="post" action="call.wfem" style="margin:0;">
+				<input type="hidden" name="wfemCmd" value="prgm.pdfwebforms.catalog.FilterPdfList.execute">
+				<input type="hidden" name="BrowserInstance" value="<%=request.getAttribute("BrowserInstance")%>">
+		  		<table width="100%" cellpadding="0" cellspacing="0" style="background-color: white;padding: 10;">
+		  			<tr>
+		  				<td>
+		  					<table width="100%">
+		  						<tr>
+					  				<td><%=template.field("pdfListParams_descrizione","uppercase='false' placeholder='Nome o codice del modulo...' labelwidth='100'  style='width:500;padding-right:25;'")%></td>
+					  				<td align="left">
+					  					<div style="position: relative;margin:0;">
+					  						<div style="position: absolute;left:-28;top:-8;margin:0;">
+					  							<img style="cursor:pointer;" onclick="pdfList.doFiltra();" src="<%=template.getWebApp()%>/catalog/images/lentina.png">
+					  						</div>
+					  					</div>
+					  					
+					  				</td>
+					  				<td width="100%" align="right" style="padding-right:50;">
+					  					<table>
+					  						<tr>
+					  							<td class="text"><i>Visualizza:</i></td>
+								  				<td><%=template.field("pdfListParams_mostraSoloInFD")%></td>
+								  				<td class="text">Firma digitale</td>
+					  						</tr>
+					  					</table>
+					  				</td>
+		  						</tr>
+		  					</table>
+		  				</td>
+		  			</tr>
+		  			<tr>
+		  				<td>
+		  					<table>
+		  						<tr>
+					  				<td><%=template.field("pdfListParams_codiceTipoModulo","emptylabel='Tutti i tipi modulo' style='width:290;'")%></td>
+					  				<td><%=template.field("pdfListParams_codiceSegmento","emptylabel='Tutti i segmenti' labelwidth='100' style='width:290;' onchange='pdfList.onChangeSegmento();'")%></td>
+					  				<td><%=template.field("pdfListParams_codiceProdotto","emptylabel='Tutti i prodotti' style='width:290;'")%></td>
+		  						</tr>
+		  					</table>
+		  				</td>
+		  			</tr>
+		  			<tr>
+		  				<td align="right" height="60">
+		  					<table><tr>
+		  						<td><div class="normalButton" onclick="pdfList.doAnnulla();">Annulla</div></td>
+		  						<td><div class="normalButton" onclick="pdfList.doFiltra();">Cerca</div></td>
+		  					</tr></table>
+		  				</td>
+		  			</tr>
+		  		</table>
+		  		</form>
+		  	</td>
+		  	<script>pdfList.bindModuloAutocomplete();</script>
+		  </tr>
+	  <% } %>
+  <% } %>
+  
+  <% if(model.isFiltered() && model.getFilterTitle().length() > 0){ %>
+  	<tr>
+  		<td>
+			<form name="ricercaListForm" method="post" action="call.wfem" style="margin:0;">
+			<input type="hidden" name="wfemCmd" value="prgm.pdfwebforms.catalog.FilterPdfList.execute">
+			<input type="hidden" name="BrowserInstance" value="<%=request.getAttribute("BrowserInstance")%>">
+	  		<table width="100%" style="background-color:white;">
+	  			<tr>
+			  		<td class="filterTitle" style="white-space: nowrap;"><%=model.getFilterTitle()%></td>
+			  		<td width="100%" style="padding-left: 10;" align="left">
+						<table>
+	  						<tr>
+				  				<td><%=template.field("pdfListParams_mostraSoloInFD","onclick='pdfList.doFiltraFilteredList();'")%></td>
+				  				<td class="text">Mostra solo moduli firmabili digitalmente</td>
+	  						</tr>
+	  					</table>			  		
+			  		</td>
+	  			</tr>
+	  		</table>
+	  		</form>
+  		</td>
+  	</tr>
+  <% } %>
+  
+  <tr>
+  	<td id="pdfListSortFormCont" style="display:none;">
+		<form name="pdfListSortForm" method="post" action="call.wfem" style="display:none;">
+		<input type="hidden" name="wfemCmd" value="prgm.pdfwebforms.catalog.SortPdfList.execute">
+		<input type="hidden" name="BrowserInstance" value="<%=request.getAttribute("BrowserInstance")%>">
+		<input type="hidden" name="pdfListParams_orderField" value="<%=model.getPdfListParams().getOrderField()%>">
+		<input type="hidden" name="pdfListParams_orderType" value="<%=model.getPdfListParams().getOrderType()%>">
+		</form>
+  	</td>
+  </tr>
+  
+  <tr>
+    <td id="pdfListGridCont" height="100%" align="center">
+			<%
+			  cols = "cols='#pdfId,#pdfCode,#pdfPubIdCorrente,pdfDescr,elencoProdotti,pdfModulo_tipoModulo,comandi,esempioCompilazione' ";
+			  dim = "colswidths='*,20%,20%,15%,7%' ";
+			%>
+	        <%=template.grid("pdfList",cols+dim+"height='100%' width='100%' "+
+	        									   "selection='none' "+
+	        									   "onnewcell='pdfList.onNewCell(this);' "+
+	        									   "onnewheader='pdfList.onNewHeader(this);' "+
+	        									   "sortable='false' "+
+	        									   "showbottomarea='false' "+
+	        									   "showtoparea='false' "+
+	        									   "showcounter='false' "+
+	        									   "cellsnowrap='false' "+
+	        									   "decorator='prgm.pdfwebforms.catalog.PdfCatalog' "+
+	        									   (model.isPrimaVolta()?"noRowsMsg='Nessun modulo nel catalogo'":""))%>
+    </td>
+  </tr>
+</table>

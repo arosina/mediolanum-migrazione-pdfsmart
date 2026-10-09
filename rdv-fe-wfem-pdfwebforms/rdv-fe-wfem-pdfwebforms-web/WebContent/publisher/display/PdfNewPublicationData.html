@@ -1,0 +1,122 @@
+<table class="text" width="100%">
+
+	<tr>
+		<td>
+			<form name="datiPublication" method="post" action="call.wfem">
+			<input type="hidden" name="wfemCmd" value="">
+			<input type="hidden" name="pubblicaComeNuovaPubblicazione" value="">
+			<input type="hidden" name="pdfAnag_fileIsChanged" value="<%=pdfAnag.getFileIsChanged()%>">
+			<input type="hidden" name="BrowserInstance" value="<%=request.getAttribute("BrowserInstance")%>">
+				<div>
+					<table width="100%">
+						<tr>
+							<td>
+								<%@ include file="./PdfAnagData.html"%>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<table width="100%" class="toolbar" cellpadding="0" cellspacing="2">
+									<tr>
+										<td style="white-space: nowrap;">
+											<b>Dati di pubblicazione</b>
+											<% if(!pdfAnag.getPdfValidationWarningMessage().isNull()){ %>
+												&nbsp;[
+														<span style="text-decoration: underline; cursor: pointer;" onclick="showValidationWarningMessage();">Punti di attenzione</span>
+														<img style="cursor: pointer;" onclick="showValidationWarningMessage();" src="<%=template.getWfemLayoutWebApp()%>/images/typeWarning.png">
+													  ]
+											<% } %>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<table cellpadding="0" cellspacing="0"><tr>
+									<td><%=template.field("pdfAnag_pdfEdition","maxlength='10'")%></td>
+									<td><%=template.field("pdfAnag_pdfPubStartDate")%></td>
+									<td><%=template.field("pdfAnag_pdfMomVersion","size='2' maxlength='3'")%></td>
+									<td><%=template.field("pdfAnag_pdfDriverVersion","uppercase='false' maxlength='50'")%></td>								
+								</tr></table>
+							</td>
+						</tr>
+						<tr>
+							<td align="center">
+								<table width="100%">
+									<tr>
+										<td><%=template.field("pdfAnag_pdfPublicationNotes","labelposition='up' labelalign='left' uppercase='false' type='all' rows='3' style='width:100%;'")%></td>
+					     	 		</tr>
+					     	 	</table>
+							</td>
+						</tr>
+						<tr>
+							<td><hr></td>
+						</tr>
+						<tr>
+							<td>
+								<table><tr><td><%=template.field("pdfAnag_generatePageImages",""+(pdfAnag.getPdfNumPages().intValue()==0?"modality='read'":""))%></td></tr></table>	
+							</td>
+						</tr>
+					</table>
+				</div>
+			</form>
+		</td>
+	</tr>
+	
+	<tr>
+		<td style="padding-left: 10;padding-bottom: 5;">
+	      <table class="text" cellpadding="0" cellspacing="0">
+			 <tr style="height:25;">
+			 	<td style="padding-left: 10;" valign="top"><%=template.inlineAnchor("pdfAnag_pdfContent")%></td>
+			 	<td valign="top">File&nbsp;Pdf:&nbsp;</td>
+			 	<td id="fileCont" valign="top">
+			 		<table class="text" cellpadding="0" cellspacing="0">
+			 			<tr>
+					 		<td <%=pdfAnag.getPdfContent().isNull()?"":"style='display:none;'"%>>
+					 			<%=template.field("pdfAnag_pdfContent","labelposition='nolabel' modality='insert' showclear='false' showpreview='false'")%>
+					 		</td>
+			 				<td <%=!pdfAnag.getPdfId().isNull() && pdfAnag.getPdfContent().isNull()?"":"style='display:none;'"%>>&nbsp;<span style="cursor:pointer;text-decoration:underline;" onclick="restoreFilePdf();">annulla</span></td>
+				 			<td <%=pdfAnag.getPdfContent().isNull()?"style='display:none;'":""%>>[&nbsp;<span style="cursor:pointer;text-decoration:underline;" onclick="visualizzaFilePdf();"><i><%=pdfAnag.getPdfContent().getFileName()%></i></span>&nbsp;]</td>
+				 			<td <%=pdfAnag.getPdfContent().isNull()?"style='display:none;'":""%>>&nbsp;<span style="cursor:pointer;text-decoration:underline;" onclick="clearFilePdf();">cambia&nbsp;file</span></td>
+					 	</tr>
+			 		</table>
+			 		<% if(pdfAnag.getPdfContent().isNull()){ %>
+				 		<script>$("#pdfAnag_pdfContent").bind("change",function(){document.datiPublication.pdfAnag_fileIsChanged.value = "true";})</script>
+			 		<% } %>
+			 	</td>
+			 	<td style="padding-left: 10;" valign="top"><%=template.inlineAnchor("pdfAnag_pdfNumPages")%></td>
+			 	<td style="padding-left: 20;" valign="top">
+			 		<% if(pdfAnag.getPdfNumPages().intValue() > 0 && !pdfAnag.getPdfContent().isNull()){ %>
+				 		<table class="text" cellpadding="0" cellspacing="0">
+				 			<tr>
+				 				<td valign="top">Pagine:&nbsp;</td>
+				 				<td>
+				 				<% for(int i=0;i<pdfAnag.getPdfNumPages().intValue();i++){ %>
+				 					<span style="text-decoration:underline;cursor:pointer;" 
+				 						  onclick="visualizaImmaginePagina('<%=pdfAnag.getPdfId()%>',<%=pdfAnag.getPdfPublicationId().intValue()%>,<%=(i+1)%>);">pag.&nbsp;<%=(i+1)%></span>
+					 				&nbsp;
+				 				<% } %>
+				 				</td>
+				 			</tr>
+				 		</table>
+			 		<% } %>
+			 	</td>
+			 	<td style="padding-left: 20;white-space: nowrap;" valign="top">
+			 		<% if(pdfAnag.getPdfNumPages().intValue() > 0 && !pdfAnag.getPdfContent().isNull()){ %>
+				 		&nbsp;<span style="text-decoration:underline;cursor:pointer;" onclick="visualizzaFilePdf();">pdf</span>
+				 		&nbsp;<span style="text-decoration:underline;cursor:pointer;" onclick="visualizzaAcroformPdf();">acroform</span>
+				 		&nbsp;<span style="text-decoration:underline;cursor:pointer;" onclick="verificaPdf();">simula</span>
+				 		<% if(confModel.getProfiloUtente().equalsIgnoreCase(CostantiPublisher.ProfiliUtente.SVILUPPO)){ %>
+				 			&nbsp;<span style="text-decoration:underline;cursor:pointer;" onclick="createPdfDataHelper();">helper</span>
+				 		<% } %>
+			 		<% } %>
+			 	</td>
+			 </tr>
+	      </table>
+		</td>
+	</tr>
+	
+	<%@ include file="./PdfPagesData.html"%>
+	
+</table>

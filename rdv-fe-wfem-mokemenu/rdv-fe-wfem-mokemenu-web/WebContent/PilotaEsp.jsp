@@ -1,0 +1,30 @@
+<%
+	String alias = request.getHeader("Host");
+
+	String countryCode = "ESP";
+	String channelCode = "F";
+	String langCode    = "SP";
+	String protocol = "http";
+	String startUrl = protocol + "://"+ alias;
+	
+%>
+<html>
+<body>
+<form id="wfem" name="wfem" action="call.wfem" method="post" target="menuESP">
+	<input type="hidden" name="wfemCmd"  value="showLogin">
+	<input type="hidden" name="country"  value="<%=countryCode%>">
+	<input type="hidden" name="channel"  value="<%=channelCode%>">
+	<input type="hidden" name="language" value="<%=langCode%>">
+	<input type="hidden" name="starturl" value="<%=startUrl%>">
+</form>
+
+<script language=javascript>
+//	var w = screen.width-(screen.width*0.01);
+//	var h = screen.height-(screen.height*0.10);
+	var w = 1024;
+	var h = 768;
+	window.open("about:blank","menuESP","toolbar=no,resizable=yes,status=yes,top=0,left=0,width="+w+"px,height="+h+"px");
+	document.wfem.submit();		
+</script>
+</body>
+</html>

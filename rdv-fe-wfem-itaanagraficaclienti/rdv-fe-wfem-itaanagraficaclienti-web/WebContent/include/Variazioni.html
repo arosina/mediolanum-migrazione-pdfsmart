@@ -1,0 +1,27 @@
+<!--------  VARIAZIONI ------->
+<%
+	String cols = "cols='progressivo,dataVariazione,#nome,#cognome,#codAgente,#codPotenziale,#codMediolanum,#codFiscale,#partitaIva,#tipoCarta' ";
+	String dims = "colswidths='12%,*' ";
+%>
+<table height="100%" width="98%" cellpadding="5" cellspacing="5">
+  <tr>
+    <td>
+      <table><tr>
+	    <td><%=template.action("visualizzaVariazioneSelezionataAction","enabled='false'")%></td>
+		<% if(!model.getPopupMode().booleanValue()){ %>
+	    	<td><%=template.action("stampaVariazioneSelezionataAction","enabled='false'")%></td>
+	    <% } %>
+	    <td style="display: none;"><%=template.action("cancellaVariazioneSelezionataAction","enabled='false'")%></td>
+      </tr></table>
+    </td>
+  </tr>
+  <tr>
+    <td height="100%">
+    	<%=template.grid("variazioni_elencoVariazioni",cols+dims+"selection='single' "+
+    																			"onclick='selVar(this);' "+
+    																			"ondblclick='selVar(this);doVisualizzaVariazioneSelezionataAction();' "+
+    																			"noRowsMsg='Non ci sono variazioni' height='250' width='100%'")%>
+	</td>
+  </tr>
+</table>
+<!------------------------------------------->

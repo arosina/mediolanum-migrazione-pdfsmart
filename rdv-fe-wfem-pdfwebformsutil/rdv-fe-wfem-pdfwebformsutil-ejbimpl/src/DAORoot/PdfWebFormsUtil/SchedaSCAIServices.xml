@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="SchedaSCAIServices">
+
+	<Access name="recuperaDatiSchedaScaiCliente" type="DAOOSBAccess" serviceName="soggetto-anagrafica-be-osb-informativedatiadv-prj/proxy/PS_Anagrafica"
+		operationName="recuperaDatiSchedaScaiCliente" markNillable="true" keepAttrs="true" dataFormatter="prgm.pdfwebformsutil.drivers.dao.XmlFormatter">
+		<Input>
+		<![CDATA[	
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://anagrafica.soggetto.service.bmed.it/v1">
+			   <soapenv:Header>
+			      <v1:requestHeader>
+			         <v1:idOperazione>
+			            <v1:codiceApplicazioneChiamante></v1:codiceApplicazioneChiamante>
+			            <v1:codiceOperazione></v1:codiceOperazione>
+			         </v1:idOperazione>
+			         <v1:idConversazione></v1:idConversazione>
+			         <v1:timeStamp></v1:timeStamp>
+			         <v1:contestoChiamante>
+			            <v1:idApplicazioneChiamante></v1:idApplicazioneChiamante>
+			            <v1:canale></v1:canale>
+			            <v1:utente></v1:utente>
+			            <v1:ndgCliente></v1:ndgCliente>
+			            <v1:numeroRapporto></v1:numeroRapporto>
+			         </v1:contestoChiamante>
+			         <v1:tipoOperazione></v1:tipoOperazione>
+			      </v1:requestHeader>
+			   </soapenv:Header>
+			   <soapenv:Body>
+			      <v11:recuperaDatiSchedaScaiCliente>
+			         <metadata xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>             
+			         <codiceCliente propertyName="codiceCliente"></codiceCliente>
+			      </v11:recuperaDatiSchedaScaiCliente>
+			   </soapenv:Body>
+			</soapenv:Envelope>
+		]]>
+		</Input>
+		<Output>
+		<![CDATA[
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+			   <S:Body xmlns:S="http://schemas.xmlsoap.org/soap/envelope/">
+			      <v1:recuperaDatiSchedaScaiClienteResponse xmlns:v1="http://anagrafica.soggetto.service.bmed.it/v1">
+			         <responseMetaData>
+			            <callerDataId/>
+			            <channelCode/>
+			            <companyCode/>
+			            <outputCommonDataVersion/>
+			            <placeCode/>
+			            <statusCode>0</statusCode>
+			            <userId>ADV</userId>
+			         </responseMetaData>
+			         <anagraficaSchedaDTO>
+			            <codiceCliente/>
+			            <nomeCliente propertyName="nomeCliente"/>
+			            <cognomeCliente propertyName="cognomeCliente"/>
+			            <codiceAgente propertyName="codiceAgente"/>
+			            <dataCopiaDocumento propertyName="dataCopiaDocumento" dataFormatter="formatOSBdate"/>
+			            <dataPrimoContattoUtile propertyName="dataPrimoContattoUtile" dataFormatter="formatOSBdate"/>
+			            <dataProfiloRischio propertyName="dataProfiloRischio" dataFormatter="formatOSBdate"/>
+			            <dataScadenzaDocumento propertyName="dataScadenzaDocumento" dataFormatter="formatOSBdate"/>
+			            <dataVariazioneAnagrafica propertyName="dataVariazioneAnagrafica" dataFormatter="formatOSBdate"/>
+			            <flagControlloCliAttivoAntiriciclaggio propertyName="flagControlloCliAttivoAntiriciclaggio"/>
+			            <flagControlloCopiaDocumento propertyName="flagControlloCopiaDocumento"/>
+			            <flagControlloDataEmissioneDoc propertyName="flagControlloDataEmissioneDoc"/>
+			            <flagControlloLuogoEmissioneDoc propertyName="flagControlloLuogoEmissioneDoc"/>
+			            <flagControlloLuogoSvolgimentoProf propertyName="flagControlloLuogoSvolgimentoProf"/>
+			            <flagControlloNumeroDocumento propertyName="flagControlloNumeroDocumento"/>
+			            <flagControlloProfessione propertyName="flagControlloProfessione"/>
+			            <flagControlloTAE propertyName="flagControlloTAE"/>
+			            <flagControlloTipoDocumento propertyName="flagControlloTipoDocumento"/>
+			            <flgControlloVariazioneOnline propertyName="flgControlloVariazioneOnline"/>
+			            <qtaMesiVariazioneProfiloRischio propertyName="qtaMesiVariazioneProfiloRischio"/>
+			            <codiceFascioProfiloRischio propertyName="codiceFascioProfiloRischio"/>
+			            <descrizioneFascioProfiloRischio propertyName="descrizioneFascioProfiloRischio"/>
+			            <dataInizioValiditaFascioProfiloRischio propertyName="dataInizioValiditaFascioProfiloRischio" dataFormatter="formatOSBdate"/>
+			            <flagControlloAnagrafica propertyName="flagControlloAnagrafica"/>
+			            <dataVariazioneOnLine propertyName="dataVariazioneOnLine" dataFormatter="formatOSBdate"/>
+			            <telefonoFissoCliente propertyName="telefonoFissoCliente"/>
+			            <telefonoCellulareCliente propertyName="telefonoCellulareCliente"/>
+			            <qtaPol propertyName="qtaPol"/>
+			            <datScadPol propertyName="datScadPol"/>
+			            <flgPolInLiqzne propertyName="flgPolInLiqzne"/>
+			            <flgCliAttivAdv propertyName="flgCliAttivAdv"/>
+			            <indirizzoEmail propertyName="indirizzoEmail"/>
+			            <dettSchedaDto>
+			               <domStatoSchedaSCAI>
+			                  <codiceStatoSchedaSCAI propertyName="codiceStatoSchedaSCAI"/>
+			                  <descrizioneStatoSchedaSCAI propertyName="descrizioneStatoSchedaSCAI"/>
+			               </domStatoSchedaSCAI>
+			               <dataVariazioneStatoSchedaScai propertyName="dataVariazioneStatoSchedaScai" dataFormatter="formatOSBdate"/>
+			               <dataScadenzaSchedaScai propertyName="dataScadenzaSchedaScai" dataFormatter="formatOSBdate"/>
+			               <flagClienteInGestioneScadenziere propertyName="flagClienteInGestioneScadenziere"/>
+			               <dataCalcoloMotore propertyName="dataCalcoloMotore" dataFormatter="formatOSBdate"/>
+			               <dataFineCountdown propertyName="dataFineCountdown" dataFormatter="formatOSBdate"/>
+			               <dataFineProcedura propertyName="dataFineProcedura" dataFormatter="formatOSBdate"/>
+			               <codiceAzioneInputMotore propertyName="codiceAzioneInputMotore"/>
+			               <progressivoVersioneStepPratica propertyName="progressivoVersioneStepPratica"/>
+			            </dettSchedaDto>
+			         </anagraficaSchedaDTO>
+			      </v1:recuperaDatiSchedaScaiClienteResponse>
+			   </S:Body>
+			</soapenv:Envelope>
+		]]>
+		</Output>
+	</Access>
+</DAO-Object>

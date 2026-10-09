@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<DAO-Object name="UserAccessLog" connectionCacheReference="PRGM">
+
+<Access name="userAccessLogRecord" type="DAOTableAccess" tableAccessType="0" tableName="PRGM_USER_ACCESS_LOGS">
+   <Bindings>
+	<Parameter propertyName="accessTime"       			dbColumnName="D_ACCESS" 	  		fieldType="0" primaryKey="true"/>
+	<Parameter propertyName="userCode" 	       			dbColumnName="C_USER" 	  	    	fieldType="0" primaryKey="true"/>
+   	<Parameter propertyName="countryCode"      			dbColumnName="C_COUNTRY" 			fieldType="0" />
+   	<Parameter propertyName="channelCode"      			dbColumnName="C_CHANNEL" 			fieldType="0" />
+   	<Parameter propertyName="organizationCode" 			dbColumnName="C_ORGANIZATION" 		fieldType="0" />
+   	<Parameter propertyName="accessType"       			dbColumnName="A_ACCESS_TYPE" 		fieldType="0" />
+   	<Parameter propertyName="accessResultCode"       	dbColumnName="N_ACCESS_RESULT" 		fieldType="0" />
+   	<Parameter propertyName="description"      			dbColumnName="X_ACCESS" 			fieldType="0" />
+   	<Parameter propertyName="logonUserCode"    			dbColumnName="C_LOGON_USER" 		fieldType="0" />
+   	<Parameter propertyName="dataUserCode"     			dbColumnName="C_DATA_USER" 			fieldType="0" />
+   	<Parameter propertyName="applicationCode"  			dbColumnName="C_APPLICATION" 		fieldType="0" />
+   	<Parameter propertyName="functionCode"     			dbColumnName="P_FUNCTION" 			fieldType="0" />
+   	<Parameter propertyName="commandCode"      			dbColumnName="P_COMMAND" 			fieldType="0" />
+   	<Parameter propertyName="primaryRoleCode"  			dbColumnName="P_PRIMARY_ROLE" 	 	fieldType="0" />
+   	<Parameter propertyName="additionalRolesCodeList"  	dbColumnName="X_ADD_ROLES_LIST" 	fieldType="0" />
+   	<Parameter propertyName="fwGroupCode"      			dbColumnName="C_FW_GROUP" 			fieldType="0" />
+   	<Parameter propertyName="startUrl"     	   			dbColumnName="X_START_URL" 			fieldType="0" />
+   	<Parameter propertyName="clientIp"         			dbColumnName="X_CLIENT_IP" 			fieldType="0" />
+   	<Parameter propertyName="replicationServer"        	dbColumnName="SERVER_C_REPLICA"		fieldType="0" />
+   </Bindings>
+</Access>
+
+
+</DAO-Object>

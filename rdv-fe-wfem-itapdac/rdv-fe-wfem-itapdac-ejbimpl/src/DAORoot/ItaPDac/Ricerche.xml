@@ -1,0 +1,777 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="Ricerche" connectionCacheReference="CEPE">
+
+<CodDescriptions>
+
+	<CodDesc name="Uffici" tableName="CEPE_PT_UFFICIO" codColumnName="PT_UFFICIO_N_UFFICIO" descrColumnName="PT_UFFICIO_X_UFFICIO"
+			 validityWhereCondition="PT_UFFICIO_F_VALIDITA = 'S'"
+			 orderBy="upper(PT_UFFICIO_X_UFFICIO)"/>
+   
+	<CodDesc name="UfficiSpuntaRicercaDac" tableName="CEPE_PT_UFFICIO" 
+			 codColumnName="PT_UFFICIO_N_UFFICIO" descrColumnName="PT_UFFICIO_X_UFFICIO"
+			 whereCondition="PT_UFFICIO_N_UFFICIO in (2,5,6)"
+			 orderBy="upper(PT_UFFICIO_X_UFFICIO)"/>
+
+	<CodDesc name="UfficiLavorazioneRicercaDac" tableName="CEPE_PT_UFFICIO" 
+			 codColumnName="PT_UFFICIO_N_UFFICIO" descrColumnName="PT_UFFICIO_X_UFFICIO"
+			 whereCondition="PT_UFFICIO_F_VALIDITA = 'S' and PT_UFFICIO_N_UFFICIO != 1"
+			 orderBy="upper(PT_UFFICIO_X_UFFICIO)"/>
+
+</CodDescriptions>
+			 
+	
+<Access name="ricercaDacFb" type="DAOQueryAccess" queryType="1" maxResultRows="50"
+		OutputCommandDataModel="prgm.ita.p.dac.model.DacModel">
+	<Query>
+			select distinct 
+					2,
+					T.PT_TESTATA_N_PROGR, 
+					T.F_REPLICA, 
+					T.PT_TESTATA_D_DALAVORARE,
+					T.PT_STATO_N_STATO, 
+					S.PT_STATO_X_STATO,
+					T.PT_ESITO_N_ESITO, 
+					E.PT_ESITO_X_ESITO,
+					T.PT_TESTATA_D_CAMBIOSTATO,
+					T.F_REPLICA
+			from 	CEPE_PT_TESTATA T, CEPE_PT_DETTAGLIO D, CEPE_PT_PRIT P, CEPE_PT_STATO S, CEPE_PT_ESITO E
+			where  	T.PT_TIPOPRIT_N_TIPOPRIT = <p>parametri_tipoDac</p>    
+			and    	T.PT_TESTATA_F_VALIDITA = 'S'
+			and    	T.PT_TESTATA_C_UTENTE_MITT = <p>contextUserCode</p>
+			and		T.PT_TESTATA_N_UFFICIO_DEST = 2
+			and		T.PT_TESTATA_N_PROGR = P.PT_TESTATA_N_PROGR 
+			and		P.PT_DETTAGLIO_N_PROGR = D.PT_DETTAGLIO_N_PROGR
+			and		T.PT_STATO_N_STATO *= S.PT_STATO_N_STATO
+			and		T.PT_ESITO_N_ESITO *= E.PT_ESITO_N_ESITO
+			and		T.PT_STATO_N_STATO != 1
+			and		(T.PT_TESTATA_F_AUTOSPUNTATA is null or T.PT_TESTATA_F_AUTOSPUNTATA = 'N')
+			<IfNotNull propertyName="parametri_stato">and T.PT_STATO_N_STATO = <p>parametri_stato</p></IfNotNull>
+			<IfNotNull propertyName="parametri_esito">and T.PT_ESITO_N_ESITO = <p>parametri_esito</p></IfNotNull>
+			
+			<IfNotNull propertyName="parametri_dataInizio">and T.PT_TESTATA_D_DALAVORARE &gt;= convert(varchar(8),<p>parametri_dataInizio</p>,112)</IfNotNull>
+			<IfNotNull propertyName="parametri_dataFine">and T.PT_TESTATA_D_DALAVORARE &lt; convert(varchar(8),dateadd(dd,+1,<p>parametri_dataFine</p>),112)</IfNotNull>
+			
+	      	<IfNotNull propertyName="parametri_numeroContratto">and (D.PT_DETTAGLIO_N_CONTR = <p>parametri_numeroContratto</p> and D.PT_PRODOTTO_N_PRODOTTO != 0)</IfNotNull>
+	      	<IfNotNull propertyName="parametri_cognomeCliente">and D.PT_DETTAGLIO_X_CLI_COGN like <p>parametri_cognomeCliente%</p></IfNotNull>
+	      	<IfNotNull propertyName="parametri_nomeCliente">and D.PT_DETTAGLIO_X_CLI_NOME like <p>parametri_nomeCliente%</p></IfNotNull>
+      	union
+			select distinct 
+					1,
+					T.PT_TESTATA_N_PROGR, 
+					T.F_REPLICA, 
+					T.PT_TESTATA_D_DALAVORARE,
+					T.PT_STATO_N_STATO, 
+					S.PT_STATO_X_STATO,
+					T.PT_ESITO_N_ESITO, 
+					E.PT_ESITO_X_ESITO,
+					T.PT_TESTATA_D_CAMBIOSTATO,
+					T.F_REPLICA
+			from 	CEPE_PT_TESTATA T, CEPE_PT_DETTAGLIO D, CEPE_PT_PRIT P, CEPE_PT_STATO S, CEPE_PT_ESITO E
+			where  	T.PT_TIPOPRIT_N_TIPOPRIT = <p>parametri_tipoDac</p>    
+			and    	T.PT_TESTATA_F_VALIDITA = 'S'
+			and    	T.PT_TESTATA_C_UTENTE_MITT = <p>contextUserCode</p>
+			and		T.PT_TESTATA_N_UFFICIO_DEST = 2
+			and		T.PT_TESTATA_N_PROGR = P.PT_TESTATA_N_PROGR 
+			and		P.PT_DETTAGLIO_N_PROGR = D.PT_DETTAGLIO_N_PROGR
+			and		T.PT_STATO_N_STATO *= S.PT_STATO_N_STATO
+			and		T.PT_ESITO_N_ESITO *= E.PT_ESITO_N_ESITO
+			and		T.PT_STATO_N_STATO = 1
+			and		(T.PT_TESTATA_F_AUTOSPUNTATA is null or T.PT_TESTATA_F_AUTOSPUNTATA = 'N')
+			<IfNotNull propertyName="parametri_stato">and T.PT_STATO_N_STATO = <p>parametri_stato</p></IfNotNull>
+			<IfNotNull propertyName="parametri_esito">and 1=2</IfNotNull>
+			<IfNotNull propertyName="parametri_dataInizio">and 1=2</IfNotNull>
+			<IfNotNull propertyName="parametri_dataFine">and 1=2</IfNotNull>
+	      	<IfNotNull propertyName="parametri_numeroContratto">and (D.PT_DETTAGLIO_N_CONTR = <p>parametri_numeroContratto</p> and D.PT_PRODOTTO_N_PRODOTTO != 0)</IfNotNull>
+	      	<IfNotNull propertyName="parametri_cognomeCliente">and D.PT_DETTAGLIO_X_CLI_COGN like <p>parametri_cognomeCliente%</p></IfNotNull>
+	      	<IfNotNull propertyName="parametri_nomeCliente">and D.PT_DETTAGLIO_X_CLI_NOME like <p>parametri_nomeCliente%</p></IfNotNull>
+      	union
+			select distinct 
+					1,
+					T.PT_TESTATA_N_PROGR, 
+					T.F_REPLICA, 
+					T.PT_TESTATA_D_DALAVORARE,
+					T.PT_STATO_N_STATO, 
+					S.PT_STATO_X_STATO,
+					T.PT_ESITO_N_ESITO, 
+					E.PT_ESITO_X_ESITO,
+					T.PT_TESTATA_D_CAMBIOSTATO,
+					T.F_REPLICA
+			from 	CEPE_PT_TESTATA T, CEPE_PT_STATO S, CEPE_PT_ESITO E
+			where  	T.PT_TIPOPRIT_N_TIPOPRIT = <p>parametri_tipoDac</p>    
+			and    	T.PT_TESTATA_F_VALIDITA = 'S'
+			and    	T.PT_TESTATA_C_UTENTE_MITT = <p>contextUserCode</p>
+			and		T.PT_TESTATA_N_UFFICIO_DEST = 2
+			and		T.PT_STATO_N_STATO *= S.PT_STATO_N_STATO
+			and		T.PT_ESITO_N_ESITO *= E.PT_ESITO_N_ESITO
+			and		T.PT_STATO_N_STATO = 1
+			and		(T.PT_TESTATA_F_AUTOSPUNTATA is null or T.PT_TESTATA_F_AUTOSPUNTATA = 'N')
+			<IfNotNull propertyName="parametri_stato">and T.PT_STATO_N_STATO = <p>parametri_stato</p></IfNotNull>
+			<IfNotNull propertyName="parametri_esito">and 1=2</IfNotNull>
+			<IfNotNull propertyName="parametri_dataInizio">and 1=2</IfNotNull>
+			<IfNotNull propertyName="parametri_dataFine">and 1=2</IfNotNull>
+	      	<IfNotNull propertyName="parametri_numeroContratto">and 1=2</IfNotNull>
+	      	<IfNotNull propertyName="parametri_cognomeCliente">and 1=2</IfNotNull>
+	      	<IfNotNull propertyName="parametri_nomeCliente">and 1=2</IfNotNull>
+	      	
+		order by 1 asc, 4 desc
+	</Query>     
+	<Output>
+		<Parameter propertyName=""/>
+		<Parameter propertyName="idDac"/>
+		<Parameter propertyName="flagReplica"/>
+		<Parameter propertyName="dataOraEmissione"/>
+		<Parameter propertyName="stato"/>
+		<Parameter propertyName="descrStato"/>
+		<Parameter propertyName="esito"/>
+		<Parameter propertyName="descrEsito"/>
+		<Parameter propertyName="dataOraCambioStato"/>
+		<Parameter propertyName="flagReplica"/>
+	</Output>
+</Access>  
+
+<Access name="ricercaStoricoDacFb" type="DAOQueryAccess" queryType="1" maxResultRows="50"
+		OutputCommandDataModel="prgm.ita.p.dac.model.DacModel" connectionCacheReference="IQ_PRIT">
+	<Query>
+			select distinct 
+					T.PT_TESTATA_N_PROGR, 
+					T.F_REPLICA, 
+					T.PT_TESTATA_D_DALAVORARE,
+					T.PT_STATO_N_STATO, 
+					S.PT_STATO_X_STATO,
+					T.PT_ESITO_N_ESITO, 
+					E.PT_ESITO_X_ESITO,
+					T.PT_TESTATA_D_CAMBIOSTATO
+			from 	CEPE_PT_TESTATA T, CEPE_PT_DETTAGLIO D, CEPE_PT_PRIT P, CEPE_PT_STATO S, CEPE_PT_ESITO E
+			where  	T.PT_TIPOPRIT_N_TIPOPRIT = <p>parametri_tipoDac</p>    
+			and		T.PT_STATO_N_STATO in (4,5,6)
+			and    	T.PT_TESTATA_F_VALIDITA = 'S'
+			and    	T.PT_TESTATA_C_UTENTE_MITT = <p>contextUserCode</p>
+			and		T.PT_TESTATA_N_UFFICIO_DEST = 2
+			and		P.PT_TESTATA_N_PROGR = T.PT_TESTATA_N_PROGR
+			and		P.PT_DETTAGLIO_N_PROGR = D.PT_DETTAGLIO_N_PROGR
+			and		T.PT_STATO_N_STATO *= S.PT_STATO_N_STATO
+			and		T.PT_ESITO_N_ESITO *= E.PT_ESITO_N_ESITO
+			and		(T.PT_TESTATA_F_AUTOSPUNTATA is null or T.PT_TESTATA_F_AUTOSPUNTATA = 'N')
+			<IfNotNull propertyName="parametri_stato">and T.PT_STATO_N_STATO = <p>parametri_stato</p></IfNotNull>
+			<IfNotNull propertyName="parametri_esito">and T.PT_ESITO_N_ESITO = <p>parametri_esito</p></IfNotNull>
+
+			<IfNotNull propertyName="parametri_dataInizio">and T.PT_TESTATA_D_DALAVORARE &gt;= convert(varchar(8),<p>parametri_dataInizio</p>,112)</IfNotNull>
+			<IfNotNull propertyName="parametri_dataFine">and T.PT_TESTATA_D_DALAVORARE &lt; convert(varchar(8),dateadd(dd,+1,<p>parametri_dataFine</p>),112)</IfNotNull>
+			
+	      	<IfNotNull propertyName="parametri_numeroContratto">and (D.PT_DETTAGLIO_N_CONTR = <p>parametri_numeroContratto</p> and D.PT_PRODOTTO_N_PRODOTTO != 0)</IfNotNull>
+	      	<IfNotNull propertyName="parametri_cognomeCliente">and D.PT_DETTAGLIO_X_CLI_COGN like <p>parametri_cognomeCliente%</p></IfNotNull>
+	      	<IfNotNull propertyName="parametri_nomeCliente">and D.PT_DETTAGLIO_X_CLI_NOME like <p>parametri_nomeCliente%</p></IfNotNull>
+      	
+		order by 3 desc
+	</Query>     
+	<Output>
+		<Parameter propertyName="idDac"/>
+		<Parameter propertyName="flagReplica"/>
+		<Parameter propertyName="dataOraEmissione"/>
+		<Parameter propertyName="stato"/>
+		<Parameter propertyName="descrStato"/>
+		<Parameter propertyName="esito"/>
+		<Parameter propertyName="descrEsito"/>
+		<Parameter propertyName="dataOraCambioStato"/>
+	</Output>
+</Access>  
+
+<Access name="ricercaStoricoMomFb" type="DAOQueryAccess" queryType="1" maxResultRows="50"
+		OutputCommandDataModel="prgm.ita.p.dac.model.DacModel" connectionCacheReference="IQ_PRIT">
+	<Query>
+			select distinct 
+					T.PT_TESTATA_N_PROGR, 
+					T.F_REPLICA, 
+					T.PT_TESTATA_D_DALAVORARE,
+					T.PT_STATO_N_STATO, 
+					S.PT_STATO_X_STATO,
+					T.PT_ESITO_N_ESITO, 
+					E.PT_ESITO_X_ESITO,
+					T.PT_TESTATA_D_CAMBIOSTATO
+			from 	CEPE_PT_TESTATA T, CEPE_PT_DETTAGLIO D, CEPE_PT_PRIT P, CEPE_PT_STATO S, CEPE_PT_ESITO E
+			where  	T.PT_TIPOPRIT_N_TIPOPRIT = <p>parametri_tipoDac</p>    
+			and		T.PT_STATO_N_STATO in (2,3,4,5,6)
+			and    	T.PT_TESTATA_F_VALIDITA = 'S'
+			and    	T.PT_TESTATA_C_UTENTE_MITT = <p>contextUserCode</p>
+			and		T.PT_TESTATA_N_UFFICIO_DEST = 2
+			and		P.PT_TESTATA_N_PROGR = T.PT_TESTATA_N_PROGR
+			and		P.PT_DETTAGLIO_N_PROGR = D.PT_DETTAGLIO_N_PROGR
+			and		T.PT_STATO_N_STATO *= S.PT_STATO_N_STATO
+			and		T.PT_ESITO_N_ESITO *= E.PT_ESITO_N_ESITO
+			and		(T.PT_TESTATA_F_AUTOSPUNTATA is null or T.PT_TESTATA_F_AUTOSPUNTATA = 'N')
+			<IfNotNull propertyName="parametri_stato">and T.PT_STATO_N_STATO = <p>parametri_stato</p></IfNotNull>
+			<IfNotNull propertyName="parametri_esito">and T.PT_ESITO_N_ESITO = <p>parametri_esito</p></IfNotNull>
+
+			<IfNotNull propertyName="parametri_dataInizio">and T.PT_TESTATA_D_DALAVORARE &gt;= convert(varchar(8),<p>parametri_dataInizio</p>,112)</IfNotNull>
+			<IfNotNull propertyName="parametri_dataFine">and T.PT_TESTATA_D_DALAVORARE &lt; convert(varchar(8),dateadd(dd,+1,<p>parametri_dataFine</p>),112)</IfNotNull>
+			
+	      	<IfNotNull propertyName="parametri_numeroContratto">and (D.PT_DETTAGLIO_N_CONTR = <p>parametri_numeroContratto</p> and D.PT_PRODOTTO_N_PRODOTTO != 0)</IfNotNull>
+	      	<IfNotNull propertyName="parametri_cognomeCliente">and D.PT_DETTAGLIO_X_CLI_COGN like <p>parametri_cognomeCliente%</p></IfNotNull>
+	      	<IfNotNull propertyName="parametri_nomeCliente">and D.PT_DETTAGLIO_X_CLI_NOME like <p>parametri_nomeCliente%</p></IfNotNull>
+      	
+		order by 3 desc
+	</Query>     
+	<Output>
+		<Parameter propertyName="idDac"/>
+		<Parameter propertyName="flagReplica"/>
+		<Parameter propertyName="dataOraEmissione"/>
+		<Parameter propertyName="stato"/>
+		<Parameter propertyName="descrStato"/>
+		<Parameter propertyName="esito"/>
+		<Parameter propertyName="descrEsito"/>
+		<Parameter propertyName="dataOraCambioStato"/>
+	</Output>
+</Access>  
+
+<Access name="ricercaDacSede" type="DAOQueryAccess" queryType="1" maxResultRows="30"
+		OutputCommandDataModel="prgm.ita.p.dac.model.DacModel">
+	<Query>
+			select top 
+					<IfNotNull propertyName="parametri_idDac">1</IfNotNull>
+					<IfNull propertyName="parametri_idDac">31</IfNull>
+					T.PT_TESTATA_N_PROGR, 
+					T.PT_STATO_N_STATO,
+					T.PT_UFFICIO_N_UFFICIO,
+					T.PT_ESITO_N_ESITO,
+					T.PT_TESTATA_D_CAMBIOSTATO,
+    	           	T.PT_TESTATA_N_UFFICIO_MITT,
+					T.PT_TESTATA_C_UTENTE_MITT,
+		           	T.PT_TESTATA_N_UFFICIO_DEST,
+					case T.PT_STATO_N_STATO when 4 then isnull(T2.PT_TESTATA_C_UTENTE_SPUNTA,T.PT_TESTATA_C_UTENTE_LAV)	else T.PT_TESTATA_C_UTENTE_LAV end,
+					case T.PT_STATO_N_STATO when 4 then isnull(T2.PT_TESTATA_N_UFFICIO_SPUNTA,T2.PT_TESTATA_N_UFFICIO_LAV) else T2.PT_TESTATA_N_UFFICIO_LAV end,
+					T.PT_TIPOPRIT_N_TIPOPRIT,
+					S.PT_STATO_X_STATO,
+					E.PT_ESITO_X_ESITO,
+					UBIC.PT_UFFICIO_X_UFFICIO,
+					MITT.PT_UFFICIO_X_UFFICIO,
+					DEST.PT_UFFICIO_X_UFFICIO,
+					LAV.PT_UFFICIO_X_UFFICIO,
+					case T.PT_STATO_N_STATO when 4 then SPUN.PT_UFFICIO_X_UFFICIO else '' end
+			from 	CEPE_PT_TESTATA T, CEPE_PT_TESTATA2 T2, CEPE_PT_STATO S, CEPE_PT_ESITO E,
+					CEPE_PT_UFFICIO UBIC, CEPE_PT_UFFICIO MITT, CEPE_PT_UFFICIO DEST, CEPE_PT_UFFICIO LAV, CEPE_PT_UFFICIO SPUN  
+			where   T.PT_TESTATA_N_PROGR = T2.PT_TESTATA_N_PROGR
+			and		T.PT_STATO_N_STATO *= S.PT_STATO_N_STATO
+			and		T.PT_ESITO_N_ESITO *= E.PT_ESITO_N_ESITO
+			and		T.PT_UFFICIO_N_UFFICIO *= UBIC.PT_UFFICIO_N_UFFICIO
+			and		T.PT_TESTATA_N_UFFICIO_MITT *= MITT.PT_UFFICIO_N_UFFICIO
+			and		T.PT_TESTATA_N_UFFICIO_DEST *= DEST.PT_UFFICIO_N_UFFICIO
+			and		T2.PT_TESTATA_N_UFFICIO_LAV *= LAV.PT_UFFICIO_N_UFFICIO
+			and		T2.PT_TESTATA_N_UFFICIO_SPUNTA *= SPUN.PT_UFFICIO_N_UFFICIO
+			
+			<IfEqual    propertyName="fnc" propertyValue="spunta">and T.PT_TIPOPRIT_N_TIPOPRIT in (1,2,3)</IfEqual>
+			
+			<IfNull propertyName="parametri_idDac">
+			
+				<IfEqual    propertyName="fnc" propertyValue="spunta">and T.PT_TESTATA_D_CAMBIOSTATO &gt;= convert(varchar(8),dateadd(mm,-6,convert(varchar(8),getdate(),112)),112)</IfEqual>
+				<IfNotEqual propertyName="fnc" propertyValue="spunta">
+					<IfNull    propertyName="tipoRicerca">and T.PT_TESTATA_D_CAMBIOSTATO &gt;= convert(varchar(8),dateadd(dd,-7,convert(varchar(8),getdate(),112)),112)</IfNull>
+					<IfNotNull propertyName="tipoRicerca">and T.PT_TESTATA_D_CAMBIOSTATO &lt;  convert(varchar(8),dateadd(dd,-7,convert(varchar(8),getdate(),112)),112)</IfNotNull>
+				</IfNotEqual>
+				
+				<IfNotNull propertyName="parametri_tipoDac">and T.PT_TIPOPRIT_N_TIPOPRIT = <p>parametri_tipoDac</p></IfNotNull>
+				<IfNotNull propertyName="parametri_ubicazione">and T.PT_UFFICIO_N_UFFICIO = <p>parametri_ubicazione</p></IfNotNull>
+				<IfNotNull propertyName="parametri_stato">and T.PT_STATO_N_STATO = <p>parametri_stato</p></IfNotNull>
+				<IfNotNull propertyName="parametri_esito">and T.PT_ESITO_N_ESITO = <p>parametri_esito</p></IfNotNull>
+
+				<IfNotNull propertyName="parametri_dataInizio">and T.PT_TESTATA_D_CAMBIOSTATO &gt;= convert(varchar(8),<p>parametri_dataInizio</p>,112)</IfNotNull>
+				<IfNotNull propertyName="parametri_dataFine">and T.PT_TESTATA_D_CAMBIOSTATO &lt; convert(varchar(8),dateadd(dd,+1,<p>parametri_dataFine</p>),112)</IfNotNull>
+				<IfNotNull propertyName="parametri_dataRicezioneDocumenti">and (T.PT_TESTATA_D_DOCUMENTI &gt;= convert(varchar(8),<p>parametri_dataRicezioneDocumenti</p>,112) and T.PT_TESTATA_D_DOCUMENTI &lt; convert(varchar(8),dateadd(dd,+1,<p>parametri_dataRicezioneDocumenti</p>),112))</IfNotNull>
+	
+				<IfNotNull propertyName="parametri_uffMittente">and T.PT_TESTATA_N_UFFICIO_MITT = <p>parametri_uffMittente</p></IfNotNull>
+				<IfNotNull propertyName="parametri_codUtenteMittente">and T.PT_TESTATA_C_UTENTE_MITT = <p>parametri_codUtenteMittente</p></IfNotNull>
+
+				<IfNotNull propertyName="parametri_uffLavorazione">and T2.PT_TESTATA_N_UFFICIO_LAV = <p>parametri_uffLavorazione</p></IfNotNull>
+				<IfNotNull propertyName="parametri_codUtenteLavorazione">and T.PT_TESTATA_C_UTENTE_LAV = <p>parametri_codUtenteLavorazione</p></IfNotNull>
+				
+				<IfNotNull propertyName="parametri_uffSpunta">and T2.PT_TESTATA_N_UFFICIO_SPUNTA = <p>parametri_uffSpunta</p></IfNotNull>
+				<IfNotNull propertyName="parametri_codUtenteSpunta">and T2.PT_TESTATA_C_UTENTE_SPUNTA = <p>parametri_codUtenteSpunta</p></IfNotNull>
+				
+			</IfNull>
+			
+			<IfNotNull propertyName="parametri_idDac">
+				and T.PT_TESTATA_N_PROGR = <p>parametri_idDac</p>
+			</IfNotNull>
+      	
+		order by 5 desc
+	</Query>     
+	<Output>
+		<Parameter propertyName="idDac"/>
+		<Parameter propertyName="stato"/>
+		<Parameter propertyName="ubicazione"/>
+		<Parameter propertyName="esito"/>
+		<Parameter propertyName="dataOraCambioStato"/>
+		<Parameter propertyName="uffMittente"/>
+		<Parameter propertyName="codUtenteIns"/>
+		<Parameter propertyName="uffDestinatario"/>
+		<Parameter propertyName="codUtenteLavorazione"/>
+		<Parameter propertyName="uffLavorazione"/>
+		<Parameter propertyName="tipoDac"/>
+		<Parameter propertyName="descrStato"/>
+		<Parameter propertyName="descrEsito"/>
+		<Parameter propertyName="descrUbicazione"/>
+		<Parameter propertyName="descrUffMittente"/>
+		<Parameter propertyName="descrUffDestinatario"/>
+		<Parameter propertyName="descrUffLavorazione"/>
+		<Parameter propertyName="descrUffSpunta"/>
+	</Output>
+</Access>  
+
+<Access name="ricercaStoricoDacSede" type="DAOQueryAccess" queryType="1" maxResultRows="30"
+		OutputCommandDataModel="prgm.ita.p.dac.model.DacModel" connectionCacheReference="IQ_PRIT">
+	<Query>
+			select top
+					<IfNotNull propertyName="parametri_idDac">1</IfNotNull>
+					<IfNull propertyName="parametri_idDac">31</IfNull>
+					T.PT_TESTATA_N_PROGR, 
+					T.PT_STATO_N_STATO,
+					T.PT_UFFICIO_N_UFFICIO,
+					T.PT_ESITO_N_ESITO,
+					T.PT_TESTATA_D_CAMBIOSTATO,
+    	           	T.PT_TESTATA_N_UFFICIO_MITT,
+					T.PT_TESTATA_C_UTENTE_MITT,
+		           	T.PT_TESTATA_N_UFFICIO_DEST,
+					case T.PT_STATO_N_STATO when 4 then isnull(T2.PT_TESTATA_C_UTENTE_SPUNTA,T.PT_TESTATA_C_UTENTE_LAV)	else T.PT_TESTATA_C_UTENTE_LAV end,
+					case T.PT_STATO_N_STATO when 4 then isnull(T2.PT_TESTATA_N_UFFICIO_SPUNTA,T2.PT_TESTATA_N_UFFICIO_LAV) else T2.PT_TESTATA_N_UFFICIO_LAV end,
+					T.PT_TIPOPRIT_N_TIPOPRIT,
+					S.PT_STATO_X_STATO,
+					E.PT_ESITO_X_ESITO,
+					UBIC.PT_UFFICIO_X_UFFICIO,
+					MITT.PT_UFFICIO_X_UFFICIO,
+					DEST.PT_UFFICIO_X_UFFICIO,
+					LAV.PT_UFFICIO_X_UFFICIO,
+					case T.PT_STATO_N_STATO when 4 then SPUN.PT_UFFICIO_X_UFFICIO else '' end
+			from 	CEPE_PT_TESTATA T, CEPE_PT_TESTATA2 T2, CEPE_PT_STATO S, CEPE_PT_ESITO E,
+					CEPE_PT_UFFICIO UBIC, CEPE_PT_UFFICIO MITT, CEPE_PT_UFFICIO DEST, CEPE_PT_UFFICIO LAV, CEPE_PT_UFFICIO SPUN
+			where   T.PT_TESTATA_N_PROGR = T2.PT_TESTATA_N_PROGR
+			and 	T.PT_TIPOPRIT_N_TIPOPRIT in (1,2,3,4,5)
+			and		T.PT_STATO_N_STATO *= S.PT_STATO_N_STATO
+			and		T.PT_ESITO_N_ESITO *= E.PT_ESITO_N_ESITO
+			and		T.PT_UFFICIO_N_UFFICIO *= UBIC.PT_UFFICIO_N_UFFICIO
+			and		T.PT_TESTATA_N_UFFICIO_MITT *= MITT.PT_UFFICIO_N_UFFICIO
+			and		T.PT_TESTATA_N_UFFICIO_DEST *= DEST.PT_UFFICIO_N_UFFICIO
+			and		T2.PT_TESTATA_N_UFFICIO_LAV *= LAV.PT_UFFICIO_N_UFFICIO
+			and		T2.PT_TESTATA_N_UFFICIO_SPUNTA *= SPUN.PT_UFFICIO_N_UFFICIO
+			
+			<IfNull propertyName="parametri_idDac">
+			
+				<IfNotNull propertyName="parametri_tipoDac">and T.PT_TIPOPRIT_N_TIPOPRIT = <p>parametri_tipoDac</p></IfNotNull>
+				<IfNotNull propertyName="parametri_ubicazione">and T.PT_UFFICIO_N_UFFICIO = <p>parametri_ubicazione</p></IfNotNull>
+				<IfNotNull propertyName="parametri_stato">and T.PT_STATO_N_STATO = <p>parametri_stato</p></IfNotNull>
+				<IfNotNull propertyName="parametri_esito">and T.PT_ESITO_N_ESITO = <p>parametri_esito</p></IfNotNull>
+				
+				<IfNotNull propertyName="parametri_dataInizio">and T.PT_TESTATA_D_CAMBIOSTATO &gt;= convert(varchar(8),<p>parametri_dataInizio</p>,112)</IfNotNull>
+				<IfNotNull propertyName="parametri_dataFine">and T.PT_TESTATA_D_CAMBIOSTATO &lt; convert(varchar(8),dateadd(dd,+1,<p>parametri_dataFine</p>),112)</IfNotNull>
+				<IfNotNull propertyName="parametri_dataRicezioneDocumenti">and (T.PT_TESTATA_D_DOCUMENTI &gt;= convert(varchar(8),<p>parametri_dataRicezioneDocumenti</p>,112) and T.PT_TESTATA_D_DOCUMENTI &lt; convert(varchar(8),dateadd(dd,+1,<p>parametri_dataRicezioneDocumenti</p>),112))</IfNotNull>
+	
+				<IfNotNull propertyName="parametri_uffMittente">and T.PT_TESTATA_N_UFFICIO_MITT = <p>parametri_uffMittente</p></IfNotNull>
+				<IfNotNull propertyName="parametri_codUtenteMittente">and T.PT_TESTATA_C_UTENTE_MITT = <p>parametri_codUtenteMittente</p></IfNotNull>
+
+				<IfNotNull propertyName="parametri_uffLavorazione">and T2.PT_TESTATA_N_UFFICIO_LAV = <p>parametri_uffLavorazione</p></IfNotNull>
+				<IfNotNull propertyName="parametri_codUtenteLavorazione">and T.PT_TESTATA_C_UTENTE_LAV = <p>parametri_codUtenteLavorazione</p></IfNotNull>
+				
+				<IfNotNull propertyName="parametri_uffSpunta">and T2.PT_TESTATA_N_UFFICIO_SPUNTA = <p>parametri_uffSpunta</p></IfNotNull>
+				<IfNotNull propertyName="parametri_codUtenteSpunta">and T2.PT_TESTATA_C_UTENTE_SPUNTA = <p>parametri_codUtenteSpunta</p></IfNotNull>
+				
+			</IfNull>
+			
+			<IfNotNull propertyName="parametri_idDac">
+				and T.PT_TESTATA_N_PROGR = <p>parametri_idDac</p>
+			</IfNotNull>
+      	
+		order by 5 desc
+	</Query>     
+	<Output>
+		<Parameter propertyName="idDac"/>
+		<Parameter propertyName="stato"/>
+		<Parameter propertyName="ubicazione"/>
+		<Parameter propertyName="esito"/>
+		<Parameter propertyName="dataOraCambioStato"/>
+		<Parameter propertyName="uffMittente"/>
+		<Parameter propertyName="codUtenteIns"/>
+		<Parameter propertyName="uffDestinatario"/>
+		<Parameter propertyName="codUtenteLavorazione"/>
+		<Parameter propertyName="uffLavorazione"/>
+		<Parameter propertyName="tipoDac"/>
+		<Parameter propertyName="descrStato"/>
+		<Parameter propertyName="descrEsito"/>
+		<Parameter propertyName="descrUbicazione"/>
+		<Parameter propertyName="descrUffMittente"/>
+		<Parameter propertyName="descrUffDestinatario"/>
+		<Parameter propertyName="descrUffLavorazione"/>
+		<Parameter propertyName="descrUffSpunta"/>
+	</Output>
+</Access>  
+
+<Access name="ricercaDoc" type="DAOQueryAccess" queryType="1" maxResultRows="30"
+		OutputCommandDataModel="prgm.ita.p.dac.model.DocumentoModel">
+	<Query>
+			select	
+					<IfEqual propertyName="parametri_isRicercaPerMezzoPg" propertyValue="true">distinct</IfEqual>
+					
+			 		<IfNull propertyName="tipoRicerca">
+						top
+						<IfNotNull propertyName="parametri_idDocumento">1</IfNotNull>
+						<IfNull propertyName="parametri_idDocumento">
+							<IfNotNull propertyName="parametri_barcode">1</IfNotNull>
+							<IfNull propertyName="parametri_barcode">31</IfNull>
+						</IfNull>
+					</IfNull>
+					D.PT_DETTAGLIO_N_PROGR
+			,		case D.PT_DETTAGLIO_X_BARCODE when 'X' then '' else D.PT_DETTAGLIO_X_BARCODE end
+			,		case D.PT_PRODOTTO_N_PRODOTTO when 0 then '' else D.PT_DETTAGLIO_N_CONTR end
+			,		D.PT_PRODOTTO_N_PRODOTTO
+			,		D.PT_OPERAZIONE_N_OPERAZIONE
+			,		D.PT_STATODETT_N_STATODETT
+			,		D.PT_UFFICIO_N_UFFICIO
+			,		D.PT_ESITODETT_N_ESITODETT
+			,		D.PT_DETTAGLIO_D_CAMBIOSTATO
+			,		D.PT_DETTAGLIO_C_AGE_MITT
+			,		D.PT_DETTAGLIO_X_AGE_MITT
+			,		case D.PT_PRODOTTO_N_PRODOTTO when 0 then 'Assegno n. '+D.PT_DETTAGLIO_N_CONTR else P.PT_PRODOTTO_X_PT_PRODOTTO end
+			,		case D.PT_PRODOTTO_N_PRODOTTO when 0 then '' else O.PT_OPERAZIONE_X_PT_OPERAZIONE end
+			,		E.PT_ESITODETT_X_ESITODETT
+			,		S.PT_STATODETT_X_STATODETT
+			,		U.PT_UFFICIO_X_UFFICIO
+			from 	CEPE_PT_DETTAGLIO D,
+					CEPE_PT_RETEP_PRODOTTO P, CEPE_PT_RETEP_OPERAZIONE O, CEPE_PT_ESITODETT E, CEPE_PT_STATODETT S, CEPE_PT_UFFICIO U			 
+					<IfEqual propertyName="parametri_isRicercaPerMezzoPg" propertyValue="true">, CEPE_PT_DETT_MEZZOPG PG</IfEqual>
+			where	D.PT_PRODOTTO_N_PRODOTTO 		*= P.PT_PRODOTTO_N_PT_PRODOTTO 
+			and		D.PT_OPERAZIONE_N_OPERAZIONE 	*= O.PT_OPERAZIONE_N_PT_OPERAZIONE
+			and		D.PT_ESITODETT_N_ESITODETT 		*= E.PT_ESITODETT_N_ESITODETT
+			and		D.PT_STATODETT_N_STATODETT 		*= S.PT_STATODETT_N_STATODETT
+			and		D.PT_UFFICIO_N_UFFICIO 			*= U.PT_UFFICIO_N_UFFICIO
+			
+			<IfNotNull propertyName="parametri_idDocumento">
+				and D.PT_DETTAGLIO_N_PROGR = <p>parametri_idDocumento</p>
+			</IfNotNull>
+			
+			<IfNull propertyName="parametri_idDocumento">
+
+				<IfEqual propertyName="ufficio" propertyValue="1">
+			      	and D.PT_DETTAGLIO_C_AGE_MITT = <p>parametri_codiceAgente</p>
+				</IfEqual>
+
+				<IfNull propertyName="parametri_barcode">
+	
+					<IfNotEqual propertyName="parametri_isOfflineEnvironment" propertyValue="true">
+						<IfNull    propertyName="tipoRicerca">and D.PT_DETTAGLIO_D_CAMBIOSTATO &gt;= convert(varchar(8),getdate(),112) and D.PT_DETTAGLIO_D_CAMBIOSTATO &lt; convert(varchar(8),dateadd(dd,+1,getdate()),112)</IfNull>
+						<IfNotNull propertyName="tipoRicerca">and D.PT_DETTAGLIO_D_CAMBIOSTATO &lt; convert(varchar(8),getdate(),112)</IfNotNull>
+					</IfNotEqual>
+					
+					<IfNotNull propertyName="parametri_statoDoc">and D.PT_STATODETT_N_STATODETT = <p>parametri_statoDoc</p></IfNotNull>
+					<IfNotNull propertyName="parametri_ubicazioneDoc">and D.PT_UFFICIO_N_UFFICIO = <p>parametri_ubicazioneDoc</p></IfNotNull>
+					<IfNotNull propertyName="parametri_esitoDoc">and D.PT_ESITODETT_N_ESITODETT = <p>parametri_esitoDoc</p></IfNotNull>
+			      	<IfNotNull propertyName="parametri_codProdotto">and D.PT_PRODOTTO_N_PRODOTTO = <p>parametri_codProdotto</p></IfNotNull>
+			      	<IfNotNull propertyName="parametri_codOperazione">and D.PT_OPERAZIONE_N_OPERAZIONE = <p>parametri_codOperazione</p></IfNotNull>
+	
+					<IfNotNull propertyName="parametri_dataInizio">and D.PT_DETTAGLIO_D_CAMBIOSTATO &gt;= convert(varchar(8),<p>parametri_dataInizio</p>,112)</IfNotNull>
+					<IfNotNull propertyName="parametri_dataFine">and D.PT_DETTAGLIO_D_CAMBIOSTATO &lt; convert(varchar(8),dateadd(dd,+1,<p>parametri_dataFine</p>),112)</IfNotNull>
+			      	<IfNotNull propertyName="parametri_codMediolanum">and D.CODIFCLIMEDL_C_CLI_MEDL = <p>parametri_codMediolanum</p></IfNotNull>
+			      	<IfNotNull propertyName="parametri_cognomeCliente">and D.PT_DETTAGLIO_X_CLI_COGN like <p>parametri_cognomeCliente%</p></IfNotNull>
+			      	<IfNotNull propertyName="parametri_nomeCliente">and D.PT_DETTAGLIO_X_CLI_NOME like <p>parametri_nomeCliente%</p></IfNotNull>
+	
+			      	<IfNotNull propertyName="parametri_codiceAgente">and D.PT_DETTAGLIO_C_AGE_MITT = <p>parametri_codiceAgente</p></IfNotNull>
+			      	<IfNotNull propertyName="parametri_numeroContratto">and (D.PT_DETTAGLIO_N_CONTR = <p>parametri_numeroContratto</p> and D.PT_PRODOTTO_N_PRODOTTO != 0)</IfNotNull>
+			      	
+					<IfEqual propertyName="parametri_isRicercaPerMezzoPg" propertyValue="true">
+						and PG.PT_DETTAGLIO_N_PROGR = D.PT_DETTAGLIO_N_PROGR
+				      	<IfNotNull propertyName="parametri_numeroAssegno">and PG.PT_DETT_MEZZOPG_N_ASS = <p>parametri_numeroAssegno</p></IfNotNull>
+				      	<IfNotNull propertyName="parametri_importo">and PG.PT_DETT_MEZZOPG_I_IMPORTO = <p>parametri_importo</p></IfNotNull>
+					</IfEqual>
+					
+				</IfNull>
+				
+				<IfNotNull propertyName="parametri_barcode">
+					and	D.PT_DETTAGLIO_X_BARCODE = <p>parametri_barcode</p>
+				</IfNotNull>
+				
+			</IfNull>
+			
+			<IfEqual propertyName="parametri_isRicercaPerMezzoPg" propertyValue="true">
+	      	
+		      	union
+				select 	<IfNull propertyName="tipoRicerca">
+							top 31
+						</IfNull>
+						D.PT_DETTAGLIO_N_PROGR
+				,		case D.PT_DETTAGLIO_X_BARCODE when 'X' then '' else D.PT_DETTAGLIO_X_BARCODE end
+				,		''
+				,		D.PT_PRODOTTO_N_PRODOTTO
+				,		D.PT_OPERAZIONE_N_OPERAZIONE
+				,		D.PT_STATODETT_N_STATODETT
+				,		D.PT_UFFICIO_N_UFFICIO
+				,		D.PT_ESITODETT_N_ESITODETT
+				,		D.PT_DETTAGLIO_D_CAMBIOSTATO
+				,		D.PT_DETTAGLIO_C_AGE_MITT
+				,		D.PT_DETTAGLIO_X_AGE_MITT
+				,		'Assegno n. '+D.PT_DETTAGLIO_N_CONTR
+				,		''
+				,		E.PT_ESITODETT_X_ESITODETT
+				,		S.PT_STATODETT_X_STATODETT
+				,		U.PT_UFFICIO_X_UFFICIO
+				from 	CEPE_PT_DETTAGLIO D,
+						CEPE_PT_ESITODETT E, CEPE_PT_STATODETT S, CEPE_PT_UFFICIO U	 
+						<IfNotNull propertyName="parametri_importo">, CEPE_PT_DETT_MEZZOPG PG</IfNotNull>
+				where   D.PT_PRODOTTO_N_PRODOTTO = 0
+				and		D.PT_ESITODETT_N_ESITODETT 		*= E.PT_ESITODETT_N_ESITODETT
+				and		D.PT_STATODETT_N_STATODETT 		*= S.PT_STATODETT_N_STATODETT
+				and		D.PT_UFFICIO_N_UFFICIO 			*= U.PT_UFFICIO_N_UFFICIO
+				
+				<IfNotNull propertyName="parametri_importo">
+					and		D.PT_DETTAGLIO_N_PROGR = PG.PT_DETTAGLIO_ASS_N_PROGR
+					and		PG.PT_MEZZOPG_N_MEZZOPG = 1
+				</IfNotNull>
+				
+				<IfNotNull propertyName="parametri_numeroAssegno">and D.PT_DETTAGLIO_N_CONTR = <p>parametri_numeroAssegno</p></IfNotNull>
+				<IfNotNull propertyName="parametri_importo">and PG.PT_DETT_MEZZOPG_I_IMPORTO = <p>parametri_importo</p></IfNotNull>
+				
+				<IfNotEqual propertyName="parametri_isOfflineEnvironment" propertyValue="true">
+					<IfNull    propertyName="tipoRicerca">and D.PT_DETTAGLIO_D_CAMBIOSTATO &gt;= convert(varchar(8),getdate(),112) and D.PT_DETTAGLIO_D_CAMBIOSTATO &lt; convert(varchar(8),dateadd(dd,+1,getdate()),112)</IfNull>
+					<IfNotNull propertyName="tipoRicerca">and D.PT_DETTAGLIO_D_CAMBIOSTATO &lt; convert(varchar(8),getdate(),112)</IfNotNull>
+				</IfNotEqual>
+				
+				<IfNotNull propertyName="parametri_statoDoc">and D.PT_STATODETT_N_STATODETT = <p>parametri_statoDoc</p></IfNotNull>
+				<IfNotNull propertyName="parametri_ubicazioneDoc">and D.PT_UFFICIO_N_UFFICIO = <p>parametri_ubicazioneDoc</p></IfNotNull>
+				<IfNotNull propertyName="parametri_esitoDoc">and D.PT_ESITODETT_N_ESITODETT = <p>parametri_esitoDoc</p></IfNotNull>
+		      	<IfNotNull propertyName="parametri_codProdotto">and D.PT_PRODOTTO_N_PRODOTTO = <p>parametri_codProdotto</p></IfNotNull>
+		      	<IfNotNull propertyName="parametri_codOperazione">and D.PT_OPERAZIONE_N_OPERAZIONE = <p>parametri_codOperazione</p></IfNotNull>
+
+				<IfNotNull propertyName="parametri_dataInizio">and D.PT_DETTAGLIO_D_CAMBIOSTATO &gt;= convert(varchar(8),<p>parametri_dataInizio</p>,112)</IfNotNull>
+				<IfNotNull propertyName="parametri_dataFine">and D.PT_DETTAGLIO_D_CAMBIOSTATO &lt; convert(varchar(8),dateadd(dd,+1,<p>parametri_dataFine</p>),112)</IfNotNull>
+		      	<IfNotNull propertyName="parametri_codMediolanum">and D.CODIFCLIMEDL_C_CLI_MEDL = <p>parametri_codMediolanum</p></IfNotNull>
+		      	<IfNotNull propertyName="parametri_cognomeCliente">and D.PT_DETTAGLIO_X_CLI_COGN like <p>parametri_cognomeCliente%</p></IfNotNull>
+		      	<IfNotNull propertyName="parametri_nomeCliente">and D.PT_DETTAGLIO_X_CLI_NOME like <p>parametri_nomeCliente%</p></IfNotNull>
+
+		      	<IfNotNull propertyName="parametri_codiceAgente">and D.PT_DETTAGLIO_C_AGE_MITT = <p>parametri_codiceAgente</p></IfNotNull>
+	      	
+	      	</IfEqual>
+	      	
+	        order by 9 desc, 1 desc
+	</Query>     
+	<Output>
+		<Parameter propertyName="idDocumento"/>
+		<Parameter propertyName="barcode"/>
+		<Parameter propertyName="numeroContratto"/>
+		<Parameter propertyName="codProdotto"/>
+		<Parameter propertyName="codOperazione"/>
+		<Parameter propertyName="stato"/>
+		<Parameter propertyName="ubicazione"/>
+		<Parameter propertyName="esito"/>
+		<Parameter propertyName="dataOraCambioStato"/>
+		<Parameter propertyName="agente_codAgente"/>
+		<Parameter propertyName="agente_nominativo"/>		
+		<Parameter propertyName="descrProdotto"/>
+		<Parameter propertyName="descrOperazione"/>
+		<Parameter propertyName="descrEsito"/>
+		<Parameter propertyName="descrStato"/>
+		<Parameter propertyName="descrUbicazione"/>
+	</Output>
+</Access>  
+
+<Access name="ricercaStoricoDoc" type="DAOQueryAccess" queryType="1" maxResultRows="30"
+		OutputCommandDataModel="prgm.ita.p.dac.model.DocumentoModel" connectionCacheReference="IQ_PRIT">
+	<Query>
+			select distinct
+					D.PT_DETTAGLIO_N_PROGR
+			,		case D.PT_DETTAGLIO_X_BARCODE when 'X' then '' else D.PT_DETTAGLIO_X_BARCODE end
+			,		case D.PT_PRODOTTO_N_PRODOTTO when 0 then '' else D.PT_DETTAGLIO_N_CONTR end
+			,		D.PT_PRODOTTO_N_PRODOTTO
+			,		D.PT_OPERAZIONE_N_OPERAZIONE
+			,		D.PT_STATODETT_N_STATODETT
+			,		D.PT_UFFICIO_N_UFFICIO
+			,		D.PT_ESITODETT_N_ESITODETT
+			,		D.PT_DETTAGLIO_D_CAMBIOSTATO
+			,		D.PT_DETTAGLIO_C_AGE_MITT
+			,		D.PT_DETTAGLIO_X_AGE_MITT
+			,		case D.PT_PRODOTTO_N_PRODOTTO when 0 then 'Assegno n. '+D.PT_DETTAGLIO_N_CONTR else P.PT_PRODOTTO_X_PT_PRODOTTO end
+			,		case D.PT_PRODOTTO_N_PRODOTTO when 0 then '' else O.PT_OPERAZIONE_X_PT_OPERAZIONE end
+			,		E.PT_ESITODETT_X_ESITODETT
+			,		S.PT_STATODETT_X_STATODETT
+			,		U.PT_UFFICIO_X_UFFICIO
+			from 	CEPE_PT_DETTAGLIO D, 
+					CEPE_PT_RETEP_PRODOTTO P, CEPE_PT_RETEP_OPERAZIONE O, CEPE_PT_ESITODETT E, CEPE_PT_STATODETT S, CEPE_PT_UFFICIO U			 
+					<IfEqual propertyName="parametri_isRicercaPerMezzoPg" propertyValue="true">, CEPE_PT_DETT_MEZZOPG PG</IfEqual>
+			where	D.PT_PRODOTTO_N_PRODOTTO 		*= P.PT_PRODOTTO_N_PT_PRODOTTO 
+			and		D.PT_OPERAZIONE_N_OPERAZIONE 	*= O.PT_OPERAZIONE_N_PT_OPERAZIONE
+			and		D.PT_ESITODETT_N_ESITODETT 		*= E.PT_ESITODETT_N_ESITODETT
+			and		D.PT_STATODETT_N_STATODETT 		*= S.PT_STATODETT_N_STATODETT
+			and		D.PT_UFFICIO_N_UFFICIO 			*= U.PT_UFFICIO_N_UFFICIO
+						
+			<IfNotNull propertyName="parametri_idDocumento">
+				and D.PT_DETTAGLIO_N_PROGR = <p>parametri_idDocumento</p>
+			</IfNotNull>
+			
+			<IfNull propertyName="parametri_idDocumento">
+			
+				<IfEqual propertyName="ufficio" propertyValue="1">
+			      	and D.PT_DETTAGLIO_C_AGE_MITT = <p>parametri_codiceAgente</p>
+				</IfEqual>
+				
+				<IfNull propertyName="parametri_barcode">
+				
+					<IfNotNull propertyName="parametri_statoDoc">and D.PT_STATODETT_N_STATODETT = <p>parametri_statoDoc</p></IfNotNull>
+					<IfNotNull propertyName="parametri_ubicazioneDoc">and D.PT_UFFICIO_N_UFFICIO = <p>parametri_ubicazioneDoc</p></IfNotNull>
+					<IfNotNull propertyName="parametri_esitoDoc">and D.PT_ESITODETT_N_ESITODETT = <p>parametri_esitoDoc</p></IfNotNull>
+			      	<IfNotNull propertyName="parametri_codProdotto">and D.PT_PRODOTTO_N_PRODOTTO = <p>parametri_codProdotto</p></IfNotNull>
+			      	<IfNotNull propertyName="parametri_codOperazione">and D.PT_OPERAZIONE_N_OPERAZIONE = <p>parametri_codOperazione</p></IfNotNull>
+					
+					<IfNotNull propertyName="parametri_dataInizio">and D.PT_DETTAGLIO_D_CAMBIOSTATO &gt;= convert(varchar(8),<p>parametri_dataInizio</p>,112)</IfNotNull>
+					<IfNotNull propertyName="parametri_dataFine">and D.PT_DETTAGLIO_D_CAMBIOSTATO &lt; convert(varchar(8),dateadd(dd,+1,<p>parametri_dataFine</p>),112)</IfNotNull>
+			      	<IfNotNull propertyName="parametri_codMediolanum">and D.CODIFCLIMEDL_C_CLI_MEDL = <p>parametri_codMediolanum</p></IfNotNull>
+			      	<IfNotNull propertyName="parametri_cognomeCliente">and D.PT_DETTAGLIO_X_CLI_COGN like <p>parametri_cognomeCliente%</p></IfNotNull>
+			      	<IfNotNull propertyName="parametri_nomeCliente">and D.PT_DETTAGLIO_X_CLI_NOME like <p>parametri_nomeCliente%</p></IfNotNull>
+	
+			      	<IfNotNull propertyName="parametri_codiceAgente">and D.PT_DETTAGLIO_C_AGE_MITT = <p>parametri_codiceAgente</p></IfNotNull>
+			      	<IfNotNull propertyName="parametri_numeroContratto">and (D.PT_DETTAGLIO_N_CONTR = <p>parametri_numeroContratto</p>and D.PT_PRODOTTO_N_PRODOTTO != 0)</IfNotNull>
+					<IfEqual propertyName="parametri_isRicercaPerMezzoPg" propertyValue="true">
+						and PG.PT_DETTAGLIO_N_PROGR = D.PT_DETTAGLIO_N_PROGR
+				      	<IfNotNull propertyName="parametri_importo">and PG.PT_DETT_MEZZOPG_I_IMPORTO = <p>parametri_importo</p></IfNotNull>
+				      	<IfNotNull propertyName="parametri_numeroAssegno">and PG.PT_DETT_MEZZOPG_N_ASS = <p>parametri_numeroAssegno</p></IfNotNull>
+					</IfEqual>
+				</IfNull>
+				
+				<IfNotNull propertyName="parametri_barcode">
+					and	D.PT_DETTAGLIO_X_BARCODE = <p>parametri_barcode</p>
+				</IfNotNull>
+
+		    </IfNull>
+					
+			<IfEqual propertyName="parametri_isRicercaPerMezzoPg" propertyValue="true">
+				
+				union
+				select distinct
+						D.PT_DETTAGLIO_N_PROGR
+				,		case D.PT_DETTAGLIO_X_BARCODE when 'X' then '' else D.PT_DETTAGLIO_X_BARCODE end
+				,		''
+				,		D.PT_PRODOTTO_N_PRODOTTO
+				,		D.PT_OPERAZIONE_N_OPERAZIONE
+				,		D.PT_STATODETT_N_STATODETT
+				,		D.PT_UFFICIO_N_UFFICIO
+				,		D.PT_ESITODETT_N_ESITODETT
+				,		D.PT_DETTAGLIO_D_CAMBIOSTATO
+				,		D.PT_DETTAGLIO_C_AGE_MITT
+				,		D.PT_DETTAGLIO_X_AGE_MITT
+				,		'Assegno n. '+D.PT_DETTAGLIO_N_CONTR
+				,		''
+				,		E.PT_ESITODETT_X_ESITODETT
+				,		S.PT_STATODETT_X_STATODETT
+				,		U.PT_UFFICIO_X_UFFICIO
+				from 	CEPE_PT_DETTAGLIO D, CEPE_PT_DETT_MEZZOPG PG,
+						CEPE_PT_ESITODETT E, CEPE_PT_STATODETT S, CEPE_PT_UFFICIO U	 
+				where   D.PT_DETTAGLIO_N_PROGR = PG.PT_DETTAGLIO_ASS_N_PROGR
+				and		D.PT_PRODOTTO_N_PRODOTTO = 0 
+				and		D.PT_ESITODETT_N_ESITODETT 		*= E.PT_ESITODETT_N_ESITODETT
+				and		D.PT_STATODETT_N_STATODETT 		*= S.PT_STATODETT_N_STATODETT
+				and		D.PT_UFFICIO_N_UFFICIO 			*= U.PT_UFFICIO_N_UFFICIO
+			
+				<IfNotNull propertyName="parametri_numeroAssegno">and PG.PT_DETT_MEZZOPG_N_ASS = <p>parametri_numeroAssegno</p></IfNotNull>
+				<IfNotNull propertyName="parametri_importo">and PG.PT_DETT_MEZZOPG_I_IMPORTO = <p>parametri_importo</p></IfNotNull>
+				
+				<IfNotNull propertyName="parametri_statoDoc">and D.PT_STATODETT_N_STATODETT = <p>parametri_statoDoc</p></IfNotNull>
+				<IfNotNull propertyName="parametri_ubicazioneDoc">and D.PT_UFFICIO_N_UFFICIO = <p>parametri_ubicazioneDoc</p></IfNotNull>
+				<IfNotNull propertyName="parametri_esitoDoc">and D.PT_ESITODETT_N_ESITODETT = <p>parametri_esitoDoc</p></IfNotNull>
+		      	<IfNotNull propertyName="parametri_codProdotto">and D.PT_PRODOTTO_N_PRODOTTO = <p>parametri_codProdotto</p></IfNotNull>
+		      	<IfNotNull propertyName="parametri_codOperazione">and D.PT_OPERAZIONE_N_OPERAZIONE = <p>parametri_codOperazione</p></IfNotNull>
+				
+				<IfNotNull propertyName="parametri_dataInizio">and D.PT_DETTAGLIO_D_CAMBIOSTATO &gt;= convert(varchar(8),<p>parametri_dataInizio</p>,112)</IfNotNull>
+				<IfNotNull propertyName="parametri_dataFine">and D.PT_DETTAGLIO_D_CAMBIOSTATO &lt; convert(varchar(8),dateadd(dd,+1,<p>parametri_dataFine</p>),112)</IfNotNull>
+		      	<IfNotNull propertyName="parametri_codMediolanum">and D.CODIFCLIMEDL_C_CLI_MEDL = <p>parametri_codMediolanum</p></IfNotNull>
+		      	<IfNotNull propertyName="parametri_cognomeCliente">and D.PT_DETTAGLIO_X_CLI_COGN like <p>parametri_cognomeCliente%</p></IfNotNull>
+		      	<IfNotNull propertyName="parametri_nomeCliente">and D.PT_DETTAGLIO_X_CLI_NOME like <p>parametri_nomeCliente%</p></IfNotNull>
+
+		      	<IfNotNull propertyName="parametri_codiceAgente">and D.PT_DETTAGLIO_C_AGE_MITT = <p>parametri_codiceAgente</p></IfNotNull>
+		      	
+			</IfEqual>
+			
+	        order by 9 desc, 1 desc
+	</Query>     
+	<Output>
+		<Parameter propertyName="idDocumento"/>
+		<Parameter propertyName="barcode"/>
+		<Parameter propertyName="numeroContratto"/>
+		<Parameter propertyName="codProdotto"/>
+		<Parameter propertyName="codOperazione"/>
+		<Parameter propertyName="stato"/>
+		<Parameter propertyName="ubicazione"/>
+		<Parameter propertyName="esito"/>
+		<Parameter propertyName="dataOraCambioStato"/>
+		<Parameter propertyName="agente_codAgente"/>
+		<Parameter propertyName="agente_nominativo"/>		
+		<Parameter propertyName="descrProdotto"/>
+		<Parameter propertyName="descrOperazione"/>
+		<Parameter propertyName="descrEsito"/>
+		<Parameter propertyName="descrStato"/>
+		<Parameter propertyName="descrUbicazione"/>
+	</Output>
+</Access>  
+
+<Access name="dacDaSpedire" type="DAOQueryAccess" queryType="0"
+		OutputCommandDataModel="prgm.ita.p.dac.model.DacModel" >
+	<Query>
+		select distinct 
+				T.PT_TESTATA_N_PROGR,
+				T.PT_TESTATA_D_INS,
+				B.PT_BOX_X_BOX,
+				U.PT_UFFICIO_X_UFFICIO,
+				T2.PT_TESTATA_F_RESI,
+				T.PT_TESTATA_C_UTENTE_MITT
+		from 	CEPE_PT_TESTATA T,
+				CEPE_PT_TESTATA2 T2,
+				CEPE_PT_UFFICIO U,
+				CEPE_PT_BOX B
+		where	T.PT_TIPOPRIT_N_TIPOPRIT = 5
+		and 	T.PT_STATO_N_STATO = 1
+		and		T.PT_TESTATA_N_UFFICIO_MITT = ?
+		and		T.PT_TESTATA_N_UFFICIO_DEST *= U.PT_UFFICIO_N_UFFICIO
+		and		T2.PT_TESTATA_N_PROGR = T.PT_TESTATA_N_PROGR
+		and		T2.PT_TESTATA_N_BOX *= B.PT_BOX_N_BOX
+
+		order by T.PT_TESTATA_D_INS desc
+	</Query>
+	<Input>
+		<Parameter propertyName="ufficio"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="idDac"/>
+		<Parameter propertyName="dataOraIns"/>
+		<Parameter propertyName="descrBox"/>
+		<Parameter propertyName="descrUffDestinatario"/>
+		<Parameter propertyName="reso"/>
+		<Parameter propertyName="codUtenteIns"/>
+	</Output>
+</Access>  
+
+<Access name="dacDaGestire" type="DAOQueryAccess" queryType="1" maxResultRows="30"
+		OutputCommandDataModel="prgm.ita.p.dac.model.DacModel" >
+		<Query>
+		select distinct 
+				T.PT_TESTATA_N_PROGR,
+				T.PT_TESTATA_D_DALAVORARE,
+				T.PT_STATO_N_STATO, 
+				S.PT_STATO_X_STATO,
+				U.PT_UFFICIO_X_UFFICIO,
+				PT_TESTATA_C_UTENTE_MITT
+		from 	CEPE_PT_TESTATA T,
+				CEPE_PT_UFFICIO U,
+				CEPE_PT_STATO S
+		where	T.PT_TIPOPRIT_N_TIPOPRIT = 5
+		and		T.PT_TESTATA_N_UFFICIO_DEST = <p>ufficio</p>
+		and		T.PT_STATO_N_STATO *= S.PT_STATO_N_STATO
+		and		T.PT_TESTATA_N_UFFICIO_MITT *= U.PT_UFFICIO_N_UFFICIO
+		<IfNotNull propertyName="parametri_idDac">and T.PT_TESTATA_N_PROGR = <p>parametri_idDac</p></IfNotNull>
+		<IfNull propertyName="parametri_stato">and T.PT_STATO_N_STATO in (2,3)</IfNull>
+		<IfNotNull propertyName="parametri_stato">and T.PT_STATO_N_STATO = <p>parametri_stato</p></IfNotNull>
+		order by T.PT_TESTATA_D_DALAVORARE desc
+	</Query>     
+	<Output>
+		<Parameter propertyName="idDac"/>
+		<Parameter propertyName="dataOraEmissione"/>
+		<Parameter propertyName="stato"/>
+		<Parameter propertyName="descrStato"/>
+		<Parameter propertyName="descrUffMittente"/>
+		<Parameter propertyName="codUtenteIns"/>
+	</Output>
+</Access>  
+
+</DAO-Object>

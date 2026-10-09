@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="Cliente">
+
+	<Access name="cercaClientiInAnagrafica" type="DAOQueryAccess"
+		queryType="2" query="CLL.F_ELENCO_ANAGRAFICHE"
+		storedToCallAfterQuery="CLL.F_ELENCO_ANAGRAFICHE_AQ"
+		connectionCacheReference="DBAZ_SOGG"
+		OutputCommandDataModel="prgm.ita.anagraficaclienti.model.ClienteModel">
+		<Input>
+			<Parameter propertyName="codMediolanum" />
+			<Parameter propertyName="codAgente" />
+			<Parameter propertyName="cognome" />
+			<Parameter propertyName="codRete" />
+			<Parameter propertyName="tipoRicerca" />
+			<Parameter propertyName="tipoElementi" />
+			<Parameter propertyName="statoElementi" />
+			<Parameter propertyName="tipoInclusioneAgenti" />
+			<Parameter propertyName="maxRows" />
+			<Parameter propertyName="nome" />
+			<Parameter propertyName="chiamante" />
+			<Parameter propertyName="cliente" />
+			<Parameter propertyName="codAgenteCogestore" />
+			<Parameter propertyName="ruoloCogestione" />
+			<Parameter propertyName="tipoInclusioneCogestiti" />
+			<Parameter propertyName="tipoOrdinamentoCogestiti" />
+		</Input>
+		<Output>
+			<Parameter propertyName="codMediolanum" />
+			<Parameter propertyName="codPotenziale" />
+			<Parameter propertyName="codFiscale" />
+			<Parameter propertyName="partitaIva" />
+			<Parameter propertyName="cognome" />
+			<Parameter propertyName="nome" />
+			<Parameter propertyName="stato" />
+			<Parameter propertyName="statoProposta" />
+			<Parameter propertyName="dataNascita" />
+			<Parameter propertyName="codAgente" />
+			<Parameter propertyName="sesso" />
+			<Parameter propertyName="codCluster" />
+			<Parameter propertyName="statoConfermato" />
+			<Parameter propertyName="numVariazioni" />
+			<Parameter propertyName="datiApplicativi_nomeTabella" />
+			<Parameter propertyName="isTopBusiness" />
+			<Parameter propertyName="naturaGiuridica" />
+			<Parameter propertyName="secondaIntestazione" />
+			<Parameter propertyName="codInforete" />
+			<Parameter propertyName="cogestioneData_codAgenteCogestore" />
+			<Parameter propertyName="isClienteInCogestione" />
+			<Parameter propertyName="cogestioneData_nominativoAgenteTitolare" />
+			<Parameter propertyName="cogestioneData_nominativoAgenteCogestore" />
+		</Output>
+	</Access>
+
+	<Access  
+		name="getClientiInBozzaDatiAggiuntivi" 
+		connectionCacheReference="DBAZ_SOGG"
+		type="DAOQueryAccess" 
+		queryType="0" 
+		maxResultRows="1">
+		<Query>
+			select 
+				  cli.ASSGNCLIAGE_C_POTZLE
+	        	, nvl(cli.CLI_X_COMU_NASC,(SELECT comu.COMU_X_DENOM_COMU FROM CLL.V_COMU comu WHERE comu.COMU_C_COMU = cli.COMU_C_COMU_NASC and cli.COMU_C_COMU_NASC is not null)) as luogoNascita
+				, cli.NAZ_C_NAZ_NASC as codiceNazioneNascita
+		        , (select x.DEN_NAZ from UTLY.DOM_NOME_NAZ x where trim(x.COD_NAZ_CLI) = trim(cli.NAZ_C_NAZ_NASC)) as nazioneNascita
+				, cli.PROV_C_PROV_NASC as provinciaNascita
+				, cli.CLI_X_IND_INTERNET email
+				, residenza.INDCLI_X_TIPO_IND as codiceToponimoResidenza
+				, (select DESCR from DAICREF.CCB_ANAGRAFICA_DECOD where TIPO = 'TIPO-VIA-INFORETE' and rownum=1 and trim(COD) = trim(residenza.INDCLI_X_TIPO_IND)) as toponimoResidenza
+				, residenza.INDCLI_X_IND as indirizzoResidenza
+				, (select DESCR from DAICREF.CCB_ANAGRAFICA_DECOD where TIPO = 'TIPO-VIA-INFORETE' and rownum=1 and trim(COD) = trim(residenza.INDCLI_X_TIPO_IND)) || ' ' || trim(residenza.INDCLI_X_IND) as toponimoIndirizzoResidenza		
+				, residenza.INDCLI_X_NUM_IND as numeroCivicoResidenza
+				, (select DESCR from DAICREF.CCB_ANAGRAFICA_DECOD where TIPO = 'TIPO-VIA-INFORETE' and rownum=1 and trim(COD) = trim(residenza.INDCLI_X_TIPO_IND)) || ' ' || trim(residenza.INDCLI_X_IND) || ' ' || trim(residenza.INDCLI_X_NUM_IND) as toponIndirizzoNumeroResidenza
+				, residenza.CAP_C_AVVIAM_POSTL as capResidenza
+				, residenza.INDCLI_X_LOC as luogoResidenza
+				, nvl(residenza.INDCLI_X_COMU, residenza.INDCLI_X_LOC) as comuneResidenza
+				, residenza.PROV_C_PROV as provinciaResidenza
+				, residenza.NAZ_C_NAZ as codiceNazioneResidenza
+				, (select x.DEN_NAZ from UTLY.DOM_NOME_NAZ x where trim(x.COD_NAZ_CLI) = trim(residenza.NAZ_C_NAZ) and rownum=1) as nazioneResidenza
+		 		, telAbitazione.RECAPTELCLI_X_PREF_TEL as prefissoTelefonoAbitazione
+				, telAbitazione.RECAPTELCLI_X_NUM_TEL as numeroTelefonoAbitazione
+				, trim(telAbitazione.RECAPTELCLI_X_PREF_TEL) || trim(telAbitazione.RECAPTELCLI_X_NUM_TEL) as telefonoAbitazione		
+				, telCellulare.RECAPTELCLI_X_PREF_TEL as prefissoTelefonoCellulare
+				, telCellulare.RECAPTELCLI_X_NUM_TEL as numeroTelefonoCellulare
+				, trim(telCellulare.RECAPTELCLI_X_PREF_TEL) || trim(telCellulare.RECAPTELCLI_X_NUM_TEL) as telefonoCellulare
+			from	
+				CLL.cepe_cli_prospect_rete_rep cli 
+					LEFT OUTER JOIN cll.cepe_indcli_prospect_rete_rep residenza 
+						ON residenza.ASSGNCLIAGE_C_POTZLE = cli.ASSGNCLIAGE_C_POTZLE AND residenza.TIPIND_C_TIP_IND = '01' AND rownum = 1
+					LEFT OUTER JOIN cll.cepe_recapcli_pros_rete_rep telAbitazione
+						ON telAbitazione.ASSGNCLIAGE_C_POTZLE = cli.ASSGNCLIAGE_C_POTZLE AND telAbitazione.TIPRECAPTEL_C_TIP_RECAP = '01' AND rownum = 1
+					LEFT OUTER JOIN cll.cepe_recapcli_pros_rete_rep telCellulare
+						ON telCellulare.ASSGNCLIAGE_C_POTZLE = cli.ASSGNCLIAGE_C_POTZLE AND telCellulare.TIPRECAPTEL_C_TIP_RECAP = '14' AND rownum = 1
+			where 	
+					cli.ASSGNCLIAGE_C_POTZLE = ?
+				AND cli.GSTD_F_ESIST = 'S'
+		</Query>
+		<Input>
+			<Parameter propertyName="idCensimento" />
+		</Input>
+		<Output>
+			<Parameter propertyName="codiceCliente" />
+			<Parameter propertyName="luogoNascita" />
+			<Parameter propertyName="codiceNazioneNascita" />
+			<Parameter propertyName="nazioneNascita" />
+			<Parameter propertyName="provinciaNascita" />
+			<Parameter propertyName="email" />
+			
+			<Parameter propertyName="codiceToponimoResidenza" />
+			<Parameter propertyName="toponimoResidenza" />
+			<Parameter propertyName="indirizzoResidenza" />
+			<Parameter propertyName="toponimoIndirizzoResidenza" />
+			<Parameter propertyName="numeroCivicoResidenza" />
+			<Parameter propertyName="toponimoIndirizzoNumeroResidenza" />
+			<Parameter propertyName="capResidenza" />
+			<Parameter propertyName="luogoResidenza" />
+			<Parameter propertyName="comuneResidenza" />
+			<Parameter propertyName="provinciaResidenza" />
+			<Parameter propertyName="codiceNazioneResidenza" />
+			<Parameter propertyName="nazioneResidenza" />
+
+			<Parameter propertyName="prefissoTelefonoAbitazione" />
+			<Parameter propertyName="numeroTelefonoAbitazione" />
+			<Parameter propertyName="telefonoAbitazione" />
+
+			<Parameter propertyName="prefissoTelefonoCellulare" />
+			<Parameter propertyName="numeroTelefonoCellulare" />
+			<Parameter propertyName="telefonoCellulare" />
+		</Output>
+	</Access>
+
+
+	<Access  
+		name="cercaClienteRiconciliato" 
+		connectionCacheReference="DBAZ_SOGG"
+		type="DAOQueryAccess" 
+		queryType="1" 
+		maxResultRows="1">
+		<Query>
+			SELECT
+				  CLI.CLI_C	
+			from 	
+				CLL.CLI 
+			where 	
+			    GSTD_F_ESIST = 'S'
+				<IfNotNull propertyName="codiceCliente">
+					AND CLI.CLI_X_INFORETE = <p>codiceCliente</p>
+				</IfNotNull> 		 
+				<IfNotNull propertyName="codiceFiscale">
+					AND CLI_X_CF = upper(<p>codiceFiscale</p>) 
+					AND ((CLI.CLI_C_NCG is null and CLI.CLI_C_SESSO != 'S') or CLI.CLI_C_NCG in ('FMM','FFF'))					
+				</IfNotNull> 		 
+		</Query>
+		<Output>
+			<Parameter propertyName="codiceNdg" />
+		</Output>
+	</Access>
+
+	<Access name="recuperaDatiAggiuntiviCliente"	connectionCacheReference="SER_MIFID" type="DAOQueryAccess" queryType="1" maxResultRows="1">
+		<Query>		
+			SELECT
+				CLI.CLI_C_COD_BLOCCO	
+			from 	
+				CLL.CLI 
+			where 	
+			    GSTD_F_ESIST = 'S'
+				AND CLI_C = <p>ndg</p>				 		 
+		</Query>
+		<Output>
+			<Parameter propertyName="codiceBlocco" />
+		</Output>
+	</Access>
+</DAO-Object>

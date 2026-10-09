@@ -1,0 +1,19 @@
+<div class="modal-custom" id="errorModal" role="dialog" aria-modal="true" tabindex="-1">
+	<div class="modal-dialog modal-dialog-centered">
+ 		<div class="modal-content">
+			<div class="modal-header">
+			  <h3 id="errorModalTitle" class="align-items-center d-flex flex-grow-1 justify-content-center mb-0 modal-title text-center">Impossibile procedere</h3>
+			</div>
+			
+			<div id="errorModalDescription" class="modal-body">			  
+			  <% for(int i=0;i<model.getCommandErrors().size();i++){ %>				
+				<p class="modal-paragraph">- <%=template.getProperty((CommandError)model.getCommandErrors().get(i))%></p>
+			  <% } %>
+			</div>
+			
+			<div class="modal-footer">
+			  <button type="button" role="button" class="btn btn-link modal-btn-close m-auto" onclick="onClosePopupErrore();">Chiudi</button>
+			</div>
+		</div>
+	</div>
+</div>

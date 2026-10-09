@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="AnagraficaClientiOracle" connectionCacheReference="DBAZ_SOGG">
+
+<Access name="loadCodAgenteTitolareCogestioneCliente" type="DAOQueryAccess" queryType="1" maxResultRows="1">
+	<Query> 
+		select 	lpad(COD_AGENT_TITRE,10,'0')
+		from 	SOGG_TRKEVEN.DETT_ACCOR_COGEST 
+		where 	COD_RUOLO_AGENT = 'BC'
+		and		sysdate between DAT_ATTIVZ_ACCOR and DAT_REVO_ACCOR
+		and		GSTD_F_ESIST = 'S'
+		and		COD_AGENT_COGEST = (
+									select 	COD_AGENT 
+									from 	CLL.LEGM_PROSPCT_AGENT_COGEST 
+									where 	COD_RUOLO_AGENT = 'BC' 
+									and 	ASSGNCLIAGE_C_POTZLE = <p>codPotenziale</p>
+									and		COD_AGENT = <p>contextCurrentLinkedUserCode</p>
+									and		GSTD_F_ESIST = 'S'
+									and 	rownum = 1
+									union
+									select 	COD_AGENT 
+									from 	CLL.LEGM_CLI_AGENT_COGEST 
+									where 	COD_RUOLO_AGENT = 'BC' 
+									and 	CLI_C = <p>codMediolanum</p>
+									and		COD_AGENT = <p>contextCurrentLinkedUserCode</p>
+									and		GSTD_F_ESIST = 'S'
+									and 	rownum = 1
+		)
+	</Query>
+	<Output>
+		<Parameter propertyName="codAgente"/>
+	</Output>
+</Access>
+
+<Access name="loadAccordoCogestione" type="DAOQueryAccess" queryType="1" maxResultRows="1">
+	<Query> 
+		select 	COD_STATO_ACCOR, lpad(COD_AGENT_TITRE,10,'0'), lpad(COD_AGENT_COGEST,10,'0')
+		from 	SOGG_TRKEVEN.DETT_ACCOR_COGEST 
+		where 	COD_RUOLO_AGENT = 'BC'
+		and		GSTD_F_ESIST = 'S'
+		and		sysdate between DAT_ATTIVZ_ACCOR and DAT_REVO_ACCOR
+		and		(COD_AGENT_TITRE = <p>contextCurrentLinkedUserCode</p> or COD_AGENT_COGEST = <p>contextCurrentLinkedUserCode</p>)	
+	</Query>
+	<Output>
+		<Parameter propertyName="statoContrattoCogestione"/>
+		<Parameter propertyName="codAgenteTitolare"/>
+		<Parameter propertyName="codAgenteCogestore"/>
+	</Output> 
+</Access>
+
+<Access name="legameCogestioneProspect" type="DAOTableAccess" tableName="CLL.LEGM_PROSPCT_AGENT_COGEST">
+	<Bindings>
+		<Parameter propertyName="cogestioneData_codAgenteCogestore" dbColumnName="COD_AGENT"			primaryKey="true"/>	 
+		<Parameter propertyName="codPotenziale" 					dbColumnName="ASSGNCLIAGE_C_POTZLE" primaryKey="true"/>
+		<Parameter propertyName="codRuolo" 							dbColumnName="COD_RUOLO_AGENT" 		primaryKey="true" propertyType="StringType" propertyValue="BC"/>
+		
+		<Parameter propertyName="dataOraUltimaModifica" 		dbColumnName="DAT_ATTIVZ_LEGM"/>
+		<Parameter propertyName="#contextUserCode"				dbColumnName="GSTD_M_NOM_ULT_MODF"/>	 
+		<Parameter propertyName="#contextUserCode"				dbColumnName="GSTD_X_USER"/>	 
+		<Parameter propertyName="dataOraUltimaModifica"			dbColumnName="GSTD_D_ULT_MODF_RECORD"/>	 
+		<Parameter propertyName="tipoModifica" 					dbColumnName="GSTD_X_TIP_MODF"	propertyType="StringType" propertyValue="I"/>	 
+		<Parameter propertyName="flagExist" 					dbColumnName="GSTD_F_ESIST"		propertyType="StringType" propertyValue="S"/>
+	</Bindings>	
+</Access>
+
+<Access name="cancellaLegamiCogestioneProspect" type="DAOTableAccess" tableName="CLL.LEGM_PROSPCT_AGENT_COGEST">
+	<Bindings>
+		<Parameter propertyName="codPotenziale" dbColumnName="ASSGNCLIAGE_C_POTZLE" 									primaryKey="true"/>
+		<Parameter propertyName="codRuolo" propertyType="StringType" propertyValue="BC" dbColumnName="COD_RUOLO_AGENT" 	primaryKey="true"/>
+	</Bindings>	
+</Access>
+
+<Access name="loadLastAccessData" type="DAOQueryAccess" queryType="0" maxResultRows="1">
+	<Query> 
+		select 	GSTD_M_NOM_ULT_MODF, to_char(GSTD_D_ULT_MODF_RECORD,'dd-mm-yyyy hh24:mi:ss')
+		from 	cll.CEPE_CLI_PROSPECT_RETE_REP
+		where 	ASSGNCLIAGE_C_POTZLE = ?
+	</Query>
+	<Input>
+		<Parameter propertyName="codPotenziale"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="codAgenteUltimaModifica"/>
+		<Parameter propertyName="dataOraUltimaModificaAsString"/>
+	</Output>
+</Access>
+
+<Access name="loadCellulareMailAgente" type="DAOQueryAccess" queryType="0" maxResultRows="1" connectionCacheReference="ARC">
+	<Query> 
+		select 	TELCELL.TELEFONO
+		, 		MAIL.E_MAIL
+		from 	ARC_ANAG_SOGGETTO AN
+		left outer join ARC_TELEFONO_SOGGETTO TELCELL on TELCELL.N_ANAG_SOGG = AN.N_ANAG_SOGG and TELCELL.N_TIPO_TELEF = 1 and TELCELL.FLG_ANNULLATO = 'N'
+		left outer join ARC_MAIL_SOGGETTO MAIL on MAIL.N_ANAG_SOGG = AN.N_ANAG_SOGG AND MAIL.FLG_ANNULLATO = 'N'
+		where 	AN.FLG_ANNULLATO = 'N'
+		and 	right('0000000000'||AN.COD_SOGGETTO,10) = ?
+	</Query>
+	<Input>
+		<Parameter propertyName="codAgente"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="cellulare"/>
+		<Parameter propertyName="email"/>
+	</Output>
+</Access>
+
+<Access name="popolaDatiUserDestinatario" type="DAOQueryAccess" queryType="1" maxResultRows="1">
+	<Query>
+		SELECT AGE_M_NOME FROM CLL.AGE WHERE AGE_C = <p>codUserDestinatario</p>
+	</Query>
+	<Output>
+		<Parameter propertyName="nominativoDestinatario"/>
+	</Output>
+</Access>
+
+<Access name="notificaAvviso" type="DAOOSBAccess" serviceName="rdv-be-osb-ItaAvvisiWS/PS/PS_AvvisiWS" operationName="notificaAvviso">
+	<Input>
+		<![CDATA[
+			
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://services.avvisiws.rdv.bmed.it/">
+		   <soapenv:Header/>
+		   <soapenv:Body>
+			  <ser:notificaAvviso>
+				 <!--Optional:-->
+				 <arg0>
+					<!--Optional:-->
+					<codTipoAvviso propertyName="codTipoAvviso"></codTipoAvviso>
+					
+					<!--Optional:-->
+					<codUserDestinatario propertyName="codUserDestinatario"></codUserDestinatario>
+					
+					<!--Optional:-->
+					<codiceAgente propertyName="codiceAgente"></codiceAgente>
+					
+					<!--Optional:-->
+					<codiceCliente propertyName="codiceCliente"></codiceCliente>
+										
+					<contrassegnato></contrassegnato>
+					
+					<!--Optional:-->
+					<dataEsecuzioneAttivita propertyName="dataEsecuzioneAttivita"></dataEsecuzioneAttivita>
+					
+					<!--Optional:-->
+					<dataLettura propertyName="dataLettura"></dataLettura>
+					
+					<!--Optional:-->
+					<dataScadenza propertyName="dataScadenza"></dataScadenza>
+					
+					<!--Optional:-->
+					<divisaImporto propertyName="divisaImporto"></divisaImporto>
+					
+					<!--Optional:-->
+					<idRisorsaEsterna propertyName="idRisorsaEsterna"></idRisorsaEsterna>
+					
+					<!--Optional:-->
+					<importo propertyName="importo"></importo>
+					
+					<!--Optional:-->
+					<nominativoAgente propertyName="nominativoAgente"></nominativoAgente>
+					
+					<!--Optional:-->
+					<nominativoCliente propertyName="nominativoCliente"></nominativoCliente>
+					
+					<!--Optional:-->
+					<nominativoDestinatario propertyName="nominativoDestinatario"></nominativoDestinatario>
+					
+					<!--Optional:-->
+					<numeroContratto propertyName="numeroContratto"></numeroContratto>
+					
+					<!--Optional:-->
+					<oggetto propertyName="oggetto"></oggetto>
+					
+					<!--Optional:-->
+					<operazione propertyName="operazione"></operazione>
+					
+					<portaInPrimoPiano propertyName="portaInPrimoPiano"></portaInPrimoPiano>
+					
+					<previstaAttivita propertyName="previstaAttivita"></previstaAttivita>
+					
+					<!--Optional:-->
+					<prodotto propertyName="prodotto"></prodotto>
+					
+					<!--Optional:-->
+					<sorgenteEsterna propertyName="sorgenteEsterna"></sorgenteEsterna>
+					
+					<!--Optional:-->
+					<testo propertyName="testo"></testo>
+					
+				 </arg0>
+			  </ser:notificaAvviso>
+		   </soapenv:Body>
+		</soapenv:Envelope>
+
+	   ]]>
+	</Input>
+	<Output>
+		<![CDATA[		
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+			   <soapenv:Body>
+					<ns2:notificaAvvisoResponse xmlns:ns2="http://services.avvisiws.rdv.bmed.it/">
+						<return>
+							
+							<idAvviso propertyName="idAvviso"></idAvviso>
+				            <resultCode propertyName="resultCode"></resultCode>			           
+				            <resultMessage propertyName="resultMessage"></resultMessage>
+							     
+						</return>
+					</ns2:notificaAvvisoResponse>
+
+			   </soapenv:Body>
+			</soapenv:Envelope>
+		]]>
+	</Output>
+</Access>
+
+
+</DAO-Object>

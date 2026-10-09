@@ -1,0 +1,7 @@
+<Response>
+	<ReturnCode propertyName="returnCode" ></ReturnCode>
+	<ReturnValue>
+		<Object attrs="filenetGuid@id"></Object>
+	</ReturnValue>
+</Response>	
+

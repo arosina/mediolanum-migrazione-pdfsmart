@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="PdfWebFormsIdd">
+
+<Access name="loadIdRaccomandazioneIddFromRda" type="DAOQueryAccess" queryType="0" connectionCacheReference="SER_MIFID">
+ <Query>
+	select COD_REPORT_RACMND_PERSZ_IDD 
+	from SOGG_POSIZDISP.ANAG_REPORT_ADEGZA  
+	where COD_REPORT_ADEGZA = ?
+ </Query> 
+ <Input>
+	<Parameter propertyName="idReportAdeguatezza"/> 
+ </Input>
+  <Output>
+	<Parameter propertyName="idRaccomandazioneIdd"/> 
+ </Output>
+</Access> 
+
+<Access name="loadIdQuestionarioFromRaccomandazione" type="DAOOSBAccess" serviceName="service/soggetto/posizionedispositiva/RaccomandazioneIDDService/v1" operationName="elencoRaccomandazioni">
+<Input>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://posizionedispositiva.soggetto.be.schema.bmed.it/RaccomandazioneIDD/v1">
+		   <soapenv:Body>
+		      <v11:elencoRaccomandazioni>
+		         <v11:prodottoCommerciale append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		         <v11:questionario append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		         <v11:raccomandazione attrs="idRaccomandazioneIdd@codice"/>
+		         <v11:soggetto append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		      </v11:elencoRaccomandazioni>
+		   </soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+</Input>
+<Output>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+		   <soapenv:Body xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://posizionedispositiva.soggetto.be.schema.bmed.it/RaccomandazioneIDD/v1">
+		      <elencoRaccomandazioniResponse xmlns="http://posizionedispositiva.soggetto.be.schema.bmed.it/RaccomandazioneIDD/v1" xmlns:ns2="http://common.schema.bmed.it/v1" xmlns:ns3="http://fault.common.schema.bmed.it/v1" xmlns:S="http://schemas.xmlsoap.org/soap/envelope/">
+		         <raccomandazioni>
+		            <raccomandazione>
+		               <questionario attrs="idQuestionarioIddInInput@codice"/>
+		            </raccomandazione>
+		         </raccomandazioni>
+		      </elencoRaccomandazioniResponse>
+		   </soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+</Output>
+</Access>	
+
+<Access name="verificaQuestionarioIdd" type="DAOOSBAccess" serviceName="service/soggetto/infoesimulazione/VerificaAdeguatezzaIDDService/v1" operationName="verificaAdeguatezzaIDD">
+<Input>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://infoesimulazione.soggetto.be.schema.bmed.it/VerificaAdeguatezzaIDD/v1">
+		   <soapenv:Body>
+		      <v11:verificaAdeguatezzaIDD attrs="input_codiceApplicazioneChiamante@codiceApplicazioneChiamante">
+		         <v11:dataRiferimento append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		         <v11:prodotto attrs="prodottoInInput@codice"/>
+		         <v11:questionario append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		         <v11:soggetto attrs="codiceCliente@codice,tipoCliente@tipo"/>
+		      </v11:verificaAdeguatezzaIDD>
+		   </soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+</Input>
+<Output>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+		   <soapenv:Body xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://infoesimulazione.soggetto.be.schema.bmed.it/VerificaAdeguatezzaIDD/v1">
+		      <v11:verificaAdeguatezzaIDDResponse>
+		         <v11:flagEsitoAdeguatezza propertyName="flagEsitoAdeguatezzaQuestionario"></v11:flagEsitoAdeguatezza>
+		         <v11:questionario attrs="idQuestionarioIdd@codice">
+		            <v11:stato propertyName="descrStatoQuestionarioIdd" attrs="codStatoQuestionarioIdd@codice"></v11:stato>
+		         </v11:questionario>
+		      </v11:verificaAdeguatezzaIDDResponse>
+		   </soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+</Output>
+</Access>	
+
+<Access name="verificaQuestionarioIddConIdQuestionario" type="DAOOSBAccess" serviceName="service/soggetto/infoesimulazione/VerificaAdeguatezzaIDDService/v1" operationName="verificaAdeguatezzaIDD">
+<Input>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://infoesimulazione.soggetto.be.schema.bmed.it/VerificaAdeguatezzaIDD/v1">
+		   <soapenv:Body>
+		      <v11:verificaAdeguatezzaIDD attrs="input_codiceApplicazioneChiamante@codiceApplicazioneChiamante">
+		         <v11:dataRiferimento append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		         <v11:prodotto attrs="prodottoInInput@codice"/>
+		         <v11:questionario attrs="idQuestionarioIddInInput@codice"/>
+		         <v11:soggetto attrs="codiceCliente@codice,tipoCliente@tipo"/>
+		      </v11:verificaAdeguatezzaIDD>
+		   </soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+</Input>
+<Output>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+		   <soapenv:Body xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://infoesimulazione.soggetto.be.schema.bmed.it/VerificaAdeguatezzaIDD/v1">
+		      <v11:verificaAdeguatezzaIDDResponse>
+		         <v11:flagEsitoAdeguatezza propertyName="flagEsitoAdeguatezzaQuestionario"></v11:flagEsitoAdeguatezza>
+		         <v11:questionario attrs="idQuestionarioIdd@codice">
+		            <v11:stato propertyName="descrStatoQuestionarioIdd" attrs="codStatoQuestionarioIdd@codice"></v11:stato>
+		         </v11:questionario>
+		      </v11:verificaAdeguatezzaIDDResponse>
+		   </soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+</Output>
+</Access>
+
+<Access name="generaRaccomandazioneIdd" type="DAOOSBAccess" serviceName="service/soggetto/posizionedispositiva/RaccomandazioneIDDService/v1" operationName="generaModificaRaccomandazione">
+<Input>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://posizionedispositiva.soggetto.be.schema.bmed.it/RaccomandazioneIDD/v1">
+		   <soapenv:Header>
+		      <v1:requestHeader>
+		         <v1:contestoChiamante>
+		            <v1:utente propertyName="utente"></v1:utente>
+		         </v1:contestoChiamante>
+		      </v1:requestHeader>
+		   </soapenv:Header>
+		   <soapenv:Body>
+		      <v11:generaModificaRaccomandazione>
+			    <v11:dispositive append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		        <v11:flagGenerazioneDaSede append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		        <v11:metadati>
+		            <v11:codiceGUIDFilenet append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:codiceUploadFileInterno append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+			        <v11:dataCreazione append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:denominazioneFilePdf append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:stato append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		        </v11:metadati>
+				<v11:prodottoCommerciale attrs="prodottoInInput@codice"/>
+				<v11:questionario attrs="idQuestionarioIdd@codice"/>
+				<v11:raccomandazione append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+				<v11:soggetto attrs="utente@codice,ruoloAgente@tipo"/>
+		        <v11:soggetto attrs="codiceCliente@codice,tipoCliente@tipo"/>
+		      </v11:generaModificaRaccomandazione>
+		   </soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+</Input>
+<Output>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+		   <soapenv:Body xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://posizionedispositiva.soggetto.be.schema.bmed.it/RaccomandazioneIDD/v1">
+			<v11:generaModificaRaccomandazioneResponse>
+		         <v11:codiceRaccomandazione propertyName="idRaccomandazioneIdd"></v11:codiceRaccomandazione>
+			</v11:generaModificaRaccomandazioneResponse>
+		   </soapenv:Body>
+		</soapenv:Envelope>	
+	]]>
+</Output>
+</Access>	
+
+<Access name="verificaRaccomandazioneIdd" type="DAOOSBAccess" serviceName="service/soggetto/infoesimulazione/VerificaAdeguatezzaIDDService/v1" operationName="verificaRaccomandazioneIDD">
+<Input>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://infoesimulazione.soggetto.be.schema.bmed.it/VerificaAdeguatezzaIDD/v1">
+		   <soapenv:Body>
+		      <v11:verificaRaccomandazioneIDD attrs="input_codiceApplicazioneChiamante@codiceApplicazioneChiamante">
+		         <v11:dataRiferimento append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		         <v11:prodotto attrs="prodottoInInput@codice"/>
+		         <v11:raccomandazione attrs="idRaccomandazioneIdd@codice"/>
+		         <v11:soggetto attrs="codiceCliente@codice,tipoCliente@tipo"/>
+		      </v11:verificaRaccomandazioneIDD>
+		   </soapenv:Body>
+		</soapenv:Envelope>	
+	]]>
+</Input>
+<Output>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+		   <soapenv:Body xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://infoesimulazione.soggetto.be.schema.bmed.it/VerificaAdeguatezzaIDD/v1">
+		      <v11:verificaRaccomandazioneIDDResponse>
+		         <v11:flagEsitoRaccomandazione propertyName="flagEsitoAdeguatezzaRaccomandazione"></v11:flagEsitoRaccomandazione>
+		         <v11:questionario attrs="idQuestionarioIdd@codice">
+		            <v11:stato propertyName="descrStatoQuestionarioIdd" attrs="codStatoQuestionarioIdd@codice"></v11:stato>
+		         </v11:questionario>
+		         <v11:raccomandazione attrs="idRaccomandazioneIdd@codice">
+		            <v11:stato propertyName="descrStatoRaccomandazioneIdd" attrs="codStatoRaccomandazioneIdd@codice"></v11:stato>
+		         </v11:raccomandazione>
+		      </v11:verificaRaccomandazioneIDDResponse>
+		   </soapenv:Body>
+		</soapenv:Envelope>	
+	]]>
+</Output>
+</Access>	
+
+<Access name="verificaRaccomandazioneProtezioneIdd" type="DAOOSBAccess" serviceName="service/soggetto/infoesimulazione/VerificaAdeguatezzaIDDService/v1" operationName="verificaRaccomandazioneProtezioneIDD">
+<Input>
+	<![CDATA[	
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://infoesimulazione.soggetto.be.schema.bmed.it/VerificaAdeguatezzaIDD/v1">
+			<soapenv:Body>
+				<v11:verificaRaccomandazioneProtezioneIDDRequest>
+					<v11:codiceRaccomandazione propertyName="idRaccomandazioneIdd"></v11:codiceRaccomandazione>
+					<v11:prodotto propertyName="prodottoInInput"></v11:prodotto>
+					<v11:dataSottoscrizioneProdotto propertyName="dataRiferimento"></v11:dataSottoscrizioneProdotto>
+					<v11:contraente>
+						<v11:codice propertyName="codiceCliente"></v11:codice>
+						<v11:tipoSoggetto propertyName="tipoCliente"></v11:tipoSoggetto>
+					</v11:contraente>
+					<v11:canale>700</v11:canale>
+					<v11:utente>
+						<v11:codice propertyName="utente"></v11:codice>
+						<v11:ruolo propertyName="ruoloAgente">1</v11:ruolo>
+					</v11:utente>
+				</v11:verificaRaccomandazioneProtezioneIDDRequest>
+			</soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+</Input>
+<Output>
+	<![CDATA[
+		<S:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/" xmlns:S="http://schemas.xmlsoap.org/soap/envelope/">
+		   <S:Body>
+		      <verificaRaccomandazioneProtezioneIDDResponse xmlns="http://infoesimulazione.soggetto.be.schema.bmed.it/VerificaAdeguatezzaIDD/v1" xmlns:ns2="http://common.schema.bmed.it/v1" xmlns:ns3="http://fault.common.schema.bmed.it/v1">
+		         <codiceRaccomandazione propertyName="idRaccomandazioneIdd"></codiceRaccomandazione>
+		         <metadati>
+		            <statoRaccomandazione propertyName="codStatoRaccomandazioneIdd"></statoRaccomandazione>
+		         </metadati>
+		         <esitoValutazione propertyName="esitoValutazione"></esitoValutazione>
+		         <listaCausali>
+		            <causale propertyName="listaCausali">
+		               <codice propertyName="codice"></codice>
+		               <descrizione propertyName="descrizione"></descrizione>
+		            </causale>
+		         </listaCausali>
+		         <esitoTecnico propertyName="esitoTecnico"></esitoTecnico>
+		         <listaErroriTecnici>
+		            <erroreTecnico propertyName="listaErroriTecnici">
+		               <codice propertyName="codice"></codice>
+		               <descrizione propertyName="descrizione"></descrizione>
+		            </erroreTecnico>
+		         </listaErroriTecnici>
+		      </verificaRaccomandazioneProtezioneIDDResponse>
+		   </S:Body>
+		</S:Envelope>
+	]]>
+</Output>
+</Access>	
+
+<Access name="collegaRaccomandazioneIdd" type="DAOOSBAccess" serviceName="service/soggetto/posizionedispositiva/RaccomandazioneIDDService/v1" operationName="generaModificaRaccomandazione">
+<Input>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://posizionedispositiva.soggetto.be.schema.bmed.it/RaccomandazioneIDD/v1">
+		   <soapenv:Body>
+		      <v11:generaModificaRaccomandazione>
+		        <v11:dispositive>
+		            <v11:dispositiva attrs="pdfInstanceId@codiceOperazioneDispositivaSistemaOrigine" append="progressivo='1' codiceTipoSistemaOrigine='PDF'"/>
+		        </v11:dispositive>
+		        <v11:flagGenerazioneDaSede append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		        <v11:metadati>
+		            <v11:codiceGUIDFilenet append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:codiceUploadFileInterno append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+			        <v11:dataCreazione append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:denominazioneFilePdf append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:stato append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		        </v11:metadati>
+		        <v11:prodottoCommerciale append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		        <v11:questionario append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		        <v11:raccomandazione attrs="idRaccomandazioneIdd@codice"/>
+		        <v11:soggetto append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		      </v11:generaModificaRaccomandazione>
+		   </soapenv:Body>
+		</soapenv:Envelope>	
+	]]>
+</Input>
+<Output>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+		   <soapenv:Body xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://posizionedispositiva.soggetto.be.schema.bmed.it/RaccomandazioneIDD/v1">
+			<v11:generaModificaRaccomandazioneResponse>
+		         <v11:codiceRaccomandazione propertyName="idRaccomandazioneIddCtrl"></v11:codiceRaccomandazione>
+			</v11:generaModificaRaccomandazioneResponse>
+		   </soapenv:Body>
+		</soapenv:Envelope>	
+	]]>
+</Output>
+</Access>	
+
+<Access name="recuperaIdEcmRaccomandazioneIdd" type="DAOOSBAccess" serviceName="service/soggetto/posizionedispositiva/RaccomandazioneIDDService/v1" operationName="elencoRaccomandazioni">
+<Input>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://posizionedispositiva.soggetto.be.schema.bmed.it/RaccomandazioneIDD/v1">
+		   <soapenv:Body>
+		      <v11:elencoRaccomandazioni>
+		         <v11:prodottoCommerciale append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		         <v11:questionario append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		         <v11:raccomandazione attrs="idRaccomandazioneIdd@codice"/>
+		         <v11:soggetto append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		      </v11:elencoRaccomandazioni>
+		   </soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+</Input>
+<Output>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+		   <soapenv:Body xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://posizionedispositiva.soggetto.be.schema.bmed.it/RaccomandazioneIDD/v1">
+		      <elencoRaccomandazioniResponse xmlns="http://posizionedispositiva.soggetto.be.schema.bmed.it/RaccomandazioneIDD/v1" xmlns:ns2="http://common.schema.bmed.it/v1" xmlns:ns3="http://fault.common.schema.bmed.it/v1" xmlns:S="http://schemas.xmlsoap.org/soap/envelope/">
+		         <raccomandazioni>
+		            <raccomandazione>
+		               <metadati>
+		                  <codiceUploadFileInterno propertyName="idEcmRaccomandazioneIdd"></codiceUploadFileInterno>
+		               </metadati>
+		            </raccomandazione>
+		         </raccomandazioni>
+		      </elencoRaccomandazioniResponse>
+		   </soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+</Output>
+</Access>	
+
+<Access name="readFlagControlloTargetMarket" type="DAOOSBAccess" 
+		serviceName="service/soggetto/posizionedispositiva/QuestionarioPostvenditaService/v1" operationName="getPolizze">
+<Input>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://soggetto.posizionedispositiva.schema.bmed.it/QuestionarioPostVendita/v1">
+		   <soapenv:Header>
+		      <v1:requestHeader>
+		         <v1:contestoChiamante>
+				  <v1:idApplicazioneChiamante>PDFWF</v1:idApplicazioneChiamante>
+		          <v1:utente propertyName="utente"></v1:utente>
+		         </v1:contestoChiamante>
+		      </v1:requestHeader>
+		   </soapenv:Header>
+		   <soapenv:Body>
+		      <v11:getPolizze>
+				<v11:metadata>
+		            <v11:abiCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:callerDataId append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:channelCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:companyCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:familyBankerCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:familyBanker>false</v11:familyBanker>
+		            <v11:inputCommonDataVestion append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:ip append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:keyHole>false</v11:keyHole>
+		            <v11:keylog append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:operatorCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:placeCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:statusCode>0</v11:statusCode>
+		            <v11:swift append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+				  	<v11:timeStamp propertyName="now"></v11:timeStamp>
+		            <v11:userAgent append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+				  	<v11:userId propertyName="utente"></v11:userId>
+		            <v11:userIdKeyHole append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:versionBs append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+				</v11:metadata>
+		         <v11:codiceTariffa propertyName="tariffa"></v11:codiceTariffa>
+		         <v11:codiceCliente propertyName="codiceCliente"></v11:codiceCliente>
+		         <v11:dataAttivazione append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"></v11:dataAttivazione>
+		      </v11:getPolizze>
+		   </soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+</Input>
+<Output>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+		   <soapenv:Body xmlns:v11="http://soggetto.posizionedispositiva.schema.bmed.it/QuestionarioPostVendita/v1" xmlns:v1="http://common.schema.bmed.it/v1">
+		      <v1:getPolizzeResponse xmlns:v1="http://soggetto.posizionedispositiva.schema.bmed.it/QuestionarioPostVendita/v1">
+		         <v1:listaPolizze>
+		            <v1:polizza>
+		               <v1:flagControlloTMSottoscrizione propertyName="flagControlloTMSottoscrizione"></v1:flagControlloTMSottoscrizione>
+		               <v1:flagControlloTMPostvendita propertyName="flagControlloTMPostvendita"></v1:flagControlloTMPostvendita>
+		            </v1:polizza>
+		         </v1:listaPolizze>
+		      </v1:getPolizzeResponse>
+		   </soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+</Output>
+</Access>
+
+</DAO-Object>

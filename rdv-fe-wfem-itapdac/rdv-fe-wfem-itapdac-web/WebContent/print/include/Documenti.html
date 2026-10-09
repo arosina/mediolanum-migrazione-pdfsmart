@@ -1,0 +1,114 @@
+<tr><td colspan="9">&nbsp;</td></tr>
+
+<tr>
+	<td align="center" bgcolor="<%=lightSteelBlue%>"><b>N.</b></td>
+	<td align="center" bgcolor="<%=lightSteelBlue%>"><b>PL.</b></td>
+	<td align="center" bgcolor="<%=lightSteelBlue%>"><b>DOCUMENTO</b></td>
+	<td align="center" bgcolor="<%=lightSteelBlue%>"><b>CLIENTE</b></td>
+	<td align="center" bgcolor="<%=lightSteelBlue%>"><b>AGENTE</b></td>
+	<td align="center" bgcolor="<%=lightSteelBlue%>"><b>N.</b></td>
+	<td align="center" bgcolor="<%=lightSteelBlue%>"><b>MEZZO PAGAMENTO</b></td>
+	<td align="center" bgcolor="<%=lightSteelBlue%>"><b>IMPORTO</b></td>
+	<td align="center" bgcolor="<%=lightSteelBlue%>"><b>NOTE</b></td>
+</tr>
+
+<%
+	int rowIndex = 0;
+	for(ListIterator iterDoc = dac.getDocumenti().getIterator(); iterDoc.hasNext();) {
+		DocumentoModel doc = (DocumentoModel) iterDoc.next();
+		String interlineaBgColorPlico = "bgcolor=\""+lightSteelBlue+"\"";
+		String bgColorPlico = "bgcolor=\""+lightSteelBlue+"\"";
+		String plico = doc.getIdPlico().toString();
+		if(doc.getIsFirstInPlico().booleanValue()){
+			interlineaBgColorPlico = "";
+			if(doc.getIsLastInPlico().booleanValue()){
+				bgColorPlico = "";
+				plico = "";
+			}
+		}
+		ClienteModel cli = doc.getCliente();
+		AgenteModel age = doc.getAgente();
+		rowIndex ++;
+%>		
+		<% //**********  Initerlinea ************* // %>
+		<tr>
+			<td></td>
+			<td <%=interlineaBgColorPlico%>></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		
+		<% //**********  documento (riga1) ************* // %>
+		<tr>
+			<td align="center"><b><%=rowIndex%></b></td>
+			<td align="center" <%=bgColorPlico%>><b><%=plico%></b></td>
+			<td colspan="7" bgcolor="<%=lightGrayColor%>"> 
+			<% if(doc.isDocumentoAssegno()){ %>
+				<%=doc.assegnoDescrOnPrint()%>
+			<% }else{ %>
+				<%=doc.getDescValue("codProdotto")%> 
+				<% if(!doc.getNumeroContratto().isNull()){%>n.<b><%=doc.getNumeroContratto()%></b><%}%> 
+				<% if(!doc.getCodInforeteEsterno().isNull()){%>cod.<b><%=doc.getCodInforeteEsterno()%></b><%}%>
+			<% } %>
+			</td>
+		</tr>
+
+		<% //**********  documento (riga2) ************* // %>
+	    <tr>
+			<td></td>
+			<td <%=bgColorPlico%>></td>
+			<% if(doc.isDocumentoAssegno()){ %>
+				<td></td>
+				<td align="center"><%=cli.getCodMediolanum() + " " + cli.getCognome() + " " + cli.getNome()%></td>
+				<td align="center"><%=age.getCodAgente() + " " + age.getNominativo()%></td>
+				<td colspan="4"></td>
+			<% }else{ %>			
+				<td><%=doc.getDescValue("codOperazione")%></td>
+				<td align="center"><%=cli.getCodMediolanum() + " " + cli.getCognome() + " " + cli.getNome()%></td>
+				<td align="center"><%=age.getCodAgente() + " " + age.getNominativo()%></td>
+				<td colspan="3" align="center">
+					<% if(!dac.getTipoDac().equals(Costanti.TIPO_DAC_SEDE)){ // I mezzi pg solo nei prit e non nelle dac %>
+					<table>
+							<% for(ListIterator iterMezziPg = doc.getMezziPagamento().getIterator(); iterMezziPg.hasNext();) {
+								MezzoPagamentoModel mezzoPg = (MezzoPagamentoModel)iterMezziPg.next();
+								if(dac.isDocAssegniAbilitati() && (mezzoPg.getCodTipoPagamento().equals(Costanti.MEZZO_PAGAMENTO_ASSEGNO) || mezzoPg.getCodTipoPagamento().equals(Costanti.MEZZO_PAGAMENTO_ASSEGNO_ESTERO)))
+									continue;
+							%>		
+								<tr>
+									<td align="center" width="20%"><%=mezzoPg.getNumAssegno()%></td>						
+									<td align="center" width="40%"><%=mezzoPg.getDescValue("codTipoPagamento")%></td>
+									<td align="center" width="40%"><%=mezzoPg.getImporto().toString() + (mezzoPg.getImporto().isNull() ? "" : " ["+mezzoPg.getCodDivisa()+"]")%></td>												
+								</tr>
+								<% if (iterMezziPg.hasNext()) {%>
+										<tr>						
+											<td colspan="3" bgcolor="#E0E0E0" height="1"></td> 
+										</tr>
+								<%}%>
+							<%}%>												
+					</table>
+					<% } %>
+				</td>
+				<td>
+					<table>
+						<% if(!doc.getNoteAutore().isNull()){%>		
+							<tr>						
+								<td align="center"><b>Autore:</b> <%=doc.getNoteAutore()%></td> 
+							</tr>
+						<%}%>	
+						<% if(!doc.getNoteOperatore().isNull()) {%>
+							<tr>						
+								<td align="center"><b>Operatore:</b> <%=doc.getNoteOperatore()%></td> 
+							</tr>
+						<%}%>											
+					</table>
+				</td>
+			<% } %>
+		 </tr>
+			 
+<%	}  %>
+

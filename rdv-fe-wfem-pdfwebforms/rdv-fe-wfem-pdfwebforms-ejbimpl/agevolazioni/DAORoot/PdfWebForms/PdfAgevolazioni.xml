@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="PdfAgevolazioni" connectionCacheReference="CEPE">
+
+<Access name="loadAgevolazione" type="DAOQueryAccess" queryType="0" maxResultRows="1">
+	<Query>
+		select	ag.PROD_C_PROD
+		,		ag.PROD_C_PROD_PART
+		,		ag.COD_AGENTE
+		,		ag.COD_CLIENTE
+		,		ag.TIPO_DEROGA
+		,		(select td.DESCRIZIONE from CEPE_CRLEVE_DOMINIO_DEROGA td where td.TIPO_DEROGA = ag.TIPO_DEROGA)
+		,		ag.CODICE_CONV
+		,		ag.MODAL_VERS
+		,		ag.PCT_ESENZ
+		,		ag.IMPORTO_INVEST		
+		,		ag.IS_SWITCH
+		,		ag.MANDATO_PART
+		,		ag.MANDATO_ARR
+		,		ag.APPL_DEROGA
+		from	CEPE_CRLEVE_MOV_DEROG_GEST ag
+		where	ag.ID_DEROGA = ?
+	</Query>   
+	<Input>
+		<Parameter propertyName="idAgevolazione"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="codProdottoDispositiva"/>
+		<Parameter propertyName="codProdottoDispositivaPartenza"/>
+		<Parameter propertyName="codAgente"/>
+		<Parameter propertyName="codCliente"/>
+		<Parameter propertyName="tipologiaAgevolazione"/>
+		<Parameter propertyName="descrTipologiaAgevolazione"/>
+		<Parameter propertyName="codiceAgevolazione"/>
+		<Parameter propertyName="modalitaVersamentoAgevolazione"/>
+		<Parameter propertyName="percentualeAgevolazione"/>
+		<Parameter propertyName="importoAgevolazione"/>		
+		<Parameter propertyName="isSwitch"/>
+		<Parameter propertyName="numeroContrattoPartenza"/>
+		<Parameter propertyName="numeroContrattoDestinazione"/>
+		<Parameter propertyName="applicazioneDeroga"/>
+	</Output>
+</Access> 
+
+</DAO-Object>
+
+

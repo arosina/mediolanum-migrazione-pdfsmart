@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="Mifid">
+<Access name="legameProdottoMifid" type="DAOQueryAccess" queryType="1" connectionCacheReference="SER_MIFID"
+	OutputCommandDataModel="prgm.pdfwebformsutil.drivers.dao.mifid.legameprodottomifid.LegameProdottoMifidModel">
+	<Query>		
+		SELECT COD_SURROG_PROD_SERVZ 
+		FROM CAT_PROD.VW_LEGM_APS_MIFID
+		WHERE 1=1
+		<IfNotNull propertyName="inputCodProdotto">AND trim(CODICE_PRODOTTO) = <p>inputCodProdotto</p></IfNotNull>
+		<IfNotNull propertyName="inputChiaveNaturaProdotto">AND COD_CHIAV_NAT_PROD = <p>inputChiaveNaturaProdotto</p></IfNotNull>
+		<IfNotNull propertyName="inputChiaveNaturaPadre">AND CHIAVE_NAT_PADRE = <p>inputChiaveNaturaPadre</p></IfNotNull>
+		<IfNotNull propertyName="inputIsin">AND ISIN = CAST(<p>inputIsin</p> AS CHAR(15))</IfNotNull>
+		<IfNotNull propertyName="inputProfilo">AND PROFILO = <p>inputProfilo</p></IfNotNull>
+		<IfNotNull propertyName="inputFormaContrattuale">AND FORMA_CONTRATTUALE = <p>inputFormaContrattuale</p></IfNotNull>		
+		<IfNotNull propertyName="inputPiazza">AND trim(PIAZZA) = <p>inputPiazza</p></IfNotNull>
+		<IfNotNull propertyName="inputDivisa">AND DIVISA = <p>inputDivisa</p></IfNotNull>
+	</Query>  	
+	<Output>
+		<Parameter propertyName="codSurrogatoProdotto"/>	 
+	</Output>
+</Access>
+</DAO-Object>

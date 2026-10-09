@@ -1,0 +1,160 @@
+<%  
+	String[] cifre = new String[]{"prima","seconda","terza","quarta","quinta"};
+	java.util.List<PdfModel> signedPdf = prgm.pdfwebforms.basket.Basket.dispoToSign(model, personaCorrente);
+
+	String dispoSpeak = personaCorrente.readNomeCognome()+" "+personaCorrente.getNdg()+". è il momento di controllare attentamente i dati inseriti.";	
+	if(!model.getLastSpeakOnPageLoad().equals(dispoSpeak)){
+		model.setLastSpeakOnPageLoad(dispoSpeak);
+	} 
+%>	
+
+<div class="container-fluid main-content-readable">
+    <h3 class="med-title-l">&Egrave; tutto corretto?</h3>
+    <p>&Egrave; il momento di controllare attentamente i dati inseriti</p>
+
+
+    <h3 class="med-title-l">Riepilogo operazioni</h3>
+
+    <div class="table" role="table" aria-label="Tabella di riepilogo informazioni" aria-rowcount="<%= signedPdf.size() + 1 %>">
+
+        <!-- riga di codice necessaria per definire l'intestazione della tabella-->
+        <div class="sr-only" role="rowgroup">
+            <div role="row" aria-rowindex="1">
+                <span role="columnheader">Operazione</span>
+                <span role="columnheader">Importo</span>
+            </div>
+        </div>
+
+        <div role="rowgroup">
+        	
+        	<%
+				StringBuilder res = new StringBuilder();
+				for(int i = 0; i < signedPdf.size(); i++){
+					PdfModel pdf = signedPdf.get(i);
+					String operazione = pdf.getPdfData().getPdfTitle().isNull()?pdf.mainPdfAnag().getPdfDescr().toString():pdf.getPdfData().getPdfTitle().toString();
+					String imp = "";
+					DoubleType importo = (pdf.mainPdfData().read(PdfPredefinedFields.IMPORTO)==null ? new DoubleType():new DoubleType(pdf.mainPdfData().read(PdfPredefinedFields.IMPORTO).toString()));
+					if(importo != null && !importo.isNull())
+						imp = importo+" &euro;";
+			%>
+        
+	            <div class="row" role="row" aria-rowindex="<%= i + 2 %>">
+	                <div class="col-12 col-md-7 col-lg-6">
+	                    <span class="th" aria-hidden="true">Operazione</span><br>
+	                    <span class="td-first" role="cell"><%=operazione%></span>
+	                </div>
+	                <div class="col-12 col-md-5 col-lg-6 mt-1 mt-sm-0">
+	                	<% if(!imp.isEmpty()){ %>
+		                    <span class="th" aria-hidden="true">Importo</span><br>
+		                    <span class="td-second" role="cell"><%=imp%></span>
+	                    <% } %>
+	                </div>
+	            </div>
+	
+				<% if (i < signedPdf.size()-1) { %>
+	            <hr>
+	            <% } %>
+	            
+            <% } %>
+            
+        </div>
+    </div>
+
+    <p>
+    	L'importo delle operazioni potrebbe differire rispetto a quanto inserito nella proposta per l'applicazione di diritti,
+		imposta di bollo e tassazioni, per variazioni di valore quota a causa di festività in Italia, Lussemburgo o Irlanda oppure
+		per vincoli o indisponibilità delle quote.
+    </p>
+
+    <hr class="section-separator">
+
+
+    <h3 class="med-title-l">Inserisci il Secondo codice segreto</h3>
+    <p>
+    	Se hai dimenticato il tuo secondo codice segreto, accedi alla sezione <span class="link">"Sicurezza in area personale"</span> e genera un nuovo Secondo codice segreto.
+    </p>
+             
+
+    <div class="d-flex flex-column flex-sm-row justify-content-between">
+        <div class="">
+            <div class="d-flex">
+                <% for(int countDig=1;countDig<=5;countDig++){ %>
+					<% if(countDig == signData.getDigit1DaChiedere().intValue()){ %>
+						<input type="password" maxlength="1" autocomplete="one-time-code" size="1"
+							   id="personaCorrente_signData_digit1Digitato" 
+							   name="personaCorrente_signData_digit1Digitato"
+							   class="form-control digit-input <%=(signData.getDigit1DaChiedere().hasTypeErrors()?"not-valid":"")%>"
+							   value="<%=signData.getDigit1Digitato()%>"
+							   onkeyup="onKeyupPin1(event,this);"
+							   data-role="input"
+							   aria-label="Inserisci la <%=cifre[signData.getDigit1DaChiedere().intValue()-1]%> cifra del secondo codice segreto"
+							   <%=(signData.getDigit1DaChiedere().hasTypeErrors()?"aria-invalid='true'":"")%>>
+					<% }else if(countDig == signData.getDigit2DaChiedere().intValue()){ %>
+						<input type="password" maxlength="1" autocomplete="one-time-code" size="1"
+							   id="personaCorrente_signData_digit2Digitato" 
+							   name="personaCorrente_signData_digit2Digitato"
+							   class="form-control digit-input <%=(signData.getDigit1DaChiedere().hasTypeErrors()?"not-valid":"")%>"
+							   value="<%=signData.getDigit2Digitato()%>"
+							   onkeyup="onKeyupPin2(event,this);"
+							   data-role="input"
+							   aria-label="Inserisci la <%=cifre[signData.getDigit2DaChiedere().intValue()-1]%> cifra del secondo codice segreto"
+							   <%=(signData.getDigit1DaChiedere().hasTypeErrors()?"aria-invalid='true'":"")%>>
+					<% }else{ %>
+						<div class="fake-disabled-input"></div>
+					<% } %>
+				<% } %>
+                
+            </div>
+
+            <p class="check-mark <%=(signData.getDigit1DaChiedere().hasTypeErrors()?"label-warning":"")%>" aria-hidden="true">Inserisci la <%=cifre[signData.getDigit1DaChiedere().intValue()-1]%> e la <%=cifre[signData.getDigit2DaChiedere().intValue()-1]%> cifra del Secondo codice di sicurezza <i class="fa-regular fa-circle-check"></i></p>
+        </div>
+        <div class="vertical-line d-none d-sm-block"></div>
+        <div id="otpCont" class="cod-bmed-container">
+            <label for="personaCorrente_signData_otpDigitato" aria-hidden="true">Codice B.Med</label>
+            <div class="input-group mb-2 <%=(signData.getOtpDigitato().hasTypeErrors()?"not-valid-group":"")%>">
+                <div class="input-group-prepend" aria-hidden="true">
+                  <div class="input-group-text otp-code-prefix pr-0">
+                  	<% if(!signData.getOtpGenerato().isNull()){ %>
+						<%=signData.getOtpGenerato()%>-
+					<% } %>
+                  </div>
+                </div>
+                <input type="text" maxlength="6" autocomplete="one-time-code" 
+				   id="personaCorrente_signData_otpDigitato" 
+				   name="personaCorrente_signData_otpDigitato" 
+				   class="form-control"
+				   value="<%=personaCorrente.getSignData().getOtpDigitato()%>"
+				   data-role="input"
+				   aria-label="Inserisci la One Time Password che hai ricevuto sul numero di cellulare: <%=signData.getNumeroCelluarePrimario().toString().replace("_", " ")%>, con prefisso <%=signData.getOtpGenerato()%>."
+				   <%=(signData.getOtpDigitato().hasTypeErrors()?"aria-invalid='true'":"")%>
+				>
+            </div>
+            <% if(signData.getOtpDigitato().hasTypeErrors()){ %>
+				<p class="text-warning-bmed">Inserisci il codice ricevuto via sms</p>
+			<% } %>
+            <p class="suggestion">
+            	Non hai ricevuto l'sms?&nbsp;<a href="javascript:void(0)" role="button" onclick="richiediNuovoOtp();">Richiedi un nuovo codice</a>
+            </p>
+        </div>
+    </div>
+    
+
+    <div class="footer mb-2">
+        <div class="d-flex flex-column flex-sm-row-reverse justify-content-start w-100">
+            <div class="text-center mb-2 ml-sm-2">
+            	<button type="button" role="button" class="btn btn-primary" onclick="doVerificaPin2Otp();">CONFERMA</button>
+            </div>
+            <div class="text-center">
+            	<button type="button" role="button" class="btn btn-secondary" onclick="sendIndietro();">Indietro</button>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<script type="text/javascript">
+	function focusOnFirstInvalidField() {
+		$('input[aria-invalid="true"]').first().focus();
+	}
+</script>

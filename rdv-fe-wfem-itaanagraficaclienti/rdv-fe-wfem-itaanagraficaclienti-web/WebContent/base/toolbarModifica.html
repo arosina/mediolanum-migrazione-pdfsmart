@@ -1,0 +1,15 @@
+<!--------  MODIFICA --------------->
+<td>
+ <% if(model.getCodPotenziale().isNull() || model.getIsBozza().booleanValue()){ %>
+	<%=template.action("salvaBozzaAction","style='width: 95;'")%>
+ <%}%>
+</td>
+
+<td>
+  <% if(model.getIsPotenziale().booleanValue()){ %>
+	<%=template.action("inviaInSedeAction","style='width: 95;'")%>
+  <% }else{ %>
+ 	<%=template.action("inviaInSedeVariazioneAction","style='width: 95;'")%>
+  <% } %>
+</td>  
+<!------------------------------------------->

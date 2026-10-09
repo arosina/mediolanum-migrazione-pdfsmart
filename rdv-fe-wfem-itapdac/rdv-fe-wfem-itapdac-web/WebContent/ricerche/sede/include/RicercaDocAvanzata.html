@@ -1,0 +1,61 @@
+<table width="100%" height="100%" style="table-layout:fixed;">
+  <% if( com.atosorigin.wfem.controller.Configuration.getInstance().isOnlineEnvironment() &&
+        !model.getClass().getName().equals("prgm.ita.p.dac.ricerche.sede.RicercaStoricoDocModel")){  %>
+	  <tr>
+	  	<td align="center" colspan="3" style="background-color:#d0e4ef;">
+	  	  <table class="text"><tr>
+	  	    <td><b>Ricerca i documenti:</b></td>
+	  	    <td style="width:8;"></td>
+	  	    <td>
+		  	  <input type="radio" onclick="setTipoRicerca(this);" name="tipoRicercaDocRadio" 
+		  	  		 value="" <%if(model.getTipoRicerca().isNull()){%>checked<%}%>><b>di oggi</b>
+			</td>
+	  	    <td style="width:8;"></td>
+			<td>
+		  	  <input type="radio" onclick="setTipoRicerca(this);" name="tipoRicercaDocRadio" 
+		  	  		 value="storica" <%if(!model.getTipoRicerca().isNull()){%>checked<%}%>><b>archivio storico</b>
+	  	    </td>
+	  	  </tr></table>
+	  	</td>
+	  </tr>
+  <% } %>
+  
+  <tr>
+    <td width="25%">
+      <table height="100%" width="100%">
+	     <tr><td><%=template.field("parametri_statoDoc", "labelalign='right' labelwidth='20%' style='width:95%;'")%></td></tr>
+	     <tr><td><%=template.field("parametri_ubicazioneDoc", "labelalign='right' labelwidth='20%' style='width:95%;'")%></td></tr>
+	     <tr><td><%=template.field("parametri_esitoDoc", "labelalign='right' labelwidth='20%' style='width:95%;'")%></td></tr>
+	     <tr><td><%=template.field("parametri_codProdotto", "onchange='loadOperazioni();' labelalign='right' labelwidth='20%' style='width:95%;'")%></td></tr>
+	     <tr><td id="codOperazioneCont"><%=template.field("parametri_codOperazione", "labelalign='right' labelwidth='20%' style='width:95%;'")%></td></tr>
+      </table>
+    </td>
+    
+    <td width="45%">
+      <table height="100%" width="100%">
+      	 <tr>
+      	   <td>
+      	     <table cellpadding="0" cellspacing="0"><tr>
+			   <td><%=template.field("parametri_dataInizio")%></td>
+		       <td><%=template.field("parametri_dataFine")%></td>
+      	     </tr></table>
+      	   </td>
+      	 </tr>
+	     <tr><td><table><tr><td><%=template.field("parametri_codMediolanum","size='25'")%></td><td style="width:15;"><img onclick="popupRicercaCliente();" title="Rierca clienti" src="<%=template.getWebApp()%>/images/search.gif" style="cursor:pointer;"></td></tr></table></td></tr>
+    	 <tr><td><table><tr><td><%=template.field("parametri_cognomeCliente","size='25'")%><td style="width:15;"></td></tr></table></td></tr>
+     	 <tr><td><table><tr><td><%=template.field("parametri_nomeCliente","size='25'")%><td style="width:15;"></td></tr></table></td></tr>
+      </table>
+    </td>
+    
+    <td width="30%">
+      <table height="100%" width="100%">
+	  	<% if(!model.getUfficio().equals(Costanti.UFFICIO_RETE)){ %>
+	       <tr><td><table><tr><td><%=template.field("parametri_codiceAgente")%></td><td style="width:15;"><img onclick="popupRicercaAgente();" title="Ricerca Family Banker" src="<%=template.getWebApp()%>/images/search.gif" style="cursor:pointer;"></td></tr></table></td></tr>
+	    <% } %>
+	     <tr><td><table><tr><td><%=template.field("parametri_numeroContratto")%></td><td style="width:15;"></td></tr></table></td></tr>
+	     <tr><td><table><tr><td><%=template.field("parametri_importo")%></td><td style="width:15;"></td></tr></table></td></tr>
+	     <tr><td><table><tr><td><%=template.field("parametri_numeroAssegno")%></td><td style="width:15;"></td></tr></table></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>

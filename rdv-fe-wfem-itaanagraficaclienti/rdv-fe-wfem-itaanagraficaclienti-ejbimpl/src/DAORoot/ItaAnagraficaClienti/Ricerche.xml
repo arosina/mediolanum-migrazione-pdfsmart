@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="Ricerche" connectionCacheReference="DBAZ_SOGG">
+
+<CodDescriptions>
+   <CodDesc name="CLUSTER" tableName="PROCCRM_MOTRDECIS.VW_LEGM_CLUST_CLI_MOSER" codColumnName="COD_MOSER" descrColumnName="DES_MOSER"
+                       whereCondition="1 = 1 order by DES_MOSER ASC"
+					   isDistinct="true"
+                       connectionCacheReference="DBAZ_SOGG"/>
+   <CodDesc name="PROVINCE" tableName="CLL.V_PROV" codColumnName="PROV_C_PROV" descrColumnName="PROV_X_PROV"
+                           whereCondition="PROV_D_FINE_VAL = to_date('31/12/9999','dd/mm/yyyy') order by PROV_C_PROV"
+                       connectionCacheReference="DBAZ_SOGG"/>
+   <CodDesc name="FACOLTA" tableName="CEPE_ATENEI_UNIVERSITARI" codColumnName="FACOLTA" descrColumnName="FACOLTA"
+                           whereCondition="1=1 group by FACOLTA order by FACOLTA"
+                       connectionCacheReference="CEPE"/>
+   <CodDesc name="DIRETTI" tableName="INR_HT_AGE_COMM H, INR_AGENTI A" connectionCacheReference="CEPE"
+                       codColumnName="H.AGE_KEY_C" descrColumnName="H.AGE_KEY_C+' - '+A.AGE_M_COGN_AGE+' '+A.AGE_M_NOME_AGE" descrAliasColumnName="NOMINATIVO"
+                       whereCondition="A.AGE_C_AGE = H.AGE_KEY_C and H.DATA_FINE_STRUT = '2099-12-31' and H.AGE_COORD_KEY_C = ? and H.LIV_PROF_DA_COORD in (0,1)"
+                       orderBy="H.LIV_PROF_DA_COORD, A.AGE_M_COGN_AGE, A.AGE_M_NOME_AGE">
+                <WhereFields>
+                        <Parameter propertyName="codAgenteRoot"/>
+                </WhereFields>
+   </CodDesc>
+</CodDescriptions>
+
+<Access name="elencoAgenti" type="DAOQueryAccess" queryType="1" maxResultRows="50"
+        connectionCacheReference="INR" 
+		OutputCommandDataModel="prgm.ita.anagraficaclienti.model.AgenteModel">
+	<Query>
+		select distinct A.AGE_C_AGE, A.RETEVEND_C_RETE, A.AGE_M_COGN_AGE, A.AGE_M_NOME_AGE,
+				        A.AGE_C_AREA, A.SERVER_C_REPLICA, A.AGZPI_C_AGZ, 
+				        B.AGZPI_X_COMU, B.PROV_C_PROV,
+				        D.TIPCONTRAGE_T_CONTR_AGE, D.CICLOVITA_C_CICLO_VITA
+		from INR_AGENTI A, INR_AGENZIE B, INR_AGENTI_RPLC C, INR_AGE D
+		where 	A.AGZPI_C_AGZ *= B.AGZPI_C_AGZ
+		and 	A.AGE_C_AGE *= C.AGE_C_AGE
+		and	  	A.AGE_C_AGE *= D.AGE_C_AGE
+		and 	D.CICLOVITA_C_CICLO_VITA = 'A'
+		<IfNotNull propertyName="params_codAgente">and A.AGE_C_AGE = <p>params_codAgente</p></IfNotNull>
+		<IfNotNull propertyName="params_cognomeAgente">and A.AGE_M_COGN_AGE like <p>params_cognomeAgente%</p></IfNotNull>
+	</Query>     
+	<Output>
+		<Parameter propertyName="codAgente"/>
+		<Parameter propertyName="codRete"/>
+		<Parameter propertyName="cognomeAgente"/>
+		<Parameter propertyName="nomeAgente"/>
+		<Parameter propertyName="areaAgente"/>
+		<Parameter propertyName="serverReplica"/>
+		<Parameter propertyName="codAgenzia"/>
+		<Parameter propertyName="descrAgenzia"/>
+		<Parameter propertyName="codProvincia"/>
+		<Parameter propertyName="codiceContrattoAgente"/>
+		<Parameter propertyName="cicloVitaAgente"/>
+	</Output>
+</Access>  
+
+<Access name="elencoAgentiGlobalSpecialist" type="DAOQueryAccess" queryType="1" maxResultRows="50"
+        connectionCacheReference="INR" 
+		OutputCommandDataModel="prgm.ita.anagraficaclienti.model.AgenteModel">
+	<Query>
+		select distinct AGE_C_AGE, RETEVEND_C_RETE, AGE_M_COGN_AGE, AGE_M_NOME_AGE
+		from INR_AGENTI_RPLC
+		where 	(AGE_D_DIMI_AGE is null or AGE_D_DIMI_AGE > getdate())
+		and 	AGE_X_QUALIFICA in ('AGENZIA DI SEGNALAZIONE','AG. TRADIZ. MED')
+		<IfNotNull propertyName="params_codAgente">and AGE_C_AGE = <p>params_codAgente</p></IfNotNull>
+		<IfNotNull propertyName="params_cognomeAgente">and AGE_M_COGN_AGE like <p>params_cognomeAgente%</p></IfNotNull>
+	</Query>     
+	<Output>
+		<Parameter propertyName="codAgente"/>
+		<Parameter propertyName="codRete"/>
+		<Parameter propertyName="cognomeAgente"/>
+		<Parameter propertyName="nomeAgente"/>
+	</Output>
+</Access>  
+
+<Access name="elencoClientiAgente" type="DAOQueryAccess" queryType="2"
+	    query="CLL.F_ELENCO_ANAGRAFICHE" storedToCallAfterQuery="CLL.F_ELENCO_ANAGRAFICHE_AQ"
+	    connectionCacheReference="DBAZ_SOGG" OutputCommandDataModel="prgm.ita.anagraficaclienti.model.ClienteModel">
+ <Input>
+	<Parameter propertyName="params_codMediolanum"/>
+	<Parameter propertyName="params_codAgente"/>
+	<Parameter propertyName="params_cognome"/>
+	<Parameter propertyName="params_codRete"/>
+	<Parameter propertyName="params_tipoRicerca"/>
+	<Parameter propertyName="params_tipoElementi"/>
+	<Parameter propertyName="params_statoElementi"/>
+	<Parameter propertyName="params_tipoInclusioneAgenti"/>
+	<Parameter propertyName="params_maxRows"/>
+	<Parameter propertyName="params_nome"/>
+	<Parameter propertyName="mockChiamante" propertyType="StringType" propertyValue=""/>
+	<Parameter propertyName="mockCliente" propertyType="StringType" propertyValue=""/>
+	<Parameter propertyName="params_codAgenteCogestore"/>
+	<Parameter propertyName="params_ruoloCogestione"/>
+	<Parameter propertyName="params_tipoInclusioneCogestiti"/>
+	<Parameter propertyName="params_tipoOrdinamentoCogestiti"/>
+ </Input>
+ <Output>
+	<Parameter propertyName="codMediolanum"/>
+	<Parameter propertyName="codPotenziale"/>
+	<Parameter propertyName="codFiscale"/>
+	<Parameter propertyName="partitaIva"/>
+	<Parameter propertyName="cognome"/>
+	<Parameter propertyName="nome"/>
+	<Parameter propertyName="stato"/>
+	<Parameter propertyName="statoProposta"/>
+	<Parameter propertyName="dataNascita"/>
+	<Parameter propertyName="codAgente"/>
+	<Parameter propertyName="sesso"/>
+	<Parameter propertyName="codCluster"/>
+	<Parameter propertyName="statoConfermato"/>
+	<Parameter propertyName="numVariazioni"/>
+	<Parameter propertyName="datiApplicativi_nomeTabella"/>
+	<Parameter propertyName="isTopBusiness"/>
+	<Parameter propertyName="naturaGiuridica"/>
+	<Parameter propertyName="secondaIntestazione"/>
+	<Parameter propertyName="codInforete"/>
+	
+	<Parameter propertyName="cogestioneData_codAgenteCogestore"/>
+	<Parameter propertyName="isClienteInCogestione"/>
+	<Parameter propertyName="cogestioneData_nominativoAgenteTitolare"/>
+	<Parameter propertyName="cogestioneData_nominativoAgenteCogestore"/>
+ </Output> 
+</Access>
+
+<Access name="elencoClienti" type="DAOQueryAccess" queryType="1"  maxResultRows="50"
+		connectionCacheReference="IQ"  OutputCommandDataModel="prgm.ita.anagraficaclienti.model.ClienteModel">
+ <Query>
+ 	select 	B.CODIFCLIMEDL_C_CLI_MEDL,
+			A.ASSGNCLIAGE_C_POTZLE,
+			A.CLI_X_CF,
+			A.CLI_N_PIVA,
+		   	CASE CLI_C_NATURA_GIURIDICA
+			   WHEN 'SFF' THEN CLI_X_SECONDA_INTEST
+			   WHEN 'SMM' THEN CLI_X_SECONDA_INTEST
+			ELSE CLI_M_COGN 
+			END AS COGNOME,
+		   	CASE CLI_C_NATURA_GIURIDICA
+			   WHEN 'SFF' THEN CLI_M_COGN+' '+CLI_M_NOME
+			   WHEN 'SMM' THEN CLI_M_COGN+' '+CLI_M_NOME
+			ELSE CLI_M_NOME 
+			END AS NOME,
+			A.STATOCLI_C_STATO,
+			'0',
+			A.CLI_D_NASC,
+			B.AGE_C_AGE,
+			A.CLI_F_SESSO,
+			A.CLI_F_BSN_CLB,
+			A.CLI_F_CLI_DA_ESTRA,
+			A.CLI_F_TOPBSN,
+			B.AGE_C_AGE,
+			B.AGE_C_AGE, B.RETEVEND_C_RETE, C.AGE_M_COGN_AGE, C.AGE_M_NOME_AGE, C.AGE_C_AREA,
+			C.SERVER_C_REPLICA, C.AGZPI_C_AGZ ,D.AGZPI_X_DENOM_AGZ, D.PROV_C_PROV, C.TIPCONTRAGE_T_CONTR_AGE,
+			C.CICLOVITA_C_CICLO_VITA,
+			A.CLI_C_NATURA_GIURIDICA,
+			A.CLI_X_SECONDA_INTEST,
+			A.ASSGNCLIAGE_C_POTZLE_NEW
+	from  
+		  	DBA.INR_CLI as A,
+          	DBA.INR_CODIFCLIMEDL as B,
+          	DBA.INR_AGE as C,
+          	DBA.INR_AGZPI as D
+    where
+          	A.ASSGNCLIAGE_C_POTZLE = B.ASSGNCLIAGE_C_POTZLE
+        and	B.AGE_C_AGE = C.AGE_C_AGE
+        and C.AGZPI_C_AGZ *= D.AGZPI_C_AGZ
+        <IfNotNull propertyName="params_codAgente">and B.AGE_C_AGE = <p>params_codAgente</p></IfNotNull>
+        <IfNotNull propertyName="params_codMediolanum">and B.CODIFCLIMEDL_C_CLI_MEDL = <p>params_codMediolanum</p></IfNotNull>
+        <IfNotNull propertyName="params_nome">and A.CLI_M_NOME LIKE <p>params_nome%</p></IfNotNull>
+        <IfNotNull propertyName="params_cognome">and A.CLI_M_COGN LIKE <p>params_cognome%</p></IfNotNull>
+        <IfNull propertyName="params_codAgente">
+	          <IfNull propertyName="params_codMediolanum">
+		          <IfNull propertyName="params_nome">
+			          <IfNull propertyName="params_cognome">and A.CLI_M_COGN LIKE 'A%'</IfNull>
+		          </IfNull>
+	          </IfNull>
+	    </IfNull>
+		<IfEqual propertyName="params_tipoRicerca" propertyValue="effettiviSenzaCodiceBloccoK">
+			AND (A.BLOCCOBANCA_C_BLOCCO_BANCA IS NULL OR A.BLOCCOBANCA_C_BLOCCO_BANCA NOT IN ('K'))
+		</IfEqual>
+		<IfEqual propertyName="params_tipoElementi" propertyValue="personegiuridiche">
+			AND A.CLI_F_SESSO = 'S' 
+		</IfEqual>
+		<IfEqual propertyName="params_tipoElementi" propertyValue="personefisiche">
+			and ((A.CLI_C_NATURA_GIURIDICA is null and A.CLI_F_SESSO != 'S') or A.CLI_C_NATURA_GIURIDICA in ('FMM','FFF'))    
+		</IfEqual>
+        order by A.CLI_M_COGN, A.CLI_M_NOME
+ </Query>
+ <Output>
+	<Parameter propertyName="codMediolanum"/>
+	<Parameter propertyName="codPotenziale"/>
+	<Parameter propertyName="codFiscale"/>
+	<Parameter propertyName="partitaIva"/>
+	<Parameter propertyName="cognome"/>
+	<Parameter propertyName="nome"/>
+	<Parameter propertyName="stato"/>
+	<Parameter propertyName="statoProposta"/>
+	<Parameter propertyName="dataNascita"/>
+	<Parameter propertyName="codAgente"/>
+	<Parameter propertyName="sesso"/>
+	<Parameter propertyName="codCluster"/>
+	<Parameter propertyName="statoConfermato"/>
+	<Parameter propertyName="isTopBusiness"/>
+	<Parameter propertyName="codAgente"/>
+	<Parameter propertyName="agente_codAgente"/>
+	<Parameter propertyName="agente_codRete"/>
+	<Parameter propertyName="agente_cognomeAgente"/>
+	<Parameter propertyName="agente_nomeAgente"/>
+	<Parameter propertyName="agente_areaAgente"/>
+	<Parameter propertyName="agente_serverReplica"/>
+	<Parameter propertyName="agente_codAgenzia"/>
+	<Parameter propertyName="agente_descrAgenzia"/>
+	<Parameter propertyName="agente_codProvincia"/>
+	<Parameter propertyName="agente_codiceContrattoAgente"/>
+	<Parameter propertyName="agente_cicloVitaAgente"/>
+	<Parameter propertyName="naturaGiuridica"/>
+	<Parameter propertyName="secondaIntestazione"/>
+	<Parameter propertyName="codInforete"/>
+ </Output> 
+</Access>
+
+<Access name="elencoClientiPotenziali" type="DAOQueryAccess" queryType="1"  maxResultRows="50" connectionCacheReference="CEPE"
+			OutputCommandDataModel="prgm.ita.anagraficaclienti.model.ClienteModel">
+	<Query>
+		select	null as CLIMED, 
+				A.ASSGNCLIAGE_C_POTZLE, 
+				A.ASSGNCLIAGE_C_POTZLE,
+				A.CLI_M_COGN, 
+				A.CLI_M_NOME,
+				A.CLI_D_NASC,
+				A.AGE_C_AGE
+		from 	CEPE_CLI_PROSPECT_RETE A 
+		where 	1=1 
+		<IfNotNull propertyName="params_codMediolanum">and A.ASSGNCLIAGE_C_POTZLE = <p>params_codMediolanum</p></IfNotNull>
+        <IfNotNull propertyName="params_codAgente">and A.AGE_C_AGE = <p>params_codAgente</p></IfNotNull>
+        <IfNotNull propertyName="params_nome">and A.CLI_M_NOME LIKE <p>params_nome%</p></IfNotNull>
+        <IfNotNull propertyName="params_cognome">and A.CLI_M_COGN LIKE <p>params_cognome%</p></IfNotNull>
+		UNION
+		select	
+				null as CLIMED, 
+				A.ASSGNCLIAGE_C_POTZLE,
+				A.ASSGNCLIAGE_C_POTZLE, 
+				A.CLI_M_COGN, 
+				A.CLI_M_NOME,
+				A.CLI_D_NASC,
+				A.AGE_C_AGE 
+		from 	INR_CLI_ELETTR A 
+		where 1=1
+		<IfNotNull propertyName="params_codMediolanum">and A.ASSGNCLIAGE_C_POTZLE = <p>params_codMediolanum</p></IfNotNull>
+        <IfNotNull propertyName="params_codAgente">and A.AGE_C_AGE = <p>params_codAgente</p></IfNotNull>
+        <IfNotNull propertyName="params_nome">and A.CLI_M_NOME LIKE <p>params_nome%</p></IfNotNull>
+        <IfNotNull propertyName="params_cognome">and A.CLI_M_COGN LIKE <p>params_cognome%</p></IfNotNull>
+		and   	A.CODIFCLIMEDL_C_CLI_MEDL is null
+	</Query> 
+	<Output>
+		<Parameter propertyName="codMediolanum"/>
+		<Parameter propertyName="codPotenziale"/>
+		<Parameter propertyName="codInforete"/>
+		<Parameter propertyName="cognome"/>
+		<Parameter propertyName="nome"/>
+		<Parameter propertyName="dataNascita"/>
+		<Parameter propertyName="codAgente"/>
+	</Output> 
+</Access>   
+
+<Access name="elencoComuni" maxResultRows="50" type="DAOQueryAccess" queryType="1" 
+		connectionCacheReference="DBAZ_SOGG" OutputCommandDataModel="prgm.ita.anagraficaclienti.model.ComuneModel">
+	<Query> 
+        SELECT DISTINCT COMU.COMU_X_DENOM_COMU,
+                    CAP.CAP_C_CAP,
+                    COMU.PROV_C_PROV,
+                    COMU.COMU_C_COMU
+          FROM CLL.CAP CAP
+               inner join CLL.V_COMU COMU 
+                  on CAP.CAP_C_CAP BETWEEN COMU.CAP_C_AVVIAM_POSTL_MIN AND COMU.CAP_C_AVVIAM_POSTL_MAX
+               inner join (select CAP_C_PROV PROV_C_PROV, max(DAT_FINE_VALID) PROV_D_FINE_VAL from CLL.CAP group by CAP_C_PROV) PROV
+                  on COMU.PROV_C_PROV = PROV.PROV_C_PROV
+         WHERE PROV.PROV_D_FINE_VAL = to_date('31/12/9999','dd/mm/yyyy')
+           AND COMU.COMU_D_FINE_VAL = to_date('31/12/9999','dd/mm/yyyy')
+		<IfNotNull propertyName="comune">	 AND COMU.COMU_X_DENOM_COMU like <p>comune%</p></IfNotNull> 
+		<IfNotNull propertyName="provincia"> AND PROV.PROV_C_PROV like <p>provincia%</p></IfNotNull> 
+		<IfNotNull propertyName="cap">		 AND CAP.CAP_C_CAP like <p>cap%</p></IfNotNull>
+	</Query> 
+	<Output>  
+		<Parameter propertyName="comune"/> 
+		<Parameter propertyName="cap"/>
+		<Parameter propertyName="provincia"/>
+		<Parameter propertyName="codComune"/>
+	</Output> 
+</Access>  				
+
+<Access name="elencoComuniIscrittiAlCatasto" maxResultRows="50" type="DAOQueryAccess" queryType="1" 
+		connectionCacheReference="DBAZ_SOGG" OutputCommandDataModel="prgm.ita.anagraficaclienti.model.ComuneModel">
+	<Query> 
+		select distinct
+					CATASTO.DEN_COMU
+		,			null
+		,			PROV.PROV_C_PROV
+		,			CATASTO.COD_CATAS_COMU
+		from 		CLL.V_PROV PROV 
+		,			CLL.ANAG_CATAST_COMUN CATASTO
+		where		CATASTO.COD_PROV = PROV.PROV_C_PROV
+		and 		(CATASTO.COD_PROV != 'EE' OR (CATASTO.COD_PROV = 'EE' AND substr(CATASTO.COD_FISC_COMU,1) != 'Z'))
+		and			(PROV.PROV_D_FINE_VAL = to_date('31/12/9999','dd/mm/yyyy') or PROV.PROV_C_PROV = 'EE')
+		<IfNotNull propertyName="comune">	 AND CATASTO.DEN_COMU like <p>comune%</p></IfNotNull> 
+		<IfNotNull propertyName="provincia"> AND PROV.PROV_C_PROV like <p>provincia%</p></IfNotNull> 
+	</Query> 
+	<Output>  
+		<Parameter propertyName="comune"/> 
+		<Parameter propertyName="cap"/>
+		<Parameter propertyName="provincia"/>
+		<Parameter propertyName="codComune"/>
+	</Output> 
+</Access>  				
+
+<Access name="ricercaGlobaleClienti" type="DAOQueryAccess" queryType="1" maxResultRows="200"
+		connectionCacheReference="IQ" OutputCommandDataModel="prgm.ita.anagraficaclienti.model.ClienteModel">
+	<Query>
+        select B.CODIFCLIMEDL_C_CLI_MEDL,
+          A.CLI_M_COGN+' '+A.CLI_M_NOME as COGNOME_NOME,
+          A.STATOCLI_C_STATO,
+          A.CLI_F_SESSO,
+          A.CLI_X_CF,
+          A.AGE_C_AGE,
+          A.RETEVEND_C_RETE, 
+          A.CLI_D_NASC,
+		  case
+			 when A.CLI_N_PIVA = '00000000000' then '' 
+				  else A.CLI_N_PIVA
+		  end as PARTITA_IVA,
+		  case
+			 when A.CLI_X_COMU_NASC is null then C.COMU_X_DENOM_COMU
+				  else A.CLI_X_COMU_NASC
+		  end as CLI_X_COMU_NASC
+        from
+          DBA.INR_CLI as A,
+          DBA.INR_CODIFCLIMEDL as B,
+          DBA.INR_COMU as C
+        where
+          	  A.ASSGNCLIAGE_C_POTZLE = B.ASSGNCLIAGE_C_POTZLE
+          and A.AGE_C_AGE != '0000000000'
+          and A.COMU_C_COMU_NASC *= C.COMU_C_COMU
+          <IfNotNull propertyName="params_codAgente">and A.AGE_C_AGE = <p>params_codAgente</p></IfNotNull>
+          <IfNotNull propertyName="params_codMediolanum">and B.CODIFCLIMEDL_C_CLI_MEDL = <p>params_codMediolanum</p></IfNotNull>
+          <IfNotNull propertyName="params_cognome">and A.CLI_M_COGN LIKE <p>params_cognome%</p></IfNotNull>
+          <IfNotNull propertyName="params_nome">and A.CLI_M_NOME LIKE <p>params_nome%</p></IfNotNull>
+          <IfNull propertyName="params_codAgente">
+	          <IfNull    propertyName="params_codMediolanum">
+		          <IfNull propertyName="params_cognome">
+			          <IfNull propertyName="params_nome">and A.CLI_M_COGN LIKE 'A%'</IfNull>
+		          </IfNull>
+		      </IfNull>
+		  </IfNull>
+          order by COGNOME_NOME
+	</Query> 
+	<Output>
+		<Parameter propertyName="codMediolanum"/>    
+		<Parameter propertyName="cognome"/>
+		<Parameter propertyName="stato"/>
+		<Parameter propertyName="sesso"/>
+		<Parameter propertyName="codFiscale"/>
+		<Parameter propertyName="codAgente"/>
+		<Parameter propertyName="codRete"/>
+		<Parameter propertyName="dataNascita"/>
+		<Parameter propertyName="partitaIva"/>
+		<Parameter propertyName="comuneNascita_comune"/>
+	</Output>
+</Access>
+
+<Access name="elencoAgentiCliente" type="DAOQueryAccess" queryType="0"
+		connectionCacheReference="IQ" OutputCommandDataModel="prgm.ita.anagraficaclienti.model.AgenteModel">
+	<Query>
+	select 
+		A.AGE_C_AGE,
+		B.AGE_M_COGN_AGE, 
+		B.AGE_M_NOME_AGE,	
+		A.ASSGNCLIAGE_D_INIZ_ASSGN,
+		A.ASSGNCLIAGE_D_FINE_ASSGN
+	from
+		DBA.INR_ASSGNCLIAGE as A,
+		DBA.INR_AGE as B
+	where
+		A.AGE_C_AGE = B.AGE_C_AGE
+		and A.CODIFCLIMEDL_C_CLI_MEDL = ?
+    order by A.ASSGNCLIAGE_D_INIZ_ASSGN desc
+	</Query> 
+	<Input>
+		<Parameter propertyName="codMediolanum"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="codAgente"/>
+		<Parameter propertyName="cognomeAgente"/>
+		<Parameter propertyName="nomeAgente"/>
+		<Parameter propertyName="dataInizioAssegnazione"/>
+		<Parameter propertyName="dataFineAssegnazione"/>
+	</Output>
+</Access>
+
+<Access name="elencoUniversita" maxResultRows="50" type="DAOQueryAccess" queryType="1" 
+		OutputCommandDataModel="prgm.ita.anagraficaclienti.model.UniversitaModel" connectionCacheReference="CEPE">
+	<Query> 
+		select 	PROGRESSIVO
+				,NOME_UNIVERSITA
+				,FACOLTA
+				,SIGLA_PROVINCIA
+		from	CEPE_ATENEI_UNIVERSITARI
+		where	DATA_FINE_VALIDITA is null
+				<IfNotNull propertyName="ateneo">and upper(NOME_UNIVERSITA) like <p>%ateneo%</p></IfNotNull>
+				<IfNotNull propertyName="facolta">and FACOLTA = <p>facolta</p></IfNotNull>
+				<IfNotNull propertyName="provincia">and SIGLA_PROVINCIA = <p>provincia</p></IfNotNull>
+		order by NOME_UNIVERSITA, SIGLA_PROVINCIA
+	</Query> 
+	<Output>  
+		<Parameter propertyName="codUniversita"/> 
+		<Parameter propertyName="ateneo"/> 
+		<Parameter propertyName="facolta"/> 
+		<Parameter propertyName="provincia"/> 
+	</Output> 
+</Access>  
+
+<Access name="elencoMandatiM4U" maxResultRows="50" type="DAOQueryAccess" queryType="0" 
+		OutputCommandDataModel="prgm.ita.anagraficaclienti.model.ClienteModel" connectionCacheReference="ARC">
+	<Query> 
+		select 	COD_CLIENTE
+		,		COGNOME
+		,		NOME
+		,		DATA_NASCITA
+		from	ARC_MANDATO_M4U
+		where 	COD_SOGGETTO = ? and
+	      		COD_STATO_MANDATO = 'EMESS' and
+			    getdate() between DATA_INIZIO and DATA_FINE
+	</Query> 
+ <Input>
+	<Parameter propertyName="params_codAgente"/>
+ </Input>
+ <Output>
+	<Parameter propertyName="codMediolanum"/>
+	<Parameter propertyName="cognome"/>
+	<Parameter propertyName="nome"/>
+	<Parameter propertyName="dataNascita"/>
+ </Output> 
+</Access>  
+
+<Access name="elencoClientiAgentePreapprovati" type="DAOQueryAccess" queryType="2"
+	    query="CLL.F_ELENCO_ANAGRAFICHE_PREA" storedToCallAfterQuery="CLL.F_ELENCO_ANAGRAFICHE_PREA_AQ"
+        connectionCacheReference="DBAZ_SOGG" OutputCommandDataModel="prgm.ita.anagraficaclienti.model.ClienteModel">
+ <Input>
+	<Parameter propertyName="params_codMediolanum"/>
+	<Parameter propertyName="params_codAgente"/>
+	<Parameter propertyName="params_cognome"/>
+	<Parameter propertyName="params_codRete"/>
+	<Parameter propertyName="params_tipoRicerca"/>
+	<Parameter propertyName="params_tipoElementi"/>
+	<Parameter propertyName="params_statoElementi"/>
+	<Parameter propertyName="params_tipoInclusioneAgenti"/>
+	<Parameter propertyName="params_maxRows"/>
+	<Parameter propertyName="params_nome"/>
+ </Input>
+ <Output>
+	<Parameter propertyName="codMediolanum"/>
+	<Parameter propertyName="codPotenziale"/>
+	<Parameter propertyName="codFiscale"/>
+	<Parameter propertyName="partitaIva"/>
+	<Parameter propertyName="cognome"/>
+	<Parameter propertyName="nome"/>
+	<Parameter propertyName="stato"/>
+	<Parameter propertyName="statoProposta"/>
+	<Parameter propertyName="dataNascita"/>
+	<Parameter propertyName="codAgente"/>
+	<Parameter propertyName="sesso"/>
+	<Parameter propertyName="codCluster"/>
+	<Parameter propertyName="statoConfermato"/>
+	<Parameter propertyName="numVariazioni"/>
+	<Parameter propertyName="datiApplicativi_nomeTabella"/>
+	<Parameter propertyName="isTopBusiness"/>
+	<Parameter propertyName="naturaGiuridica"/>
+	<Parameter propertyName="secondaIntestazione"/>
+	<Parameter propertyName="codInforete"/>
+ </Output> 
+</Access>
+
+</DAO-Object>

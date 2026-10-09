@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="AbiCab">	
+
+<Access name="abiBancaAccess" type="DAOQueryAccess" queryType="1"	connectionCacheReference="SER_MIFID" 
+		OutputCommandDataModel="prgm.pdfwebformsutil.drivers.autocompletion.abicab.AbiBancaAutocompleteModel">
+	<Query>
+		SELECT abi.anabanca_c_abi,			
+			   abi.anabanca_x_rag			
+		FROM  cll.anabanca abi		  
+		WHERE abi.gstd_f_esist = 'S'
+		  <IfNotNull propertyName="inputAbi">and abi.anabanca_c_abi = <p>inputAbi</p></IfNotNull>		  
+		  <IfNotNull propertyName="inputRagioneSociale">and upper(abi.anabanca_x_rag) like upper(<p>%inputRagioneSociale%</p>)</IfNotNull>
+		  <IfNotNull propertyName="inputDenominazione">and (abi.anabanca_c_abi like <p>%inputDenominazione%</p> OR upper(abi.anabanca_x_rag) like upper(<p>%inputDenominazione%</p>))</IfNotNull>
+	</Query> 
+	<Output>
+	<Parameter propertyName="abi"/>
+	<Parameter propertyName="ragioneSociale"/>	 
+	</Output> 
+</Access>
+
+<Access name="cabFilialeAccess" type="DAOQueryAccess" queryType="1"	connectionCacheReference="SER_MIFID" 
+		OutputCommandDataModel="prgm.pdfwebformsutil.drivers.autocompletion.abicab.CabFilialeAutocompleteModel">
+	<Query>
+		SELECT cab.anabanca_c_abi,
+			   cab.anasporte_c_cab,
+			   cab.anasporte_x_descr,
+			   cab.anasporte_x_ind,
+			   cab.anasporte_x_loc,
+			   cab.anasporte_x_prov
+		FROM  cll.anasporte cab		   
+		WHERE cab.gstd_f_esist = 'S'		
+		  <IfNotNull propertyName="inputAbi">and cab.anabanca_c_abi = <p>inputAbi</p></IfNotNull>
+		  <IfNotNull propertyName="inputCab">and cab.anasporte_c_cab = <p>inputCab</p></IfNotNull>		  
+		  <IfNotNull propertyName="inputFiliale">and upper(cab.anasporte_x_descr) like upper(<p>%inputFiliale%</p>)</IfNotNull>
+		  <IfNotNull propertyName="inputDenominazione">and (cab.anasporte_c_cab like <p>%inputDenominazione%</p> OR upper(cab.anasporte_x_descr) like upper(<p>%inputDenominazione%</p>))</IfNotNull>
+	</Query> 
+	<Output>
+	<Parameter propertyName="abi"/>
+	<Parameter propertyName="cab"/>	
+	<Parameter propertyName="filiale"/>
+	<Parameter propertyName="indirizzo"/>
+	<Parameter propertyName="localita"/> 
+	<Parameter propertyName="provincia"/> 
+	</Output> 
+</Access>
+</DAO-Object>

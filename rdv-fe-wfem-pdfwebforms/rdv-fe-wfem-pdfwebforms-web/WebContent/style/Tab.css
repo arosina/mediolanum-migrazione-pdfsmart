@@ -1,0 +1,19 @@
+.tab{
+	background-color: #a3cbe5;
+	color: #fff;
+	font-family: Segoe UI;
+	font-size: 14px;
+	text-align: center;
+	vertical-align: middle;	
+	position: relative;
+	cursor: pointer;
+	padding-left: 12px;
+	padding-right: 12px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	white-space: nowrap;
+}
+
+.tabSel{
+	background-color: #2068a5;
+}

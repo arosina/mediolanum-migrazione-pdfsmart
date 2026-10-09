@@ -1,0 +1,749 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="Popup" connectionCacheReference="IQ_PRIT">
+
+<CodDescriptions>
+   <CodDesc name="CLUSTER" tableName="INR_BSNCLB" codColumnName="CLI_F_BSN_CLB" descrColumnName="BSNCLB_X_BSNCLUB"/>
+</CodDescriptions>
+
+<Access name="loadDatiCliente" type="DAOQueryAccess" queryType="0" connectionCacheReference="SER_MIFID">
+	<Query>
+		
+		SELECT 
+		   CLI.CLI_C
+		  ,CLI.CLI_M_COGN
+		  ,CLI.CLI_M_NOM
+		FROM CLL.CLI CLI
+		WHERE 1 = 1
+		AND CLI.CLI_C  = ?
+	</Query>     
+	<Input>
+		<Parameter propertyName="codMediolanum"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="codMediolanum"/>
+		<Parameter propertyName="cognome"/>
+		<Parameter propertyName="nome"/>
+	</Output>
+</Access>  
+
+<Access name="ricercaContratti" type="DAOQueryAccess" queryType="1" connectionCacheReference="INR"
+		OutputCommandDataModel="prgm.ita.p.dac.popup.model.PopupContrattoModel">
+	<Query>
+		declare @numContr varchar(20)
+		select @numContr = <p>numeroContratto</p>
+	
+		select distinct
+				A.RETEVEND_C_RETE as codRete,
+			 	L.AGE_C_AGE as codAge,
+			 	A.AGE_M_COGN_AGE+' '+A.AGE_M_NOME_AGE as nominAge,
+			 	A.CODIFCLIMEDL_C_CLI_MEDL as codMediolanumAge,
+			 	L.TIPPROD_C_TIP_PROD as tipProd,
+		   	 	@numContr as numContratto,
+		   	 	(select CONTRPOLIZVITA_N_POLIZ 
+		   	 	 from   INR_CONTRPOLIZVITA 
+		   	 	 where	PROD_C_PROD = L.PROD_C_PROD 
+		   	 	 and 	CONTRPROD_N_CONTR = L.CONTRPROD_N_CONTR
+		   	 	 and	TIPPROD_C_TIP_PROD = L.TIPPROD_C_TIP_PROD) as numPolizza,
+			 	L.PROD_C_PROD as codProd,
+			 	M.CODIFCLIMEDL_C_CLI_MEDL as codMediolanum,
+			 	C.CLI_M_COGN as cliCognome,
+			 	C.CLI_M_NOME as cliNome,
+			 	L.CONTRPROD_N_CONTR as numContrPolCompleto,
+			 	case L.TIPPROD_C_TIP_PROD
+			 		when 'MT' then (
+						select count(*)
+							from	INR_CONTRMUTUI C                                                       
+							,		INR_STATO_MUTUI_PRESTITI S     
+							where	C.CONTRMUTUI_C_ATTO = L.CONTRPROD_N_CONTR
+							and		C.TIPPROD_C_TIP_PROD = L.TIPPROD_C_TIP_PROD
+							and		C.PROD_C_PROD = L.PROD_C_PROD
+							and		C.TIPPROD_C_TIP_PROD = S.TIPPROD_C_TIP_PROD            
+							and		C.PROD_C_PROD = S.PROD_C_PROD                    
+							and		C.CONTRMUTUI_C_STATO_PR = S.STATO_MUTUI_PRESTITI_C_STATO      
+							and     (S.STATO_MUTUI_PRESTITI_F_TIPSTAT = 'C' or C.CONTRMUTUI_D_ESTIN is not null)
+				 		)
+			 		when 'PR' then (
+						select count(*)
+							from	INR_PRESTITI C                                                       
+							,		INR_STATO_MUTUI_PRESTITI S    
+							where	C.CONTRPROD_N_CONTR = L.CONTRPROD_N_CONTR            
+							and		C.TIPPROD_C_TIP_PROD = L.TIPPROD_C_TIP_PROD            
+							and		C.PROD_C_PROD = L.PROD_C_PROD           
+							and		C.TIPPROD_C_TIP_PROD = S.TIPPROD_C_TIP_PROD            
+							and		C.PROD_C_PROD = S.PROD_C_PROD                    
+							and		C.PRESTITI_C_STATUS = S.STATO_MUTUI_PRESTITI_C_STATO                      
+							and     S.STATO_MUTUI_PRESTITI_F_TIPSTAT = 'C'		
+				 		)
+				 	else (
+						select count(*)
+							from	INR_CONTRPROD C  
+							,		INR_STATOCONTR S  
+							where	C.CONTRPROD_N_CONTR = L.CONTRPROD_N_CONTR   
+							and		C.TIPPROD_C_TIP_PROD = L.TIPPROD_C_TIP_PROD
+							and		C.PROD_C_PROD = L.PROD_C_PROD
+							and		C.TIPPROD_C_TIP_PROD = S.TIPPROD_C_TIP_PROD  
+							and		C.STATOCONTR_C_STATO_CONTR = S.STATOCONTR_C_STATO_CONTR  
+							and     S.STATOCONTR_F_TIP_STATO_CONTR = 'C'
+					 	)
+			 	end as isChiuso
+		from 	INR_LEGAMECONTRCLI L, INR_CODIFCLIMEDL M, INR_CLI C, INR_AGENTI A
+		where	L.CODIFCLIMEDL_C_CLI_MEDL = M.CODIFCLIMEDL_C_CLI_MEDL
+		and   	M.ASSGNCLIAGE_C_POTZLE = C.ASSGNCLIAGE_C_POTZLE 
+		and	  	C.AGE_C_AGE = L.AGE_C_AGE_CONTR
+		and		A.AGE_C_AGE = C.AGE_C_AGE
+		and  	A.AGE_C_AGE = L.AGE_C_AGE_CONTR
+		and	( 	L.CONTRPROD_N_CONTR = 'M001'+right((replicate('0',8)+@numContr),8) or
+		        L.CONTRPROD_N_CONTR = right((replicate('0',7)+@numContr),7) or
+		        L.CONTRPROD_N_CONTR = right((replicate('0',12)+@numContr),12) or
+		        L.CONTRPROD_N_CONTR = right((replicate('0',11)+@numContr),11) )
+		<IfEqual propertyName="tipoRicerca" propertyValue="1">and L.AGE_C_AGE_CONTR = <p>contextCurrentLinkedUserCode</p></IfEqual> 	
+		<IfEqual propertyName="tipoRicerca" propertyValue="2">and L.AGE_C_AGE_CONTR != <p>contextCurrentLinkedUserCode</p></IfEqual>
+		<IfEqual propertyName="tipoRicerca" propertyValue="3">and 1 = 1</IfEqual>
+		
+		union all
+		
+		select distinct
+				A.RETEVEND_C_RETE as codRete,
+			 	PV.AGE_C_AGE as codAge,
+			 	A.AGE_M_COGN_AGE+' '+A.AGE_M_NOME_AGE as nominAge,
+			 	A.CODIFCLIMEDL_C_CLI_MEDL as codMediolanumAge,
+			 	PV.TIPPROD_C_TIP_PROD as tipProd,
+			 	PV.CONTRPROD_N_CONTR as numContratto,
+		   	 	@numContr as numPolizza,
+			 	PV.PROD_C_PROD as codProd,
+			 	M.CODIFCLIMEDL_C_CLI_MEDL as codMediolanum,
+			 	C.CLI_M_COGN as cliCognome,
+			 	C.CLI_M_NOME as cliNome,
+			 	PV.CONTRPOLIZVITA_N_POLIZ as numContrPolCompleto,
+				(select count(*)
+					from	INR_CONTRPROD C  
+					,		INR_STATOCONTR S  
+					where	C.CONTRPROD_N_CONTR = L.CONTRPROD_N_CONTR   
+					and		C.TIPPROD_C_TIP_PROD = L.TIPPROD_C_TIP_PROD
+					and		C.PROD_C_PROD = L.PROD_C_PROD
+					and		C.TIPPROD_C_TIP_PROD = S.TIPPROD_C_TIP_PROD  
+					and		C.STATOCONTR_C_STATO_CONTR = S.STATOCONTR_C_STATO_CONTR  
+					and     S.STATOCONTR_F_TIP_STATO_CONTR = 'C'
+				)
+			 	as isChiuso
+		from INR_CONTRPOLIZVITA PV, INR_LEGAMECONTRCLI L, INR_CODIFCLIMEDL M, INR_CLI C, INR_AGENTI A
+		where	PV.CONTRPROD_N_CONTR = L.CONTRPROD_N_CONTR
+		and		L.CODIFCLIMEDL_C_CLI_MEDL = M.CODIFCLIMEDL_C_CLI_MEDL
+		and   	M.ASSGNCLIAGE_C_POTZLE = C.ASSGNCLIAGE_C_POTZLE 
+		and	  	C.AGE_C_AGE = PV.AGE_C_AGE
+		and		A.AGE_C_AGE = C.AGE_C_AGE
+		and  	A.AGE_C_AGE = PV.AGE_C_AGE
+		and		PV.AGE_C_AGE = L.AGE_C_AGE_CONTR 
+		and	( 	PV.CONTRPOLIZVITA_N_POLIZ = right((replicate('0',11)+@numContr), 11) )
+		<IfEqual propertyName="tipoRicerca" propertyValue="1">and PV.AGE_C_AGE = <p>contextCurrentLinkedUserCode</p></IfEqual> 	
+		<IfEqual propertyName="tipoRicerca" propertyValue="2">and PV.AGE_C_AGE != <p>contextCurrentLinkedUserCode</p></IfEqual>
+		<IfEqual propertyName="tipoRicerca" propertyValue="3">and 1 = 1</IfEqual>
+		
+		order by 2, 4, 5, 7, 9, 10
+	</Query>     
+	<Output>
+		<Parameter propertyName="agente_codRete"/>
+		<Parameter propertyName="agente_codAgente"/>
+		<Parameter propertyName="agente_nominativo"/>
+		<Parameter propertyName="agente_codMediolanum"/>
+		<Parameter propertyName="tipoProdotto"/>
+		<Parameter propertyName="numeroContratto"/>
+		<Parameter propertyName="numeroPolizza"/>
+		<Parameter propertyName="codProdotto"/>		
+		<Parameter propertyName="cliente_codMediolanum"/>
+		<Parameter propertyName="cliente_cognome"/>
+		<Parameter propertyName="cliente_nome"/>
+		<Parameter propertyName="numeroContrattoEsteso"/>
+		<Parameter propertyName="isChiuso"/>
+	</Output>
+</Access>  
+
+<Access name="elencoContrattiCliente" type="DAOQueryAccess" queryType="0" connectionCacheReference="INR" 
+		OutputCommandDataModel="prgm.ita.p.dac.popup.model.PopupContrattoModel">
+	<Query>
+		select distinct
+				A.RETEVEND_C_RETE as codRete,
+			 	L.AGE_C_AGE as codAge,
+			 	A.AGE_M_COGN_AGE+' '+A.AGE_M_NOME_AGE as nominAge,
+			 	A.CODIFCLIMEDL_C_CLI_MEDL as codMediolanumAge,
+			 	L.TIPPROD_C_TIP_PROD as tipProd,
+		   	 	L.CONTRPROD_N_CONTR as numContratto,
+		   	 	(select max(CONTRPOLIZVITA_N_POLIZ) 
+		   	 	 from INR_CONTRPOLIZVITA 
+		   	 	 where CONTRPROD_N_CONTR = L.CONTRPROD_N_CONTR and AGE_C_AGE = L.AGE_C_AGE) as numPolizza,
+			 	L.PROD_C_PROD as codProd,
+			 	M.CODIFCLIMEDL_C_CLI_MEDL as codMediolanum,
+			 	C.CLI_M_COGN as cliCognome,
+			 	C.CLI_M_NOME as cliNome,
+			 	L.CONTRPROD_N_CONTR as numContrPolCompleto,
+			 	case L.TIPPROD_C_TIP_PROD
+			 		when 'MT' then (
+						select count(*)
+							from	INR_CONTRMUTUI C                                                       
+							,		INR_STATO_MUTUI_PRESTITI S     
+							where	C.CONTRMUTUI_C_ATTO = L.CONTRPROD_N_CONTR
+							and		C.TIPPROD_C_TIP_PROD = L.TIPPROD_C_TIP_PROD
+							and		C.PROD_C_PROD = L.PROD_C_PROD
+							and		C.TIPPROD_C_TIP_PROD = S.TIPPROD_C_TIP_PROD            
+							and		C.PROD_C_PROD = S.PROD_C_PROD                    
+							and		C.CONTRMUTUI_C_STATO_PR = S.STATO_MUTUI_PRESTITI_C_STATO      
+							and     (S.STATO_MUTUI_PRESTITI_F_TIPSTAT = 'C' or C.CONTRMUTUI_D_ESTIN is not null)
+				 		)
+			 		when 'PR' then (
+						select count(*)
+							from	INR_PRESTITI C                                                       
+							,		INR_STATO_MUTUI_PRESTITI S    
+							where	C.CONTRPROD_N_CONTR = L.CONTRPROD_N_CONTR            
+							and		C.TIPPROD_C_TIP_PROD = L.TIPPROD_C_TIP_PROD            
+							and		C.PROD_C_PROD = L.PROD_C_PROD           
+							and		C.TIPPROD_C_TIP_PROD = S.TIPPROD_C_TIP_PROD            
+							and		C.PROD_C_PROD = S.PROD_C_PROD                    
+							and		C.PRESTITI_C_STATUS = S.STATO_MUTUI_PRESTITI_C_STATO                      
+							and     S.STATO_MUTUI_PRESTITI_F_TIPSTAT = 'C'		
+				 		)
+				 	else (
+						select count(*)
+							from	INR_CONTRPROD				C  
+							,		INR_STATOCONTR				S  
+							where	C.CONTRPROD_N_CONTR = L.CONTRPROD_N_CONTR   
+							and		C.TIPPROD_C_TIP_PROD = L.TIPPROD_C_TIP_PROD
+							and		C.PROD_C_PROD = L.PROD_C_PROD
+							and		C.TIPPROD_C_TIP_PROD = S.TIPPROD_C_TIP_PROD  
+							and		C.STATOCONTR_C_STATO_CONTR = S.STATOCONTR_C_STATO_CONTR  
+							and     S.STATOCONTR_F_TIP_STATO_CONTR = 'C'
+					 	)
+			 	end as isChiuso
+		from 	INR_LEGAMECONTRCLI L, INR_CODIFCLIMEDL M, INR_CLI C, INR_AGENTI A
+		where	L.CODIFCLIMEDL_C_CLI_MEDL = M.CODIFCLIMEDL_C_CLI_MEDL
+		and   	M.ASSGNCLIAGE_C_POTZLE = C.ASSGNCLIAGE_C_POTZLE 
+		and	  	C.AGE_C_AGE = L.AGE_C_AGE_CONTR
+		and		A.AGE_C_AGE = C.AGE_C_AGE
+		and  	A.AGE_C_AGE = L.AGE_C_AGE_CONTR
+		and		L.CODIFCLIMEDL_C_CLI_MEDL = ?
+		order by codAge, tipProd, numContratto, codProd, cliCognome, cliNome
+	</Query>     
+	<Input>
+		<Parameter propertyName="clienteSelezionato_codMediolanum"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="agente_codRete"/>
+		<Parameter propertyName="agente_codAgente"/>
+		<Parameter propertyName="agente_nominativo"/>
+		<Parameter propertyName="agente_codMediolanum"/>
+		<Parameter propertyName="tipoProdotto"/>
+		<Parameter propertyName="numeroContratto"/>
+		<Parameter propertyName="numeroPolizza"/>
+		<Parameter propertyName="codProdotto"/>		
+		<Parameter propertyName="cliente_codMediolanum"/>
+		<Parameter propertyName="cliente_cognome"/>
+		<Parameter propertyName="cliente_nome"/>
+		<Parameter propertyName="numeroContrattoEsteso"/>
+		<Parameter propertyName="isChiuso"/>
+	</Output>
+</Access>  
+
+
+<Access name="ricercaClientiAgente" type="DAOQueryAccess" queryType="2" connectionCacheReference="SER_MIFID"
+	    query="CLL.F_ELENCO_ANAGRAFICHE" OutputCommandDataModel="prgm.ita.p.dac.popup.model.PopupClienteModel"
+	    storedToCallAfterQuery="CLL.F_ELENCO_ANAGRAFICHE_AQ">
+ <Input>
+	<Parameter propertyName="codMediolanum"/>
+	<Parameter propertyName="codAgente"/>
+	<Parameter propertyName="cognome"/>
+	<Parameter propertyName="codRete" propertyType="StringType" propertyValue="P"/>
+	<Parameter propertyName="tipoRicerca" propertyType="StringType" propertyValue="secondaricensiti"/>
+	<Parameter propertyName="tipoElementi" propertyType="StringType" propertyValue=""/>
+	<Parameter propertyName="statoElementi" propertyType="IntegerType" propertyValue=""/>
+	<Parameter propertyName="tipoInclusioneAgenti" propertyType="StringType" propertyValue=""/>
+	<Parameter propertyName="maxRows" propertyType="IntegerType" propertyValue="51"/>
+	<Parameter propertyName="nome"/>
+ </Input>
+ <Output>
+	<Parameter propertyName="codMediolanum"/>
+	<Parameter propertyName=""/>
+	<Parameter propertyName="codFiscale"/>
+	<Parameter propertyName="partitaIva"/>
+	<Parameter propertyName="cognome"/>
+	<Parameter propertyName="nome"/>
+	<Parameter propertyName=""/>
+	<Parameter propertyName=""/>
+	<Parameter propertyName="dataNascita"/>
+	<Parameter propertyName="agente_codAgente"/>
+	<Parameter propertyName=""/>
+	<Parameter propertyName="codCluster"/>
+	<Parameter propertyName=""/>
+	<Parameter propertyName=""/>
+	<Parameter propertyName=""/>
+	<Parameter propertyName=""/>
+	<Parameter propertyName=""/>
+	<Parameter propertyName=""/>
+	<Parameter propertyName=""/>
+ </Output> 
+</Access>
+
+<Access name="ricercaClienti" type="DAOQueryAccess" queryType="1" maxResultRows="50"
+		OutputCommandDataModel="prgm.ita.p.dac.popup.model.PopupClienteModel" connectionCacheReference="SER_MIFID">
+ <Query>
+	select
+		cli.cli_c
+		,cli.cli_x_cf
+		,cli.cli_n_piva
+		,case cli.cli_c_ncg
+		             when 'SFF' then CASE 
+			                   WHEN TRIM(cli.cli_c_sec_int) = '' THEN NULL
+			                   ELSE cli.cli_c_sec_int
+			                   END
+		             when 'SMM' then CASE 
+			                   WHEN TRIM(cli.cli_c_sec_int) = '' THEN NULL
+			                   ELSE cli.cli_c_sec_int
+			                   END
+		          else cli_m_cogn
+			end
+		,case cli.cli_c_ncg
+		             when 'SFF' then cli.cli_m_cogn||' '||cli.cli_m_nom
+		             when 'SMM' then cli.cli_m_cogn||' '||+cli.cli_m_nom
+		          else cli_m_nom
+		          end
+		,cli.cli_d_nasc
+		,'P' AS retevend_c_rete
+		,age.age_c
+		,age.age_m_nome
+		,opvpromo_c_cli as codMediolanumAge 
+		from
+			cll.cli cli
+				inner join cll.cliage clia 
+		        on clia.cli_c = cli.cli_c
+				and clia.cliage_d_fine = to_date('99991231', 'yyyymmdd')
+					inner join cll.age age
+					on clia.age_c = age.age_c
+						left outer join onl.opvpromo promo
+						on promo.opvpromo_c_age = age.age_c
+		where 1 = 1
+			<IfEqual propertyName="tipoRicerca" propertyValue="1">and age.age_c  = <p>contextCurrentLinkedUserCode</p></IfEqual>
+			<IfEqual propertyName="tipoRicerca" propertyValue="2">and age.age_c != <p>contextCurrentLinkedUserCode</p></IfEqual>
+			<IfEqual propertyName="tipoRicerca" propertyValue="3">and 1 = 1</IfEqual>  
+			<IfNotNull propertyName="codAgente">and age.age_c = <p>codAgente</p></IfNotNull>
+			<IfNotNull propertyName="codMediolanum">and clia.cli_c = <p>codMediolanum</p></IfNotNull>
+			<IfNotNull propertyName="cognome">and cli.cli_m_cogn LIKE <p>cognome%</p></IfNotNull>
+			<IfNotNull propertyName="nome">and cli.cli_m_nom LIKE <p>nome%</p></IfNotNull>
+			<IfNull propertyName="codAgente">
+		        <IfNull propertyName="codMediolanum">
+		            <IfNull propertyName="nome">
+		                <IfNull propertyName="cognome">and cli.cli_m_nom LIKE 'A%'</IfNull>
+		            </IfNull>
+		        </IfNull>
+			</IfNull>
+		<IfEqual propertyName="tipoRicerca" propertyValue="2">
+			union
+			select null
+			, cli.CLI_X_CF
+			, cli.CLI_N_PIVA
+			, cli.CLI_M_COGN
+			, cli.CLI_M_NOME
+			, cli.CLI_D_NASC
+			, 'P'
+			, age.age_c
+			, age.age_m_nome
+			, opvpromo_c_cli
+		from cll.inr_cli_elettr_rep cli 
+				inner join cll.LEGM_PROSPCT_AGENT_COGEST legm on legm.ASSGNCLIAGE_C_POTZLE = cli.ASSGNCLIAGE_C_POTZLE and legm.cod_ruolo_agent='BC' and legm.GSTD_F_ESIST='S'
+				inner join cll.age age on age.age_c = legm.cod_agent
+				left outer join onl.opvpromo promo on promo.opvpromo_c_age = age.age_c
+   			where legm.cod_agent = <p>contextCurrentLinkedUserCode</p>
+			<IfNotNull propertyName="codAgente">and cli.age_c_age = <p>codAgente</p></IfNotNull>
+			<IfNotNull propertyName="codMediolanum">and 1 = 2</IfNotNull>
+			<IfNotNull propertyName="cognome">and cli.cli_m_cogn like <p>cognome%</p></IfNotNull>
+			<IfNotNull propertyName="nome">and cli.cli_m_nome like <p>nome%</p></IfNotNull>
+			<IfNull propertyName="codAgente">
+		        <IfNull propertyName="codMediolanum">
+		            <IfNull propertyName="nome">
+		                <IfNull propertyName="cognome">and cli.cli_m_nome like 'A%'</IfNull>
+		            </IfNull>
+		        </IfNull>
+			</IfNull>			
+		</IfEqual>
+		order by 4, 5
+ </Query>
+ <Output>
+	<Parameter propertyName="codMediolanum"/>
+	<Parameter propertyName="codFiscale"/>
+	<Parameter propertyName="partitaIva"/>
+	<Parameter propertyName="cognome"/>
+	<Parameter propertyName="nome"/>
+	<Parameter propertyName="dataNascita"/>
+	<Parameter propertyName="agente_codRete"/>
+	<Parameter propertyName="agente_codAgente"/>
+	<Parameter propertyName="agente_nominativo"/>
+	<Parameter propertyName="agente_codMediolanum"/>
+ </Output> 
+</Access>
+
+<Access name="ricercaAgenti" type="DAOQueryAccess" queryType="1" maxResultRows="50" 
+OutputCommandDataModel="prgm.ita.p.dac.popup.model.PopupAgenteModel" connectionCacheReference="ARC">
+	<Query>
+		declare @codAgente varchar(20)
+		select @codAgente = <p>codAgente</p>
+		SELECT @codAgente = substring(@codAgente,patindex('%[^0]%',@codAgente),10)
+		SELECT DISTINCT
+		RIGHT('0000000000'||AN.COD_SOGGETTO,10) AS AGE_C_AGE,
+		AN.DENOMINAZIONE,
+		RIGHT('00000000000'||CONVERT(VARCHAR(11),DA.COD_CLI_AGENTE),11) AS CODIFCLIMEDL_C_CLI_MEDL,
+		'P' AS RETEVEND_C_RETE,
+		DE.COGNOME,
+		DE.NOME
+		FROM ARC_ANAG_SOGGETTO AN
+		INNER JOIN ARC_DATI_SOGGETTO DA
+		ON 1=1
+		AND AN.N_ANAG_SOGG = DA.N_ANAG_SOGG
+		INNER JOIN ARC_DETT_SOGGETTO  DE
+		ON 1=1
+		AND AN.N_ANAG_SOGG = DE.N_ANAG_SOGG
+		INNER JOIN ARC_MOV_STRUTTURA MO
+		ON 1=1
+		AND AN.N_ANAG_SOGG = MO.N_ANAG_SOGG
+		AND GETDATE() BETWEEN MO.DT_DECORR_MOV and MO.DT_FINE_DECORR_MOV
+		INNER JOIN ARC_STATO_SOGGETTO ST
+		ON 1=1
+		AND MO.N_STATO_SOGG = ST.N_STATO_SOGG
+		AND ST.DESCR_STATO_SOGG = 'ATTIVO'
+		WHERE 1=1
+		AND AN.FLG_ANNULLATO = 'N'
+		AND DA.FLG_ANNULLATO = 'N'
+		AND DE.FLG_ANNULLATO = 'N'
+		AND MO.FLG_ANNULLATO = 'N'
+		AND ST.FLG_ANNULLATO = 'N'
+
+		<IfNotNull propertyName="codAgente">and AN.COD_SOGGETTO = @codAgente</IfNotNull>
+		<IfNotNull propertyName="cognome">and DE.COGNOME like <p>cognome%</p>
+		</IfNotNull>
+		order by DE.COGNOME, DE.NOME
+	</Query>    
+	<Output>
+		<Parameter propertyName="codAgente"/>
+		<Parameter propertyName="nominativo"/>
+		<Parameter propertyName="codMediolanum"/>
+		<Parameter propertyName="codRete"/>
+	</Output>
+</Access>  
+
+<!-- *********************** ARRICCHIMENTO CONTRATTI INIZIO ****************************** -->
+<!-- Conti corrente -->
+<Access name="loadArricchimentoContrattoCC" type="DAOQueryAccess" queryType="0" connectionCacheReference="SER_MIFID">
+	<Query>	  				  	
+		SELECT 
+		NVL(C.DES_CATEG_CONTO,'') || ' - ' || NVL(S.DES_SCATEG_CONTO,'') || ' - ' || NVL(CC.DES_CONVZ_CONTO,'')
+		FROM
+		CLL.CONTR CB
+		INNER JOIN CAT_PROD.DOM_CATEG_CONTO C  ON C.COD_CATEG_CONTO = CB.CONTR_C_CAT
+		LEFT  JOIN CAT_PROD.DOM_SCATEG_CONTO S ON S.COD_SCATEG_CONTO = CB.CONTR_C_SCAT
+		LEFT  JOIN CAT_PROD.DOM_CONVZ_CONTO CC ON CC.COD_CONVZ_CONTO = CB.CONTR_C_CONV
+		INNER JOIN CAT_PROD.DETT_PROD_TECN PROD_TECN ON PROD_TECN.PROD_C = CB.PROD_C
+		WHERE CB.GSTD_F_ESIST = 'S'
+		AND C.GSTD_F_ESIST = 'S'
+		AND S.GSTD_F_ESIST = 'S'
+		AND CC.GSTD_F_ESIST = 'S'
+		AND PROD_TECN.GSTD_F_ESIST = 'S'
+		AND PROD_TECN.COD_TIPO_PROD_CONTR = ?
+		AND CB.CONTR_N = ?
+		AND CB.PROD_C = ?
+	</Query>
+	<Input>
+		<Parameter propertyName="tipoProdotto"/>
+		<Parameter propertyName="numeroContratto"/>
+		<Parameter propertyName="codProdotto"/>	
+	</Input>
+	<Output>
+		<Parameter propertyName="descrContratto"/>
+	</Output>  
+	
+</Access>
+<!-- Dossier titoli -->
+<Access name="loadArricchimentoContrattoDT" type="DAOQueryAccess" queryType="0" connectionCacheReference="SER_MIFID">
+	<Query>  				  		 
+		SELECT DES_TIPO_PROD_CONTR
+	FROM CAT_PROD.DETT_PROD_TECN A
+	INNER JOIN CAT_PROD.DOM_TIPO_PROD_CONTR B1
+		ON A.COD_TIPO_PROD_CONTR = B1.COD_TIPO_PROD_CONTR
+	WHERE A.COD_TIPO_PROD_CONTR = 'DT'
+	AND A.PROD_C = cast('12' as char(11))
+	</Query>	
+	<Output>
+		<Parameter propertyName="descrContratto"/>
+	</Output>  
+</Access>
+
+<!-- Gestioni patrimoniali -->
+<Access name="loadArricchimentoContrattoGP" type="DAOQueryAccess" queryType="0">
+	<Query>  				  		 
+		 SELECT INR_PROD.PROD_X_PROD 
+		 FROM	INR_PROD 
+		 WHERE	INR_PROD.TIPPROD_C_TIP_PROD	= ?
+		 AND	INR_PROD.PROD_C_PROD		= ?	
+	</Query>
+	<Input>
+		<Parameter propertyName="tipoProdotto"/>
+		<Parameter propertyName="codProdotto"/>	
+	</Input>
+	<Output>
+		<Parameter propertyName="descrContratto"/>
+	</Output>  
+</Access>
+
+<!-- Contratti altro -->
+<Access name="loadArricchimentoContrattoAL" type="DAOQueryAccess" queryType="0" connectionCacheReference="SER_MIFID">
+	<Query>  				  		 
+		 SELECT TRIM(DBAZ.PROD_X_DESCR_HOST )
+		FROM  cll.PROD  DBAZ 
+		INNER JOIN cat_prod.DETT_PROD_TECN DPT
+		ON DPT.PROD_C = DBAZ.PROD_C
+		WHERE 1 = 1
+		AND	DBAZ.GSTD_F_ESIST = 'S'
+		AND DPT.COD_TIPO_PROD_CONTR = ?
+		AND DBAZ.PROD_C = cast(? as char(11))
+	</Query>
+	<Input>
+		<Parameter propertyName="tipoProdotto"/>
+		<Parameter propertyName="codProdotto"/>	
+	</Input>
+	<Output>
+		<Parameter propertyName="descrContratto"/>
+	</Output>  
+</Access>
+
+<!-- Fondi -->
+<Access name="loadArricchimentoContrattoFO" type="DAOQueryAccess" queryType="0" connectionCacheReference="SER_MIFID" >
+	<Query>  				  		 
+	
+		SELECT NVL(TRIM(FAM.FAMPROD_X_FAM) || ' ', '') 
+		FROM
+			  CLL.V_FAMPROD            FAM
+			, CLL.V_COMPFAMPROD  	   COMP
+			, CLL.PROD 				   DBAZ
+			, CAT_PROD.DETT_PROD_TECN  DPT
+		WHERE 1 = 1
+		AND	DBAZ.GSTD_F_ESIST = 'S'
+		AND TRIM(COMP.FAMPROD_C_FAM) = TRIM(FAM.FAMPROD_C_FAM)
+		AND TRIM(COMP.PROD_C_PROD) = TRIM(DBAZ.PROD_C)
+		AND TRIM(COMP.TIPPROD_C_TIP_PROD) = TRIM(DPT.COD_TIPO_PROD_CONTR)
+		AND TRIM(DBAZ.PROD_C) = TRIM(DPT.PROD_C)
+		AND TRIM(COMP.PROD_C_PROD) = TRIM(DPT.PROD_C)
+		AND DPT.COD_TIPO_PROD_CONTR = ?
+		AND DBAZ.PROD_C = cast(? as char(11))
+		  	
+	</Query>
+	<Input>
+		<Parameter propertyName="tipoProdotto"/>
+		<Parameter propertyName="codProdotto"/>	
+	</Input>
+	<Output>
+		<Parameter propertyName="descrContratto"/>
+	</Output>  
+</Access>
+
+<!-- Polizze danni -->
+<Access name="loadArricchimentoContrattoPD" type="DAOQueryAccess" queryType="0" connectionCacheReference="SER_MIFID">
+	<Query>  				  		 
+		SELECT NVL(TRIM(FAM.FAMPROD_X_FAM) || ' ', '') 
+		FROM
+			  CLL.V_FAMPROD            FAM
+			, CLL.V_COMPFAMPROD  	   COMP
+			, CLL.PROD 				   DBAZ
+			, CAT_PROD.DETT_PROD_TECN  DPT
+		WHERE 1 = 1
+		AND	DBAZ.GSTD_F_ESIST = 'S'			
+		AND TRIM(COMP.FAMPROD_C_FAM) = TRIM(FAM.FAMPROD_C_FAM)
+		AND TRIM(COMP.PROD_C_PROD) = TRIM(DBAZ.PROD_C)
+		AND TRIM(COMP.TIPPROD_C_TIP_PROD) = TRIM(DPT.COD_TIPO_PROD_CONTR)
+		AND TRIM(DBAZ.PROD_C) = TRIM(DPT.PROD_C)
+		AND TRIM(COMP.PROD_C_PROD) = TRIM(DPT.PROD_C)
+		AND DPT.COD_TIPO_PROD_CONTR = ?
+		AND DBAZ.PROD_C = cast(? as char(11))
+	</Query>
+	<Input>
+		<Parameter propertyName="tipoProdotto"/>
+		<Parameter propertyName="codProdotto"/>	
+	</Input>
+	<Output>
+		<Parameter propertyName="descrContratto"/>
+	</Output>  
+</Access>
+
+<!-- Polizze vita -->
+<Access name="loadArricchimentoContrattoPV" type="DAOQueryAccess" queryType="0" connectionCacheReference="SER_MIFID">
+	<Query>  		
+		SELECT TEMP.DESCRIZIONE
+		FROM (SELECT DPT.COD_TIPO_PROD_CONTR, DBAZ.PROD_C, nvl(TRIM(FAM.FAMPROD_X_FAM), '') || ' ' || TRIM(DBAZ.PROD_X_DESCR_HOST) AS DESCRIZIONE
+			  FROM  CLL.V_FAMPROD FAM
+			  INNER join 	CLL.V_COMPFAMPROD COMP ON TRIM(COMP.FAMPROD_C_FAM) = TRIM(FAM.FAMPROD_C_FAM)
+			  INNER JOIN	CLL.PROD DBAZ ON TRIM(COMP.PROD_C_PROD) = TRIM(DBAZ.PROD_C)
+			  INNER JOIN	CAT_PROD.DETT_PROD_TECN DPT ON TRIM(COMP.TIPPROD_C_TIP_PROD) = TRIM(DPT.COD_TIPO_PROD_CONTR)
+			  INNER JOIN 	CAT_PROD.ANAG_POL_VITA APV ON trim(APV.COD_PROD_POL_VITA) = TRIM(DPT.PROD_C)
+			  WHERE 1 = 1
+			  AND	DBAZ.GSTD_F_ESIST = 'S'
+			  AND	nvl(TRIM(APV.FLG_PREVD), 'N') != 'N'
+			  union
+			  SELECT DPT.COD_TIPO_PROD_CONTR, DBAZ.PROD_C, TRIM(DBAZ.PROD_X_DESCR_HOST)  AS DESCRIZIONE
+			  FROM  cll.PROD  DBAZ 
+			  INNER JOIN cat_prod.DETT_PROD_TECN DPT ON DPT.PROD_C = DBAZ.PROD_C
+			  INNER JOIN CAT_PROD.ANAG_POL_VITA APV ON trim(APV.COD_PROD_POL_VITA) = TRIM(DPT.PROD_C)
+			  WHERE 1 = 1
+			  AND	DBAZ.GSTD_F_ESIST = 'S'			  
+			  AND	nvl(TRIM(APV.FLG_PREVD), 'N') = 'N'
+			 ) TEMP
+		WHERE	1 = 1
+		AND		COD_TIPO_PROD_CONTR = ?
+		AND 	PROD_C = CAST(? AS CHAR(11))	
+		
+	</Query>
+	<Input>
+		<Parameter propertyName="tipoProdotto"/>
+		<Parameter propertyName="codProdotto"/>	
+	</Input>
+	<Output>
+		<Parameter propertyName="descrContratto"/>
+	</Output>  
+</Access>
+
+<!-- Certificati di deposito-->
+<Access name="loadArricchimentoContrattoCD" type="DAOQueryAccess" queryType="0">
+	<Query>  				  		 
+		 SELECT INR_PROD.PROD_X_PROD 
+		 FROM	INR_PROD 
+		 WHERE	INR_PROD.TIPPROD_C_TIP_PROD	= ?
+		 AND	INR_PROD.PROD_C_PROD		= ?	
+	</Query>
+	<Input>
+		<Parameter propertyName="tipoProdotto"/>
+		<Parameter propertyName="codProdotto"/>	
+	</Input>
+	<Output>
+		<Parameter propertyName="descrContratto"/>
+	</Output>  
+</Access>
+
+<!-- Polizze infortuni -->
+<Access name="loadArricchimentoContrattoPI" type="DAOQueryAccess" queryType="0">
+	<Query>  				  		 
+		 SELECT INR_PROD.PROD_X_PROD 
+		 FROM	INR_PROD 
+		 WHERE	INR_PROD.TIPPROD_C_TIP_PROD	= ?
+		 AND	INR_PROD.PROD_C_PROD		= ?	
+	</Query>
+	<Input>
+		<Parameter propertyName="tipoProdotto"/>
+		<Parameter propertyName="codProdotto"/>	
+	</Input>
+	<Output>
+		<Parameter propertyName="descrContratto"/>
+	</Output>  
+</Access>
+
+<!-- Polizze sanitarie -->
+<Access name="loadArricchimentoContrattoPS" type="DAOQueryAccess" queryType="0">
+	<Query>  				  		 
+		 SELECT INR_PROD.PROD_X_PROD 
+		 FROM	INR_PROD 
+		 WHERE	INR_PROD.TIPPROD_C_TIP_PROD	= ?
+		 AND	INR_PROD.PROD_C_PROD		= ?	
+	</Query>
+	<Input>
+		<Parameter propertyName="tipoProdotto"/>
+		<Parameter propertyName="codProdotto"/>	
+	</Input>
+	<Output>
+		<Parameter propertyName="descrContratto"/>
+	</Output>  
+</Access>
+
+<!-- Telepiù -->
+<Access name="loadArricchimentoContrattoTM" type="DAOQueryAccess" queryType="0">
+	<Query>  				  		 
+		 SELECT INR_PROD.PROD_X_PROD 
+		 FROM	INR_PROD 
+		 WHERE	INR_PROD.TIPPROD_C_TIP_PROD	= ?
+		 AND	INR_PROD.PROD_C_PROD		= ?	
+	</Query>
+	<Input>
+		<Parameter propertyName="tipoProdotto"/>
+		<Parameter propertyName="codProdotto"/>	
+	</Input>
+	<Output>
+		<Parameter propertyName="descrContratto"/>
+	</Output>  
+</Access>
+
+<!-- Immobili multiproprietà -->
+<Access name="loadArricchimentoContrattoIM" type="DAOQueryAccess" queryType="0" connectionCacheReference="SER_MIFID">
+	<Query>  				  		 
+		SELECT TRIM(DBAZ.PROD_X_DESCR_HOST )
+		FROM  cll.PROD  DBAZ 
+		INNER JOIN cat_prod.DETT_PROD_TECN DPT
+		ON DPT.PROD_C = DBAZ.PROD_C
+		WHERE 1 = 1
+		AND	DBAZ.GSTD_F_ESIST = 'S'		
+		AND DPT.COD_TIPO_PROD_CONTR = ?
+		AND DBAZ.PROD_C = cast(? as char(11))
+	</Query>
+	<Input>
+		<Parameter propertyName="tipoProdotto"/>
+		<Parameter propertyName="codProdotto"/>	
+	</Input>
+	<Output>
+		<Parameter propertyName="descrContratto"/>
+	</Output>  
+</Access>
+
+<!-- Immobiliari tradizionali -->
+<Access name="loadArricchimentoContrattoIT" type="DAOQueryAccess" queryType="0" connectionCacheReference="SER_MIFID">
+	<Query>  				  		 
+		 SELECT TRIM(DBAZ.PROD_X_DESCR_HOST )
+		FROM  cll.PROD  DBAZ 
+		INNER JOIN cat_prod.DETT_PROD_TECN DPT
+		ON DPT.PROD_C = DBAZ.PROD_C
+		WHERE 1 = 1
+		AND	DBAZ.GSTD_F_ESIST = 'S'				
+		AND DPT.COD_TIPO_PROD_CONTR = ?
+		AND DBAZ.PROD_C = cast(? as char(11))
+	</Query>
+	<Input>
+		<Parameter propertyName="tipoProdotto"/>
+		<Parameter propertyName="codProdotto"/>	
+	</Input>
+	<Output>
+		<Parameter propertyName="descrContratto"/>
+	</Output>  
+</Access>
+
+<!-- Prestiti -->
+<Access name="loadArricchimentoContrattoPR" type="DAOQueryAccess" queryType="0" connectionCacheReference="SER_MIFID">
+	<Query>  
+		SELECT  TRIM(P.PROD_X_DESCR_HOST) || ' - ' || TRIM(A.CONTRMUTUI_C_TIPOPIANO_DESCR)		
+		FROM 	CONTRMUTUI A
+			INNER JOIN cll.PROD P
+			ON P.PROD_C = A.PROD_C AND P.PROD_C_CAT = A.CONTRMUTUI_C_CAT AND P.PROD_C_SCAT = A.CONTRMUTUI_C_SCAT
+		WHERE	1=1
+		AND		A.PROD_C	= cast('BAN'|| ? as char(11))
+		AND		A.CONTR_N	LIKE '001/'||SUBSTR(?,5,8)||'/%'
+	</Query>
+	<Input>		
+		<Parameter propertyName="codProdotto"/>
+		<Parameter propertyName="numeroContratto"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="descrContratto"/>
+	</Output>  
+</Access>		  	
+
+<!-- Mutui -->
+<Access name="loadArricchimentoContrattoMT" type="DAOQueryAccess" queryType="0" connectionCacheReference="SER_MIFID">
+	<Query>  
+		SELECT decode(upper(DES_TIPO_PROD_CONTR),'MUTUI','MUTUO',upper(DES_TIPO_PROD_CONTR)) FROM CAT_PROD.DOM_TIPO_PROD_CONTR where COD_TIPO_PROD_CONTR = 'MT'
+	</Query>
+	<Output>
+		<Parameter propertyName="descrContratto"/>
+	</Output>  
+</Access>		  	
+<!-- *********************** ARRICCHIMENTO CONTRATTI FINE ****************************** -->
+
+</DAO-Object>

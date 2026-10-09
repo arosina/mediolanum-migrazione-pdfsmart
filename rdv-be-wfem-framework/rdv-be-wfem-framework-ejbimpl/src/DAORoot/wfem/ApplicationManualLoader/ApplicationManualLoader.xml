@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="ApplicationManualLoader" connectionCacheReference="PRGM">
+
+<Access name="loadManualKey" type="DAOQueryAccess" queryType="0" maxResultRows="1">
+	<Query>
+		select ID_MANUALE, AMBIENTE, LABEL_APPLICATIVA, MAN_CONTENT_TYPE, MAN_FILE_NAME
+		from PRGM_MANUALI_APPLICATIVI 
+		where ID_MANUALE = ? and upper(AMBIENTE) in (?,'ENTRAMBI') 
+	</Query> 
+    <Input>
+		<Parameter propertyName="documentId"/> 
+		<Parameter propertyName="environment"/>
+    </Input>
+    <Output>
+		<Parameter propertyName="documentId"/> 
+		<Parameter propertyName="environment"/>
+		<Parameter propertyName="documentLabel"/>
+		<Parameter propertyName="documentContentType"/>
+		<Parameter propertyName="documentFileName"/>
+    </Output>
+</Access>  				
+
+<Access name="loadManualContent" type="DAOTableAccess" tableName="PRGM_MANUALI_APPLICATIVI">
+   <Bindings>
+	 <Parameter propertyName="documentId"  			dbColumnName="ID_MANUALE" 	primaryKey="true"/>
+	 <Parameter propertyName="environment"			dbColumnName="AMBIENTE" 	primaryKey="true"/>
+	 <Parameter propertyName="documentImage"		dbColumnName="MAN_IMAGE"/>
+   </Bindings>
+</Access>
+
+
+</DAO-Object>

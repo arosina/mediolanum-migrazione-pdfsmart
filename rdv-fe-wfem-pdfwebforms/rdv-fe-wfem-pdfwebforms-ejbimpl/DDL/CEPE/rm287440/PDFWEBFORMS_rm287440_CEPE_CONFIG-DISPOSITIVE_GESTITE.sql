@@ -1,0 +1,15 @@
+use CEPE
+go
+
+DELETE FROM PDF_CONFIG WHERE SEZIONE = 'PERSONE_GIURIDICHE' AND PARAMETRO = 'DISPOSITIVE_GESTITE'
+go
+
+INSERT INTO PDF_CONFIG (SEZIONE, PARAMETRO, VALORE, ATTIVO, DESCRIZIONE, VALORE_ESTESO)
+VALUES ('PERSONE_GIURIDICHE', 'DISPOSITIVE_GESTITE', NULL, 'S', 'Elenco dei nomi dei driver/codici-mom/external-appl inclusi nella gestione delle PG, separati da virgola', 
+'ONBOARDINGAZIENDE')
+go
+
+
+PRINT "configurazione aggiornata"
+go
+

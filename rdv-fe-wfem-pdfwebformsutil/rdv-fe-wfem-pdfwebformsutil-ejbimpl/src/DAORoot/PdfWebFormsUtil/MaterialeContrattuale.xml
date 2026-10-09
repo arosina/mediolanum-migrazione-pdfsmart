@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="MaterialeContrattuale">	
+
+<Access name="getMaterialePrecontrattuale" type="DAOOSBAccess" serviceName="rdv-be-osb-ItaCarrelloWS/Proxy/PS_CarrelloWS" operationName="getMaterialePrecontrattuale" keepAttrs="true" dataFormatter="prgm.pdfwebformsutil.drivers.dao.XmlFormatter">
+	                                                              
+	<Input>
+		<![CDATA[		
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://services.carrellows.rdv.bmed.it/">
+			   <soapenv:Header/>
+			   <soapenv:Body>
+			      <ser:getMaterialePrecontrattuale>
+			         <!--Optional:-->
+			         <arg0>			           
+			            <idFB propertyName="codiceFb"></idFB>
+			            <idProposta propertyName="idProposta"> </idProposta>			           
+			            <idOrdine propertyName="idOrdine"></idOrdine>
+			            <caller>PDFSMART</caller>
+			         </arg0>
+			      </ser:getMaterialePrecontrattuale>
+			   </soapenv:Body>
+			</soapenv:Envelope>
+		]]>
+	</Input>
+	<Output>
+		<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://services.carrellows.rdv.bmed.it/">
+		   <soapenv:Header/>
+		   <soapenv:Body>
+		      <ser:getMaterialePrecontrattualeResponse>		         
+		         <return>
+		            <resultCode propertyName="resultCode"></resultCode>
+		            <!--Zero or more repetitions:-->
+		            <resultErrors>
+		               <!--Zero or more repetitions:-->
+		               <propErrors>                  
+		                  <code></code>                  
+		                  <descr></descr>
+		               </propErrors>               
+		               <propName></propName>
+		               <!--Zero or more repetitions:-->
+		               <propWarnings>                 
+		                  <code></code>                  
+		                  <descr></descr>
+		               </propWarnings>
+		            </resultErrors>           
+		            <resultMessage propertyName="resultMessage"></resultMessage>
+		            <!--Zero or more repetitions:-->
+		            <materialePrecontrattuale>               
+		               <idProposta propertyName="materialeObbligatorio"></idProposta>              
+		               <idOrdine propertyName="idOrdine"></idOrdine>               
+		               <lineaDiBusiness propertyName="lineaDiBusiness"></lineaDiBusiness>
+		               <!--Zero or more repetitions:-->
+		               <materialeObbligatorio propertyName="materialeObbligatorio">		                  
+		                  <tipoDocumento propertyName="tipoDocumento"></tipoDocumento>		                  
+		                  <link propertyName="link"></link>		                 
+		                  <descrizione propertyName="descrizione"></descrizione>
+		               </materialeObbligatorio>
+		               <!--Zero or more repetitions:-->
+		               <materialeFacoltativo propertyName="materialeFacoltativo">		                  
+		                 <tipoDocumento propertyName="tipoDocumento"></tipoDocumento>		                  
+		                  <link propertyName="link"></link>		                 
+		                  <descrizione propertyName="descrizione"></descrizione>
+		               </materialeFacoltativo>
+		            </materialePrecontrattuale>
+		         </return>
+		      </ser:getMaterialePrecontrattualeResponse>
+		   </soapenv:Body>
+		</soapenv:Envelope>
+		]]>
+	</Output>
+</Access>
+
+<Access name="getMaterialePrecontrattualeDisposizione" type="DAOOSBAccess" serviceName="rdv-be-osb-ItaCarrelloWS/Proxy/PS_CarrelloWS" operationName="getMaterialePrecontrattualeDisposizione" keepAttrs="true" dataFormatter="prgm.pdfwebformsutil.drivers.dao.XmlFormatter">
+	                                                              
+	<Input>
+		<![CDATA[				
+			<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://services.carrellows.rdv.bmed.it/">
+			   <soapenv:Header/>
+			   <soapenv:Body>
+			      <ser:getMaterialePrecontrattualeDisposizione>
+			         <arg0>			                      
+			            <codiceProdotto propertyName="codiceProdotto"></codiceProdotto>
+			            <codiceSicav propertyName="codiceSicav"></codiceSicav>
+			            <doubleChance propertyName="doubleChance"></doubleChance>
+			            <tariffa propertyName="tariffa"></tariffa>            
+            			<tipoAdesioneFondo propertyName="tipoAdesioneFondo"></tipoAdesioneFondo>
+            			<numRate propertyName="numRate"></numRate>
+			            <caller>PDFSMART</caller>
+			            <listaOperazioni propertyName="listaOperazioni">
+               				<isin propertyName="isin"></isin>
+               				<divisa propertyName="divisa"></divisa>
+               				<piazza propertyName="piazza"></piazza>
+            			</listaOperazioni>
+			         </arg0>
+			      </ser:getMaterialePrecontrattualeDisposizione>
+			   </soapenv:Body>
+			</soapenv:Envelope>
+		]]>
+	</Input>
+	<Output>
+		<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://services.carrellows.rdv.bmed.it/">		 
+		   <soapenv:Body>
+		      <ser:getMaterialePrecontrattualeDisposizioneResponse>		         
+		         <return>
+		            <resultCode propertyName="resultCode"></resultCode>
+		            <!--Zero or more repetitions:-->
+		            <resultErrors>
+		               <!--Zero or more repetitions:-->
+		               <propErrors>                  
+		                  <code></code>                  
+		                  <descr></descr>
+		               </propErrors>               
+		               <propName></propName>
+		               <!--Zero or more repetitions:-->
+		               <propWarnings>                 
+		                  <code></code>                  
+		                  <descr></descr>
+		               </propWarnings>
+		            </resultErrors>           
+		            <resultMessage propertyName="resultMessage"></resultMessage>		           
+		            <materialePrecontrattuale>               
+		               <idProposta></idProposta>              
+		               <idOrdine></idOrdine>               
+		               <lineaDiBusiness propertyName="lineaDiBusiness"></lineaDiBusiness>
+		               <!--Zero or more repetitions:-->
+		               <materialeObbligatorio propertyName="materialeObbligatorio">		                  
+		                  <tipoDocumento propertyName="tipoDocumento"></tipoDocumento>		                  
+		                  <link propertyName="link"></link>		                 
+		                  <descrizione propertyName="descrizione"></descrizione>
+		               </materialeObbligatorio>
+		               <!--Zero or more repetitions:-->
+		               <materialeFacoltativo propertyName="materialeFacoltativo">		                  
+		                 <tipoDocumento propertyName="tipoDocumento"></tipoDocumento>		                  
+		                  <link propertyName="link"></link>		                 
+		                  <descrizione propertyName="descrizione"></descrizione>
+		               </materialeFacoltativo>
+		            </materialePrecontrattuale>
+		         </return>
+		      </ser:getMaterialePrecontrattualeDisposizioneResponse>
+		   </soapenv:Body>
+		</soapenv:Envelope>
+		]]>
+	</Output>
+</Access>
+
+<Access name="loadIsin" type="DAOQueryAccess" queryType="1" connectionCacheReference="SER_MIFID" OutputCommandDataModel="com.atosorigin.wfem.command.MapCommandDataModel">
+	<Query> 
+		SELECT CODICE_PRODOTTO, ISIN FROM SER_MIFID.CATALOGO_PRODOTTI_MIFID 
+		WHERE CODICE_PRODOTTO IN (<ToString>listaCodiciProdotto</ToString>) 
+		<IfNotNull propertyName="formaContrattuale">
+			AND FORMA_CONTRATTUALE = <p>formaContrattuale</p>
+		</IfNotNull>
+		AND TIP_PROD = 'FO'		
+	</Query>  
+	<Output>
+		<Parameter propertyName="codiceProdotto"/>
+		<Parameter propertyName="isin"/>		
+		<Parameter propertyName="formaContrattuale"/>
+	</Output>	 
+</Access>
+</DAO-Object>

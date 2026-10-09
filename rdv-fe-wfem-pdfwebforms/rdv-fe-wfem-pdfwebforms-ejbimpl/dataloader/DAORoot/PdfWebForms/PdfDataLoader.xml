@@ -1,0 +1,800 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="PdfDataLoader" connectionCacheReference="DBAZ_SOGG">
+
+<Access name="loadNdgAgente" type="DAOQueryAccess" queryType="0" 
+        connectionCacheReference="INR" maxResultRows="1">
+	<Query>
+		select 	CODIFCLIMEDL_C_CLI_MEDL
+		from 	INR_AGENTI
+		where 	AGE_C_AGE = (select right('0000000000' + ?, 10)) 
+	</Query>
+	<Input>
+		<Parameter propertyName="codAgente"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="ndg"/>
+	</Output>
+</Access>
+
+<Access name="loadCodPotenzialeSoggettoEffettivo" type="DAOQueryAccess" queryType="0" maxResultRows="1">
+	<Query>
+		select 	COD_CLI_POTENZ
+		from 	CLL.CLI
+		where 	CLI_C = substr('00000000000' || ?,-11)
+	</Query>
+	<Input>
+		<Parameter propertyName="ndg"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="codPotenziale"/>
+	</Output>
+</Access>
+
+<Access name="loadProgressivoUltimaVariazioneSoggettoEffettivo" type="DAOQueryAccess" queryType="0" maxResultRows="1">
+	<Query>
+		select 	max(CLI_ELETTR_N_PROGR)
+		from 	CLL.INR_CLI_ELETTR_REP
+		where 	AGE_C_AGE = substr('0000000000' || ?, -10)  
+		and	  	ASSGNCLIAGE_C_POTZLE = ?
+		and		STATO_CLI_ELETTR_C_STATO in ('2', '3')
+		and		CODIFCLIMEDL_C_CLI_MEDL is not null
+	</Query>
+	<Input>
+		<Parameter propertyName="codAgente"/>
+		<Parameter propertyName="codPotenziale"/>
+	</Input> 
+	<Output>
+		<Parameter propertyName="progressivoUltimaVariazione"/>
+	</Output>
+</Access> 
+
+<Access name="loadChiaveNaturaleSoggettoCensito" type="DAOQueryAccess" queryType="0" maxResultRows="1">
+	<Query>
+		select 	case when CLI_X_CF 		= '0000000000000000' 	then null else CLI_X_CF 	end as codiceFiscale 
+		, 		case when CLI_N_PIVA 	= '00000000000' 		then null else CLI_N_PIVA 	end as partitaIva
+		, 		CLI_C_NATURA_GIURIDICA
+		from 	CLL.INR_CLI_ELETTR_REP
+		where 	ASSGNCLIAGE_C_POTZLE = ?
+		and		CODIFCLIMEDL_C_CLI_MEDL is null
+	</Query>
+	<Input>
+		<Parameter propertyName="idCensimento"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="codiceFiscale"/>
+		<Parameter propertyName="partitaIva"/>
+		<Parameter propertyName="naturaGiuridica"/>
+	</Output>
+</Access>
+
+<Access name="loadNdgSoggettoCensito" type="DAOQueryAccess" queryType="0" maxResultRows="1">
+	<Query>
+		select 	CLI_C 
+		from 	CLL.CLI 
+		where 	GSTD_F_ESIST = 'S'
+		and		nvl(CLI_C_COD_BLOCCO,'S') != 'R' 
+		and 	nvl(CLI_S_BLOCCO_BAN,'S') != 'K'
+		and  	(CLI_X_INFORETE = ? or CLI_X_CF = ? or CLI_N_PIVA = ?)
+		and   	CLI_C_NCG = ? 		 
+	</Query>
+	<Input>
+		<Parameter propertyName="idCensimento"/>
+		<Parameter propertyName="codiceFiscale"/>
+		<Parameter propertyName="partitaIva"/>
+		<Parameter propertyName="naturaGiuridica"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="ndg"/>
+	</Output>
+</Access>
+
+<Access name="loadProvinciaFromComune" type="DAOQueryAccess" queryType="0" maxResultRows="2"
+	OutputCommandDataModel="com.atosorigin.wfem.command.MapCommandDataModel">
+	<Query>
+		select distinct prov.PROV_C_PROV as codiceProvincia
+		from   CLL.V_COMU comu, CLL.V_PROV prov 
+		where  trim(comu.PROV_C_PROV) = trim(prov.PROV_C_PROV)
+		and    upper(trim(comu.COMU_X_DENOM_COMU)) = upper(?)
+	</Query>
+	<Input>
+		<Parameter propertyName="comune"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="provincia"/>
+	</Output>
+</Access>
+
+<!-- CARICAMENTO DATI ANAGRAFICI -->
+<Access name="loadDatiAgente" type="DAOQueryAccess" queryType="0" connectionCacheReference="INR">
+	<Query>
+		select distinct 
+		 	A.AGE_M_COGN_AGE as cognome
+		, 	A.AGE_M_NOME_AGE as nome
+		,	A.AGE_M_COGN_AGE + ' ' + A.AGE_M_NOME_AGE as cognomeNome
+		,	A.AGE_M_NOME_AGE + ' ' + A.AGE_M_COGN_AGE as nomeCognome
+		
+		,	A.AGE_X_IND_EMAIL as email
+		,	(SELECT AGE_X_TELEFONO FROM INR_AGENTI_RPLC C WHERE C.AGE_C_AGE =	A.AGE_C_AGE) AS numeroCellulare 
+		,	A.AGE_X_TEL_CASA as numeroTelefono
+		
+		,	substring(A.AGE_C_AREA, patindex('%[^0]%', A.AGE_C_AREA), datalength(A.AGE_C_AREA)) as codiceArea
+		
+		,	substring(B.AGZPI_C_AGZ, patindex('%[^0]%', B.AGZPI_C_AGZ), datalength(B.AGZPI_C_AGZ)) as codiceAgenzia
+		,	B.AGZPI_X_COMU as comuneAgenzia
+		,	B.PROV_C_PROV as provinciaAgenzia
+		
+		,	A.AGE_D_ABIL_ISVAP
+		,	A.AGE_X_NUM_ISCRIZ_ISVAP
+		
+		from INR_AGENTI A, INR_AGENZIE B
+		where 	A.AGE_C_AGE = (select right('0000000000' + ?, 10))
+		and		A.AGZPI_C_AGZ *= B.AGZPI_C_AGZ
+	</Query>
+	<Input>
+		<Parameter propertyName="codAgente"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="cognome"/> 
+		<Parameter propertyName="nome"/> 
+		<Parameter propertyName="cognomeNome"/>
+		<Parameter propertyName="nomeCognome"/>
+		
+		<Parameter propertyName="email"/>
+		<Parameter propertyName="numeroCellulare"/>
+		<Parameter propertyName="numeroTelefono"/>
+		
+		<Parameter propertyName="codiceArea"/>
+		
+		<Parameter propertyName="codiceAgenzia"/>
+		<Parameter propertyName="comuneAgenzia"/>
+		<Parameter propertyName="provinciaAgenzia"/>
+		
+		<Parameter propertyName="dataIscrizioneRui" propertyType="DateType"/>
+		<Parameter propertyName="numeroIscrizioneRui"/>
+	</Output>
+</Access>
+<Access name="loadEmptyDatiAgente" type="DAOQueryAccess" queryType="0">
+	<Query>
+		select  
+		 	null as cognome
+		, 	null as nome
+		,	null as cognomeNome
+		,	null as nomeCognome
+		
+		,	null as email
+		,	null as numeroCellulare
+		,	null as numeroTelefono
+		
+		,	null as codiceArea
+		
+		,	null as codiceAgenzia
+		,	null as comuneAgenzia
+		,	null as provinciaAgenzia
+		
+		,	null as dataIscrizioneRui
+		,	null as numeroIscrizioneRui
+		from dual		
+	</Query>
+	<Output>
+		<Parameter propertyName="cognome"/> 
+		<Parameter propertyName="nome"/> 
+		<Parameter propertyName="cognomeNome"/>
+		<Parameter propertyName="nomeCognome"/>
+		
+		<Parameter propertyName="email"/>
+		<Parameter propertyName="numeroCellulare"/>
+		<Parameter propertyName="numeroTelefono"/>
+		
+		<Parameter propertyName="codiceArea"/>
+		
+		<Parameter propertyName="codiceAgenzia"/>
+		<Parameter propertyName="comuneAgenzia"/>
+		<Parameter propertyName="provinciaAgenzia"/>
+		
+		<Parameter propertyName="dataIscrizioneRui"/>
+		<Parameter propertyName="numeroIscrizioneRui"/>
+	</Output>
+</Access>
+  
+<Access name="loadAnagraficaSoggettoCensito" type="DAOQueryAccess" queryType="1" maxResultRows="1">
+	<Query>
+		select 	cli.CLI_M_COGN as cogome
+		,		cli.CLI_M_NOME as nome
+		,		cli.CLI_X_CF as codiceFiscale
+		,		case when cli.CLI_N_PIVA = '00000000000' then null else cli.CLI_N_PIVA end as partitaIva
+		,		null as codiceFiscalePartitaIva
+		,		case when trim(cli.CLI_F_SESSO) is null then 'S' else trim(cli.CLI_F_SESSO) end as sesso
+		,		trim(cli.CLI_M_COGN) || ' ' || trim(cli.CLI_M_NOME) as cognomeNome
+		,		trim(cli.CLI_M_NOME) || ' ' || trim(cli.CLI_M_COGN) as nomeCognome
+		,		case when cli.CLI_F_BSN_CLB in ('P','O','T','S') then 'true' else 'false' end as isPrimafila
+		,		'false' as isGiaCliente
+		,		'false' as isCointestatario
+
+		,		cli.CLI_D_NASC as dataNascita
+		,		nvl(cli.CLI_X_COMU_NASC,(SELECT comu.COMU_X_DENOM_COMU FROM CLL.V_COMU comu WHERE comu.COMU_C_COMU = cli.COMU_C_COMU_NASC and cli.COMU_C_COMU_NASC is not null)) as luogoNascita
+		,		cli.NAZ_C_NAZ_NASC as codiceNazioneNascita
+        ,		(select x.DEN_NAZ from UTLY.DOM_NOME_NAZ x where trim(x.COD_NAZ_CLI) = trim(cli.NAZ_C_NAZ_NASC)) as nazioneNascita
+		,		cli.PROV_C_PROV_NASC as provinciaNascita
+		from	<IfEqual    propertyName="acceptDraftCustomer" propertyValue="true">CLL.CEPE_CLI_PROSPECT_RETE_REP</IfEqual>
+				<IfNotEqual propertyName="acceptDraftCustomer" propertyValue="true">CLL.INR_CLI_ELETTR_REP</IfNotEqual> cli 
+		where 	cli.ASSGNCLIAGE_C_POTZLE = <p>idCensimento</p>
+		<IfNotNull propertyName="codAgente"> 
+			and		cli.AGE_C_AGE = substr('0000000000' || <p>codAgente</p>, -10)
+		</IfNotNull>
+		
+		union
+		
+		select 	cli.DEN_PROSPCT as cogome
+		,		null as nome
+		,		cli.COD_FISC_ITA as codiceFiscale
+		,		cli.COD_FISC_PART_IVA as partitaIva
+		,		cli.COD_FISC_PART_IVA as codiceFiscalePartitaIva
+		,		'S' as sesso
+		,		cli.DEN_PROSPCT as cognomeNome
+		,		cli.DEN_PROSPCT as nomeCognome
+		,		'false' as isPrimafila
+		,		'false' as isGiaCliente
+		,		'false' as isCointestatario
+
+		,		null as dataNascita
+		,		null as luogoNascita
+		,		null as codiceNazioneNascita
+        ,		null as nazioneNascita
+		,		null as provinciaNascita
+		from	CLL.ANAG_PROSPCT_PERS_GIURID cli 
+		where 	cli.COD_PROSPCT = <p>idCensimento</p>
+		<IfNotNull propertyName="codAgente"> 
+			and		cli.COD_AGENT = substr('0000000000' || <p>codAgente</p>, -10)
+		</IfNotNull>
+	</Query>
+	<Output>
+		<Parameter propertyName="cognome"/>
+		<Parameter propertyName="nome"/>
+		<Parameter propertyName="codiceFiscale"/>
+		<Parameter propertyName="partitaIva"/>
+		<Parameter propertyName="codiceFiscalePartitaIva"/>
+		<Parameter propertyName="sesso"/>
+		<Parameter propertyName="cognomeNome"/>
+		<Parameter propertyName="nomeCognome"/>
+		<Parameter propertyName="isPrimafila"/>
+		<Parameter propertyName="isGiaCliente"/>
+		<Parameter propertyName="isCointestatario"/>
+		
+		<Parameter propertyName="dataNascita"/>
+		<Parameter propertyName="luogoNascita"/>
+		<Parameter propertyName="codiceNazioneNascita"/>
+		<Parameter propertyName="nazioneNascita"/>
+		<Parameter propertyName="provinciaNascita"/>
+	</Output>
+</Access> 
+<Access name="isAnagraficaSoggettoBozza" type="DAOQueryAccess" queryType="0"
+		OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType">
+	<Query>
+		select 	case when count(*) > 0 then 'S' else 'N' end as isAnagraficaSoggettoBozza
+		from	CLL.CEPE_CLI_PROSPECT_RETE_REP cli
+		where 	cli.ASSGNCLIAGE_C_POTZLE = ?
+		and		cli.AGE_C_AGE = substr('0000000000' || ?, -10) 
+	</Query>
+	<Input>
+		<Parameter propertyName="idCensimento"/>
+		<Parameter propertyName="codAgente"/>
+	</Input>
+</Access> 
+<Access name="loadAnagraficaSoggettoEffettivo" type="DAOQueryAccess" queryType="1" maxResultRows="1">
+	<Query>
+		select  cli.CLI_M_COGN as cogome
+		,		cli.CLI_M_NOME as nome
+		,		cli.CLI_X_CF as codiceFiscale
+		,		case when cli.CLI_N_PIVA = '00000000000' then null else cli.CLI_N_PIVA end as partitaIva
+		,		null as codiceFiscalePartitaIva
+		,		cli.CLI_F_SESSO as sesso
+		,		trim(cli.CLI_M_COGN) || ' ' || trim(cli.CLI_M_NOME) as cognomeNome
+		,		trim(cli.CLI_M_NOME) || ' ' || trim(cli.CLI_M_COGN) as nomeCognome
+		,		case when cli.CLI_F_BSN_CLB in ('P','O','T','S') then 'true' else 'false' end as isPrimafila
+		,		'true' as isGiaCliente
+		,		'false' as isCointestatario
+
+		,		cli.CLI_D_NASC as dataNascita
+		,		nvl(cli.CLI_X_COMU_NASC,(SELECT comu.COMU_X_DENOM_COMU FROM CLL.V_COMU comu WHERE comu.COMU_C_COMU = cli.COMU_C_COMU_NASC and cli.COMU_C_COMU_NASC is not null)) as luogoNascita
+		,		cli.NAZ_C_NAZ_NASC as codiceNazioneNascita
+        ,		(select x.DEN_NAZ from UTLY.DOM_NOME_NAZ x where trim(x.COD_NAZ_CLI) = trim(cli.NAZ_C_NAZ_NASC)) as nazioneNascita
+		,		cli.PROV_C_PROV_NASC as provinciaNascita
+
+		from	<IfNull propertyName="progressivoUltimaVariazione">CLL.V_CLI cli</IfNull>
+				<IfNotNull propertyName="progressivoUltimaVariazione">CLL.INR_CLI_ELETTR_REP cli</IfNotNull>
+		
+		where 	cli.ASSGNCLIAGE_C_POTZLE = <p>codPotenziale</p> 
+		<IfNotNull propertyName="codAgente"> 
+			and cli.AGE_C_AGE = substr('0000000000' || <p>codAgente</p>, -10) 
+		</IfNotNull>
+		<IfNotNull propertyName="progressivoUltimaVariazione">
+			and cli.CLI_ELETTR_N_PROGR = <p>progressivoUltimaVariazione</p>
+		</IfNotNull>
+	</Query>
+	<Output>
+		<Parameter propertyName="cognome"/>
+		<Parameter propertyName="nome"/>
+		<Parameter propertyName="codiceFiscale"/>
+		<Parameter propertyName="partitaIva"/>
+		<Parameter propertyName="codiceFiscalePartitaIva"/>
+		<Parameter propertyName="sesso"/>
+		<Parameter propertyName="cognomeNome"/>
+		<Parameter propertyName="nomeCognome"/>
+		<Parameter propertyName="isPrimafila"/>
+		<Parameter propertyName="isGiaCliente"/>
+		<Parameter propertyName="isCointestatario"/>
+		
+		<Parameter propertyName="dataNascita"/>
+		<Parameter propertyName="luogoNascita"/>
+		<Parameter propertyName="codiceNazioneNascita"/>
+		<Parameter propertyName="nazioneNascita"/>
+		<Parameter propertyName="provinciaNascita"/>
+	</Output>
+</Access> 
+<Access name="loadAnagraficaSoggettoCointestatario" type="DAOQueryAccess" queryType="1" maxResultRows="1">
+	<Query>
+		select  cli.CLI_M_COGN as cogome
+		,		cli.CLI_M_NOME as nome
+		,		cli.CLI_X_CF as codiceFiscale
+		,		case when cli.CLI_N_PIVA = '00000000000' then null else cli.CLI_N_PIVA end as partitaIva
+		,		null as codiceFiscalePartitaIva
+		,		cli.CLI_F_SESSO as sesso
+		,		trim(cli.CLI_M_COGN) || ' ' || trim(cli.CLI_M_NOME) as cognomeNome
+		,		trim(cli.CLI_M_NOME) || ' ' || trim(cli.CLI_M_COGN) as nomeCognome
+		,		case when cli.CLI_F_BSN_CLB in ('P','O','T','S') then 'true' else 'false' end as isPrimafila
+		,		'true' as isGiaCliente
+		,		'true' as isCointestatario
+
+		,		cli.CLI_D_NASC as dataNascita
+		,		nvl(cli.CLI_X_COMU_NASC,(SELECT comu.COMU_X_DENOM_COMU FROM CLL.V_COMU comu WHERE comu.COMU_C_COMU = cli.COMU_C_COMU_NASC and cli.COMU_C_COMU_NASC is not null)) as luogoNascita
+		,		cli.NAZ_C_NAZ_NASC as codiceNazioneNascita
+        ,		(select x.DEN_NAZ from UTLY.DOM_NOME_NAZ x where trim(x.COD_NAZ_CLI) = trim(cli.NAZ_C_NAZ_NASC)) as nazioneNascita
+		,		cli.PROV_C_PROV_NASC as provinciaNascita
+
+		from	<IfNull propertyName="progressivoUltimaVariazione">CLL.V_CLI_COINT cli</IfNull>
+				<IfNotNull propertyName="progressivoUltimaVariazione">CLL.INR_CLI_ELETTR_REP cli</IfNotNull>
+		
+		where 	cli.ASSGNCLIAGE_C_POTZLE = <p>codPotenziale</p>
+		and		cli.AGE_C_AGE = substr('0000000000' || <p>codAgente</p>, -10)
+	</Query>
+	<Output>
+		<Parameter propertyName="cognome"/>
+		<Parameter propertyName="nome"/>
+		<Parameter propertyName="codiceFiscale"/>
+		<Parameter propertyName="partitaIva"/>
+		<Parameter propertyName="codiceFiscalePartitaIva"/>
+		<Parameter propertyName="sesso"/>
+		<Parameter propertyName="cognomeNome"/>
+		<Parameter propertyName="nomeCognome"/>
+		<Parameter propertyName="isPrimafila"/>
+		<Parameter propertyName="isGiaCliente"/>
+		<Parameter propertyName="isCointestatario"/>
+		
+		<Parameter propertyName="dataNascita"/>
+		<Parameter propertyName="luogoNascita"/>
+		<Parameter propertyName="codiceNazioneNascita"/>
+		<Parameter propertyName="nazioneNascita"/>
+		<Parameter propertyName="provinciaNascita"/>
+	</Output>
+</Access> 
+<Access name="loadAnagraficaDatiAggiuntivi" type="DAOQueryAccess" queryType="1" maxResultRows="1">
+	<Query>
+		select 	case when (trim(cli.CLI_F_SESSO) = 'S' or trim(cli.CLI_F_SESSO) is null) then 'N' else 'S' end as isPersonaFisica
+		,		case when (trim(cli.CLI_F_SESSO) = 'S' or trim(cli.CLI_F_SESSO) is null) then 'S' else 'N' end as isPersonaGiuridica
+		,		case when cli.CLI_C_NATURA_GIURIDICA in ('SMM','SFF') and cli.CLI_C_DITTA = 'D' then 'S' else 'N' end as isDittaIndividuale
+		,		case when cli.CLI_C_NATURA_GIURIDICA in ('SMM','SFF') and cli.CLI_C_DITTA = 'L' then 'S' else 'N' end as isLiberoProfessionista		
+		,		cli.CLI_C_NATURA_GIURIDICA as naturaGiuridica		
+		
+		,		cli.STATOCIVILE_C_STATO_CIVILE as codiceStatoCivile
+		,       (select DESCR from DAICREF.CCB_ANAGRAFICA_DECOD where TIPO = 'STATOCIVILE-INFORETE' and rownum=1 and trim(COD) = trim(cli.STATOCIVILE_C_STATO_CIVILE)) as statoCivile
+		
+		,		cli.CLI_C_NAZ_CITT as codiceNazioneCittadinanza
+		,       (select x.DEN_NAZ from UTLY.DOM_NOME_NAZ x where trim(x.COD_NAZ_UIC_CDCRI) = trim(cli.CLI_C_NAZ_CITT) and rownum=1) as nazioneCittadinanza
+		
+		,		cli.CLI_X_IND_INTERNET as email
+		
+		,		cli.TIPDOC_C_TIP_DOC as codiceTipoDocumento
+		,       (select DESCR from DAICREF.CCB_ANAGRAFICA_DECOD where TIPO = 'DOCUMENTO-INFORETE' and rownum=1 and trim(COD) = trim(cli.TIPDOC_C_TIP_DOC)) as tipoDocumento
+		,		cli.CLI_X_NUM_DOC as numeroDocumento
+		,		cli.ENTERIL_C_ENTE_RIL as codiceEnteRilascianteDocumento
+        ,       (select DESCR from DAICREF.CCB_ANAGRAFICA_DECOD where TIPO = 'ENTE-INFORETE' and rownum=1 and trim(COD) = trim(cli.ENTERIL_C_ENTE_RIL)) as enteRilascianteDocumento 
+		,		cli.CLI_D_RIL_DOC as dataEmissioneDocumento
+		,		cli.CLI_X_LUOGO_RIL_DOC as luogoEmissioneDocumento
+		,		null as provinciaEmissioneDocumento
+		,		cli.CLI_D_SCAD_DOC as dataScadenzaDocumento
+		
+		,		trim(cli.CLI_X_PEP_MOTIVAZ) as motivazionePep
+		,		cli.CLI_X_SECONDA_INTEST as secondaIntestazione
+		from	
+				<IfEqual propertyName="isGiaCliente" propertyValue="false">
+					<IfEqual    propertyName="acceptDraftCustomer" propertyValue="true">CLL.CEPE_CLI_PROSPECT_RETE_REP</IfEqual>
+					<IfNotEqual propertyName="acceptDraftCustomer" propertyValue="true">CLL.INR_CLI_ELETTR_REP</IfNotEqual> cli 
+				</IfEqual>
+				<IfEqual propertyName="isGiaCliente" propertyValue="true">
+					<IfNotNull propertyName="progressivoUltimaVariazione">
+						CLL.INR_CLI_ELETTR_REP cli
+					</IfNotNull>
+					<IfNull propertyName="progressivoUltimaVariazione">
+						CLL.V_CLI cli
+					</IfNull>
+				</IfEqual>						
+		where 	rownum = 1		
+		<IfEqual propertyName="isGiaCliente" propertyValue="false">and cli.ASSGNCLIAGE_C_POTZLE = <p>idCensimento</p></IfEqual>
+		<IfEqual propertyName="isGiaCliente" propertyValue="true">and cli.ASSGNCLIAGE_C_POTZLE = <p>codPotenziale</p></IfEqual>		
+		<IfNotNull propertyName="progressivoUltimaVariazione">
+			and cli.CLI_ELETTR_N_PROGR = <p>progressivoUltimaVariazione</p>
+		</IfNotNull>
+		
+		union
+		
+		select  'N' as isPersonaFisica
+		,		'S' as isPersonaGiuridica
+		,		'N' as isDittaIndividuale
+		,		'N' as isLiberoProfessionista		
+		,		null as naturaGiuridica		
+		
+		,		null as codiceStatoCivile
+		,       null as statoCivile
+		
+		,		null as codiceNazioneCittadinanza
+		,       null as nazioneCittadinanza
+		
+		,		null as email
+		
+		,		null as codiceTipoDocumento
+		,       null as tipoDocumento
+		,		null as numeroDocumento
+		,		null as codiceEnteRilascianteDocumento
+        ,       null as enteRilascianteDocumento 
+		,		null as dataEmissioneDocumento
+		,		null as luogoEmissioneDocumento
+		,		null as provinciaEmissioneDocumento
+		,		null as dataScadenzaDocumento
+		
+		,		null as motivazionePep
+		,		cli.DEN_PROSPCT as secondaIntestazione
+		from	CLL.ANAG_PROSPCT_PERS_GIURID cli 
+		where 	cli.COD_PROSPCT = <p>idCensimento</p>
+	</Query>
+	<Output>	
+		<Parameter propertyName="isPersonaFisica" propertyType="BooleanType"/>
+		<Parameter propertyName="isPersonaGiuridica" propertyType="BooleanType"/>
+		<Parameter propertyName="isDittaIndividuale" propertyType="BooleanType"/>
+		<Parameter propertyName="isLiberoProfessionista" propertyType="BooleanType"/>
+		<Parameter propertyName="naturaGiuridica"/>
+
+		<Parameter propertyName="codiceStatoCivile"/>
+		<Parameter propertyName="statoCivile"/>
+		
+		<Parameter propertyName="codiceNazioneCittadinanza"/>
+		<Parameter propertyName="nazioneCittadinanza"/>
+		
+		<Parameter propertyName="email"/>
+		
+		<Parameter propertyName="codiceTipoDocumento"/>
+		<Parameter propertyName="tipoDocumento"/>
+		<Parameter propertyName="numeroDocumento"/>
+		<Parameter propertyName="codiceEnteRilascianteDocumento"/>
+		<Parameter propertyName="enteRilascianteDocumento"/>
+		<Parameter propertyName="dataEmissioneDocumento"/>
+		<Parameter propertyName="luogoEmissioneDocumento"/>
+		<Parameter propertyName="provinciaEmissioneDocumento"/>
+		<Parameter propertyName="dataScadenzaDocumento"/>
+		
+		<Parameter propertyName="motivazionePep"/>
+		<Parameter propertyName="secondaIntestazione"/>
+	</Output>
+</Access> 
+<Access name="loadAnagraficaDatiAggiuntiviResidenza" type="DAOQueryAccess" queryType="1" maxResultRows="1">
+	<Query>
+		select 	residenza.INDCLI_X_TIPO_IND as codiceToponimoResidenza
+		,       (select DESCR from DAICREF.CCB_ANAGRAFICA_DECOD where TIPO = 'TIPO-VIA-INFORETE' and rownum=1 and trim(COD) = trim(residenza.INDCLI_X_TIPO_IND)) as toponimoResidenza
+		,		residenza.INDCLI_X_IND as indirizzoResidenza
+		,       (select DESCR from DAICREF.CCB_ANAGRAFICA_DECOD where TIPO = 'TIPO-VIA-INFORETE' and rownum=1 and trim(COD) = trim(residenza.INDCLI_X_TIPO_IND)) || ' ' || trim(residenza.INDCLI_X_IND) as toponimoIndirizzoResidenza		
+		,		residenza.INDCLI_X_NUM_IND as numeroCivicoResidenza
+		,       (select DESCR from DAICREF.CCB_ANAGRAFICA_DECOD where TIPO = 'TIPO-VIA-INFORETE' and rownum=1 and trim(COD) = trim(residenza.INDCLI_X_TIPO_IND)) || ' ' || trim(residenza.INDCLI_X_IND) || ' ' || trim(residenza.INDCLI_X_NUM_IND) as toponIndirizzoNumeroResidenza
+		,		residenza.CAP_C_AVVIAM_POSTL as capResidenza
+		,		residenza.INDCLI_X_LOC as luogoResidenza
+		,		nvl(residenza.INDCLI_X_COMU, residenza.INDCLI_X_LOC) as comuneResidenza
+		,		residenza.PROV_C_PROV as provinciaResidenza
+		,		residenza.NAZ_C_NAZ as codiceNazioneResidenza
+		,		(select x.DEN_NAZ from UTLY.DOM_NOME_NAZ x where trim(x.COD_NAZ_CLI) = trim(residenza.NAZ_C_NAZ) and rownum=1) as nazioneResidenza
+		from	
+				<IfEqual propertyName="isGiaCliente" propertyValue="false">
+					<IfEqual    propertyName="acceptDraftCustomer" propertyValue="true">CLL.CEPE_INDCLI_PROSPECT_RETE_REP</IfEqual>
+					<IfNotEqual propertyName="acceptDraftCustomer" propertyValue="true">CLL.INR_INDCLI_ELETTR_REP</IfNotEqual> residenza
+				</IfEqual>
+				<IfEqual propertyName="isGiaCliente" propertyValue="true">
+					<IfNotNull propertyName="progressivoUltimaVariazione">
+						CLL.INR_INDCLI_ELETTR_REP residenza
+					</IfNotNull>
+					<IfNull propertyName="progressivoUltimaVariazione">
+						CLL.V_INDCLI residenza
+					</IfNull>
+				</IfEqual>						
+		where 	rownum = 1		
+		<IfEqual propertyName="isGiaCliente" propertyValue="false">and residenza.ASSGNCLIAGE_C_POTZLE = <p>idCensimento</p></IfEqual>
+		<IfEqual propertyName="isGiaCliente" propertyValue="true">and residenza.ASSGNCLIAGE_C_POTZLE = <p>codPotenziale</p></IfEqual>		
+		<IfNotNull propertyName="progressivoUltimaVariazione">
+			and residenza.CLI_ELETTR_N_PROGR = <p>progressivoUltimaVariazione</p>
+		</IfNotNull>		
+		and   	residenza.TIPIND_C_TIP_IND = '01'
+		
+		union
+		
+		select	null as codiceToponimoResidenza
+		,		null as toponimoResidenza
+		,		null as indirizzoResidenza
+		,		null as toponimoIndirizzoResidenza
+		,		null as numeroCivicoResidenza
+		,		null as toponIndirizzoNumeroResidenza
+		,		null as capResidenza
+		,		null as luogoResidenza
+		,		null as comuneResidenza
+		,		null as provinciaResidenza
+		,		null as codiceNazioneResidenza
+		,		null as nazioneResidenza
+		from dual
+	</Query>
+	<Output>	
+		<Parameter propertyName="codiceToponimoResidenza"/>
+		<Parameter propertyName="toponimoResidenza"/>
+		<Parameter propertyName="indirizzoResidenza"/>
+		<Parameter propertyName="toponimoIndirizzoResidenza"/>
+		<Parameter propertyName="numeroCivicoResidenza"/>
+		<Parameter propertyName="toponimoIndirizzoNumeroResidenza"/>
+		<Parameter propertyName="capResidenza"/>
+		<Parameter propertyName="luogoResidenza"/>
+		<Parameter propertyName="comuneResidenza"/>
+		<Parameter propertyName="provinciaResidenza"/>
+		<Parameter propertyName="codiceNazioneResidenza"/>
+		<Parameter propertyName="nazioneResidenza"/>
+	</Output>
+</Access>
+<Access name="loadAnagraficaDatiAggiuntiviTelAbitazione" type="DAOQueryAccess" queryType="1" maxResultRows="1">
+	<Query>
+		select 	telAbitazione.RECAPTELCLI_X_PREF_TEL as prefissoTelefonoAbitazione
+		,		telAbitazione.RECAPTELCLI_X_NUM_TEL as numeroTelefonoAbitazione
+		,		trim(telAbitazione.RECAPTELCLI_X_PREF_TEL) || trim(telAbitazione.RECAPTELCLI_X_NUM_TEL) as telefonoAbitazione
+		from	
+				<IfEqual propertyName="isGiaCliente" propertyValue="false">
+					<IfEqual    propertyName="acceptDraftCustomer" propertyValue="true">CLL.CEPE_RECAPCLI_PROS_RETE_REP</IfEqual>
+					<IfNotEqual propertyName="acceptDraftCustomer" propertyValue="true">CLL.INR_RECAPTELCLI_ELETTR_REP</IfNotEqual> telAbitazione
+				</IfEqual>
+				<IfEqual propertyName="isGiaCliente" propertyValue="true">
+					<IfNotNull propertyName="progressivoUltimaVariazione">
+						CLL.INR_RECAPTELCLI_ELETTR_REP telAbitazione
+					</IfNotNull>
+					<IfNull propertyName="progressivoUltimaVariazione">
+						CLL.V_RECAPTELCLI telAbitazione
+					</IfNull>
+				</IfEqual>						
+		where 	rownum = 1		
+		<IfEqual propertyName="isGiaCliente" propertyValue="false">and telAbitazione.ASSGNCLIAGE_C_POTZLE = <p>idCensimento</p></IfEqual>
+		<IfEqual propertyName="isGiaCliente" propertyValue="true">and telAbitazione.ASSGNCLIAGE_C_POTZLE = <p>codPotenziale</p></IfEqual>
+		<IfNotNull propertyName="progressivoUltimaVariazione">
+			and telAbitazione.CLI_ELETTR_N_PROGR = <p>progressivoUltimaVariazione</p>
+		</IfNotNull>
+		and		telAbitazione.TIPRECAPTEL_C_TIP_RECAP = '01'
+		
+		union
+		
+		select	null as prefissoTelefonoAbitazione
+		,		null as numeroTelefonoAbitazione
+		,		null as telefonoAbitazione
+		from dual
+	</Query>
+	<Output>	
+		<Parameter propertyName="prefissoTelefonoAbitazione"/>
+		<Parameter propertyName="numeroTelefonoAbitazione"/>
+		<Parameter propertyName="telefonoAbitazione"/>
+	</Output>
+</Access> 
+<Access name="loadAnagraficaDatiAggiuntiviCellulare" type="DAOQueryAccess" queryType="1" maxResultRows="1">
+	<Query>
+		select 	cellulare.RECAPTELCLI_X_PREF_TEL as prefissoTelefonoCellulare
+		,		cellulare.RECAPTELCLI_X_NUM_TEL as numeroTelefonoCellulare
+		,		trim(cellulare.RECAPTELCLI_X_PREF_TEL) || trim(cellulare.RECAPTELCLI_X_NUM_TEL) as telefonoCellulare
+		from	
+				<IfEqual propertyName="isGiaCliente" propertyValue="false">
+					<IfEqual    propertyName="acceptDraftCustomer" propertyValue="true">CLL.CEPE_RECAPCLI_PROS_RETE_REP</IfEqual>
+					<IfNotEqual propertyName="acceptDraftCustomer" propertyValue="true">CLL.INR_RECAPTELCLI_ELETTR_REP</IfNotEqual> cellulare
+				</IfEqual>
+				<IfEqual propertyName="isGiaCliente" propertyValue="true">
+					<IfNotNull propertyName="progressivoUltimaVariazione">
+						CLL.INR_RECAPTELCLI_ELETTR_REP cellulare
+					</IfNotNull>
+					<IfNull propertyName="progressivoUltimaVariazione">
+						CLL.V_RECAPTELCLI cellulare
+					</IfNull>
+				</IfEqual>						
+		where 	rownum = 1		
+		<IfEqual propertyName="isGiaCliente" propertyValue="false">and cellulare.ASSGNCLIAGE_C_POTZLE = <p>idCensimento</p></IfEqual>
+		<IfEqual propertyName="isGiaCliente" propertyValue="true">and cellulare.ASSGNCLIAGE_C_POTZLE = <p>codPotenziale</p></IfEqual>		
+		<IfNotNull propertyName="progressivoUltimaVariazione">
+			and cellulare.CLI_ELETTR_N_PROGR = <p>progressivoUltimaVariazione</p>
+		</IfNotNull>
+		and		cellulare.TIPRECAPTEL_C_TIP_RECAP = '14'
+		
+		union
+		
+		select	null as prefissoTelefonoCellulare
+		,		null as numeroTelefonoCellulare
+		,		null as telefonoCellulare
+		from dual
+	</Query>
+	<Output>	
+		<Parameter propertyName="prefissoTelefonoCellulare"/>
+		<Parameter propertyName="numeroTelefonoCellulare"/>
+		<Parameter propertyName="telefonoCellulare"/>
+	</Output>
+</Access> 
+<Access name="loadEmptyAnagraficaSoggetto" type="DAOQueryAccess" queryType="1" maxResultRows="1">
+	<Query>
+		select  null as cogome
+		,		null as nome
+		,		null as codiceFiscale
+		,		null as partitaIva
+		,		null as codiceFiscalePartitaIva
+		,		null as sesso
+		,		null as cognomeNome
+		,		null as nomeCognome
+		,		null as isPrimafila
+		,		null as isGiaCliente
+		,		null as isCointestatario
+				
+		,		null as dataNascita
+		,		null as luogoNascita
+		,		null as codiceNazioneNascita
+		,		null as nazioneNascita
+		,		null as provinciaNascita
+		
+
+		,		null as isPersonaFisica
+		,		null as isPersonaGiuridica
+		,		null as isDittaIndividuale
+		,		null as isLiberoProfessionista
+		,		null as naturaGiuridica
+		
+		,		null as codiceStatoCivile
+		,		null as statoCivile
+		
+		,		null as codiceNazioneCittadinanza
+		,		null as nazioneCittadinanza
+		
+		,		null as email
+		
+		,		null as codiceTipoDocumento
+		,		null as tipoDocumento
+		,		null as numeroDocumento
+		,		null as codiceEnteRilascianteDocumento
+		,		null as enteRilascianteDocumento
+		,		null as dataEmissioneDocumento
+		,		null as luogoEmissioneDocumento
+		,		null as provinciaEmissioneDocumento
+		,		null as dataScadenzaDocumento
+		
+		,		null as motivazionePep
+		,		null as secondaIntestazione
+
+		,		null as codiceToponimoResidenza
+		,		null as toponimoResidenza
+		,		null as indirizzoResidenza
+		,		null as toponimoIndirizzoResidenza
+		,		null as numeroCivicoResidenza
+		,		null as toponIndirizzoNumeroResidenza
+		,		null as capResidenza
+		,		null as luogoResidenza
+		,		null as comuneResidenza
+		,		null as provinciaResidenza
+		,		null as codiceNazioneResidenza
+		,		null as nazioneResidenza
+
+		,		null as prefissoTelefonoAbitazione
+		,		null as numeroTelefonoAbitazione
+		,		null as telefonoAbitazione
+
+		,		null as prefissoTelefonoCellulare
+		,		null as numeroTelefonoCellulare
+		,		null as telefonoCellulare
+		
+		from dual
+	</Query>
+	<Output>
+		<Parameter propertyName="cognome"/>
+		<Parameter propertyName="nome"/>
+		<Parameter propertyName="codiceFiscale"/>
+		<Parameter propertyName="partitaIva"/>
+		<Parameter propertyName="codiceFiscalePartitaIva"/>
+		<Parameter propertyName="sesso"/>
+		<Parameter propertyName="cognomeNome"/>
+		<Parameter propertyName="nomeCognome"/>
+		<Parameter propertyName="isPrimafila"/>
+		<Parameter propertyName="isGiaCliente"/>
+		<Parameter propertyName="isCointestatario"/>
+				
+		<Parameter propertyName="dataNascita"/>
+		<Parameter propertyName="luogoNascita"/>
+		<Parameter propertyName="codiceNazioneNascita"/>
+		<Parameter propertyName="nazioneNascita"/>
+		<Parameter propertyName="provinciaNascita"/>
+		
+		
+		<Parameter propertyName="isPersonaFisica"/>
+		<Parameter propertyName="isPersonaGiuridica"/>
+		<Parameter propertyName="isDittaIndividuale"/>
+		<Parameter propertyName="isLiberoProfessionista"/>
+		<Parameter propertyName="naturaGiuridica"/>
+		
+		<Parameter propertyName="codiceStatoCivile"/>
+		<Parameter propertyName="statoCivile"/>
+		
+		<Parameter propertyName="codiceNazioneCittadinanza"/>
+		<Parameter propertyName="nazioneCittadinanza"/>
+		
+		<Parameter propertyName="email"/>
+		
+		<Parameter propertyName="codiceTipoDocumento"/>
+		<Parameter propertyName="tipoDocumento"/>
+		<Parameter propertyName="numeroDocumento"/>
+		<Parameter propertyName="codiceEnteRilascianteDocumento"/>
+		<Parameter propertyName="enteRilascianteDocumento"/>
+		<Parameter propertyName="dataEmissioneDocumento"/>
+		<Parameter propertyName="luogoEmissioneDocumento"/>
+		<Parameter propertyName="provinciaEmissioneDocumento"/>
+		<Parameter propertyName="dataScadenzaDocumento"/>
+		
+		<Parameter propertyName="motivazionePep"/>
+		<Parameter propertyName="secondaIntestazione"/>
+		
+		<Parameter propertyName="codiceToponimoResidenza"/>
+		<Parameter propertyName="toponimoResidenza"/>
+		<Parameter propertyName="indirizzoResidenza"/>
+		<Parameter propertyName="toponimoIndirizzoResidenza"/>
+		<Parameter propertyName="numeroCivicoResidenza"/>
+		<Parameter propertyName="toponimoIndirizzoNumeroResidenza"/>
+		<Parameter propertyName="capResidenza"/>
+		<Parameter propertyName="luogoResidenza"/>
+		<Parameter propertyName="comuneResidenza"/>
+		<Parameter propertyName="provinciaResidenza"/>
+		<Parameter propertyName="codiceNazioneResidenza"/>
+		<Parameter propertyName="nazioneResidenza"/>
+
+		<Parameter propertyName="prefissoTelefonoAbitazione"/>
+		<Parameter propertyName="numeroTelefonoAbitazione"/>
+		<Parameter propertyName="telefonoAbitazione"/>
+
+		<Parameter propertyName="prefissoTelefonoCellulare"/>
+		<Parameter propertyName="numeroTelefonoCellulare"/>
+		<Parameter propertyName="telefonoCellulare"/>
+	</Output>
+</Access> 
+
+<Access name="loadIsClienteAgenteWithCF" type="DAOQueryAccess" queryType="0" connectionCacheReference="INR"
+		OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType">
+	<Query>
+		select	case when count(*) > 0 then 'S' else 'N' end isClienteAgente
+		from	INR_AGENTI
+		where	AGE_X_CICLO_VITA = 'ATTIVO'
+		and		AGE_X_CF_AGE = ?
+	</Query>
+	<Input> 
+		<Parameter propertyName="codiceFiscale"/> 
+    </Input> 
+</Access>
+
+<Access name="loadIsClienteAgenteWithNDG" type="DAOQueryAccess" queryType="0" connectionCacheReference="INR"
+		OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType">
+	<Query>
+		select	case when count(*) > 0 then 'S' else 'N' end isClienteAgente
+		from	INR_AGENTI
+		where	AGE_X_CICLO_VITA = 'ATTIVO'
+		and		CODIFCLIMEDL_C_CLI_MEDL = (select right('00000000000' + ?, 11)) 
+	</Query>
+	<Input> 
+		<Parameter propertyName="ndg"/> 
+    </Input> 
+</Access>
+
+</DAO-Object>

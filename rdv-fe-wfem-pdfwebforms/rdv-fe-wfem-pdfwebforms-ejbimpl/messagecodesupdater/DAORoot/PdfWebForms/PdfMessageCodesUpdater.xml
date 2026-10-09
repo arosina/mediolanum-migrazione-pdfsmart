@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="PdfMessageCodesUpdater" connectionCacheReference="CEPE">
+
+<CodDescriptions>
+   <CodDesc name="CONF_ITEM_NAMES" tableName="PDF_MESSAGE_CODES" codColumnName="CONF_ITEM_NAME" descrColumnName="CONF_ITEM_NAME" orderBy="CONF_ITEM_NAME"/>
+</CodDescriptions>
+
+<Access name="pdfMessageCodes" type="DAOTableAccess" tableName="PDF_MESSAGE_CODES">
+   <Bindings>
+		<Parameter propertyName="confItemName" 			dbColumnName="CONF_ITEM_NAME" 	primaryKey="true"/>
+		<Parameter propertyName="confItemProperties" 	dbColumnName="CONF_ITEM_PROPERTIES"/>
+   </Bindings>
+</Access>
+
+</DAO-Object>

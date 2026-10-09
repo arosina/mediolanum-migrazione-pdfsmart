@@ -1,0 +1,31 @@
+<tr>
+	<td style="padding-left: 65;padding-bottom: 5;">
+      <table class="text" cellpadding="0" cellspacing="0" <%=pdfAnag.getPdfNumPages().intValue() > 0 && !pdfAnag.getPdfContent().isNull()?"":"style='visibility:hidden;'"%>>
+		 <tr>
+		 	<td><span style="cursor: pointer; text-decoration:  underline;" onclick="showImageLoaderCont();">Carica jpeg delle pagine manualmente</span>&nbsp;</td>
+		 	<td id="imageLoaderCont" style="visibility:hidden;">
+		 		<table class="text">
+		 			<tr>
+				 		<td><%=template.field("pdfAnag_pageImageContent","labelposition='nolabel' modality='insert' showclear='false' showpreview='false'")%></td>
+				 		<td>
+							<form name="datiImmaginePagina" method="post" action="call.wfem" style="margin:0;">
+							<input type="hidden" name="wfemCmd" value="prgm.pdfwebforms.publisher.business.SalvaImmaginePagina.execute">
+							<input type="hidden" name="BrowserInstance" value="<%=request.getAttribute("BrowserInstance")%>">
+							<div>
+								<table width="100%">
+									<tr>
+										<td><%=template.field("pdfAnag_pageImageNum","size='5'")%></td>
+									</tr>
+						 		</table>
+						 	</div>
+				 			</form>
+				 		</td>
+				 		<td><%=template.action("salvaImmaginePagina","text='Salva immagine'")%></td>
+				 	</tr>
+		 		</table>
+		 	</td>
+		 </tr>
+      </table>
+	</td>
+</tr>
+

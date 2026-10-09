@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="SchedaSCAIServices">
+
+	<Access name="invioMailGenericaConAttachment" type="DAOOSBAccess" serviceName="OSB_InvioMail/px/InvioMailTemplate_HTTP"
+		operationName="invioMailGenericaConAttachment" markNillable="true" keepAttrs="true" dataFormatter="prgm.pdfwebformsutil.drivers.dao.XmlFormatter" resultCharsetName="UTF-8">
+		<Input>
+		<![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tnsInvioMail="http://invioMailGenericaConAttachment.schema.bmed.it/v1">
+				<soapenv:Header/>
+				<soapenv:Body>
+					<tnsInvioMail:invioMailGenericaConAttachmentRequest> 
+						<tnsInvioMail:getDocument> 
+							<tnsInvioMail:objectstore propertyName="request_objectStore"></tnsInvioMail:objectstore> 
+							<tnsInvioMail:objectclass propertyName="request_objectClass"></tnsInvioMail:objectclass> 
+							<tnsInvioMail:index attrs="request_index_name@name,request_index_operator@operator,request_index_attributeValue@attributeValue"/> 
+							<tnsInvioMail:istituto propertyName="request_istituto"></tnsInvioMail:istituto> 
+							<tnsInvioMail:matricola propertyName="request_matricola"/> 
+							<tnsInvioMail:ruolo propertyName="request_ruolo"/> 
+							<tnsInvioMail:filiale propertyName="request_filiale"></tnsInvioMail:filiale> 
+							<tnsInvioMail:pdfdisableprint/> 
+							<tnsInvioMail:convert/> 
+							<tnsInvioMail:reader/> 
+						</tnsInvioMail:getDocument> 
+						<tnsInvioMail:emailData> 
+							<tnsInvioMail:from propertyName="request_from"></tnsInvioMail:from> 
+							<tnsInvioMail:subject propertyName="request_subject"></tnsInvioMail:subject> 
+							<tnsInvioMail:body propertyName="request_body"></tnsInvioMail:body> 
+							<tnsInvioMail:contentType propertyName="request_contentType"></tnsInvioMail:contentType> 
+							<tnsInvioMail:contentEncoding propertyName="request_contentEncoding"></tnsInvioMail:contentEncoding> 
+							<tnsInvioMail:filename propertyName="request_filename"></tnsInvioMail:filename> 
+							<tnsInvioMail:to_list propertyName="request_toList" listContainer="true"> 
+								<tnsInvioMail:recipients propertyName="request_toList"> 
+									<tnsInvioMail:to propertyName="address"/> 
+								</tnsInvioMail:recipients> 
+							</tnsInvioMail:to_list> 
+							<tnsInvioMail:cc_list propertyName="request_ccList" listContainer="true"> 
+								<tnsInvioMail:copy propertyName="request_ccList"> 
+									<tnsInvioMail:cc propertyName="address"/> 
+								</tnsInvioMail:copy> 
+							</tnsInvioMail:cc_list> 
+							<tnsInvioMail:bcc_list propertyName="request_bccList" listContainer="true"> 
+								<tnsInvioMail:blindcopy propertyName="request_bccList"> 
+									<tnsInvioMail:bcc propertyName="address"/> 
+								</tnsInvioMail:blindcopy> 
+							</tnsInvioMail:bcc_list> 
+						</tnsInvioMail:emailData> 
+					</tnsInvioMail:invioMailGenericaConAttachmentRequest> 	
+				</soapenv:Body>
+			</soapenv:Envelope>]]>
+		</Input>
+		<Output>
+		<![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+			   <soapenv:Header xmlns:tnsInvioMail="http://invioMailGenericaConAttachment.schema.bmed.it/v1"/>
+			   <soapenv:Body>
+			      <inv:processResponse xmlns:inv="http://www.bancamediolanum.it/InvioMail">
+			         <inv:SubjectMail propertyName="response_subjectMail"></inv:SubjectMail>
+			         <inv:TestoMail propertyName="response_testoMail"></inv:TestoMail>
+			         <inv:From propertyName="response_from"></inv:From>
+			         <inv:To propertyName="response_to"></inv:To>
+			         <inv:Esito propertyName="response_codEsito"></inv:Esito>
+			         <inv:DescrErrore propertyName="response_desEsito"></inv:DescrErrore>
+			      </inv:processResponse>
+			      <v1:invioMailGenericaConAttachmentResponse xmlns:v1="http://invioMailGenericaConAttachment.schema.bmed.it/v1">
+         			<v1:codEsito propertyName="response_codEsito"></v1:codEsito>
+         			<v1:desEsito propertyName="response_desEsito"></v1:desEsito>
+      			  </v1:invioMailGenericaConAttachmentResponse>			      
+			   </soapenv:Body>
+			</soapenv:Envelope>]]>
+		</Output>
+	</Access>
+</DAO-Object>

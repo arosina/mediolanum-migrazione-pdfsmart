@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="ComunicazioniDiPiuPac" connectionCacheReference="INR">
+<Access name="elencoTranches" type="DAOQueryAccess" queryType="0"
+		connectionCacheReference="INR" OutputCommandDataModel="com.atosorigin.wfem.command.MapCommandDataModel">
+	<Query>
+	select
+		NR_TRANCHE as 'N. Tranche' ,
+		PREMIO_LORDO_VERSATO as 'Premio Lordo Versato',
+		PREMIO_LORDO_INVESTITO as 'Premio netto investito (1)',
+		DEC_PREMIO_INVESTITO as 'Decorrenza investimento',     
+		MIN_GARANTITO_SCADENZA as 'Minimo garantito a scadenza',     
+		PREZZO_RIMBORSO as 'Prezzo di Rimborso (2)',    
+		CAPITALE_LORDO_SCADENZA 'Capitale Lordo a scadenza (3)'
+	from INR_TABREND_TRANCHE
+	where POLIZZA = ?
+	and NR_TRANCHE != '999'
+	order by NR_TRANCHE 
+	</Query>
+	<Input>
+		<Parameter propertyName="polizza"/>
+	</Input> 
+</Access>
+
+
+<Access name="elencoComunicazioni" type="DAOQueryAccess" queryType="0"
+		connectionCacheReference="INR" OutputCommandDataModel="prgm.ita.anagraficaclienti.comunicazionedipiupac.ComunicazioneDiPiuPacModel">
+	<Query>
+	select distinct
+		POLIZZA,     
+		DESC_BENFICIARIO,                         
+		IMPORTO_NETTO_LIQUIDATO, 
+		REND_EFFETTIVO_SCADENZA, 
+		LORDO_VERSATO,   
+		COMMISS_PERFORMANCE, 
+		IMPORTO_RITENUTA_IMPOSTA, 
+		REND_EFFETTIVO_LORDO, 
+		REND_EFFETTIVO_NETTO, 
+ 		VARIAZ_INDICE_ISTAT, 
+		VARIAZ_INDICE_ISTAT_40P, 
+		DIFF_REND_ISTAT,
+		DIFFERENZA_10P, 
+		ULTIMA_TRANCHE_BONUS 
+	from
+		INR_LETTERA_DETTLIQ
+	where
+		CODICE_BENFICIARIO = ?
+    order by POLIZZA
+	</Query> 
+	<Input>
+		<Parameter propertyName="codMediolanum"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="polizza"/> 			
+		<Parameter propertyName="descrizioneBeneficiario"/> 		
+		<Parameter propertyName="capitaleNettoAScadenza"/> 			
+		<Parameter propertyName="capitaleLordoAScadenza"/> 			
+		<Parameter propertyName="capitaleVersato"/> 				
+		<Parameter propertyName="commissioneDiPerformance"/> 			
+		<Parameter propertyName="ritenutaDiImposta"/> 				
+		<Parameter propertyName="rendimentoEffettivoLordo"/>			
+		<Parameter propertyName="rendimentoEffettivoNetto"/>			
+		<Parameter propertyName="variazioneIndiceIstat"/>				
+		<Parameter propertyName="variazioneIndiceIstat40P"/>			
+		<Parameter propertyName="differenzaRendimentoVariazione"/> 		
+		<Parameter propertyName="differenzaRendimentoVariazione10P"/>	
+		<Parameter propertyName="importoUltimaTrancheBonus"/>
+	</Output>
+</Access>
+
+</DAO-Object>

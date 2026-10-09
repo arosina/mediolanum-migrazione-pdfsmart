@@ -1,0 +1,15 @@
+wfem-master-pom: Pom principale delle applicazioni WFem
+rdv-lib-wfem-thirdparty: Librerie di terze parti
+rdv-be-wfem-framework: WFem framework
+rdv-fe-wfem-wfemlayout: WFem framework per front end
+rdv-fe-wfem-mokemenu: Portalino di test
+
+rdv-be-wfem-adeguatezzacedacri: Dipendenza applicativa
+rdv-fe-wfem-itaanagraficaclienti: Dipendenza applicativa
+rdv-fe-wfem-itapdac: Dipendenza applicativa
+
+rdv-fe-wfem-pdfwebforms: Motore PdfSmart
+rdv-fe-wfem-pdfwebformsutil: Utility Driver generica
+rdv-fe-wfem-pdfwebformspolizzeutil: Utility Driver Polizze
+rdv-fe-wfem-pdfwebformsdrivers-personalpirvariazionepianopac: Driver di esempio
+rdv-fe-wfem-pdfwebformsdrivers-postcompletioncewutility: Utility per elaborazioni Batch post compilazione.

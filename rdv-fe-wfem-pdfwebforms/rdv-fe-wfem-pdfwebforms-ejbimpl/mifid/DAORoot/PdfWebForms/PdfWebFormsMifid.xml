@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="PdfWebFormsMifid">
+
+<Access name="callMiFidBasket" type="DAOOSBAccess" markNillable="true" 
+	serviceName="service/soggetto/posizionedispositiva/MotoreAdeguatezzaService/v1" operationName="verificaAdeguatezza" osbName="OSB12C">
+<Input>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://posizionedispositiva.soggetto.be.schema.bmed.it/MotoreAdeguatezza/v1">
+			<soapenv:Header/>
+			<soapenv:Body>
+				<v11:verificaAdeguatezza>
+					<v11:metadata>
+						<v11:abiCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v11:callerDataId append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v11:channelCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v11:companyCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v11:familyBankerCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v11:familyBanker>true</v11:familyBanker>
+						<v11:inputCommonDataVestion append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v11:ip append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v11:keyHole>false</v11:keyHole>
+						<v11:keylog append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v11:operatorCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v11:placeCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v11:statusCode>0</v11:statusCode>
+						<v11:swift append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v11:timeStamp propertyName="now"></v11:timeStamp>
+						<v11:userAgent append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v11:userId propertyName="userId"></v11:userId>
+						<v11:userIdKeyHole append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+						<v11:versionBs append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					</v11:metadata>					
+					<v11:applicazioneChiamante propertyName="applicazioneChiamante"></v11:applicazioneChiamante>
+					<v11:codDispoSorgente propertyName="codDispoSorgente"></v11:codDispoSorgente>
+					<v11:codSistemaSorgente>PRT</v11:codSistemaSorgente>
+					<v11:contatoreOperazioni>1</v11:contatoreOperazioni>
+		            <v11:flagAdeguatezza propertyName="inputBasket_flagAdeguatezza"></v11:flagAdeguatezza>
+		            <v11:flagCheckRiprofilatura propertyName="flagCheckRiprofilatura"></v11:flagCheckRiprofilatura>
+					<v11:flagRDA propertyName="flagRDA"></v11:flagRDA>
+					<v11:idAdeguatezzaPadre propertyName="mifidManlevaData_idAdeguatezzaPadre"></v11:idAdeguatezzaPadre>
+					<v11:flagManlevaKOESG propertyName="mifidManlevaData_flagManlevaKOESG"></v11:flagManlevaKOESG>					
+					<v11:idPCA propertyName="idPCA"></v11:idPCA>
+					<v11:idQLTM propertyName="idQLTM"></v11:idQLTM>				
+					<v11:acquisti propertyName="inputBasket_acquisti">
+						<v11:numeroContratto propertyName="numeroContratto"></v11:numeroContratto>
+						<v11:codTipoOperazione propertyName="codTipoOperazione"></v11:codTipoOperazione>
+						<v11:contoDiAddebito propertyName="contoDiAddebito"></v11:contoDiAddebito>
+						<v11:flagSwitch propertyName="flagSwitch"></v11:flagSwitch>
+						<v11:clienti propertyName="clienti">
+							<v11:codPotenziale propertyName="codPotenziale"></v11:codPotenziale>
+							<v11:ndg propertyName="ndg"></v11:ndg>
+							<v11:ruolo propertyName="codRuoloVerificaMifid"></v11:ruolo>
+						</v11:clienti>
+						<v11:comparti propertyName="comparti">
+							<v11:categoria propertyName="categoria"></v11:categoria>
+							<v11:codiceFondo propertyName="codiceFondo"></v11:codiceFondo>
+							<v11:codiceOPV propertyName="codiceOPV"></v11:codiceOPV>
+							<v11:codiceTipoProdotto propertyName="codiceTipoProdotto"></v11:codiceTipoProdotto>
+							<v11:codiceTitolo propertyName="codiceTitolo"></v11:codiceTitolo>
+							<v11:convenzione propertyName="convenzione"></v11:convenzione>
+							<v11:divisa propertyName="divisa"></v11:divisa>
+							<v11:fcontr propertyName="fcontr"></v11:fcontr>
+							<v11:importo propertyName="importo"></v11:importo>
+							<v11:indicativoDiEmissione propertyName="indicativoDiEmissione"></v11:indicativoDiEmissione>
+							<v11:profilo propertyName="profilo"></v11:profilo>
+							<v11:sottocategoria propertyName="sottocategoria"></v11:sottocategoria>
+							<v11:tariffa propertyName="tariffa"></v11:tariffa>
+							<v11:versamentoIniziale propertyName="versamentoIniziale"></v11:versamentoIniziale>
+							<v11:derogaCommissionale propertyName="derogaCommissionale"></v11:derogaCommissionale>
+							<v11:strategia propertyName="strategia"></v11:strategia>
+							<v11:codiceFondoPartenzaStrategia propertyName="codiceFondoPartenzaStrategia"></v11:codiceFondoPartenzaStrategia>
+							<v11:importoAggiuntivoPAC propertyName="importoAggiuntivoPAC"></v11:importoAggiuntivoPAC>
+							<v11:importoRataPAC propertyName="importoRataPAC"></v11:importoRataPAC>
+							<v11:frequenzaRataPAC propertyName="frequenzaRataPAC"></v11:frequenzaRataPAC>
+							<v11:durataPianoPAC propertyName="durataPianoPACAsStringType"></v11:durataPianoPAC>
+						</v11:comparti>
+					</v11:acquisti>
+					<v11:disinvestimenti propertyName="inputBasket_disinvestimenti">
+						<v11:numeroContratto propertyName="numeroContratto"></v11:numeroContratto>
+						<v11:codTipoOperazione propertyName="codTipoOperazione"></v11:codTipoOperazione>
+						<v11:flagSwitch propertyName="flagSwitch"></v11:flagSwitch>
+						<v11:clienti propertyName="clienti">
+							<v11:codPotenziale propertyName="codPotenziale"></v11:codPotenziale>
+							<v11:ndg propertyName="ndg"></v11:ndg>
+							<v11:ruolo propertyName="codRuoloVerificaMifid"></v11:ruolo>
+						</v11:clienti>
+						<v11:comparti propertyName="comparti">
+							<v11:categoria propertyName="categoria"></v11:categoria>
+							<v11:codiceFondo propertyName="codiceFondo"></v11:codiceFondo>
+							<v11:codiceOPV propertyName="codiceOPV"></v11:codiceOPV>
+							<v11:codiceTipoProdotto propertyName="codiceTipoProdotto"></v11:codiceTipoProdotto>
+							<v11:codiceTitolo propertyName="codiceTitolo"></v11:codiceTitolo>
+							<v11:convenzione propertyName="convenzione"></v11:convenzione>
+							<v11:divisa propertyName="divisa"></v11:divisa>
+							<v11:fcontr propertyName="fcontr"></v11:fcontr>
+							<v11:importo propertyName="importo"></v11:importo>
+							<v11:indicativoDiEmissione propertyName="indicativoDiEmissione"></v11:indicativoDiEmissione>
+							<v11:profilo propertyName="profilo"></v11:profilo>
+							<v11:sottocategoria propertyName="sottocategoria"></v11:sottocategoria>
+							<v11:tariffa propertyName="tariffa"></v11:tariffa>
+						</v11:comparti>
+					</v11:disinvestimenti>
+				</v11:verificaAdeguatezza>
+			</soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+</Input>
+<Output>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+			<soapenv:Header xmlns:v11="http://posizionedispositiva.soggetto.be.schema.bmed.it/MotoreAdeguatezza/v1"/>
+			<soapenv:Body xmlns:v11="http://posizionedispositiva.soggetto.be.schema.bmed.it/MotoreAdeguatezza/v1">
+				<ns2:verificaAdeguatezzaResponse xmlns:ns2="http://posizionedispositiva.soggetto.be.schema.bmed.it/MotoreAdeguatezza/v1">
+					<ns2:err propertyName="err"></ns2:err>
+					<ns2:descrErr propertyName="descrizioneErrore"></ns2:descrErr>
+					<ns2:stato propertyName="stato"></ns2:stato>
+					<ns2:descrizioneEsito propertyName="descrizioneEsito"></ns2:descrizioneEsito>
+					<ns2:idAdeguatezza propertyName="idEsito"></ns2:idAdeguatezza>
+					<ns2:clienti propertyName="esitiBasket">
+						<ns2:codPotenziale propertyName="codPotenziale"></ns2:codPotenziale>
+						<ns2:ndg propertyName="ndg"></ns2:ndg>
+						<ns2:esito propertyName="esito"></ns2:esito>
+						<ns2:stato propertyName="stato"></ns2:stato>
+						<ns2:descrizioneEsito propertyName="descrizioneEsito"></ns2:descrizioneEsito>
+						<ns2:stato propertyName="esitoTecnico"></ns2:stato>
+						<ns2:ctrvPatrimonioTotale propertyName="ctrvPatrimonioTotale"></ns2:ctrvPatrimonioTotale>
+						<ns2:profili propertyName="profili">
+							<ns2:esito propertyName="esito"></ns2:esito>
+							<ns2:flagProfiloValido propertyName="flagProfiloValido"></ns2:flagProfiloValido>
+							<ns2:statoProfilo propertyName="statoProfilo"></ns2:statoProfilo>
+							<ns2:controlli propertyName="controlli">
+								<ns2:esito propertyName="esito"></ns2:esito>
+								<ns2:codiceControllo propertyName="codice"></ns2:codiceControllo>
+							</ns2:controlli>
+							<ns2:valutazioniSecondarie propertyName="esitiSecondari">
+			                	<ns2:esito propertyName="esito"></ns2:esito>
+								<ns2:descrizioneEsito propertyName="descrizioneEsito"></ns2:descrizioneEsito>
+							</ns2:valutazioniSecondarie>
+						</ns2:profili>
+					</ns2:clienti>
+				</ns2:verificaAdeguatezzaResponse>
+			</soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+</Output>
+</Access>	
+
+</DAO-Object>

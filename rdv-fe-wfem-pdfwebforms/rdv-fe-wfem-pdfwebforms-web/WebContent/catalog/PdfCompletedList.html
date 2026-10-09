@@ -1,0 +1,107 @@
+<%			
+	template.setLabelPosition(template.LEFT_LABEL);  
+	template.setLabelAlign("right");
+%>		
+<table height="100%" width="100%">
+
+  <% if(model.getFilterTitle().length() > 0){ %>
+  	<tr>
+  		<td>
+	  		<table width="100%" style="background-color:white;">
+	  			<tr>
+			  		<td class="filterTitle"><%=model.getFilterTitle()%></td>
+	  			</tr>
+	  		</table>
+  		</td>
+  	</tr>
+  <% } %>
+
+  <tr>
+    <td align="center">
+		<table width="100%" cellpadding="0" cellspacing="0" style="background-color:white;">
+		  <tr>
+		    <td>
+				<form name="ricercaCompletatiForm" method="post" action="cmd.wfem" style="margin:0;">
+				<input type="hidden" name="wfemCmd" value="prgm.pdfwebforms.catalog.SearchCompleted.execute">
+				<input type="hidden" name="BrowserInstance" value="<%=request.getAttribute("BrowserInstance")%>">
+				<input type="hidden" name="pdfCompletedListParams_orderField" value="">
+				<input type="hidden" name="pdfCompletedListParams_orderType" value="">
+				<input type="hidden" name="pdfCompletedListParams_doSearch" value="true">
+				<table width="100%"> 
+				 <tr>
+				 	<td align="center">
+				 		<table>
+				 			<% if(isSede){ %>
+					 			<tr>
+								    <td><%=template.field("pdfCompletedListParams_codAgente","labelwidth='120'")%></td>
+								    <td><%=template.field("pdfCompletedListParams_nominativoAgente","labelwidth='60'")%></td>
+					 			</tr>
+				 			<% } %>
+				 			<tr>
+							    <td><%=template.field("pdfCompletedListParams_nomeCliente","labelwidth='120'")%></td>
+							    <td><%=template.field("pdfCompletedListParams_cognomeCliente","labelwidth='60'")%></td>
+				 			</tr>
+				 			<tr>
+							    <td colspan="2"><%=template.field("pdfCompletedListParams_descrizione","labelwidth='120' size='53'")%></td>
+				 			</tr>
+				 			<tr>
+							    <td><%=template.field("pdfCompletedListParams_dataInizio","labelwidth='120'")%></td>
+							    <td><%=template.field("pdfCompletedListParams_dataFine")%></td>
+				 			</tr>
+				 		</table>
+				 	</td>
+				 </tr>
+				 <tr>
+	  				<td align="center" height="60">
+	  					<table><tr><td><div class="normalButton" onclick="pdfCompletedList.doRicercaAction();">Cerca</div></td></tr></table>
+	  				</td>
+				 </tr>
+				</table>
+				</form>
+		    </td>
+		  </tr>
+		</table>
+    </td>
+  </tr>
+
+  <tr><td height="5"></td></tr>
+
+  <tr>
+  	<td id="pdfCompletedListSortFormCont" style="display:none;">
+		<form name="pdfCompletedListSortForm" method="post" action="call.wfem" style="display:none;">
+		<input type="hidden" name="wfemCmd" value="prgm.pdfwebforms.catalog.SortPdfCompletedList.execute">
+		<input type="hidden" name="BrowserInstance" value="<%=request.getAttribute("BrowserInstance")%>">
+		<input type="hidden" name="pdfCompletedListParams_orderField" value="<%=model.getPdfCompletedListParams().getOrderField()%>">
+		<input type="hidden" name="pdfCompletedListParams_orderType" value="<%=model.getPdfCompletedListParams().getOrderType()%>">
+		</form>
+  	</td>
+  </tr>
+
+  <tr>
+    <td id="pdfCompletedListGridCont" align="center" height="100%">
+    <% if(!model.isPrimaVolta() && model.getPdfCompletedListParams().getDoSearch().booleanValue()){ %>
+    		<% 
+    			if(isSede){
+					cols = "cols='#pdfStatus,#pdfAnag_pdfCode,#pdfCompilationMode,pdfInstanceId,pdfAnag_pdfDescr,agente,clienti,pdfCompilationModeDescr,pdfCompletionTime,pdf' ";
+		  			dim = "colswidths='18%,*,*,*,12%,14%,6%' ";
+    			}else{
+					cols = "cols='#pdfStatus,#pdfAnag_pdfCode,#pdfCompilationMode,pdfInstanceId,pdfAnag_pdfDescr,clienti,pdfCompilationModeDescr,pdfCompletionTime,pdf' ";
+		  			dim = "colswidths='18%,*,20%,15%,14%,6%' ";
+    			} 
+    		%>
+	        <%=template.grid("pdfCompletedList",cols+dim+"height='100%' width='100%' "+
+	        									   "selection='none' "+
+	        									   "onnewcell='pdfCompletedList.onNewCell(this);' "+
+	        									   "onnewheader='pdfCompletedList.onNewHeader(this);' "+
+	        									   "sortable='false' "+
+	        									   "showbottomarea='true' "+
+	        									   "showtoparea='false' "+
+	        									   "showcounter='false' "+
+	        									   "headerheight='40' "+
+	        									   "cellsnowrap='false' "+
+	     	  									   "decorator='prgm.pdfwebforms.catalog.PdfCatalog'")%>
+	<% } %>
+    </td>
+  </tr>
+  
+</table>

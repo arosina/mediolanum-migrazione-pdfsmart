@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="PdfWebFormsSostituzioni" osbName="OSB12C">
+
+<Access name="isClienteConConsulenzaRispAmm" type="DAOQueryAccess" queryType="0" 
+		OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType" connectionCacheReference="SER_MIFID">
+ <Query>
+	SELECT case when count(*) > 0 then 'S' else 'N' END as isClienteWealthConConsulenzaRispAmm
+	FROM (	SELECT	ce.contr_n,
+	                ce.prod_c,
+	                ce.codice_dato,
+	                ce.dato,
+	                cc.cli_c
+			FROM cll.contr_estesa ce
+			LEFT JOIN cll.contrcli cc ON  TRIM(ce.prod_c) = TRIM(cc.prod_c) 
+									  AND TRIM(ce.contr_n) = TRIM(cc.contr_n) 
+									  AND TRIM(cc.prod_c) IN ('BAN91', 'BAN93', 'BAN97')
+			WHERE	1 = 1
+	        AND 	ce.codice_dato IN ( 10501, 10504, 10502, 10503 )
+	      ) PIVOT (
+	                MAX(dato)
+	                FOR codice_dato
+	                IN ( 10501 AS attivo, 10504 AS percportaf, 10502 AS dtiniziovalid, 10503 AS dtfinevalid )
+	      )
+	WHERE attivo = 'S'
+	AND sysdate BETWEEN TO_DATE(dtiniziovalid, 'yyyymmdd') AND TO_DATE(dtfinevalid, 'yyyymmdd')
+	AND	cli_c = lpad(?, 11, '0')
+ </Query> 
+ <Input>
+	<Parameter propertyName="ndgCliente1"/> 
+ </Input>
+</Access> 
+
+<Access name="getAnagraficaPreferenze" type="DAOOSBAccess" serviceName="service/soggetto/posizionedispositiva/MotoreSostituzioniService/v1" operationName="getAnagraficaPreferenze">
+<Input>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://posizionedispositiva.soggetto.be.schema.bmed.it/MotoreSostituzioni/v1">
+		   <soapenv:Header/>
+		   <soapenv:Body>
+		      <v1:getAnagraficaPreferenze xmlns:v1="http://posizionedispositiva.soggetto.be.schema.bmed.it/MotoreSostituzioni/v1">
+				<v1:metadata>
+					<v1:abiCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:callerDataId append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:channelCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:companyCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:familyBankerCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:familyBanker>true</v1:familyBanker>
+					<v1:inputCommonDataVestion append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:ip append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:keyHole>false</v1:keyHole>
+					<v1:keylog append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:operatorCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:placeCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:statusCode>0</v1:statusCode>
+					<v1:swift append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:timeStamp propertyName="now"></v1:timeStamp>
+					<v1:userAgent append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:userId propertyName="userId"></v1:userId>
+					<v1:userIdKeyHole append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:versionBs append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+				</v1:metadata>
+				<v1:idCanale>RDV</v1:idCanale>
+				<v1:idSistema>PDF</v1:idSistema>
+		      </v1:getAnagraficaPreferenze>
+		   </soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+</Input>
+<Output>
+	<![CDATA[
+		<Envelope>
+		   <Body>
+		      <getAnagraficaPreferenzeResponse>
+		         <resultCode propertyName="resultCode"></resultCode>
+		         <resultDescription propertyName="resultDescription"></resultDescription>
+		         <listaAnagraficaPreferenze>
+		            <anagraficaPreferenze propertyName="elencoPreferenze">
+		               <idPreferenza propertyName="idPreferenza"></idPreferenza>
+		               <descrizione propertyName="descrizione"></descrizione>
+		               <progressivo propertyName="progressivo"></progressivo>
+		               <preferenzaWealth propertyName="preferenzaWealth"></preferenzaWealth>
+		               <preferenzaAmministrato propertyName="preferenzaAmministrato"></preferenzaAmministrato>
+		            </anagraficaPreferenze>
+		         </listaAnagraficaPreferenze>
+		      </getAnagraficaPreferenzeResponse>
+		   </Body>
+		</Envelope>
+	]]>
+</Output>
+</Access>	
+
+<Access name="getPreferenzeCliente" type="DAOOSBAccess" serviceName="service/soggetto/posizionedispositiva/MotoreSostituzioniService/v1" operationName="getPreferenzeCliente">
+<Input>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://posizionedispositiva.soggetto.be.schema.bmed.it/MotoreSostituzioni/v1">
+		   <soapenv:Header/>
+		   <soapenv:Body>
+		      <v1:getPreferenzeCliente xmlns:v1="http://posizionedispositiva.soggetto.be.schema.bmed.it/MotoreSostituzioni/v1">
+				<v1:metadata>
+					<v1:abiCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:callerDataId append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:channelCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:companyCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:familyBankerCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:familyBanker>true</v1:familyBanker>
+					<v1:inputCommonDataVestion append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:ip append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:keyHole>false</v1:keyHole>
+					<v1:keylog append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:operatorCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:placeCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:statusCode>0</v1:statusCode>
+					<v1:swift append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:timeStamp propertyName="now"></v1:timeStamp>
+					<v1:userAgent append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:userId propertyName="userId"></v1:userId>
+					<v1:userIdKeyHole append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:versionBs append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+				</v1:metadata>
+		        <v1:idCanale>RDV</v1:idCanale>
+		        <v1:idSistema>PDF</v1:idSistema>
+		        <v1:idProposta propertyName="idProposta"></v1:idProposta>
+		      </v1:getPreferenzeCliente>
+		   </soapenv:Body>
+		</soapenv:Envelope>	
+	]]>
+</Input>
+<Output>
+	<![CDATA[
+		<Envelope>
+		   <Body>
+		      <getPreferenzeClienteResponse>
+		         <resultCode propertyName="resultCode"></resultCode>
+		         <resultDescription propertyName="resultDescription"></resultDescription>
+		         <listaPreferenzeCliente>
+		            <preferenzaCliente propertyName="elencoPreferenze">
+		               <idPreferenza propertyName="idPreferenza"></idPreferenza>
+		               <descrizione propertyName="descrizione"></descrizione>
+		            </preferenzaCliente>
+		         </listaPreferenzeCliente>
+		      </getPreferenzeClienteResponse>
+		   </Body>
+		</Envelope>
+	]]>
+</Output>
+</Access>	
+
+<Access name="putPreferenzeCliente" type="DAOOSBAccess" markNillable="true" serviceName="service/soggetto/posizionedispositiva/MotoreSostituzioniService/v1" operationName="putPreferenzeCliente">
+<Input>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://posizionedispositiva.soggetto.be.schema.bmed.it/MotoreSostituzioni/v1">
+		   <soapenv:Header/>
+		   <soapenv:Body>
+		      <v1:putPreferenzeCliente xmlns:v1="http://posizionedispositiva.soggetto.be.schema.bmed.it/MotoreSostituzioni/v1">
+				<v1:metadata>
+					<v1:abiCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:callerDataId append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:channelCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:companyCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:familyBankerCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:familyBanker>true</v1:familyBanker>
+					<v1:inputCommonDataVestion append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:ip append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:keyHole>false</v1:keyHole>
+					<v1:keylog append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:operatorCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:placeCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:statusCode>0</v1:statusCode>
+					<v1:swift append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:timeStamp propertyName="now"></v1:timeStamp>
+					<v1:userAgent append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:userId propertyName="userId"></v1:userId>
+					<v1:userIdKeyHole append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v1:versionBs append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+				</v1:metadata>
+		        <v1:idCanale>RDV</v1:idCanale>
+		        <v1:idSistema>PDF</v1:idSistema>
+		        <v1:idProposta propertyName="idProposta"></v1:idProposta>
+		        <v1:listaPreferenzeCliente listContainer="true" propertyName="elencoPreferenze">
+		            <v1:preferenzaCliente propertyName="elencoPreferenze">
+		               <v1:idPreferenza propertyName="idPreferenza"></v1:idPreferenza>
+		            </v1:preferenzaCliente>
+		        </v1:listaPreferenzeCliente>
+		      </v1:putPreferenzeCliente>
+		   </soapenv:Body>
+		</soapenv:Envelope>	
+	]]>
+</Input>
+<Output>
+	<![CDATA[
+		<Envelope>
+		   <Body>
+		      <putPreferenzeClienteResponse>
+		         <resultCode propertyName="resultCode"></resultCode>
+		         <resultDescription propertyName="resultDescription"></resultDescription>
+		      </putPreferenzeClienteResponse>
+		   </Body>
+		</Envelope>
+	]]>
+</Output>
+</Access>	
+
+<Access name="recuperaCodiceSurrogatoProdotto" type="DAOQueryAccess" queryType="0" maxResultRows="1"
+		connectionCacheReference="SER_MIFID" OutputCommandDataModel="com.atosorigin.wfem.types.StringType">
+	<Query>
+		select 	COD_SURROG_PROD_SERVZ 
+		from	CAT_PROD.VW_LEGM_APS_MIFID
+		where	COD_CHIAV_NAT_PROD = ? 
+	</Query>   
+	<Input>
+		<Parameter propertyName="prodotto"/>
+	</Input>
+</Access> 
+
+<Access name="verificaSostituzione" type="DAOOSBAccess" markNillable="true" serviceName="service/soggetto/posizionedispositiva/MotoreSostituzioniService/v1" operationName="verificaSostituzione">
+<Input>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://posizionedispositiva.soggetto.be.schema.bmed.it/MotoreSostituzioni/v1">
+		   <soapenv:Header/>
+		   <soapenv:Body>
+		      <v11:verificaSostituzione>
+				 <v11:metadata>
+					<v11:abiCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:callerDataId append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:channelCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:companyCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:familyBankerCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:familyBanker>true</v11:familyBanker>
+					<v11:inputCommonDataVestion append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:ip append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:keyHole>false</v11:keyHole>
+					<v11:keylog append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:operatorCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:placeCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:statusCode>0</v11:statusCode>
+					<v11:swift append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:timeStamp propertyName="now"></v11:timeStamp>
+					<v11:userAgent append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:userId propertyName="userId"></v11:userId>
+					<v11:userIdKeyHole append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					<v11:versionBs append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+				 </v11:metadata>
+		         <v11:idCanale>RDV</v11:idCanale>
+		         <v11:idSistema>PDF</v11:idSistema>
+		         <v11:idProposta propertyName="idProposta"></v11:idProposta>
+		         <v11:idSostituzione append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		         <v11:codFase append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		         <v11:idAdeguatezza propertyName="idAdeguatezza"></v11:idAdeguatezza>
+		         <v11:operatoreSede propertyName="operatoreSede"></v11:operatoreSede>
+		         <v11:listaClienti>
+		            <v11:cliente propertyName="input_clienti">
+		               <v11:codTipoSogg propertyName="codTipoSogg"></v11:codTipoSogg>
+		               <v11:codSoggOrig propertyName="codSoggOrig"></v11:codSoggOrig>
+		               <v11:listaOperazioni>
+		                  <v11:operazione propertyName="operazioni">
+		                     <v11:tipoDisposizione propertyName="tipoDisposizione"></v11:tipoDisposizione>
+		                     <v11:tipoOperazione propertyName="tipoOperazione"></v11:tipoOperazione>
+		                     <v11:idContratto propertyName="idContratto"></v11:idContratto>
+		                     <v11:idContrattoPartenza propertyName="idContrattoPartenza"></v11:idContrattoPartenza>		                     
+		                     <v11:derogaVersamentoIniziale propertyName="derogaVersamentoIniziale"></v11:derogaVersamentoIniziale>
+		                     <v11:derogaPercentuale propertyName="derogaPercentuale"></v11:derogaPercentuale>
+		                     <v11:progressivo propertyName="progressivo"></v11:progressivo>
+		                     <v11:listaProdotti>
+		                        <v11:prodotto propertyName="prodotti">
+		                           <v11:codiceSurrogato propertyName="prodotto"></v11:codiceSurrogato>
+		                           <v11:codiceSurrogatoPadre propertyName="prodottoPadre"></v11:codiceSurrogatoPadre>
+		                           <v11:controvalore propertyName="controvalore"></v11:controvalore>
+		                           <v11:progressivo propertyName="progressivo"></v11:progressivo>
+		                           <v11:progressivoPadre propertyName="progressivoPadre"></v11:progressivoPadre>
+		                           <v11:formaContrattuale propertyName="formaContrattuale"></v11:formaContrattuale>
+		                        </v11:prodotto>
+		                     </v11:listaProdotti>
+		                  </v11:operazione>
+		               </v11:listaOperazioni>
+		            </v11:cliente>
+		         </v11:listaClienti>
+         		 <v11:listaPreferenzeCliente append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		      </v11:verificaSostituzione>
+		   </soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+</Input>
+<Output>
+	<![CDATA[
+		<Envelope>
+		   <Body>
+		      <verificaSostituzioneResponse>
+		      	 <resultCode propertyName="resultCode"></resultCode>
+		         <resultDescription propertyName="resultDescription"></resultDescription>
+				 <idSostituzione propertyName="idSostituzione"></idSostituzione>
+		         <esitoVerificaSostituzioneGlobale propertyName="esitoVerificaSostituzioneGlobale"></esitoVerificaSostituzioneGlobale>
+		         <listaEsitoVerificaSostituzioneCliente>
+		            <esitoVerificaSostituzioneCliente propertyName="clientiResult">
+		               <codTipoSogg propertyName="codTipoSogg"></codTipoSogg>
+		               <codSoggOrig propertyName="codSoggOrig"></codSoggOrig>
+		               <deltaISD propertyName="deltaISD"></deltaISD>
+		               <deltaScorePortafoglio propertyName="deltaScorePortafoglio"></deltaScorePortafoglio>
+					   <listaPreferenze>
+							<preferenze propertyName="elencoPreferenze">
+								<idPreferenza propertyName="idPreferenza"></idPreferenza>
+								<descrizione propertyName="descrizione"></descrizione>
+							</preferenze>
+					   </listaPreferenze>
+		            </esitoVerificaSostituzioneCliente>
+		         </listaEsitoVerificaSostituzioneCliente>		         
+		      </verificaSostituzioneResponse>
+		   </Body>
+		</Envelope>
+	]]>
+</Output>
+</Access>	
+
+</DAO-Object>

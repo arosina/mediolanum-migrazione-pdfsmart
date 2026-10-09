@@ -1,0 +1,99 @@
+<%=template.hidden("cliente_codMediolanum")%>
+<%=template.hidden("cliente_cognome")%>
+<%=template.hidden("cliente_nome")%>
+<table width="100%" style="table-layout:fixed;" cellpadding="0" cellspacing="0">
+
+    <tr>
+    	<td>
+	       <%@ include file="./DatiDettaglioTestata.html"%>
+		</td>    	
+    </tr>
+    
+   <tr>
+      <td>
+        <fieldset style="border-bottom:none;border-left:none;border-right:none;border-color:#1A458F;">
+          <legend class="text"><img src="<%=template.getWebApp()%>/images/section.gif">&nbsp;<b>Dati assegno <%=(documento.getDatiAssegno().getCodTipoPagamento().intValue()==Costanti.MEZZO_PAGAMENTO_ASSEGNO_ESTERO?"ESTERO":"ITALIA")%></b></legend>
+        </fieldset>
+      </td>
+   </tr>
+   
+   <tr>
+    	<td id="dettaglioCont">
+    	  <table width="99%">
+    	  
+    	    <tr>
+    			<td>
+			    	<table height="100%" width="100%" cellpadding="0" cellspacing="0">
+					    <tr>
+					    	<td>
+					    		<table width="100%">
+					    		  <tr>
+								   	  <td <%=documento.changedStyle("numAssegno")%>><%=template.field("datiAssegno_numAssegno","onchange='changeDoc();' maxlength='14'"+modalityCampoElettronico)%></td>
+								   	  <td <%=documento.changedStyle("importo")%>><%=template.field("datiAssegno_importo","onchange='changeDoc();' maxlength='14'"+modalityCampoElettronico)%></td>
+								   	  <td <%=documento.changedStyle("codDivisa")%>><%=template.field("datiAssegno_codDivisa","onchange='changeDoc();' showempty='false'"+(documento.getDatiAssegno().getCodTipoPagamento().intValue()==Costanti.MEZZO_PAGAMENTO_ASSEGNO?"modality='read'":modalityCampoElettronico))%></td>
+					    		  </tr>
+					    		</table>
+					    	</td>
+					    </tr>
+					    <tr>
+					    	<td>
+					    		<table width="100%">
+					    		  <tr>
+								   	  <td <%=documento.changedStyle("luogoEmissione")%>><%=template.field("datiAssegno_luogoEmissione","onchange='changeDoc();' maxlength='50' size='68'"+modalityCampoElettronico)%></td>
+								   	  <td <%=documento.changedStyle("dataEmissione")%>><%=template.field("datiAssegno_dataEmissione","onchange='changeDoc();'"+modalityCampoElettronico)%></td>
+					    		  </tr>
+					    		</table>
+					    	</td>
+					    </tr>
+					    <tr>
+					    	<td>
+					    		<table width="100%">
+					    		   <tr>
+					   	    		  <td <%=documento.changedStyle("banca")%>><%=template.field("datiAssegno_banca","onchange='changeDoc();' maxlength='50' size='30'"+modalityCampoElettronico)%></td>
+					   	    		  <td <%=documento.changedStyle("beneficiariAssegno")%>><%=template.field("datiAssegno_beneficiariAssegno","onchange='changeDoc();' maxlength='40' size='30'"+modalityCampoElettronico)%></td>
+								   	  <td <%=documento.changedStyle("flagTrasferibile")%>><%=template.field("datiAssegno_flagTrasferibile","onchange='changeDoc();evidenziaCampiObbligatori(\"0\");' showempty='false'"+modalityCampoElettronico)%></td>
+					   	    		  <td style="padding-left:45;">
+							    		<table>
+							    		  <tr>
+						   	    			<td class="text" style="color:red;"><b><%=documento.getAgente().getMsgAgenteNonIscrittoAlboOAM()%></b></td>
+							    		  </tr>
+							    		</table>
+					   	    		  </td>
+						    	   </tr>
+						    	</table>
+					    	</td>
+					    </tr>
+			    	</table>
+				</td>
+    	    </tr>
+    	    
+		    <tr>
+		      <td>
+		        <fieldset style="border-bottom:none;border-left:none;border-right:none;border-color:#1A458F;">
+		          <legend class="text"><img src="<%=template.getWebApp()%>/images/section.gif">&nbsp;<b>Dati contratto</b></legend>
+		        </fieldset>
+		      </td>
+		    </tr>
+    	    
+    	    <tr>
+    	    	<td>
+			    	<table width="100%" style="table-layout:fixed;" cellpadding="1" cellspacing="1">
+			    	  <tr><td class="label">Barcode contratto</td><td class="value">&nbsp;<%=documento.getBarcode()%></td></tr>
+			    	  <tr><td class="label">Numero contratto</td><td class="value">&nbsp;<%=documento.getNumeroContratto()%></td></tr>
+			    	  <tr><td class="label">Prodotto</td><td class="value">&nbsp;<%=documento.getDescValue("codProdotto")%></td></tr>
+			    	  <tr><td class="label">Operazione</td><td class="value">&nbsp;<%=documento.getDescValue("codOperazione")%></td></tr>
+			    	  <tr><td class="label">Cliente</td><td class="value">&nbsp;<%=documento.getCliente().getNominativoConCodMediolanum()%></td></tr>
+			    	  <tr><td class="label">Family Banker</td><td class="value">&nbsp;<%=documento.getAgente().getNominativoConCodice()%></td></tr>
+					</table>    	    		
+    	    	</td>
+    	    </tr>
+    	    
+    	  </table>
+        </td>
+   </tr>
+
+   <tr>
+   		<td height="100%"></td>
+   </tr>
+    
+</table>

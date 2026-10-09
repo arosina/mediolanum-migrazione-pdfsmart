@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="PdfAml" connectionCacheReference="DBAZ_SOGG">
+
+<Access name="isClienteFiduciaria" type="DAOQueryAccess" queryType="0"
+		OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType"> 
+	<Query> 
+		select case when count(*) > 0 then 'S' else 'N' end
+		from  	CLL.CLI
+		where 	CLI_C = ?
+		and 	CLI_C_GRUPPO = '273'
+	</Query>     
+    <Input> 
+    	<Parameter propertyName="ndg"/>
+	</Input> 
+</Access> 
+
+<Access name="existOnePep" type="DAOQueryAccess" queryType="1" maxResultRows="1"
+		OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType"> 
+	<Query> 
+		select case when (
+			(select count(*) from CLL.CLI_ADEGUATA_VERIFICA where CLI_C in (<ToString>codClienti</ToString>) and trim(PEP) = 'S') +
+			(select count(*) from CLL.INR_CLI_ELETTR_REP where ASSGNCLIAGE_C_POTZLE in (<ToString>codClienti</ToString>) and trim(CLI_F_PEP) = 'S')
+		) = 0 then 'N' else 'S' end 
+		from dual
+	</Query>     
+</Access> 
+
+<Access name="gradoRischioResidenza" type="DAOQueryAccess" queryType="0" maxResultRows="1"
+		OutputCommandDataModel="com.atosorigin.wfem.types.IntegerType"> 
+	<Query> 
+		select distinct pae.COD_RISCH_RICLAGG
+		from cll.v_indcli cli
+		inner join utly.dom_naz naz
+		on cli.NAZ_C_NAZ = naz.COD_NAZ_CLI
+		inner join cll.paestero pae
+		on naz.cod_naz_uic_cdcri = pae.paestero_c_uic
+		where naz.gstd_f_esist = 'S'
+		and pae.gstd_f_esist = 'S'
+		and cli.TIPIND_C_TIP_IND = '01'
+		and sysdate between naz.DAT_INIZ_VALID and naz.DAT_FINE_VALID
+		and cli.CLI_C = ?	
+		
+		union
+
+		select distinct pae.COD_RISCH_RICLAGG
+		from cll.INR_INDCLI_ELETTR_REP cli
+		inner join utly.dom_naz naz
+		on cli.NAZ_C_NAZ = naz.COD_NAZ_CLI
+		inner join cll.paestero pae
+		on naz.cod_naz_uic_cdcri = pae.paestero_c_uic
+		WHERE naz.gstd_f_esist = 'S'
+		and pae.gstd_f_esist = 'S'
+		and cli.TIPIND_C_TIP_IND = '01'
+		and sysdate between naz.DAT_INIZ_VALID and naz.DAT_FINE_VALID
+		AND cli.ASSGNCLIAGE_C_POTZLE = ?			
+	</Query>     
+    <Input> 
+    	<Parameter propertyName="codCliente"/>
+    	<Parameter propertyName="codCliente"/>
+	</Input> 
+</Access> 
+
+</DAO-Object>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="PdfMomPublisher">
+
+<Access name="aggiornaVersioneModulo" type="DAOOSBAccess" serviceName="op-be-osb-catalogopratiche-prj/proxy/PS_CatalogoPratica" operationName="aggiornaVersioneModulo">
+<Input>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:api="http://api.be.catalogopratiche.op.bmed.it/">
+		   <soapenv:Header/>
+		   <soapenv:Body>
+		      <api:aggiornaVersioneModulo>
+		         <arg0>
+		            <metadata>
+		               <statusCode>1</statusCode>
+		               <userId propertyName="userId"></userId>
+		            </metadata>
+		            <codiceTemplate 		propertyName="pdfAnag_pdfMomCode"></codiceTemplate>
+		            <codiceMeseVersione 	propertyName="codMeseMomVersion"></codiceMeseVersione>
+		            <codiceAnnoVersione 	propertyName="codAnnoMomVersion"></codiceAnnoVersione>
+		            <numeroMeseVersione 	propertyName="numMeseMomVersion"></numeroMeseVersione>
+		            <numeroAnnoVersione 	propertyName="numAnnoMomVersion"></numeroAnnoVersione>
+		            <dataInizioValiditaRete propertyName="pdfPubStartDateAsTimeString"></dataInizioValiditaRete>
+		            <versPrecFineLavzSede 	propertyName="pdfDataFineAccettazionePubblPrecAsTimeString"></versPrecFineLavzSede>
+		         </arg0>
+		      </api:aggiornaVersioneModulo>
+		   </soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+</Input>
+<Output>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:api="http://api.be.catalogopratiche.op.bmed.it/">
+		   <soapenv:Header/>
+		   <soapenv:Body>
+		      <api:aggiornaVersioneModuloResponse>
+		         <return>
+		            <result></result>
+		         </return>
+		      </api:aggiornaVersioneModuloResponse>
+		   </soapenv:Body>
+		</soapenv:Envelope>	
+	]]>
+</Output>
+</Access>	
+
+
+<Access name="cancellaVersioneModulo" type="DAOOSBAccess" serviceName="op-be-osb-catalogopratiche-prj/proxy/PS_CatalogoPratica" operationName="cancellaVersioneModulo">
+<Input>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:api="http://api.be.catalogopratiche.op.bmed.it/">
+		   <soapenv:Header/>
+		   <soapenv:Body>
+		      <api:cancellaVersioneModulo>
+		         <arg0>
+		            <metadata>
+		               <statusCode>1</statusCode>
+		               <userId propertyName="userId"></userId>
+		            </metadata>
+		            <codiceTemplate 		propertyName="pdfAnag_pdfMomCode"></codiceTemplate>
+		            <codiceAnnoVersione 	propertyName="codAnnoMomVersion"></codiceAnnoVersione>
+		            <codiceMeseVersione 	propertyName="codMeseMomVersion"></codiceMeseVersione>
+		         </arg0>
+		      </api:cancellaVersioneModulo>
+		   </soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+</Input>
+<Output>
+	<![CDATA[
+		<S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/">
+		   <S:Body>
+		      <ns3:cancellaVersioneModuloResponse xmlns:ns3="http://api.be.catalogopratiche.op.bmed.it/" xmlns:ns2="http://common.schema.bmed.it/v1">
+		         <return>
+		            <result></result>
+		         </return>
+		      </ns3:cancellaVersioneModuloResponse>
+		   </S:Body>
+		</S:Envelope>
+	]]>
+</Output>
+</Access>	
+</DAO-Object>

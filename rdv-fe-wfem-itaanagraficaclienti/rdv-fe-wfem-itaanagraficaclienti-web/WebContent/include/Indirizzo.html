@@ -1,0 +1,44 @@
+<!--------  INDIRIZZO ------->
+<table width="100%" cellpadding="2" cellspacing="2">
+  <% if(template.getPrefix().equals("domicilio_indirizzo")){ %>
+  <tr>
+    <td>
+      <table><tr>
+	    <td style="<%=model.fch(template.getPrefix(),"presso")%>"><%=template.field("presso","size='25' maxlength='60'")%></td>
+      </tr></table>
+    </td>
+  </tr>
+  <% } %>
+  <tr>
+    <td>
+      <table><tr>
+	    <td style="<%=model.fch(template.getPrefix(),"codNazione")%>"><%=template.field("codNazione","showempty='false' onchange='gestioneNazioneComune(true,\""+template.getPrefix()+"\");'")%></td>
+      	<td id="tabComuneItalia4<%=template.getPrefix()%>" style="<%=model.fch(template.getPrefix(),"toponimoIndirizzo")%>"><%=template.field("toponimoIndirizzo")%></td>
+      	<td style="<%=model.fch(template.getPrefix(),"descrizioneIndirizzo")%>"><%=template.field("descrizioneIndirizzo","size='75' maxlength='60'")%></td>
+      	<td style="<%=model.fch(template.getPrefix(),"numeroCivico")%>"><%=template.field("numeroCivico","size='6' maxlength='6'")%></td>
+      </tr></table>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <table><tr>
+	    <td id="tabComuneEstero<%=template.getPrefix()%>" style="display:none;<%=model.fch(template.getPrefix(),"comune")%>"><%=template.field("comuneEstero","size='83' maxlength='50'")%></td>
+	    <td valign="bottom" align="right" id="tabComuneItalia0<%=template.getPrefix()%>" style="<%if(!modificabile){%>visibility: hidden;<%}%>">
+	              <img title="Comuni" src="<%=template.getWebApp()%>/images/search.gif" style="cursor:pointer;"
+	                   onclick="loadComune('<%=template.getPrefix()%>');"></td>
+	    <td id="tabComuneItalia3<%=template.getPrefix()%>" style="<%=model.fch(template.getPrefix(),"provincia")%>"><%=template.field("provincia","size='3' modality='read'")%></td>
+	    <td id="tabComuneItalia2<%=template.getPrefix()%>" style="<%=model.fch(template.getPrefix(),"comune")%>"><%=template.field("comune","onchange='resetComune(\""+template.getPrefix()+"\");' size='60' maxlength='50'")%></td>
+	    <td id="tabComuneItalia1<%=template.getPrefix()%>" style="<%=model.fch(template.getPrefix(),"cap")%>"><%=template.field("cap","onchange='resetComune(\""+template.getPrefix()+"\");' size='3' maxlength='5' type='num'")%></td>
+      </tr></table>
+    </td>
+  </tr>
+  
+<input type="hidden" id="<%=template.getPrefix()%>_codComune" name="<%=template.getPrefix()%>_codComune" value="<%=((IndirizzoModel)template.getCurrentDataModel()).getCodComune()%>">
+</table>
+<script>
+gestioneNazioneComune(false,'<%=template.getPrefix()%>');
+<% if(((IndirizzoModel)template.getCurrentDataModel()).getComune().isNull()){ %>
+	resetComune("<%=template.getPrefix()%>");
+<% } %>
+</script>
+<!------------------------------------------->

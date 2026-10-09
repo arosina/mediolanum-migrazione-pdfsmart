@@ -1,0 +1,67 @@
+<table width="100%" height="100%">
+
+  <% if(!model.getFnc().equals(Costanti.FNC_SPUNTA) && 
+         com.atosorigin.wfem.controller.Configuration.getInstance().isOnlineEnvironment() &&
+        !model.getClass().getName().equals("prgm.ita.p.dac.ricerche.sede.RicercaStoricoDacModel")){ %>
+	  <tr>
+	  	<td align="center" colspan="4" style="background-color:#d0e4ef;">
+	  	  <table class="text"><tr>
+	  	    <td><b>Ricerca i Prit/Dac:</b></td>
+	  	    <td style="width:8;"></td>
+	  	    <td>
+		  	  <input type="radio" onclick="setTipoRicerca(this);" name="tipoRicercaRadio" 
+		  	  		 <%if(model.getTipoRicerca().isNull()){%>checked<%}%> value=""><b>dell'ultima settimana</b>
+			</td>
+	  	    <td style="width:8;"></td>
+			<td>
+		  	  <input type="radio" onclick="setTipoRicerca(this);" name="tipoRicercaRadio" 
+		  	  		 <%if(!model.getTipoRicerca().isNull()){%>checked<%}%> value="storica"><b>archivio storico</b>
+	  	    </td>
+	  	  </tr></table>
+	  	</td>
+	  </tr>
+  <% } %>
+  
+  <tr>
+     <td>
+        <table height="100%">
+   		<% if(model.getFnc().equals(Costanti.FNC_SPUNTA)){ %>
+          <tr><td><%=template.field("parametri_stato","style='width:210;' labelwidth='40'")%></td></tr>
+          <tr><td><%=template.field("parametri_esito","style='width:210;' labelwidth='40'")%></td></tr>
+   		<% }else{ %>
+          <tr><td><%=template.field("parametri_tipoDac","style='width:210;' labelwidth='40'")%></td></tr>
+          <tr><td><%=template.field("parametri_ubicazione","style='width:210;' labelwidth='40'")%></td></tr>
+          <tr><td><%=template.field("parametri_stato","style='width:210;' labelwidth='40'")%></td></tr>
+          <tr><td><%=template.field("parametri_esito","style='width:210;' labelwidth='40'")%></td></tr>
+   		<% } %>
+        </table>
+     </td>
+     <td>
+        <table height="100%">
+          <tr><td><%=template.field("parametri_dataInizio","labelwidth='100'")%></td></tr>
+          <tr><td><%=template.field("parametri_dataFine","labelwidth='100'")%></td></tr>
+          <tr><td><%=template.field("parametri_dataRicezioneDocumenti","labelwidth='100'")%></td></tr>
+        </table>
+     </td>
+     <%template.setLabelWidth("80");%>
+     <td>
+        <table height="100%">
+   		<% if(model.getFnc().equals(Costanti.FNC_SPUNTA)){ %>
+          <tr><td><%=template.field("parametri_uffLavorazione","style='width:180;'")%></td></tr>
+          <tr><td><%=template.field("parametri_uffSpunta","style='width:180;'")%></td></tr>
+   		<% }else{ %>
+          <tr><td><%=template.field("parametri_uffMittente","style='width:180;'")%></td></tr>
+          <tr><td><%=template.field("parametri_uffLavorazione","style='width:180;'")%></td></tr>
+          <tr><td><%=template.field("parametri_uffSpunta","style='width:180;'")%></td></tr>
+   		<% } %>
+        </table>
+     </td>
+     <td>
+        <table height="100%">
+          <tr><td><%=template.field("parametri_codUtenteMittente","size='8'")%></td></tr>
+          <tr><td><%=template.field("parametri_codUtenteLavorazione","size='8'")%></td></tr>
+          <tr><td><%=template.field("parametri_codUtenteSpunta","size='8'")%></td></tr>
+        </table>
+     </td>
+  </tr>
+</table>

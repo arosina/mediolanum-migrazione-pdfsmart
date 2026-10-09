@@ -1,0 +1,75 @@
+<% if(model.isInBasket()){ %>
+
+  		<% 	String onclick="doCopernico();";
+			String butDisabStyle = "";
+			if(model.isCopernicoVisibile()){
+				if(Basket.globalBasketPdfCompilationModes(model).toString().indexOf(PdfInstanceModel.MODALITA_SOTTOSCRIZIONE_COPERNICO) < 0 ||
+				   model.isQuestionarioIddProvvisorioOSospesoInBasket() ||
+				   model.getBasket().isSoloFirmaOlografa() ||
+				   model.isSottoscrittorePG() ||
+				   model.existOtherSottoscrittoriPG()){
+					onclick = "alertNoCopernicoCausaContratti();";
+					butDisabStyle = " normalButtonNonDisp";
+				}else if(model.getPdfData().getCallerSelectedCompilationMode().equals(PdfInstanceModel.MODALITA_SOTTOSCRIZIONE_CARTA_LIBERA)){
+					onclick = "alertNoCausaCaller('"+model.getPdfData().getCallerSelectedCompilationMode()+"');";
+					butDisabStyle = " normalButtonNonDisp";
+				}
+  			%>   		
+   			<td><div class="normalButton<%=butDisabStyle%>" onclick="<%=onclick%>"><%=labelCopernico%></div></td>
+   		<% } %>
+
+		<% 	onclick="doFirma();";
+			butDisabStyle = "";
+			if(numPdfSignFiels > 0 && model.isFirmaDigitaleVisibile()){
+				if(Basket.globalBasketPdfCompilationModes(model).toString().indexOf(PdfInstanceModel.MODALITA_SOTTOSCRIZIONE_FIRMA_DIGITALE) < 0 ||
+				   model.isQuestionarioIddProvvisorioOSospesoInBasket() ||
+				   model.getBasket().isSoloFirmaOlografa() ||
+				   model.existOtherSottoscrittoriPG()){
+					onclick = "alertNoFirmaDigitaleCausaContratti();";
+					butDisabStyle = " normalButtonNonDisp";
+				}else if(model.getPdfData().getCallerSelectedCompilationMode().equals(PdfInstanceModel.MODALITA_SOTTOSCRIZIONE_CARTA_LIBERA) ||
+						 model.getPdfData().getCallerSelectedCompilationMode().equals(PdfInstanceModel.MODALITA_SOTTOSCRIZIONE_COPERNICO)){
+					onclick = "alertNoCausaCaller('"+model.getPdfData().getCallerSelectedCompilationMode()+"');";
+					butDisabStyle = " normalButtonNonDisp";
+				}
+		%>   		
+   			<td><div class="normalButton<%=butDisabStyle%>" onclick="<%=onclick%>"><%=labelFirmaDigitale%></div></td>
+   		<% } %>
+
+  		<% if(numPdfSignFiels == 0 && Basket.globalBasketPdfCompilationModes(model).toString().indexOf(PdfInstanceModel.MODALITA_SOTTOSCRIZIONE_FIRMA_DIGITALE) >= 0){ %>   		
+   			<td><div class="normalButton" onclick="doCartaDigitale();"><%=labelFirmaDigitale%></div></td>
+   		<% } %>
+   		
+  		<% if(Basket.globalBasketPdfCompilationModes(model).toString().indexOf(PdfInstanceModel.MODALITA_SOTTOSCRIZIONE_CARTA_LIBERA)  >= 0 || 
+  			  Basket.globalBasketPdfCompilationModes(model).toString().indexOf(PdfInstanceModel.MODALITA_SOTTOSCRIZIONE_CARTA_CHIMICA) >= 0){ %>   		
+   			<td><div class="normalButton" onclick="doInviaInSede();"><%=labelInviaInSede%></div></td>
+   		<% } %>
+   		
+    	<% if(!model.pdfIsInCartaChimica() && Basket.globalBasketPdfCompilationModes(model).toString().indexOf(PdfInstanceModel.MODALITA_SOTTOSCRIZIONE_STAMPA) >= 0){ %>
+	    	<td><div class="normalButton" onclick="openStampa();">Stampa</div></td>
+    	<% } %>
+    	
+<% }else{ %>
+
+  		<% if(model.isCopernicoAccessibile() && Basket.globalBasketPdfCompilationModes(model).toString().indexOf(PdfInstanceModel.MODALITA_SOTTOSCRIZIONE_COPERNICO) >= 0){ %>   		
+   			<td><div class="normalButton" onclick="doCopernico();"><%=labelCopernico%></div></td>
+   		<% } %>
+  		
+  		<% if(numPdfSignFiels > 0 && model.isFirmaDigitaleAccessibile() && Basket.globalBasketPdfCompilationModes(model).toString().indexOf(PdfInstanceModel.MODALITA_SOTTOSCRIZIONE_FIRMA_DIGITALE) >= 0){ %>   		
+   			<td><div class="normalButton" onclick="doFirma();"><%=labelFirmaDigitale%></div></td>
+   		<% } %>
+  		
+  		<% if(numPdfSignFiels == 0 && Basket.globalBasketPdfCompilationModes(model).toString().indexOf(PdfInstanceModel.MODALITA_SOTTOSCRIZIONE_FIRMA_DIGITALE) >= 0){ %>   		
+   			<td><div class="normalButton" onclick="doCartaDigitale();"><%=labelFirmaDigitale%></div></td>
+   		<% } %>
+  		
+  		<% if(Basket.globalBasketPdfCompilationModes(model).toString().indexOf(PdfInstanceModel.MODALITA_SOTTOSCRIZIONE_CARTA_LIBERA)  >= 0 || 
+  			  Basket.globalBasketPdfCompilationModes(model).toString().indexOf(PdfInstanceModel.MODALITA_SOTTOSCRIZIONE_CARTA_CHIMICA) >= 0){ %>   		
+   			<td><div class="normalButton" onclick="doInviaInSede();"><%=labelInviaInSede%></div></td>
+   		<% } %>
+    	
+    	<% if(!model.pdfIsInCartaChimica() && Basket.globalBasketPdfCompilationModes(model).toString().indexOf(PdfInstanceModel.MODALITA_SOTTOSCRIZIONE_STAMPA) >= 0){ %>
+	    	<td><div class="normalButton" onclick="openStampa();">Stampa</div></td>
+    	<% } %>
+  		
+<% } %>

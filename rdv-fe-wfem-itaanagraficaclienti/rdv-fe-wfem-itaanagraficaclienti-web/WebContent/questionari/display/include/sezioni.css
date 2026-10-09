@@ -1,0 +1,52 @@
+.sezione{
+	border:solid 1px silver;
+	-moz-border-radius: 5px; 
+	-webkit-border-radius: 5px; 
+	border-radius: 5px;
+}
+
+.titoloSezione{
+	font-family: Arial; 
+	font-size: 8pt;
+	color: #1A458F;
+	font-weight: bold;
+}
+
+.commento{
+	font-family: Arial; 
+	font-size: 8pt;
+	color: #1A458F;
+}
+
+.domanda{
+	font-family: Arial; 
+	font-size: 8pt;
+	color: #1A458F;
+}
+
+.risposteCont{
+	font-family: Arial; 
+	font-size: 8pt;
+	color: #1A458F;
+	font-weight: normal;
+	table-layout:fixed;
+}
+
+.rispostaSemplice{
+	font-family: Arial; 
+	font-size: 8pt;
+	color: #1A458F;
+	font-weight: normal;
+}
+
+.rispostaMultipla{
+	font-family: Arial; 
+	font-size: 8pt;
+	color: #1A458F;
+	font-weight: normal;
+}
+
+.risposteSeparator{
+	background-color: silver;
+	line-height:1px;
+}

@@ -1,0 +1,21 @@
+<div class="modal-custom" id="errorReportMessage" role="dialog" aria-modal="true" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+         <div class="modal-content">
+            <div class="modal-header">
+              <h3 id="modalTitle" class="align-items-center d-flex flex-grow-1 justify-content-center mb-0 modal-title text-center">
+              	Firma del contratto
+              </h3>
+            </div>
+            
+            <div id="modalDescription" class="modal-body">
+            	<% for(int i=0;i<model.getCommandErrors().size();i++){ %>				
+					<p class="modal-paragraph"><%=template.getProperty((CommandError)model.getCommandErrors().get(i))%></p>
+				<% } %>
+            </div>
+            
+            <div class="modal-footer">
+            	<button type="button" role="button" class="btn btn-link modal-btn-close m-auto" aria-label="Premi questo pulsante per chiudere la modale e riprovare" data-dismiss-custom-modal="true">OK</button>
+            </div>
+        </div>
+    </div>
+</div>

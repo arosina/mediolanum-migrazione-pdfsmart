@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-15"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>prgm.pdfwebforms.backend</groupId>
+    <artifactId>rdv-fe-wfem-pdfwebforms</artifactId>
+    <version>9.0.0-RC-SNAPSHOT</version>
+  </parent>
+  <artifactId>rdv-fe-wfem-pdfwebforms-web</artifactId>
+  <packaging>war</packaging>
+  <name>PdfWebFormsWEB</name>
+  <properties>
+    <m2eclipse.wtp.contextRoot>PdfWebForms</m2eclipse.wtp.contextRoot>
+  </properties>
+  <dependencies></dependencies>
+</project>

@@ -1,0 +1,215 @@
+<!--------  DATI GENERALI ------->
+<%
+	String titolareModality = "";
+%>
+
+<table width="100%">
+  <tr>
+   <td>
+		<fieldset name="datiGenerali" id="datiGenerali" class="fieldsGroup" style="padding-left:20;">
+			<legend class="text" style="font-weight: bold; background-color: white;">
+			   &nbsp;<img src="<%=template.getWebApp()%>/images/section.gif">
+			   &nbsp;Dati generali&nbsp;
+			   <%if(model.getIsEffettivo().booleanValue() ||
+			        (model.getIsPotenziale().booleanValue() && !model.getCodInforete().isNull())){%>
+				   &nbsp;Cod Inforete: <%=model.getCodInforete()%>&nbsp;
+			   <%}%>
+			   <%if(model.getIsEffettivo().booleanValue()){ %>
+				   &nbsp;Cod Potenziale: <%=model.getCodPotenziale()%>&nbsp;
+			   <%}%>
+			</legend>
+		
+			<table class="text" width="100%" cellpadding="0" cellspacing="0">
+			  <tr>
+			  	<td colspan='3' align="center">
+			  		<%template.setLabelPosition(template.LEFT_LABEL);%>
+					<% if(model.getIsPotenziale().booleanValue()){ %>
+				  		<table>
+				  			<tr>
+				  				<td>
+				    				<%=template.field("numeroOrdine","size='30' maxlength='12' type='num' onchange='padLeft(this,\"0\");'")%>				
+				  				</td>
+				  			</tr>
+				  		</table>	
+					<%}%>
+					<%template.setLabelPosition(template.UP_LABEL);%>
+			  	</td>
+			  </tr>
+			  <tr>
+			     <td>
+				     <table width="100%" cellpadding="0" cellspacing="0">
+					     <tr>
+						     <td style="<%=model.fch("cognome")%>"><%=template.field("cognome","size='77' maxlength='40'"+titolareModality)%></td>
+						     <td style="<%=model.fch("nome")%>"><%=template.field("nome","size='30' maxlength='40'"+titolareModality)%></td>
+						     <td style="<%=model.fch("secondoNome")%>"><%=template.field("secondoNome","size='30' maxlength='40'"+titolareModality)%></td>
+					     </tr>
+				     </table>
+			     </td>
+			  </tr>
+			  
+			  <% 
+			  	 String sessoEnabled = "";
+			  	 if(Integer.parseInt(model.getStatoProposta().toString()) > Integer.parseInt(StatiPropostaAnagrafica.BOZZA))
+			  	 	sessoEnabled = "disabled";
+			  	 if(!modificabile)
+			  	 	sessoEnabled = "disabled";
+			  	 	
+			  	 String tipoPersonaEnabled = sessoEnabled.toString();
+			  	 if(model.getInfoPersonali().getCodOrigine().equals(Costanti.CODICE_ORIGINE_MFORYOU))
+			  	 	tipoPersonaEnabled = "disabled";
+			  	 	
+			  	 String luogoNascitaModality = "";
+			  	 boolean lenteLuogoNascitaVisibile = modificabile;
+			  	 if(!model.getIsPotenziale().booleanValue() && model.getDatiApplicativi().getClienteCaricato() != null && !model.getDatiApplicativi().getClienteCaricato().getComuneNascita().getComune().isNull()){
+			  	 	luogoNascitaModality = " modality='read' ";
+			  	 	lenteLuogoNascitaVisibile = false;
+			  	 }
+			  	 
+			  	 String luogoNascitaEsteroModality = "";
+			  	 if(!model.getIsPotenziale().booleanValue() && model.getDatiApplicativi().getClienteCaricato() != null && !model.getDatiApplicativi().getClienteCaricato().getComuneNascita().getComuneEstero().isNull())
+			  	 	luogoNascitaEsteroModality = " modality='read' ";
+			  	 
+			  	 String dataNascitaModality = "";
+			  	 if(!model.getIsPotenziale().booleanValue() && model.getDatiApplicativi().getClienteCaricato() != null && !model.getDatiApplicativi().getClienteCaricato().getDataNascita().isNull())
+			  	 	dataNascitaModality = " modality='read' ";
+
+			  	 String nazioneNascitaModality = "";
+			  	 if(!model.getIsPotenziale().booleanValue() && model.getDatiApplicativi().getClienteCaricato() != null && !model.getDatiApplicativi().getClienteCaricato().getComuneNascita().getCodNazione().isNull())
+			  	 	nazioneNascitaModality = " modality='read' ";
+			  %>
+			  <tr>
+			    <td>
+			    	<table cellpadding="2" cellspacing="5">
+			    	  <tr>
+					    <td name="tabComuneEstero" id="tabComuneEstero" style="<%=model.fch("comuneNascita","comune")%>">
+					    	<%=template.field("comuneNascita_comuneEstero","maxlength='50' size='30'"+titolareModality+luogoNascitaEsteroModality)%>
+					    </td>
+					  	<td name="tabComuneItalia" id="tabComuneItalia">
+							<table>
+						      <tr>
+						           <td id="lenteComuneNascita" valign="bottom" style="padding-bottom:5;">
+						           <% if(lenteLuogoNascitaVisibile){ %>
+							               <img title="Comuni" src="<%=template.getWebApp()%>/images/search.gif" 
+							                    onclick="loadComuneNascita();" style="cursor: pointer;">
+								   <% }else { %>
+							               <img title="Comuni" src="<%=template.getWebApp()%>/images/search.gif" 
+							                    style="visibility:hidden;">
+								   <% } %>	
+						           </td>
+						           <td style="<%=model.fch("comuneNascita","comune")%>"><%=template.field("comuneNascita_comune","onchange='resetComuneNascita();' maxlength='50' size='30'"+titolareModality+luogoNascitaModality)%></td>
+						           <td style="width: 8px;"></td>
+						           <td style="<%=model.fch("comuneNascita","provincia")%>"><%=template.field("comuneNascita_provincia" ,"size='3' modality='read'")%></td>
+						       </tr>
+						     </table>
+						 </td>
+					   	<td style="height: 45;">
+					   	   <table>
+					   	     <tr>
+					   	       <td style="width: 25pt;"></td>
+					   	       <td style="<%=model.fch("dataNascita")%>"><%=template.field("dataNascita",titolareModality+dataNascitaModality)%></td>
+					   	     </tr>
+					   	   </table>
+					   	</td>     
+					 	<td valign="bottom">
+							<table name="tabSesso" id="tabSesso" class="text" border="0" width="100%" style="<%=model.fch("sesso")%>">
+								<tr>  
+									<td align="right" id="anchorSesso" name="anchorSesso" nowrap="nowrap">
+										<%=template.inlineAnchor("sesso")%>
+										<%=template.getProperty("AnagraficaCliente.sesso")%>
+									</td>
+									<td>
+									 <table width="100%" class="text">
+									    <tr>
+									      <td>
+										    <input type="radio" name="sesso" value="M" <%=sessoEnabled%>>Maschio 
+									      </td>
+									    </tr>
+									    <tr>
+									      <td>
+										    <input type="radio" name="sesso" value="F" <%=sessoEnabled%>>Femmina
+										    <input style="display: none;" type="radio" name="sesso" value="S">
+										    <input style="display: none;" type="radio" name="sesso" value="">
+									      </td>
+									    </tr>
+									 </table>
+									</td>
+								</tr>
+							</table>
+						</td>   
+					    <td style="<%=model.fch("comuneNascita","codNazione")%>">
+					    	<%=template.field("comuneNascita_codNazione","showempty='false' onchange='gestioneNazioneNascita(true);' style='width:190;' "+titolareModality+nazioneNascitaModality)%>
+					    </td>   	
+					  </tr>
+					</table>
+				</td>
+			  </tr>
+			  
+			  <tr>
+			     <td>
+			     	<table cellpadding="5" cellspacing="0">
+			     	  <tr>
+						 <%  String modalitaCodFisPIva = ""; 
+						     boolean calcCodFisVisible = true;
+						     if(Integer.parseInt(model.getStatoProposta().toString()) > Integer.parseInt(StatiPropostaAnagrafica.BOZZA)){
+								modalitaCodFisPIva = " modality='read' ";
+								calcCodFisVisible = false;
+							 }
+							 if(!modificabile){
+								modalitaCodFisPIva = " modality='read' ";
+								calcCodFisVisible = false;
+							 }
+						 %>
+						 
+						 <%
+						 	String valign = "";
+						 %>
+						 <td valign="top" name="tabCodFiscale" id="tabCodFiscale" style="<%=model.fch("codFiscale")%>">
+						    <table cellpadding="0" cellspacing="0">
+							    <tr>
+							      <td><%=template.field("codFiscale",modalitaCodFisPIva+"size='30' maxlength='16'")%></td>
+							      <td style="width:18px;"></td>
+							    </tr>
+						    </table>
+						 </td>
+						 
+						 <td name="tabPartitaIva" id="tabPartitaIva" style="<%=model.fch("partitaIva")%>">
+					     	&nbsp;
+						 </td>
+						 
+						 <td>
+							<table cellpadding="0" cellspacing="0">
+								<tr>
+									<td style="<%=model.fch("cittadinanza")%>"><%=template.field("cittadinanza","showempty='false' onchange='aggiornaInfoResidenzeFiscali();'")%></td>
+									<td style="width: 20px;"></td>	       	 		
+									<td style="<%=model.fch("secondaCittadinanza")%>"><%=template.field("secondaCittadinanza","onchange='aggiornaInfoResidenzeFiscali();'")%></td>	       	 		
+								</tr>
+								<tr>
+									<td class="text">*E' obbligatorio indicare un'eventuale cittadinanza USA</td>
+									<td style="width: 20px;"></td>	       	 		
+									<td class="text">*Se non compilato si intende come requisito non presente</td>
+								</tr>
+							</table>
+						 </td>
+				 	  </tr>
+				 	</table>
+				 </td>
+			  </tr>
+			  
+			</table>
+		</fieldset>
+    </td>
+  </tr>
+</table>
+
+<input type="hidden" name="comuneNascita_codComune" value="<%=model.getComuneNascita().getCodComune()%>">
+<input type="hidden" name="comuneNascita_cap" value="<%=model.getComuneNascita().getCap()%>">
+
+<script>
+settaRadio("sesso","<%=model.getSesso()%>",true);
+settaTipoPersona("<%=model.getTipoPersona()%>");
+<% if(model.getComuneNascita().getComune().isNull()){ %>
+	resetComuneNascita();
+<% } %>
+gestioneNazioneNascita(false);
+</script>
+<!------------------------------------------->

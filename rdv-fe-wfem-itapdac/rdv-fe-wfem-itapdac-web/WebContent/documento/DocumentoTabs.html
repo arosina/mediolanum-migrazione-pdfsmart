@@ -1,0 +1,100 @@
+<%
+	String tabNames="tabDati";
+	boolean tabDati=true; boolean tabMezzi=false; boolean tabFirmeCliente=false; boolean tabFirmeAgente=false; boolean tabStoria=false;	
+	if(showTabsDocumento && !documento.isDocumentoAssegno()){
+		tabMezzi=true;
+		tabNames+=",tabMezzi";
+	}
+	
+	if(documento.isTabFirmeClienteVisible()){
+		tabFirmeCliente=true;
+		tabNames+=",tabFirmeCliente";
+	}
+	
+	if(documento.isTabFirmeAgenteVisible()){
+		tabFirmeAgente=true;
+		tabNames+=",tabFirmeAgente";
+	}
+	
+	if(readonly && documento.getStoriaDocumento().size() > 0){
+		tabStoria=true;
+		tabNames+=",tabStoria";
+	}
+	
+	if(!tabMezzi && !tabFirmeCliente && !tabFirmeAgente && !tabStoria){
+		tabDati=false;
+		tabNames+="";
+	}
+%>
+
+<% if(!tabDati){ %>
+     <table width="98%" height="100%" cellpadding="0" cellspacing="0" style="background-color:white;">
+      <tr>
+	      <td align="center" valign="top">
+		      <%@ include file="./include/Dati.html"%>
+	  	  </td>
+      </tr>		
+     </table>
+<% }else{ %>
+	<table width="98%" height="100%" cellpadding="0" cellspacing="0" style="background-color:#d0e4ef;" 
+	 	   id="JSTabDocumento" tabNames="<%=tabNames%>">
+	  <tr>
+	      <td align="center">
+	        <table width="100%" cellspacing="0">
+	        <tr>
+		        <%if(tabDati){%>
+		          <td nowrap class="<%if(documento.isErrorsOnDati()){%>htabErrors<%}else{%>htab<%}%>" inerror="<%=documento.isErrorsOnDati()%>" valign="middle" id="tabDati"  onclick="selectDocJSTab('tabDati');">&nbsp;Dati&nbsp;</td>
+		        <%}%>
+		        <%if(tabMezzi){%>
+		          <td nowrap class="<%if(documento.isErrorsOnMezziPg()){%>htabErrors<%}else{%>htab<%}%>" inerror="<%=documento.isErrorsOnMezziPg()%>" valign="middle" id="tabMezzi"  onclick="selectDocJSTab('tabMezzi');">&nbsp;Mezzi di pagamento&nbsp;</td>
+		        <%}%>
+		        <%if(tabFirmeCliente){%>
+		          <td nowrap class="htab" valign="middle" id="tabFirmeCliente" onclick="selectDocJSTab('tabFirmeCliente');">&nbsp;Firme&nbsp;</td>
+		        <%}%>
+		        <%if(tabFirmeAgente){%>
+		          <td nowrap class="htab" valign="middle" id="tabFirmeAgente" onclick="selectDocJSTab('tabFirmeAgente');">&nbsp;Firme FB&nbsp;</td>
+		        <%}%>
+		        <%if(tabStoria){%>
+		          <td nowrap class="htab" valign="middle" id="tabStoria" onclick="selectDocJSTab('tabStoria');">&nbsp;Storia&nbsp;</td>
+		        <%}%>
+		      	  <td nowrap width="100%" style="border-bottom: 1px solid silver;">&nbsp;</td>
+			</tr>
+			</table>
+		  </td>
+	  </tr>
+	  <tr>
+	  	  <td height="100%">
+		    <table width="100%" height="100%" cellspacing="0" cellpadding="0" class="htabContent" style="background-color:white;">
+		       <tr>
+		       
+			      <%if(tabDati){%>
+					  <td align="center" style="display:none;" id="tabDatiEl" valign="top">
+					       <%@ include file="./include/Dati.html"%>
+					  </td>
+			      <%}%>
+			      <%if(tabMezzi){%>
+					  <td align="center" style="display:none;" id="tabMezziEl" valign="top">
+					       <%@ include file="./include/dati/MezziPagamento.html"%>
+					  </td>
+			      <%}%>
+			      <%if(tabFirmeCliente){%>
+					  <td align="center" style="display:none;" id="tabFirmeClienteEl" valign="top">
+					       <%@ include file="./include/FirmeCliente.html"%>
+					  </td>
+			      <%}%>
+			      <%if(tabFirmeAgente){%>
+					  <td align="center" style="display:none;" id="tabFirmeAgenteEl" valign="top">
+					       <%@ include file="./include/FirmeAgente.html"%>
+					  </td>
+			      <%}%>
+			      <%if(tabStoria){%>
+					  <td align="center" style="display:none;" id="tabStoriaEl" valign="top">
+					       <%@ include file="./include/Storia.html"%>
+					  </td>
+			      <%}%>
+			   </tr>
+			</table>
+	  	  </td>
+	  </tr>		
+	</table>
+<% } %>

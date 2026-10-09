@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="PdfMom" connectionCacheReference="CEPE">
+
+<Access name="existMomInstance" type="DAOQueryAccess" queryType="0" maxResultRows="1"
+		OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType">
+ <Query>
+	select 	case when count(*) = 0 then 'N' else 'S' end as existMomInstance
+	from 	PDF_MOM_INSTANCE
+	where 	PDF_INSTANCE_ID = ?
+ </Query> 
+ <Input>
+	<Parameter propertyName="pdfInstanceId"/>	
+ </Input>
+</Access> 
+
+<Access name="loadEccezionePritMom" type="DAOQueryAccess" queryType="0" maxResultRows="1">
+ <Query>
+	select 	PRIT_C_PRODOTTO
+	, 		PRIT_C_OPERAZIONE
+	from 	PDF_INFO_PRIT
+	where 	CHIAVE = ?
+	and 	PDF_CODE = ?
+ </Query> 
+ <Input>
+ 	<Parameter propertyName="chiaveEccezioniMom"/>	
+	<Parameter propertyName="codProd"/>	
+ </Input>
+ <Output>
+	<Parameter propertyName="codProdottoPrit"/>	
+	<Parameter propertyName="codOperazionePrit"/>	
+ </Output>
+</Access> 
+
+<Access name="loadCodiciSurrogatiPrit" type="DAOQueryAccess" queryType="0" maxResultRows="1"
+ 		connectionCacheReference="SER_MIFID">
+ <Query>
+	select 	COD_SURROG_PROD_SERVZ
+	, 		COD_TIPO_OPERZ_PROD_SERVZ
+	from 	SOGG_POSIZDISP.LEGM_TIPO_DISP_SIST_ORIG
+	where 	GSTD_F_ESIST = 'S'
+	and		COD_TIPO_SIST_ORIG_DISP = 'PRT' 
+	and		COD_SURROG_PROD_SERVZ is not null
+	and		COD_TIPO_OPERZ_PROD_SERVZ is not null
+	and 	COD_PROD_SIST_ORIG = ?
+	and 	COD_TIPO_OPERZ_PROD_SIST_ORIG = ? 
+ </Query> 
+ <Input>
+	<Parameter propertyName="codProdottoPrit"/>	
+	<Parameter propertyName="codOperazionePrit"/>	
+ </Input>
+ <Output>
+	<Parameter propertyName="codiceSurrogatoProdottoServizio"/>	
+	<Parameter propertyName="codiceTipoOperazioneProdottoServizio"/>	
+ </Output>
+</Access> 
+
+<Access name="loadSMSInfo" type="DAOQueryAccess" queryType="0" maxResultRows="1">
+ <Query>
+	select 	SEND_FB_MAIL_ONSIGN
+	,		SEND_CLI_SMS_ONSIGN
+	,		CLI_SMS_ONSIGN_TEXT
+	from 	PDF_ANAG 
+	where 	PDF_ID = ?
+ </Query> 
+ <Input>
+	<Parameter propertyName="pdfId"/>	
+ </Input>
+ <Output>
+	<Parameter propertyName="sendFBMailOnSign"/>
+	<Parameter propertyName="sendCliSmsOnSign"/>
+	<Parameter propertyName="cliSmsOnSignText"/>
+ </Output>
+</Access> 
+
+<Access name="pdfMomInstance" type="DAOTableAccess" tableName="PDF_MOM_INSTANCE">
+   <Bindings>
+	<Parameter propertyName="pdfInstanceId" 				dbColumnName="PDF_INSTANCE_ID" 				primaryKey="true"/>
+	
+	<Parameter propertyName="pdfStatus"		 				dbColumnName="STATO"/>
+
+	<Parameter propertyName="cli1_ndg" 	 					dbColumnName="CLI1_NDG"/>	 
+	<Parameter propertyName="cli1_idCensimento" 	 		dbColumnName="CLI1_ID_CENSIMENTO"/>
+	<Parameter propertyName="cli1_codPotenziale" 	 		dbColumnName="CLI1_ASSGNCLIAGE_C_POTZLE"/>
+	<Parameter propertyName="cli1_cognome" 	 				dbColumnName="CLI1_COGNOME"/>
+	<Parameter propertyName="cli1_nome" 	 				dbColumnName="CLI1_NOME"/>
+		 
+	<Parameter propertyName="cli2_ndg" 	 					dbColumnName="CLI2_NDG"/>	 
+	<Parameter propertyName="cli2_idCensimento" 		 	dbColumnName="CLI2_ID_CENSIMENTO"/>
+	<Parameter propertyName="cli2_codPotenziale" 		 	dbColumnName="CLI2_ASSGNCLIAGE_C_POTZLE"/>
+	<Parameter propertyName="cli2_cognome" 	 				dbColumnName="CLI2_COGNOME"/>
+	<Parameter propertyName="cli2_nome" 	 				dbColumnName="CLI2_NOME"/>
+		 
+	<Parameter propertyName="cli3_ndg" 	 					dbColumnName="CLI3_NDG"/>	 
+	<Parameter propertyName="cli3_idCensimento" 		 	dbColumnName="CLI3_ID_CENSIMENTO"/>	 
+	<Parameter propertyName="cli3_codPotenziale" 		 	dbColumnName="CLI3_ASSGNCLIAGE_C_POTZLE"/>
+	<Parameter propertyName="cli3_cognome" 	 				dbColumnName="CLI3_COGNOME"/>
+	<Parameter propertyName="cli3_nome" 	 				dbColumnName="CLI3_NOME"/>
+	 
+	<Parameter propertyName="cli4_ndg" 	 					dbColumnName="CLI4_NDG"/>	 
+	<Parameter propertyName="cli4_idCensimento" 		 	dbColumnName="CLI4_ID_CENSIMENTO"/>	 
+	<Parameter propertyName="cli4_codPotenziale" 		 	dbColumnName="CLI4_ASSGNCLIAGE_C_POTZLE"/>
+	<Parameter propertyName="cli4_cognome" 	 				dbColumnName="CLI4_COGNOME"/>
+	<Parameter propertyName="cli4_nome" 	 				dbColumnName="CLI4_NOME"/>
+	 
+	<Parameter propertyName="cli5_ndg" 	 					dbColumnName="CLI5_NDG"/>	 
+	<Parameter propertyName="cli5_idCensimento" 		 	dbColumnName="CLI5_ID_CENSIMENTO"/>	 
+	<Parameter propertyName="cli5_codPotenziale" 		 	dbColumnName="CLI5_ASSGNCLIAGE_C_POTZLE"/>
+	<Parameter propertyName="cli5_cognome" 	 				dbColumnName="CLI5_COGNOME"/>
+	<Parameter propertyName="cli5_nome" 	 				dbColumnName="CLI5_NOME"/>
+	 
+	<Parameter propertyName="cli6_ndg" 	 					dbColumnName="CLI6_NDG"/>	 
+	<Parameter propertyName="cli6_idCensimento" 		 	dbColumnName="CLI6_ID_CENSIMENTO"/>	 
+	<Parameter propertyName="cli6_codPotenziale" 		 	dbColumnName="CLI6_ASSGNCLIAGE_C_POTZLE"/>
+	<Parameter propertyName="cli6_cognome" 	 				dbColumnName="CLI6_COGNOME"/>
+	<Parameter propertyName="cli6_nome" 	 				dbColumnName="CLI6_NOME"/>
+	 
+	<Parameter propertyName="cli7_ndg" 	 					dbColumnName="CLI7_NDG"/>	 
+	<Parameter propertyName="cli7_idCensimento" 		 	dbColumnName="CLI7_ID_CENSIMENTO"/>	 
+	<Parameter propertyName="cli7_codPotenziale" 		 	dbColumnName="CLI7_ASSGNCLIAGE_C_POTZLE"/>
+	<Parameter propertyName="cli7_cognome" 	 				dbColumnName="CLI7_COGNOME"/>
+	<Parameter propertyName="cli7_nome" 	 				dbColumnName="CLI7_NOME"/>
+	 
+	<Parameter propertyName="cli8_ndg" 	 					dbColumnName="CLI8_NDG"/>	 
+	<Parameter propertyName="cli8_idCensimento" 		 	dbColumnName="CLI8_ID_CENSIMENTO"/>	 
+	<Parameter propertyName="cli8_codPotenziale" 		 	dbColumnName="CLI8_ASSGNCLIAGE_C_POTZLE"/>
+	<Parameter propertyName="cli8_cognome" 	 				dbColumnName="CLI8_COGNOME"/>
+	<Parameter propertyName="cli8_nome" 	 				dbColumnName="CLI8_NOME"/>
+	 
+	<Parameter propertyName="cli9_ndg" 	 					dbColumnName="CLI9_NDG"/>	 
+	<Parameter propertyName="cli9_idCensimento" 		 	dbColumnName="CLI9_ID_CENSIMENTO"/>	 
+	<Parameter propertyName="cli9_codPotenziale" 		 	dbColumnName="CLI9_ASSGNCLIAGE_C_POTZLE"/>
+	<Parameter propertyName="cli9_cognome" 	 				dbColumnName="CLI9_COGNOME"/>
+	<Parameter propertyName="cli9_nome" 	 				dbColumnName="CLI9_NOME"/>
+	 
+	<Parameter propertyName="pdfCreationUser" 	 			dbColumnName="CREATION_USER"/>	 
+	<Parameter propertyName="pdfCreationTime" 	 			dbColumnName="CREATION_TIME"/>	 
+	<Parameter propertyName="pdfLastModUser" 	 			dbColumnName="LASTMOD_USER"/>	 
+	<Parameter propertyName="pdfLastModTime" 	 			dbColumnName="LASTMOD_TIME"/>	 
+	<Parameter propertyName="pdfCompletionUser" 			dbColumnName="COMPLETION_USER"/>	 
+	<Parameter propertyName="pdfCompletionTime" 			dbColumnName="COMPLETION_TIME"/>	 
+
+	<Parameter propertyName="pdfXmlData"  					dbColumnName="XML_DATA"/>
+   </Bindings>
+</Access>
+
+<Access name="callSrvDispositiva" markNillable="true" type="DAOOSBAccess" serviceName="service/soggetto/posizionedispositiva/ProcessoDispositivaRdvService/v1" operationName="processaDispositiva">
+<Input>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://posizionedispositiva.soggetto.be.schema.bmed.it/ProcessoDispositivaRdv/v1" xmlns:v12="http://posizionedispositiva.soggetto.be.schema.bmed.it/DispositivaBase/v1">
+		   <soapenv:Header>
+		      <v1:requestHeader>
+		         <v1:idOperazione>
+		            <v1:codiceApplicazioneChiamante>PDFWF</v1:codiceApplicazioneChiamante>
+		            <v1:codiceOperazione propertyName="uuid"></v1:codiceOperazione>
+		         </v1:idOperazione>
+		         <v1:idConversazione propertyName="uuid"></v1:idConversazione>
+		         <v1:timeStamp propertyName="timestamp"></v1:timeStamp>
+		         <v1:contestoChiamante>
+		            <v1:idApplicazioneChiamante>PDFWF</v1:idApplicazioneChiamante>
+		            <v1:canale propertyName="canale"></v1:canale>
+		            <v1:utente propertyName="userId"></v1:utente>
+		            <v1:ndgCliente append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"></v1:ndgCliente>
+		            <v1:numeroRapporto append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"></v1:numeroRapporto>
+		         </v1:contestoChiamante>
+		         <v1:tipoOperazione>DISP</v1:tipoOperazione>
+		      </v1:requestHeader>
+		   </soapenv:Header>
+		   <soapenv:Body>
+		      <v11:processaDispositiva>
+		         <v11:metadata>
+		            <v11:abiCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:callerDataId append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:channelCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:companyCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:familyBankerCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:familyBanker>false</v11:familyBanker>
+		            <v11:inputCommonDataVestion append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:ip append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:keyHole>false</v11:keyHole>
+		            <v11:keylog append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:operatorCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:placeCode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:statusCode>0</v11:statusCode>
+		            <v11:swift append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+				  	<v11:timeStamp propertyName="now"></v11:timeStamp>
+		            <v11:userAgent append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+				  	<v11:userId propertyName="userId"></v11:userId>
+		            <v11:userIdKeyHole append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		            <v11:versionBs append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+		         </v11:metadata>
+		         <v11:listaDispositive>
+		            <v11:dispositivaBaseParameter propertyName="elencoDispositive">
+		               <v11:dispositiva>		               
+				            <v11:dispositivaBase>
+				               <v12:descrizioneNote propertyName="descrizioneNote"></v12:descrizioneNote>
+				               <v12:codiceOperazioneDispositivaPadre append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+				               <v12:codiceModalitaRichiestaDispositiva propertyName="codiceModalitaRichiestaDispositiva"></v12:codiceModalitaRichiestaDispositiva>
+				               <v12:codiceTipoModalitaFirma propertyName="codiceTipoModalitaFirma"></v12:codiceTipoModalitaFirma>
+				               <v12:codiceCanaleOperativo propertyName="codiceCanaleOperativo"></v12:codiceCanaleOperativo>
+				               <v12:codicePraticaOriginaleProcessoOperativo append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+				               <v12:codiceProcessoOperativo propertyName="codiceProcessoOperativo"></v12:codiceProcessoOperativo>
+				               <v12:codiceOperazioneDispositivaSistemaOrigine propertyName="codiceOperazioneDispositivaSistemaOrigine"></v12:codiceOperazioneDispositivaSistemaOrigine>
+				               <v12:codiceApplicazioneBmed>700</v12:codiceApplicazioneBmed>
+				               <v12:codicePraticaMom append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+				               <v12:codiceTipoOperazioneDispositiva>1</v12:codiceTipoOperazioneDispositiva>
+				               <v12:codTipoSistOrigDisp markNillable="false" propertyName="codTipoSistOrigDisp"></v12:codTipoSistOrigDisp>
+				               <v12:codiceOperazioneDispositiva propertyName="codiceOperazioneDispositiva"></v12:codiceOperazioneDispositiva>
+				            </v11:dispositivaBase>
+				            <v11:dispositivaDettaglio>
+				               <v12:codiceTipoOperazioneProdottoServizio propertyName="codiceTipoOperazioneProdottoServizio"></v12:codiceTipoOperazioneProdottoServizio>
+				               <v12:codiceSurrogatoProdottoServizio propertyName="codiceSurrogatoProdottoServizio"></v12:codiceSurrogatoProdottoServizio>
+				               <v12:codiceBozzaDispositiva append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+				               <v12:contrNRapportoRiferimento propertyName="contrNRapportoRiferimento"></v12:contrNRapportoRiferimento>
+				               <v12:prodCRapportoRiferimento append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+				               <v12:codiceStatoOperazioneDispositiva append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+				               <v12:dataSottoscrizione propertyName="dataSottoscrizione"></v12:dataSottoscrizione>
+				               <v12:codiceDettaglioBeneficio append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+				               <v12:dataUltimaModificaDispositiva append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+				               <v12:descrizioneUriProcessoDispositivo append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+				               <v12:valoreDispositiva propertyName="valoreDispositiva"></v12:valoreDispositiva>
+				               <v12:codiceTipoValoreDispositiva propertyName="codiceTipoValoreDispositiva"></v12:codiceTipoValoreDispositiva>
+				               <v12:codiceScopoRapporto propertyName="codiceScopoRapporto"></v12:codiceScopoRapporto>
+				               <v12:numeroProposta markNillable="false" propertyName="numeroProposta"></v12:numeroProposta>
+			                   <v12:codiceCarrello markNillable="false" propertyName="codiceCarrello"></v12:codiceCarrello>
+			                   <v12:codiceReportAdeguatezza markNillable="false" propertyName="codiceReportAdeguatezza"></v12:codiceReportAdeguatezza>
+							   <v12:flagRadar></v12:flagRadar>
+				            </v11:dispositivaDettaglio>
+				            <v11:listaIndirizzi append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>           
+				            <v11:listaDocumenti>
+				               <v12:documento>
+				                  <v12:progressivoDocumentoDispositiva>1</v12:progressivoDocumentoDispositiva>
+				                  <v12:codiceBarcode propertyName="codiceBarcode"></v12:codiceBarcode>
+				                  <v12:codiceGuidDocumento propertyName="codiceGuidDocumento"></v12:codiceGuidDocumento>
+				                  <v12:codiceUploadMulticanaleDocumento propertyName="codiceUploadMulticanaleDocumento"></v12:codiceUploadMulticanaleDocumento>
+				                  <v12:descrizioneXmlDocumento append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+				                  <v12:codiceLegameDispositivaTemplate append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+				                  <v12:codiceRuoloDocumento>1</v12:codiceRuoloDocumento>
+				                  <v12:descrizioneDocumento propertyName="descrizioneDocumento"></v12:descrizioneDocumento>
+				                  <v12:codiceSurrogatoContenutoEditoriale append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+				                  <v12:denominazioneFileDocumento propertyName="denominazioneFileDocumento"></v12:denominazioneFileDocumento>
+								  <v12:flagSecretazione></v12:flagSecretazione>
+								  <v12:codTipoDocum markNillable="false" propertyName="codTipoDocum"></v12:codTipoDocum>							   
+				               </v12:documento>
+				               <v12:documento propertyName="allegati">
+				                  <v12:progressivoDocumentoDispositiva propertyName="progressivoAllegatoSrvMom"></v12:progressivoDocumentoDispositiva>
+				                  <v12:codiceBarcode append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+				                  <v12:codiceGuidDocumento append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+				                  <v12:codiceUploadMulticanaleDocumento propertyName="idFileNasAllegato"></v12:codiceUploadMulticanaleDocumento>
+				                  <v12:descrizioneXmlDocumento append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+				                  <v12:codiceLegameDispositivaTemplate append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+				                  <v12:codiceRuoloDocumento>2</v12:codiceRuoloDocumento>
+				                  <v12:descrizioneDocumento propertyName="descrizioneAllegato"></v12:descrizioneDocumento>
+				                  <v12:codiceSurrogatoContenutoEditoriale append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+				                  <v12:denominazioneFileDocumento propertyName="denominazioneFileAllegato"></v12:denominazioneFileDocumento>
+								  <v12:codTipoDocum markNillable="false" propertyName="codTipoDocum"></v12:codTipoDocum>							   
+				               </v12:documento>
+				            </v11:listaDocumenti>
+				            <v11:listaSoggetti>
+				               <v12:soggetto propertyName="soggetti">
+				                  <v12:codiceRuoloSoggetto propertyName="codiceRuoloSoggetto"></v12:codiceRuoloSoggetto>
+				                  <v12:progressivoSoggettoDispositiva propertyName="progressivoSoggettoDispositiva"></v12:progressivoSoggettoDispositiva>
+				                  <v12:codiceTipoSoggetto propertyName="codiceTipoSoggetto"></v12:codiceTipoSoggetto>
+				                  <v12:codiceSoggettoOriginale propertyName="codiceSoggettoOriginale"></v12:codiceSoggettoOriginale>
+								  <v12:soggettoEsterno>
+									<v12:codiceSoggettoEsterno propertyName="codiceSoggettoEsterno"></v12:codiceSoggettoEsterno>
+									<v12:denominazioneNomeSoggettoEsterno propertyName="denominazioneNomeSoggettoEsterno"></v12:denominazioneNomeSoggettoEsterno>
+									<v12:denominazioneCognomeSoggettoEsterno propertyName="denominazioneCognomeSoggettoEsterno"></v12:denominazioneCognomeSoggettoEsterno>
+									<v12:descrizioneNoteSoggettoEsterno append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+								  </v12:soggettoEsterno>	                  
+				               </v12:soggetto>
+				            </v11:listaSoggetti>
+				            <v11:listaTag append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+							<v11:listaControlli append="xmlns='http://posizionedispositiva.soggetto.be.schema.bmed.it/DispositivaBase/v1'">
+							   <controllo markNillable="false" propertyName="listaControlli">
+							      <tipoControllo propertyName="tipoControllo"></tipoControllo>
+							      <idControllo propertyName="idControllo"></idControllo>
+							   </controllo>
+							</v11:listaControlli>
+							<v11:listaDomandeCora>
+								<v12:domandaCora markNillable="false" propertyName="listaDomandeCora">
+									<v12:codiceDomanda propertyName="codiceDomanda"></v12:codiceDomanda>
+									<v12:codiceRisposta propertyName="codiceRisposta"></v12:codiceRisposta>
+								</v12:domandaCora>
+							</v11:listaDomandeCora>
+		               </v11:dispositiva>
+					   <v11:dataAvvio append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"/>
+					   <v11:invioMailFB>false</v11:invioMailFB>
+					   <v11:testoSMSCliente append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"></v11:testoSMSCliente>
+			        </v11:dispositivaBaseParameter>
+			     </v11:listaDispositive>
+			     
+		         <v11:listaVincoliDispositive propertyName="elencoVincoliDispositive" listContainer="true">
+		            <v11:vincoloDispositive propertyName="elencoVincoliDispositive">
+		               <v12:dispositivaVincolante>
+		                  <v12:codiceOperazioneDispositivaSistemaOrigine propertyName="codiceOperazioneDispositivaSistemaOrigineVincolante"></v12:codiceOperazioneDispositivaSistemaOrigine>
+		                  <v12:codiceOperazioneDispositiva append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"></v12:codiceOperazioneDispositiva>
+		               </v12:dispositivaVincolante>
+		               <v12:dispositivaVincolata>
+		                  <v12:codiceOperazioneDispositivaSistemaOrigine propertyName="codiceOperazioneDispositivaSistemaOrigineVincolata"></v12:codiceOperazioneDispositivaSistemaOrigine>
+		                  <v12:codiceOperazioneDispositiva append="xsi:nil='true' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"></v12:codiceOperazioneDispositiva>
+		               </v12:dispositivaVincolata>
+		               <v12:flagVincoloReale>true</v12:flagVincoloReale>
+		               <v12:codiceTipologiaVincoloDispositiva propertyName="codiceTipologiaVincoloDispositiva"></v12:codiceTipologiaVincoloDispositiva>
+		            </v11:vincoloDispositive>
+		         </v11:listaVincoliDispositive>
+		         
+		         <v11:azione propertyName="azione"></v11:azione>
+		      </v11:processaDispositiva>
+		   </soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+</Input>
+<Output>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://common.schema.bmed.it/v1" xmlns:v11="http://posizionedispositiva.soggetto.be.schema.bmed.it/ProcessoDispositivaRdv/v1" xmlns:v12="http://posizionedispositiva.soggetto.be.schema.bmed.it/DispositivaBase/v1">
+		   <soapenv:Header/>
+		   <soapenv:Body>
+		      <v11:processaDispositivaResponse>
+		         <v11:esito propertyName="esito"></v11:esito>
+		         <v11:listaDispositive>
+		            <v12:dispositiva propertyName="elencoDispositiveResult">
+		               <v12:codiceOperazioneDispositiva propertyName="codiceOperazioneDispositiva"></v12:codiceOperazioneDispositiva>
+		               <v12:codiceOperazioneDispositivaSistemaOrigine propertyName="codiceOperazioneDispositivaSistemaOrigine"></v12:codiceOperazioneDispositivaSistemaOrigine>
+		            </v12:dispositiva>
+		         </v11:listaDispositive>
+		      </v11:processaDispositivaResponse>
+		   </soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+</Output>
+</Access>	
+
+<Access name="aggiornaCodDispositivaBMED" type="DAOTableAccess" tableName="PDF_INSTANCE">
+	<Bindings>
+		<Parameter propertyName="pdfInstanceId" 		dbColumnName="PDF_INSTANCE_ID" primaryKey="true"/>
+		<Parameter propertyName="codDispositivaBMED"	dbColumnName="COD_DISPOSITIVA_BMED"/>
+	</Bindings>
+</Access>
+
+
+<Access name="insertTracciaturaRdaMOM" type="DAOTableAccess" tableName="SOGG_POSIZDISP.DETT_CHIAM_MOTR_NRMTVO" connectionCacheReference="DBAZ_SOGG">
+	<Bindings>
+		<Parameter propertyName="codTipoSistOrigine"				dbColumnName="COD_TIPO_SIST_ORIG_DISP" propertyType="StringType" propertyValue="MOM" primaryKey="true"/>
+		<Parameter propertyName="codMotoreNormativo"				dbColumnName="COD_MOTR_NRMTVO" propertyType="StringType" propertyValue="M04" primaryKey="true"/>
+		<Parameter propertyName="idPraticaMOM"						dbColumnName="COD_DISP_SIST_CHIAM" primaryKey="true"/>
+		<Parameter propertyName="idReportAdeguatezza"				dbColumnName="COD_CHIAM_MOTR_NRMTVO" primaryKey="true"/>
+		
+		<Parameter propertyName="codDispositivaBMED"				dbColumnName="COD_OPERZ_DISP_BMED"/>
+		<Parameter propertyName="#contextUserCode"					dbColumnName="GSTD_M_NOM_ULT_MODF"/>	 
+		<Parameter propertyName="#contextUserCode"					dbColumnName="GSTD_X_USER"/>	 
+		<Parameter propertyName="tipoModifica" 						dbColumnName="GSTD_X_TIP_MODF"/>
+		<Parameter propertyName="dataOraIns"						dbColumnName="GSTD_D_INS_RECORD"/>
+	</Bindings>
+</Access>
+
+<Access name="updateTracciaturaRdaMOM" type="DAOTableAccess" tableName="SOGG_POSIZDISP.DETT_CHIAM_MOTR_NRMTVO" connectionCacheReference="DBAZ_SOGG">
+	<Bindings>
+		<Parameter propertyName="codTipoSistOrigine"				dbColumnName="COD_TIPO_SIST_ORIG_DISP" propertyType="StringType" propertyValue="MOM" primaryKey="true"/>
+		<Parameter propertyName="codMotoreNormativo"				dbColumnName="COD_MOTR_NRMTVO" propertyType="StringType" propertyValue="M04" primaryKey="true"/>
+		<Parameter propertyName="idPraticaMOM"						dbColumnName="COD_DISP_SIST_CHIAM" primaryKey="true"/>
+		<Parameter propertyName="idReportAdeguatezza"				dbColumnName="COD_CHIAM_MOTR_NRMTVO" primaryKey="true"/>
+		
+		<Parameter propertyName="codDispositivaBMED"				dbColumnName="COD_OPERZ_DISP_BMED"/>
+		<Parameter propertyName="#contextUserCode"					dbColumnName="GSTD_M_NOM_ULT_MODF"/>	 
+		<Parameter propertyName="#contextUserCode"					dbColumnName="GSTD_X_USER"/>	 
+		<Parameter propertyName="tipoModifica" 						dbColumnName="GSTD_X_TIP_MODF"/>
+		<Parameter propertyName="dataOraUpd"						dbColumnName="GSTD_D_ULT_MODF_RECORD"/>
+	</Bindings>
+</Access>
+
+<Access name="verificaIdReportAdeguatezza" type="DAOOSBAccess" serviceName="mom-be-osb-gestionepratica-prj/proxy/PS_GestionePratica"
+	operationName="controlloRda">
+	<Input>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:api="http://api.be.gestionepratica.mom.bmed.it/">
+		   <soapenv:Header/>
+		   <soapenv:Body>
+		      <api:controlloRda>
+		         <arg0>
+		            <metadata>
+		               <userId propertyName="userId"></userId>
+		            </metadata>
+		            <idRda propertyName="idReportAdeguatezza"></idRda>
+		            <idRaccomandazione propertyName="idRaccomandazione"></idRaccomandazione>
+		            <ndg propertyName="ndg"></ndg>
+		         </arg0>
+		      </api:controlloRda>
+		   </soapenv:Body>
+		</soapenv:Envelope>				
+	]]>
+	</Input>
+	<Output>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:api="http://api.be.gestionepratica.mom.bmed.it/">
+   			<soapenv:Header/>
+   			<soapenv:Body>
+      			<api:controlloRdaResponse>
+         			<return>
+   						<esito 		propertyName="esito"></esito>
+   						<messaggio 	propertyName="messaggio"></messaggio>
+         			</return>
+      			</api:controlloRdaResponse>
+   			</soapenv:Body>
+		</soapenv:Envelope>	
+	]]>
+	</Output>
+</Access>
+
+<Access name="loadCodDispositiveBMED" type="DAOQueryAccess" queryType="0"
+		OutputCommandDataModel="com.atosorigin.wfem.command.MapCommandDataModel">
+ <Query>
+	select 	COD_DISPOSITIVA_BMED as codDispositivaBMED
+	, 		0 from PDF_INSTANCE 
+	where 	PDF_INSTANCE_ID = ?
+	union
+	select 	COD_DISPOSITIVA_BMED as codDispositivaBMED
+	, 		PDF_INSTANCE_DETT_NUM from PDF_INSTANCE_DETT 
+	where 	PDF_INSTANCE_ID = ?
+	and 	PDF_INSTANCE_DETT_NUM > 0
+	order by 2
+ </Query> 
+ <Input>
+	<Parameter propertyName="pdfInstanceId"/>	
+	<Parameter propertyName="pdfInstanceId"/>	
+ </Input>
+ <Output>
+	<Parameter propertyName="codDispositivaBMED"/>	
+ </Output>
+</Access> 
+
+<Access name="loadOriginalMomVersions" type="DAOQueryAccess" queryType="0"
+		OutputCommandDataModel="com.atosorigin.wfem.command.MapCommandDataModel">
+ <Query>
+	select 	MOM_VERSION as momVersion
+	, 		0 from PDF_INSTANCE 
+	where 	PDF_INSTANCE_ID = ?
+	union
+	select 	MOM_VERSION as momVersion
+	, 		PDF_INSTANCE_DETT_NUM from PDF_INSTANCE_DETT 
+	where 	PDF_INSTANCE_ID = ?
+	and 	PDF_INSTANCE_DETT_NUM > 0
+	order by 2
+ </Query> 
+ <Input>
+	<Parameter propertyName="pdfInstanceId"/>	
+	<Parameter propertyName="pdfInstanceId"/>	
+ </Input>
+ <Output>
+	<Parameter propertyName="momVersion"/>	
+ </Output>
+</Access> 
+
+</DAO-Object>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="PdfMomRiavvioDoppiaSpunta" connectionCacheReference="CEPE">
+
+<Access name="loadClonedPdfInstanceId" type="DAOQueryAccess" queryType="0" maxResultRows="1">
+ <Query>
+	select 	PDF_INSTANCE_ID, ORIGINAL_PDF_INSTANCE_ID
+	from 	PDF_INSTANCE
+	where 	ORIGINAL_PDF_INSTANCE_ID = (select PDF_INSTANCE_ID from PDF_INSTANCE where COD_DISPOSITIVA_BMED = ?)
+	and 	EXTERNAL_ENTITY_APPL = 'MOM'
+	and 	EXTERNAL_ENTITY_NAME like 'DOPPIASPUNTA-MOM-%'
+ </Query> 
+ <Input>
+	<Parameter propertyName="codDispositivaBMED"/>	
+ </Input>
+ <Output>
+	<Parameter propertyName="pdfInstanceId"/>
+	<Parameter propertyName="originalPdfInstanceId"/>
+ </Output> 
+</Access> 
+
+<Access name="deleteClonedPdfInstance" type="DAOTableAccess" tableName="PDF_INSTANCE">
+   <Bindings>
+	<Parameter propertyName="pdfInstanceId" 		dbColumnName="PDF_INSTANCE_ID" 			primaryKey="true"/>
+	<Parameter propertyName="originalPdfInstanceId" dbColumnName="ORIGINAL_PDF_INSTANCE_ID" primaryKey="true"/>
+   </Bindings>
+</Access>
+	
+</DAO-Object>

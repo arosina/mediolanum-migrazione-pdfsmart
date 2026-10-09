@@ -1,0 +1,328 @@
+<!--------  ADEMPIMENTI NORMATIVI ------->
+<%template.savePrefix();%>
+<table style="width:98%;">
+   <%template.setPrefix("infoPersonali");%>
+	<tr>
+		<td>
+			<table>
+      			<tr>
+		   			<td style="padding-left:0;<%=model.fch(template.getPrefix(),"fasciaRedditoAnnuale")%>"><%=template.field("fasciaRedditoAnnuale")%></td>
+		   			<td style="<%=model.fch(template.getPrefix(),"fasciaPatrimonioComplessivo")%>"><%=template.field("fasciaPatrimonioComplessivo")%></td>
+      			</tr>
+      		</table>    
+    	</td>
+	</tr>
+  
+	<tr>
+  		<td>
+   			<table style="<%=model.fch(template.getPrefix(),"combinazioneProvenienzaPatrimonio")%>">
+		      	<tr>
+		      		<td>
+		      			<table><tr>
+				      		<td class="text">Origine del Patrimonio <span class="mtory">(*)</span></td>
+				      		<td>&nbsp;</td>
+							<td><%=template.inlineAnchor("infoPersonali_combinazioneProvenienzaPatrimonio")%></td>			      		
+		      			</tr></table>
+		      		</td>
+		      	</tr>
+		      	<tr>
+		      		<td>
+		      			<table><tr>
+						   	<td><%=template.field("combinazione1ProvenienzaPatrimonio","labelposition='RIGHT' onclick='impostaCombinazioneProvenienzaPatrimonio();'")%></td>
+						   	<td><%=template.field("combinazione2ProvenienzaPatrimonio","labelposition='RIGHT' onclick='impostaCombinazioneProvenienzaPatrimonio();'")%></td>
+						   	<td><%=template.field("combinazione3ProvenienzaPatrimonio","labelposition='RIGHT' onclick='impostaCombinazioneProvenienzaPatrimonio();'")%></td>
+						   	<td><%=template.field("combinazione4ProvenienzaPatrimonio","labelposition='RIGHT' onclick='impostaCombinazioneProvenienzaPatrimonio();'")%></td>
+		      			</tr></table>
+		      		</td>
+		      	</tr>
+		      	<tr>
+		      		<td>
+		      			<table><tr>
+						   	<td><%=template.field("combinazione5ProvenienzaPatrimonio","labelposition='RIGHT' onclick='impostaCombinazioneProvenienzaPatrimonio();'")%></td>
+						   	<td><%=template.field("combinazione6ProvenienzaPatrimonio","labelposition='RIGHT' onclick='impostaCombinazioneProvenienzaPatrimonio();'")%></td>
+						   	<td><%=template.field("combinazione7ProvenienzaPatrimonio","labelposition='RIGHT' onclick='impostaCombinazioneProvenienzaPatrimonio();'")%></td>
+		      			</tr></table>
+		      		</td>
+		      	</tr>
+  			</table>
+		</td>
+	</tr>
+  
+	<tr>
+		<td>
+			<table>
+		        <% 
+		        	String modalityProfessione = "";
+		        	if(model.getInfoPersonali().getCodOrigine().equals(Costanti.CODICE_ORIGINE_MFORYOU) && model.getIsPotenziale().booleanValue())
+		        		modalityProfessione = " modality='read' ";
+		         %>
+	   			<tr>
+				    <td style="<%=model.fch(template.getPrefix(),"codProfessionePrecedente")%>"><%=template.field("codProfessionePrecedente","showcode='true' style='width:350;'")%></td>
+				    <td style="vertical-align:bottom;"><img onclick="openHelpCodProfessione();" src="<%=template.getWfemLayoutWebApp()%>/images/typeMessage.png" style="cursor:pointer;" title="Elenco professioni"></td>
+			    </tr>
+			</table>
+		</td>
+	</tr>
+
+	<tr>
+    	<td>
+    		<table>
+    			<tr>
+				    <td style="<%=model.fch(template.getPrefix(),"codProfessione")%>"><%=template.field("codProfessione",modalityProfessione+"onchange='ricaricaTendinaSettoreEconomico();' showcode='true' style='width:350;'")%></td>
+					<%template.setPrefix("adempimentiNormativi");%>
+				    <td id="divFormaGiuridicaSocietaAppartenenza" style="<%=model.fch(template.getPrefix(),"formaGiuridicaSocietaAppartenenza")%>"><%=template.field("formaGiuridicaSocietaAppartenenza","showcode='true' style='width:350;'")%></td>
+					<%template.setPrefix("infoPersonali");%>
+			    </tr>
+			</table>
+		</td>
+    </tr>
+	    
+	<tr>
+		<td>
+		    <table id="universitaDiv">
+			    <tr>
+			        <%if(modificabile){%>
+			        <td style="vertical-align:bottom;">
+			            <img title="Universita" src="<%=template.getWebApp()%>/images/search.gif" onclick="loadUniversita();" style="cursor:pointer;">
+				  		<img title="Pulisci universita" src="<%=template.getWebApp()%>/images/clear.gif" onclick="clearUniversita();" style="cursor:pointer;"> 
+			        </td>
+			        <%}%>
+			        <%=template.hidden("universita_codUniversita")%>
+				    <td style="<%=model.fch(template.getPrefix(),"universita_facolta")%>"><%=template.field("universita_facolta","modality='read' size='30'")%></td>
+				    <td style="<%=model.fch(template.getPrefix(),"universita_ateneo")%>"><%=template.field("universita_ateneo","modality='read' size='85'")%></td>
+				    <td style="<%=model.fch(template.getPrefix(),"universita_provincia")%>"><%=template.field("universita_provincia","modality='read' size='2'")%></td>
+			        <td><%=template.inlineAnchor("infoPersonali_universita_codUniversita")%></td>
+			    </tr>
+		    </table>    
+		</td>
+	</tr>
+	    
+    <tr>
+    	<td>
+    		<table>
+    			<tr>
+				    <td style="<%=model.fch(template.getPrefix(),"codSettoreEconomico")%>"><%=template.field("codSettoreEconomico","showcode='true' style='width:300;'")%></td>
+			        <td style="vertical-align:bottom;"><img onclick="openHelpCodSettoreEconomico();" src="<%=template.getWfemLayoutWebApp()%>/images/typeMessage.png" style="cursor:pointer;" title="Elenco settori economici"></td>
+					<td style="<%=model.fch(template.getPrefix(),"nazioneSvolgimentoProfessione")%>"><%=template.field("nazioneSvolgimentoProfessione","showempty='false' onchange='gestioneNazioneProfessione();'")%></td>
+					<td id='tabProvinciaSvolgimentoProfessione' style="<%=model.fch(template.getPrefix(),"provinciaSvolgimentoProfessione")%>"><%=template.field("provinciaSvolgimentoProfessione")%></td>
+			    </tr>
+			</table>
+		</td>
+    </tr>
+
+	<%template.setPrefix("adempimentiNormativi");%>
+    <tr>
+    	<td>
+		 	<table class="text" style="<%=model.fch(template.getPrefix(),"haCarichePubbliche")%>">
+		 		<tr>
+		 			<td style="width:500;">Ricopre (o ha ricoperto negli ultimi 12 mesi) cariche in ambito pubblico o politico-istituzionali (ambiti non ricompresi dalla nozione di persona politicamente esposta) <span class="mtory">(*)</span></td>
+		 			<td><%=template.inlineAnchor("adempimentiNormativi_haCarichePubbliche")%></td>
+		 			<td>
+		 				<table class="text">
+		 					<tr>
+		 						<td style="padding-left: 5px;">Sì</td>
+		 						<td>
+		 							<input type="radio" name="adempimentiNormativi_haCarichePubbliche" value="S" onclick="gestioneHaCarichePubbliche();hideHelperAnchor('adempimentiNormativi_haCarichePubbliche');"	 						
+		 								<%=(modificabile?"":"disabled")%> <%=model.getAdempimentiNormativi().getHaCarichePubbliche().equals("S")?"checked":""%>></input>
+		 						</td>
+		 					</tr>
+		 				</table>
+		 			</td>
+		 			<td>
+		 				<table class="text">
+		 					<tr>
+		 						<td style="padding-left: 5px;">No</td>
+		 						<td>
+		 							<input type="radio" name="adempimentiNormativi_haCarichePubbliche" value="N" onclick="gestioneHaCarichePubbliche();hideHelperAnchor('adempimentiNormativi_haCarichePubbliche');"
+		 								<%=(modificabile?"":"disabled")%> <%=model.getAdempimentiNormativi().getHaCarichePubbliche().equals("N")?"checked":""%>></input>
+		 						</td>
+		 					</tr>
+		 				</table>
+		 			</td>
+		 		</tr>
+		 	</table>
+		</td>
+    </tr>
+
+    <tr>
+    	<td id="divCaricaPubblicaSi">
+    		<table>
+    			<tr>
+				    <td style="<%=model.fch(template.getPrefix(),"caricaPubblicaRicoperta")%>"><%=template.field("caricaPubblicaRicoperta","onchange='gestioneCaricaPubblicaRicoperta();'")%></td>
+					<td id="divDettaglioCaricaPubblicaRicoperta" style="<%=model.fch(template.getPrefix(),"dettaglioCaricaPubblicaRicoperta")%>"><%=template.field("dettaglioCaricaPubblicaRicoperta","style='width:590;'")%></td>
+			    </tr>
+			</table>
+		</td>
+    </tr>
+
+    <%@ include file="./InfoPEP.html"%>
+    
+    <tr>
+    	<td>
+		 	<table class="text" style="<%=model.fch(template.getPrefix(),"haLegamiAffariDiversiDaAttivitaPrincipale")%>">
+		 		<tr>
+		 			<td style="width:350;">Intrattiene relazioni d'affari con Paesi Terzi ad Alto Rischio e/o relazioni d'affari diverse dalla propria attività principale <span class="mtory">(*)</span></td>
+		 			<td><%=template.inlineAnchor("adempimentiNormativi_haLegamiAffariDiversiDaAttivitaPrincipale")%></td>
+		 			<td>
+		 				<table class="text">
+		 					<tr>
+		 						<td style="padding-left: 5px;">Sì</td>
+		 						<td>
+		 							<input type="radio" name="adempimentiNormativi_haLegamiAffariDiversiDaAttivitaPrincipale" value="S" onclick="gestioneLegamiAffariDiversiDaAttivitaPrincipale();hideHelperAnchor('adempimentiNormativi_haLegamiAffariDiversiDaAttivitaPrincipale');"	 						
+		 								<%=(modificabile?"":"disabled")%> <%=model.getAdempimentiNormativi().getHaLegamiAffariDiversiDaAttivitaPrincipale().equals("S")?"checked":""%>></input>
+		 						</td>
+		 					</tr>
+		 				</table>
+		 			</td>
+		 			<td>
+		 				<table class="text">
+		 					<tr>
+		 						<td style="padding-left: 5px;">No</td>
+		 						<td>
+		 							<input type="radio" name="adempimentiNormativi_haLegamiAffariDiversiDaAttivitaPrincipale" value="N" onclick="gestioneLegamiAffariDiversiDaAttivitaPrincipale();hideHelperAnchor('adempimentiNormativi_haLegamiAffariDiversiDaAttivitaPrincipale');"
+		 								<%=(modificabile?"":"disabled")%> <%=model.getAdempimentiNormativi().getHaLegamiAffariDiversiDaAttivitaPrincipale().equals("N")?"checked":""%>></input>
+		 						</td>
+		 					</tr>
+		 				</table>
+		 			</td>
+					<td id="divTipologiaLegameAffariDiversoDaAttivitaPrincipaleSi" style="padding-left:20px;<%=model.fch(template.getPrefix(),"tipologiaLegameAffariDiversoDaAttivitaPrincipale")%>">
+						<%=template.field("tipologiaLegameAffariDiversoDaAttivitaPrincipale","style='width:360px;'")%>
+					</td>
+		 		</tr>
+		 	</table>
+		</td>
+    </tr>
+
+    <tr>
+    	<td id="divPaesiLegamiAffariDiversiDaAttivitaPrincipaleSi" style="padding-top: 10;">
+    		<table class="text">
+    			<tr>
+    				<td colspan="3">
+    					Paesi Terzi ad Alto Rischio con i quali intrattiene relazioni di affari o paesi con cui si hanno relazioni d'affari, 
+    					Italia compresa<br>(L'elenco dei Paesi Terzi ad Alto Rischio, è consultabile 
+    					<span style="text-decoration: underline;cursor: pointer;" title="Paesi ad alto rischio" onclick="window.open('<%=model.getAdempimentiNormativi().linkElencoPaesiAltoRischio()%>');">qui</span>)
+    				</td>
+    			</tr>
+    			<tr>
+				    <td style="<%=model.fch(template.getPrefix(),"paeseLegameAffariDiversoDaAttivitaPrincipale1")%>"><%=template.field("paeseLegameAffariDiversoDaAttivitaPrincipale1","labelposition='nolabel'")%></td>
+				    <td style="<%=model.fch(template.getPrefix(),"paeseLegameAffariDiversoDaAttivitaPrincipale2")%>"><%=template.field("paeseLegameAffariDiversoDaAttivitaPrincipale2","labelposition='nolabel'")%></td>
+				    <td style="<%=model.fch(template.getPrefix(),"paeseLegameAffariDiversoDaAttivitaPrincipale3")%>"><%=template.field("paeseLegameAffariDiversoDaAttivitaPrincipale3","labelposition='nolabel'")%></td>
+			    </tr>
+			</table>
+		</td>
+    </tr>
+    
+    <% 
+  	StringType flagPepLegamiParentela = model.getAdempimentiNormativi().getHaLegamiParentelaConPep();
+  	StringType originalFlagPepLegamiParentela = model.getDatiApplicativi().getClienteCaricato() == null ? flagPepLegamiParentela : model.getDatiApplicativi().getClienteCaricato().getAdempimentiNormativi().getHaLegamiParentelaConPep();
+  	FlagPepFrontendStatus flagPepLegamiParentelaFrontendStatus = FlagPepFrontendStatus.flagPepFrontendStatus(model, modificabile, flagPepLegamiParentela, originalFlagPepLegamiParentela);
+    %>
+    <tr>
+    	<td style="padding-top: 10px;">
+		 	<table class="text" style="<%=model.fch(template.getPrefix(),"haLegamiParentelaConPep")%>">
+		 		<tr>
+		 			<td style="width:350;">Ha legami di parentela o assimilati con persone politicamente esposte <span class="mtory">(*)</span></td>
+		 			<td><%=template.inlineAnchor("adempimentiNormativi_haLegamiParentelaConPep")%></td>
+		 			<td>
+		 				<table class="text">
+		 					<tr>
+		 						<td style="padding-left: 5px;">Sì</td>
+		 						<td>
+		 							<input type="radio" name="adempimentiNormativi_haLegamiParentelaConPep" value="<%=flagPepLegamiParentelaFrontendStatus.getFlagPepSiValue()%>" 
+		 								 onclick="gestioneLegamiParentelaConPep(true);hideHelperAnchor('adempimentiNormativi_haLegamiParentelaConPep');"	 						
+		 								 <%=flagPepLegamiParentelaFrontendStatus.getFlagPepEnabled()%> <%=flagPepLegamiParentelaFrontendStatus.getFlagPepSiChecked()%>></input>
+		 						</td>
+		 					</tr>
+		 				</table>
+		 			</td>
+		 			<td>
+		 				<table class="text">
+		 					<tr>
+		 						<td style="padding-left: 5px;">No</td>
+		 						<td>
+		 							<input type="radio" name="adempimentiNormativi_haLegamiParentelaConPep" value="<%=flagPepLegamiParentelaFrontendStatus.getFlagPepNoValue()%>" 
+		 								onclick="gestioneLegamiParentelaConPep(true);hideHelperAnchor('adempimentiNormativi_haLegamiParentelaConPep');"
+		 								<%=flagPepLegamiParentelaFrontendStatus.getFlagPepEnabled()%> <%=flagPepLegamiParentelaFrontendStatus.getFlagPepNoChecked()%>></input>
+		 						</td>
+		 					</tr>
+		 				</table>
+		 			</td>
+		 		</tr>
+		 	</table>
+		</td>
+    </tr>
+    <tr>
+    	<td id="divLegamiParentelaConPepSi">
+    		<table class="text">
+    			<tr>
+				    <td style="<%=model.fch(template.getPrefix(),"tipologiaLegameParentelaConPep")%>"><%=template.field("tipologiaLegameParentelaConPep","showcode='true' style='width:480;'"+flagPepLegamiParentelaFrontendStatus.getMotivazionePepEnabled())%></td>
+				    <td style="<%=model.fch(template.getPrefix(),"tipologiaFunzionePubblicaLegameParentelaConPep")%>"><%=template.field("tipologiaFunzionePubblicaLegameParentelaConPep","showcode='true'"+flagPepLegamiParentelaFrontendStatus.getMotivazionePepEnabled())%></td>
+		 	        <td style="vertical-align: bottom;"><img onclick="openHelpMotivazionePep();" src="<%=template.getWfemLayoutWebApp()%>/images/typeMessage.png" style="cursor:pointer;" title="Motivazioni PEP"></td>
+			    </tr>
+			</table>
+		</td>
+    </tr>
+       
+    <% 
+  	StringType flagPepLegamiAffari = model.getAdempimentiNormativi().getHaLegamiAffariConPep();
+  	StringType originalFlagPepLegamiAffari = model.getDatiApplicativi().getClienteCaricato() == null ? flagPepLegamiAffari : model.getDatiApplicativi().getClienteCaricato().getAdempimentiNormativi().getHaLegamiAffariConPep();
+  	FlagPepFrontendStatus flagPepLegamiAffariFrontendStatus = FlagPepFrontendStatus.flagPepFrontendStatus(model, modificabile, flagPepLegamiAffari, originalFlagPepLegamiAffari);
+    %>
+    <tr>
+    	<td style="padding-top: 10px;">
+		 	<table class="text" style="<%=model.fch(template.getPrefix(),"haLegamiAffariConPep")%>">
+		 		<tr>
+		 			<td style="width:350;">Intrattiene legami d'affari con persone politicamente esposte <span class="mtory">(*)</span></td>
+		 			<td><%=template.inlineAnchor("adempimentiNormativi_haLegamiAffariConPep")%></td>
+		 			<td>
+		 				<table class="text">
+		 					<tr>
+		 						<td style="padding-left: 5px;">Sì</td>
+		 						<td>
+		 							<input type="radio" name="adempimentiNormativi_haLegamiAffariConPep" value="<%=flagPepLegamiAffariFrontendStatus.getFlagPepSiValue()%>" 
+		 								onclick="gestioneLegamiAffariConPep(true);hideHelperAnchor('adempimentiNormativi_haLegamiAffariConPep');"	 						
+	 								 	<%=flagPepLegamiAffariFrontendStatus.getFlagPepEnabled()%> <%=flagPepLegamiAffariFrontendStatus.getFlagPepSiChecked()%>></input>
+		 						</td>
+		 					</tr>
+		 				</table>
+		 			</td>
+		 			<td>
+		 				<table class="text">
+		 					<tr>
+		 						<td style="padding-left: 5px;">No</td>
+		 						<td>
+		 							<input type="radio" name="adempimentiNormativi_haLegamiAffariConPep" value="<%=flagPepLegamiAffariFrontendStatus.getFlagPepNoValue()%>" 
+		 								onclick="gestioneLegamiAffariConPep(true);hideHelperAnchor('adempimentiNormativi_haLegamiAffariConPep');"
+		 								<%=flagPepLegamiAffariFrontendStatus.getFlagPepEnabled()%> <%=flagPepLegamiAffariFrontendStatus.getFlagPepNoChecked()%>></input>
+		 						</td>
+		 					</tr>
+		 				</table>
+		 			</td>
+		 		</tr>
+		 	</table>
+		</td>
+    </tr>
+    <tr>
+    	<td id="divLegamiAffariConPepSi">
+    		<table class="text">
+    			<tr>
+				    <td style="<%=model.fch(template.getPrefix(),"tipologiaLegameAffariConPep")%>"><%=template.field("tipologiaLegameAffariConPep","showcode='true' style='width:480;'"+flagPepLegamiAffariFrontendStatus.getMotivazionePepEnabled())%></td>
+				    <td style="<%=model.fch(template.getPrefix(),"tipologiaFunzionePubblicaLegameAffariConPep")%>"><%=template.field("tipologiaFunzionePubblicaLegameAffariConPep","showcode='true'"+flagPepLegamiAffariFrontendStatus.getMotivazionePepEnabled())%></td>
+		 	        <td style="vertical-align: bottom;"><img onclick="openHelpMotivazionePep();" src="<%=template.getWfemLayoutWebApp()%>/images/typeMessage.png" style="cursor:pointer;" title="Motivazioni PEP"></td>
+			    </tr>
+			</table>
+		</td>
+    </tr>
+
+</table>
+
+<script>
+gestioneNazioneProfessione();
+gestioneProfessione();
+gestioneHaCarichePubbliche();
+gestioneLegamiAffariDiversiDaAttivitaPrincipale();
+gestioneLegamiParentelaConPep();
+gestioneLegamiAffariConPep();
+</script>
+<%template.restorePrefix();%>  
+<!------------------------------------------->

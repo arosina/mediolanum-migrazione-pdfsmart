@@ -1,0 +1,156 @@
+<!--------  INFO SOCIETARIE ------->
+<%template.setPrefix("infoSocietarie");%>
+
+<table style="width:98%;border-collapse:collapse;border-spacing:1;">
+
+  <!-- ********* PARTITA IVA ******************** -->
+  <tr>
+  	<td>
+  		<table class="text" style="width:100%;">
+	  		<tr>
+	  			<td><hr style="line-height:1px;width:5;color:#1A458F;"></td>
+	  			<td style="white-space: nowrap;font-weight:bold;">&nbsp;<img src="<%=template.getWebApp()%>/images/section.gif">
+	  					&nbsp;Partita IVA&nbsp;
+	  			</td>
+	  			<td style="width:100%;"><hr style="height:1px;width:100%;color:#1A458F;"></td>
+	  		</tr>
+  		</table>
+  	</td>
+  </tr>
+  <tr>
+	<td><%=template.field("partitaIVA" ,"size='50'")%><td>
+  </tr>
+  
+  <!-- ********* CODICE FISCALE ******************** -->
+  <tr>
+  	<td>
+  		<table class="text" style="width:100%;">
+  			<tr>
+	  			<td><hr style="line-height:1px;width:5;color:#1A458F;"></td>
+	  			<td style="white-space: nowrap;font-weight:bold;">&nbsp;<img src="<%=template.getWebApp()%>/images/section.gif">
+	  					&nbsp;Codce fiscale&nbsp;
+	  			</td>
+	  			<td style="width:100%;"><hr style="height:1px;width:100%;color:#1A458F;"></td>
+  			</tr>
+  		</table>
+  	</td>
+  </tr>  
+  <tr>
+  	<td><%=template.field("codiceFiscale" ,"size='50'")%><td>
+  </tr>  
+  
+  <!-- ********* ISCRIZIONE REA ******************** -->
+  <tr>
+  	<td>
+  		<table class="text" style="width:100%;">
+  			<tr>
+	  			<td><hr style="line-height:1px;width:5;color:#1A458F;"></td>
+	  			<td style="white-space: nowrap;font-weight:bold;">&nbsp;<img src="<%=template.getWebApp()%>/images/section.gif">
+	  					&nbsp;Iscrizione REA&nbsp;
+	  			</td>
+	  			<td style="width:100%;"><hr style="height:1px;width:100%;color:#1A458F;"></td>
+  			</tr>
+  		</table>
+  	</td>
+  </tr>
+  <tr>
+  	<td>
+	  <table style="width:100%;">
+		  <tr>
+			<td><%=template.field("numeroIscrizioneREA" ,"size='50'")%><td>
+			<td><%=template.field("dataIscrizioneREA" ,"size='50'")%><td>
+		  </tr>  
+	  </table>
+  	</td>
+  </tr>  
+  
+  <!-- ********* DIPENDENTI ******************** -->
+  <tr>
+  	<td>
+  		<table class="text" style="width:100%;"><tr>
+  			<td><hr style="line-height:1px;width:5;color:#1A458F;"></td>
+  			<td style="white-space: nowrap;font-weight:bold;">&nbsp;<img src="<%=template.getWebApp()%>/images/section.gif">
+  					&nbsp;Dipendenti&nbsp;
+  			</td>
+  			<td style="width:100%;"><hr style="height:1px;width:100%;color:#1A458F;"></td>
+  		</tr></table>
+  	</td>
+  </tr>   
+  <tr>
+	<td><%=template.field("nDipendenti" ,"size='50'")%><td>
+  <tr>  
+  
+  <!-- ********* DATI DEL LEGALE RAPPRESENTANTE ******************** -->
+  <tr>
+  	<td>
+  		<table class="text" style="width:100%;">
+  		<tr>
+  			<td><hr style="line-height:1px;width:5;color:#1A458F;"></td>
+  			<td style="white-space: nowrap;font-weight:bold;">&nbsp;<img src="<%=template.getWebApp()%>/images/section.gif">
+  					&nbsp;Dati del legale rappresentante&nbsp;
+  			</td>
+  			<td style="width:100%;"><hr style="height:1px;width:100%;color:#1A458F;"></td>
+  		</tr></table>
+  	</td>
+  </tr>
+  <tr>   
+  	<td>
+	  <table style="width:100%;">
+		  <tr>
+			<td><%=template.field("legRapCognome" ,"size='50'")%><td>
+			<td><%=template.field("legRapNome" ,"size='50'")%><td>
+		  </tr>
+		  <tr>    
+			<td><%=template.field("legRapCodiceCliente" ,"size='50'")%><td>
+			<td><%=template.field("legCodiceFiscale" ,"size='50'")%><td>
+		  </tr>
+	  </table>
+  	</td>
+   </tr>
+   
+  <!-- ********* RISULTATO ECONOMICO ******************** -->
+  <tr>
+  	<td>
+  		<table class="text" style="width:100%;">
+  		<tr>
+  			<td><hr style="line-height:1px;width:5;color:#1A458F;"></td>
+  			<td style="white-space: nowrap;font-weight:bold;">&nbsp;<img src="<%=template.getWebApp()%>/images/section.gif">
+  					&nbsp;Risultato economico ultimi tre esercizi&nbsp;
+  			</td>
+  			<td style="width:100%;"><hr style="height:1px;width:100%;color:#1A458F;"></td>
+  		</tr></table>
+  	</td>
+  </tr>
+  <tr>   
+  	<td>
+	  <table class="text">
+	  	  <col style="width:120px;"><col style="width:*;"><col style="width:*;"><col style="width:*;">
+		  <tr>
+		  	<td style="vertical-align:bottom;">Ultimo esercizio:</td>
+			<td><%=template.field("utileUltimoEsercizio" ,"size='30'")%><td>
+			<td><%=template.field("perditaUltimoEsercizio" ,"size='30'")%><td>
+			<td>
+				<table class="text"><tr>
+					<td><input type="checkbox" <%=(model.getInfoSocietarie().getUtileUltimoEsercizioNonDisponibile().equals("S")?"checked":"")%> disabled></td><td>Valore non disponibile in quantol'azienda non ha ancora chiuso il bilancio del 1&deg; esercizio</td>
+				</tr></table>
+			</td>
+		  </tr>
+		  <tr>
+		  	<td style="vertical-align:bottom;">Penultimo esercizio:</td>
+			<td><%=template.field("utilePenultimoEsercizio" ,"size='30'")%><td>
+			<td><%=template.field("perditaPenultimoEsercizio" ,"size='30'")%><td>
+			<td></td>
+		  </tr>
+		  <tr>
+		  	<td style="vertical-align:bottom;">Terzultimo esercizio:</td>
+			<td><%=template.field("utileTerzultimoEsercizio" ,"size='30'")%><td>
+			<td><%=template.field("perditaTerzultimoEsercizio" ,"size='30'")%><td>
+			<td></td>
+		  </tr>
+	  </table>
+  	</td>
+   </tr>
+
+  <%template.restorePrefix();%>    
+    
+</table>

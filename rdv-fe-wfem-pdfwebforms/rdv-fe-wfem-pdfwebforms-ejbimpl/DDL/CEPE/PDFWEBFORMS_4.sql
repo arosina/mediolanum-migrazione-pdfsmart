@@ -1,0 +1,7 @@
+use CEPE
+go
+
+alter table PDF_ANAG add DOWNLOAD_AS_FACSIMILE char(1) null
+go
+
+PRINT "column 'PDF_INSTANCE.DOWNLOAD_AS_FACSIMILE' ADDED"

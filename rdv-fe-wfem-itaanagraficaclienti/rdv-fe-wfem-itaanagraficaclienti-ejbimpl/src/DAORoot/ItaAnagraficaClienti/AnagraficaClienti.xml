@@ -1,0 +1,2025 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="AnagraficaClienti" connectionCacheReference="CEPE">
+
+<CodDescriptions>
+
+	<CodDesc name="NAZIONI" tableName="UTLY.DOM_NAZ" codColumnName="COD_NAZ_CLI" descrColumnName="DEN_NAZ"
+                       whereCondition="nvl(trim(COD_NAZ_CLI),' ') != ' ' order by DEN_NAZ"
+                       validityWhereCondition="COD_NAZ_CLI='I' or (nvl(trim(COD_NAZ_CLI),' ') != ' ' and GSTD_F_ESIST = 'S' and SYSDATE BETWEEN DAT_INIZ_VALID and DAT_FINE_VALID)"
+                       distinct="true"
+                       connectionCacheReference="DBAZ_SOGG"/>
+
+	<CodDesc name="NAZIONIUIC" tableName="UTLY.DOM_NAZ" codColumnName="COD_NAZ_UIC_CDCRI" descrColumnName="DEN_NAZ"
+                       whereCondition="nvl(trim(COD_NAZ_UIC_CDCRI),' ') != ' ' order by DEN_NAZ"
+                       validityWhereCondition="COD_NAZ_UIC_CDCRI='000' or (nvl(trim(COD_NAZ_UIC_CDCRI),' ') != ' ' and GSTD_F_ESIST = 'S' and SYSDATE BETWEEN DAT_INIZ_VALID and DAT_FINE_VALID)"
+                       distinct="true"
+                       connectionCacheReference="DBAZ_SOGG"/>
+
+   <CodDesc name="PROVINCE" tableName="CLL.V_PROV" codColumnName="PROV_C_PROV" descrColumnName="PROV_X_PROV"
+                       whereCondition="1 = 1 order by PROV_X_PROV ASC"
+                       validityWhereCondition="PROV_D_FINE_VAL = to_date('31/12/9999','dd/mm/yyyy')"
+                       connectionCacheReference="DBAZ_SOGG"/>
+
+   <CodDesc name="CLUSTER" tableName="PROCCRM_MOTRDECIS.VW_LEGM_CLUST_CLI_MOSER" codColumnName="COD_MOSER" descrColumnName="DES_MOSER"
+                       whereCondition="1 = 1 order by DES_MOSER ASC"
+                       connectionCacheReference="DBAZ_SOGG"/>
+
+   <CodDesc name="TIPI_INDIRIZZO" tableName="CLL.DOM_TIPO_INDI_SOGG_RETE" codColumnName="COD_TIPO_INDI_SOGG_RETE" descrColumnName="DES_TIPO_INDI_SOGG_RETE"
+                           whereCondition="COD_TIPO_INDI_SOGG_RETE not in ('01','02') order by DES_TIPO_INDI_SOGG_RETE"
+                           connectionCacheReference="DBAZ_SOGG"/>
+
+   <CodDesc name="TIPI_TELEFONO" tableName="CLL.DOM_TIPO_RECAP_TELEF_SOGG_RETE" codColumnName="COD_TIPO_RECAP_TELEF_SOGG_RETE" descrColumnName="DES_TIPO_RECAP_TELEF_SOGG_RETE"
+                           whereCondition="COD_TIPO_RECAP_TELEF_SOGG_RETE not in ('01','02','13','14') order by DES_TIPO_RECAP_TELEF_SOGG_RETE"
+                           connectionCacheReference="DBAZ_SOGG"/>
+
+   <CodDesc name="TIPI_DOCUMENTO" tableName="DAICREF.CCB_ANAGRAFICA_DECOD" codColumnName="COD" descrColumnName="DESCR"
+                           whereCondition="TIPO = 'DOCUMENTO-INFORETE' and nvl(trim(COD),' ') != ' ' order by DESCR"
+						   validityWhereCondition="TIPO = 'DOCUMENTO-INFORETE' and nvl(trim(COD),' ') != ' ' and ATTIVO = 'S'"
+                           connectionCacheReference="DBAZ_SOGG"/>
+
+   <CodDesc name="STATI_CIVILI" tableName="DAICREF.CCB_ANAGRAFICA_DECOD" codColumnName="COD_SCHEDA" descrColumnName="DESCR"
+                           whereCondition="TIPO = 'STATO-CIVILE' and nvl(trim(COD_SCHEDA),' ') != ' ' order by COD_SCHEDA"
+						   validityWhereCondition="TIPO = 'STATO-CIVILE' and nvl(trim(COD_SCHEDA),' ') != ' ' and ATTIVO = 'S'"
+                           connectionCacheReference="DBAZ_SOGG"/>
+
+   <CodDesc name="TITOLI_STUDIO" tableName="DAICREF.CCB_ANAGRAFICA_DECOD" codColumnName="COD" descrColumnName="substr(DESCR,4)"
+                           whereCondition="TIPO = 'TITSTUDIO-INFORETE' and nvl(trim(COD),' ') != ' ' order by lpad(substr(DESCR,1,3),5,'0')"
+						   validityWhereCondition="TIPO = 'TITSTUDIO-INFORETE' and nvl(trim(COD),' ') != ' ' and ATTIVO = 'S'"
+                           connectionCacheReference="DBAZ_SOGG"/>
+
+   <CodDesc name="ORIGINI" tableName="CLL.DOM_ORIG_SOGG_RETE" codColumnName="COD_ORIG_SOGG_RETE" descrColumnName="DES_ORIG_SOGG_RETE"
+                           whereCondition="COD_ORIG_SOGG_RETE != '006' and COD_ORIG_SOGG_RETE != '008' and COD_ORIG_SOGG_RETE != 'MGM' and COD_ORIG_SOGG_RETE != 'M4U' and COD_ORIG_SOGG_RETE != 'IMF' order by COD_ORIG_SOGG_RETE"
+                           connectionCacheReference="DBAZ_SOGG"/>
+
+   <CodDesc name="ORIGINIMGM" tableName="CLL.DOM_ORIG_SOGG_RETE" codColumnName="COD_ORIG_SOGG_RETE" descrColumnName="DES_ORIG_SOGG_RETE"
+                           whereCondition="COD_ORIG_SOGG_RETE = 'MGM'"
+                           connectionCacheReference="DBAZ_SOGG"/>
+
+   <CodDesc name="ORIGINIM4U" tableName="CLL.DOM_ORIG_SOGG_RETE" codColumnName="COD_ORIG_SOGG_RETE" descrColumnName="DES_ORIG_SOGG_RETE"
+                           whereCondition="COD_ORIG_SOGG_RETE = 'M4U'"
+                           connectionCacheReference="DBAZ_SOGG"/>
+
+   <CodDesc name="ORIGINIIMF" tableName="CLL.DOM_ORIG_SOGG_RETE" codColumnName="COD_ORIG_SOGG_RETE" descrColumnName="DES_ORIG_SOGG_RETE"
+                           whereCondition="COD_ORIG_SOGG_RETE = 'IMF'"
+                           connectionCacheReference="DBAZ_SOGG"/>
+
+   <CodDesc name="ORIGINIDITTA" tableName="CLL.DOM_ORIG_SOGG_RETE" codColumnName="COD_ORIG_SOGG_RETE" descrColumnName="DES_ORIG_SOGG_RETE"
+                           whereCondition="COD_ORIG_SOGG_RETE = 'GBS' order by COD_ORIG_SOGG_RETE"
+                           connectionCacheReference="DBAZ_SOGG"/>
+
+   <CodDesc name="ORIGINIDITTAMGM" tableName="CLL.DOM_ORIG_SOGG_RETE" codColumnName="COD_ORIG_SOGG_RETE" descrColumnName="DES_ORIG_SOGG_RETE"
+                           whereCondition="COD_ORIG_SOGG_RETE = 'MGM'"
+                           connectionCacheReference="DBAZ_SOGG"/>
+
+   <CodDesc name="PROFESSIONI" tableName="DAICREF.CCB_ANAGRAFICA_DECOD" codColumnName="COD" descrColumnName="substr(DESCR,4)"
+                           whereCondition="TIPO = 'PROFESSIONE-INFORETE' and nvl(trim(COD),' ') != ' ' order by lpad(substr(DESCR,1,3),5,'0')"
+						   validityWhereCondition="TIPO = 'PROFESSIONE-INFORETE' and nvl(trim(COD),' ') != ' ' and ATTIVO = 'S'"
+                           connectionCacheReference="DBAZ_SOGG"/>
+
+   <CodDesc name="GRUPPI_ATTIVITA" tableName="DAICREF.CCB_ANAGRAFICA_DECOD" codColumnName="COD" descrColumnName="DESCR"
+                           whereCondition="TIPO = 'RAE-INFORETE' and nvl(trim(COD),' ') != ' ' order by COD"
+						   validityWhereCondition="TIPO = 'RAE-INFORETE' and nvl(trim(COD),' ') != ' ' and ATTIVO = 'S'"
+                           connectionCacheReference="DBAZ_SOGG"/>
+
+   <CodDesc name="TOPONIMI" tableName="DAICREF.CCB_ANAGRAFICA_DECOD" codColumnName="COD" descrColumnName="DESCR"
+                           whereCondition="TIPO = 'TIPO-VIA-INFORETE' and nvl(trim(COD),' ') != ' ' order by DESCR"
+						   validityWhereCondition="TIPO = 'TIPO-VIA-INFORETE' and nvl(trim(COD),' ') != ' ' and ATTIVO = 'S'"
+                           connectionCacheReference="DBAZ_SOGG"/>
+
+
+   <CodDesc name="MOTIVAZIONI_PEP" tableName="DAICREF.CCB_ANAGRAFICA_DECOD" codColumnName="DESCR_CSC" descrColumnName="(COD || ' - ' || DESCR_CSC)" descrAliasColumnName="descr"
+						   whereCondition="TIPO = 'MOTIVAZIONE_PEP' and nvl(trim(COD),' ') != ' ' and ATTIVO = 'S' order by lpad(COD,3,'0')"
+                           connectionCacheReference="DBAZ_SOGG"/>
+
+   <CodDesc name="MOTIVAZIONI_PEP_ESTESE" tableName="DAICREF.CCB_ANAGRAFICA_DECOD" codColumnName="COD" shortDescrColumnName="DESCR_CSC" descrColumnName="DESCR"
+                           whereCondition="TIPO = 'MOTIVAZIONE_PEP' and nvl(trim(COD),' ') != ' ' and ATTIVO = 'S' order by lpad(COD,3,'0')"
+                           connectionCacheReference="DBAZ_SOGG"/>
+
+   <CodDesc name="NAZIONI_RESIDENZA_FISCALE1" tableName="UTLY.DOM_NAZ" codColumnName="COD_NAZ_UIC_CDCRI" descrColumnName="DEN_NAZ"
+                           whereCondition="COD_NAZ_UIC_CDCRI='000'"
+	                       distinct="true"
+                           connectionCacheReference="DBAZ_SOGG"/>
+                           
+	<CodDesc name="NAZIONI_RESIDENZA_FISCALE2" tableName="UTLY.DOM_NAZ" codColumnName="COD_NAZ_UIC_CDCRI" descrColumnName="DEN_NAZ"
+                           whereCondition="DEN_NAZ != 'ITALIA' and nvl(trim(COD_NAZ_UIC_CDCRI),' ') != ' ' order by DEN_NAZ ASC"
+                           validityWhereCondition="DEN_NAZ != 'ITALIA' and nvl(trim(COD_NAZ_UIC_CDCRI),' ') != ' ' and GSTD_F_ESIST = 'S' and SYSDATE BETWEEN DAT_INIZ_VALID and DAT_FINE_VALID"
+	                       distinct="true"
+                           connectionCacheReference="DBAZ_SOGG"/>
+
+   <CodDesc name="FASCE_PATRIMONIO_COMPLESSIVO" tableName="DAICREF.CCB_ANAGRAFICA_DECOD" codColumnName="COD" descrColumnName="DESCR"
+                           whereCondition="TIPO = 'PATRIMONIO_COM' and nvl(trim(COD),' ') != ' ' order by lpad(COD,10,'0')"
+						   validityWhereCondition="TIPO = 'PATRIMONIO_COM' and nvl(trim(COD),' ') != ' ' and ATTIVO = 'S'"
+                           connectionCacheReference="DBAZ_SOGG"/>
+
+   <CodDesc name="FASCE_REDDITO_ANNUALE" tableName="DAICREF.CCB_ANAGRAFICA_DECOD" codColumnName="COD" descrColumnName="DESCR"
+                           whereCondition="TIPO = 'T_REDD_NET_ANN' and nvl(trim(COD),' ') != ' ' order by lpad(COD,10,'0')"
+						   validityWhereCondition="TIPO = 'T_REDD_NET_ANN' and nvl(trim(COD),' ') != ' ' and ATTIVO = 'S'"
+                           connectionCacheReference="DBAZ_SOGG"/>
+
+	<CodDesc name="NAZIONI_DOCUMENTO_ESTERO" tableName="UTLY.DOM_NAZ n" codColumnName="n.DEN_NAZ" descrColumnName="n.DEN_NAZ"
+                           whereCondition="n.DEN_NAZ != 'ITALIA' and nvl(trim(n.COD_NAZ_UIC_CDCRI),' ') != ' ' order by n.DEN_NAZ ASC"
+                           validityWhereCondition="n.DEN_NAZ != 'ITALIA' and nvl(trim(n.COD_NAZ_UIC_CDCRI),' ') != ' ' and n.GSTD_F_ESIST = 'S' and SYSDATE BETWEEN n.DAT_INIZ_VALID and n.DAT_FINE_VALID"
+	                       distinct="true"
+                           connectionCacheReference="DBAZ_SOGG"/>
+
+   <CodDesc name="FORME_GIURIDICHE" tableName="DAICREF.CCB_ANAGRAFICA_DECOD" codColumnName="COD" descrColumnName="DESCR"
+                           whereCondition="TIPO = 'FORMA_GIURIDICA_AML' and nvl(trim(COD),' ') != ' ' order by DESCR"
+						   validityWhereCondition="TIPO = 'FORMA_GIURIDICA_AML' and nvl(trim(COD),' ') != ' ' and ATTIVO = 'S'"
+                           connectionCacheReference="DBAZ_SOGG"/>
+                           
+   <CodDesc name="CARICHE_PUBBLICHE" tableName="DAICREF.CCB_ANAGRAFICA_DECOD" codColumnName="COD" descrColumnName="DESCR"
+                           whereCondition="TIPO = 'TIPO_CARICA_RIC' and nvl(trim(COD),' ') != ' ' and COD != '5' order by DESCR"
+						   validityWhereCondition="TIPO = 'TIPO_CARICA_RIC' and nvl(trim(COD),' ') != ' ' and COD != '5' and ATTIVO = 'S'"
+                           connectionCacheReference="DBAZ_SOGG"/>
+
+   <CodDesc name="DETTAGLIO_CARICHE_PUBBLICHE" tableName="DAICREF.CCB_ANAGRAFICA_DECOD" codColumnName="COD" descrColumnName="DESCR"
+                           whereCondition="TIPO = 'CARICA_PUBBLICA_POL' and nvl(trim(COD),' ') != ' ' order by DESCR"
+						   validityWhereCondition="TIPO = 'CARICA_PUBBLICA_POL' and nvl(trim(COD),' ') != ' ' and ATTIVO = 'S'"
+                           connectionCacheReference="DBAZ_SOGG"/>
+
+   <CodDesc name="LEGAMI_AFFARI" tableName="DAICREF.CCB_ANAGRAFICA_DECOD" codColumnName="COD" descrColumnName="DESCR"
+                           whereCondition="TIPO = 'RELAZIONI_AFFARI' and nvl(trim(COD),' ') != ' ' and COD != '1' order by lpad(COD,3,'0')"
+						   validityWhereCondition="TIPO = 'RELAZIONI_AFFARI' and nvl(trim(COD),' ') != ' ' and COD != '1' and ATTIVO = 'S'"
+                           connectionCacheReference="DBAZ_SOGG"/>
+
+   <CodDesc name="LEGAMI_PARENTELA_PEP" tableName="DAICREF.CCB_ANAGRAFICA_DECOD" codColumnName="COD" descrColumnName="DESCR"
+                           whereCondition="TIPO = 'PARENTELA_PEP' and nvl(trim(COD),' ') != ' ' order by lpad(COD,3,'0')"
+						   validityWhereCondition="TIPO = 'PARENTELA_PEP' and nvl(trim(COD),' ') != ' ' and ATTIVO = 'S'"
+                           connectionCacheReference="DBAZ_SOGG"/>
+
+   <CodDesc name="LEGAMI_AFFARI_PEP" tableName="DAICREF.CCB_ANAGRAFICA_DECOD" codColumnName="COD" descrColumnName="DESCR"
+                           whereCondition="TIPO = 'LEGAME_AFFARI_PEP' and nvl(trim(COD),' ') != ' ' order by lpad(COD,3,'0')"
+						   validityWhereCondition="TIPO = 'LEGAME_AFFARI_PEP' and nvl(trim(COD),' ') != ' ' and ATTIVO = 'S'"
+                           connectionCacheReference="DBAZ_SOGG"/>
+                           
+   <CodDesc name="FUNZIONI_PUBBLICHE" tableName="DAICREF.CCB_ANAGRAFICA_DECOD" codColumnName="COD" descrColumnName="DESCR_CSC"
+                           whereCondition="TIPO = 'MOTIVAZIONE_PEP' and nvl(trim(COD),' ') != ' ' order by lpad(COD,3,'0')"
+						   validityWhereCondition="TIPO = 'MOTIVAZIONE_PEP' and nvl(trim(COD),' ') != ' ' and ATTIVO = 'S'"
+                           connectionCacheReference="DBAZ_SOGG"/>                         
+</CodDescriptions>
+
+<Access name="existMotivazionePep" type="DAOQueryAccess" queryType="1" connectionCacheReference="DBAZ_SOGG"
+		OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType">
+	<Query>
+		select case when count(*) = 0 then 'N' else 'S' end from DAICREF.CCB_ANAGRAFICA_DECOD
+		where TIPO = 'MOTIVAZIONE_PEP'
+		and ATTIVO = 'S'
+		and upper(DESCR_CSC) = upper(<p>motivazionePep</p>)
+	</Query>
+</Access>
+
+<Access name="loadSupervisoreAgente" type="DAOCallableAccess" store="SP_INR_CODAGE_SPV"
+		connectionCacheReference="INR">
+   <Input>
+	<Parameter propertyName="codAgente"/>
+	<Parameter propertyName="codAgenteSpv"/>
+   </Input>
+   <Output>
+	<Parameter propertyName=""/>
+	<Parameter propertyName="codAgenteSpv"/>
+   </Output>
+</Access>
+
+<Access name="trovaCliente" type="DAOQueryAccess" maxResultRows="1" queryType="1" 
+		connectionCacheReference="DBAZ_SOGG">
+ <Query>
+	select distinct 
+		A.AGE_C_AGE,
+		A.ASSGNCLIAGE_C_POTZLE_NEW,
+		A.ASSGNCLIAGE_C_POTZLE,
+		A.RETEVEND_C_RETE,
+		A.CLI_M_COGN,
+		A.CLI_M_NOME,
+		
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI">'0',</IfEqual>
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_COINT">'0',</IfEqual>
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_PROSPECT">'1',</IfEqual>
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="CEPE_CLI_PROSPECT_RETE">A.STATO_CLI_ELETTR_C_STATO,</IfEqual>
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_ELETTR">A.STATO_CLI_ELETTR_C_STATO,</IfEqual>
+		
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI">null,</IfEqual>
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_COINT">null,</IfEqual>
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_PROSPECT">null,</IfEqual>
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="CEPE_CLI_PROSPECT_RETE">A.CLI_F_CLI_DA_ESTRA,</IfEqual>
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_ELETTR">null,</IfEqual>
+		B.CLI_C
+	from
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI">CLL.V_CLI A, CLL.V_CLI B </IfEqual>
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_COINT">CLL.V_CLI_COINT A, CLL.V_CLI_COINT B </IfEqual>
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_PROSPECT">CLL.V_CLI_PROSPECT A, CLL.V_CLI_PROSPECT B</IfEqual> 
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="CEPE_CLI_PROSPECT_RETE">CLL.CEPE_CLI_PROSPECT_RETE_REP A, CLL.V_CLI B </IfEqual>
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_ELETTR">CLL.INR_CLI_ELETTR_REP A, CLL.V_CLI B </IfEqual>
+	where    
+	    <IfNotNull propertyName="codMediolanum">
+			<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI">A.CLI_C = <p>codMediolanum</p> and B.CLI_C = <p>codMediolanum</p> and</IfEqual>
+			<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_COINT">A.CLI_C = <p>codMediolanum</p> and B.CLI_C = <p>codMediolanum</p> and</IfEqual>
+			<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_PROSPECT">1 = 2 and</IfEqual>
+			<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="CEPE_CLI_PROSPECT_RETE">1 = 2 and</IfEqual>
+			<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_ELETTR">1 = 2 and</IfEqual>
+	    </IfNotNull>
+	    <IfNotNull propertyName="codPotenziale">
+	      <IfNull propertyName="codMediolanum">
+			<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI">A.ASSGNCLIAGE_C_POTZLE_NEW = <p>codPotenziale</p> and</IfEqual>
+			<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_COINT">A.ASSGNCLIAGE_C_POTZLE_NEW = <p>codPotenziale</p> and</IfEqual>
+			<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_PROSPECT">A.ASSGNCLIAGE_C_POTZLE = <p>codPotenziale</p> and</IfEqual>
+			<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="CEPE_CLI_PROSPECT_RETE">A.ASSGNCLIAGE_C_POTZLE = <p>codPotenziale</p> and</IfEqual>
+			<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_ELETTR">A.ASSGNCLIAGE_C_POTZLE = <p>codPotenziale</p> and</IfEqual>
+			A.ASSGNCLIAGE_C_POTZLE = B.ASSGNCLIAGE_C_POTZLE (+) and
+		  </IfNull>
+	    </IfNotNull>
+	    <IfNull propertyName="codMediolanum">
+		    <IfNull propertyName="codPotenziale">A.ASSGNCLIAGE_C_POTZLE = B.ASSGNCLIAGE_C_POTZLE (+) and</IfNull>
+	    </IfNull>
+		<IfNotNull propertyName="partitaIva">A.CLI_N_PIVA = <p>partitaIva</p> and</IfNotNull>
+		<IfNotNull propertyName="codFiscale">A.CLI_X_CF = <p>codFiscale</p> and</IfNotNull>
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_ELETTR">A.CODIFCLIMEDL_C_CLI_MEDL is null and</IfEqual>
+		
+		<IfNotNull propertyName="codAgenteSpv">A.AGE_C_AGE in (<p>codAgente</p>,<p>codAgenteSpv</p>)</IfNotNull>
+		<IfNull propertyName="codAgenteSpv">A.AGE_C_AGE = <p>codAgente</p></IfNull>
+ </Query> 
+ <Output>
+	<Parameter propertyName="codAgente"/>
+	<Parameter propertyName="codInforete"/>
+	<Parameter propertyName="codPotenziale"/>
+	<Parameter propertyName="codRete"/>
+	<Parameter propertyName="cognome"/>
+	<Parameter propertyName="nome"/>
+	<Parameter propertyName="statoProposta"/>
+	<Parameter propertyName="statoConfermato"/>
+	<Parameter propertyName="codMediolanum"/>
+ </Output> 
+</Access> 
+
+<Access name="trovaClienteSenzaAgente" type="DAOQueryAccess" maxResultRows="1" queryType="1" 
+		connectionCacheReference="DBAZ_SOGG">
+ <Query>
+	select distinct 
+		A.AGE_C_AGE,
+		A.ASSGNCLIAGE_C_POTZLE_NEW,
+		A.ASSGNCLIAGE_C_POTZLE,
+		A.RETEVEND_C_RETE,
+		A.CLI_M_COGN,
+		A.CLI_M_NOME,
+		
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI">'0',</IfEqual>
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_COINT">'0',</IfEqual>
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_PROSPECT">'1',</IfEqual>
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="CEPE_CLI_PROSPECT_RETE">A.STATO_CLI_ELETTR_C_STATO,</IfEqual>
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_ELETTR">A.STATO_CLI_ELETTR_C_STATO,</IfEqual>
+		
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI">null,</IfEqual>
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_COINT">null,</IfEqual>
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_PROSPECT">null,</IfEqual>
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="CEPE_CLI_PROSPECT_RETE">A.CLI_F_CLI_DA_ESTRA,</IfEqual>
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_ELETTR">null,</IfEqual>
+		B.CLI_C
+	from
+        <IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI">CLL.V_CLI A, CLL.V_CLI B </IfEqual>
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_COINT">CLL.V_CLI_COINT A, CLL.V_CLI_COINT B </IfEqual>
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_PROSPECT">CLL.V_CLI_PROSPECT A, CLL.V_CLI_PROSPECT B</IfEqual> 
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="CEPE_CLI_PROSPECT_RETE">CLL.CEPE_CLI_PROSPECT_RETE_REP A, CLL.V_CLI B </IfEqual>
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_ELETTR">CLL.INR_CLI_ELETTR_REP A, CLL.V_CLI B </IfEqual>		
+	where    
+	    <IfNotNull propertyName="codMediolanum">
+			<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI">A.CLI_C = <p>codMediolanum</p> and B.CLI_C = <p>codMediolanum</p> and</IfEqual>
+			<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_COINT">A.CLI_C = <p>codMediolanum</p> and B.CLI_C = <p>codMediolanum</p> and</IfEqual>
+			<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_PROSPECT">1 = 2 and</IfEqual>
+			<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="CEPE_CLI_PROSPECT_RETE">1 = 2 and</IfEqual>
+			<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_ELETTR">1 = 2 and</IfEqual>
+	    </IfNotNull>
+	    <IfNotNull propertyName="codPotenziale">
+	      <IfNull propertyName="codMediolanum">
+			<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI">A.ASSGNCLIAGE_C_POTZLE_NEW = <p>codPotenziale</p> and</IfEqual>
+			<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_COINT">A.ASSGNCLIAGE_C_POTZLE_NEW = <p>codPotenziale</p> and</IfEqual>
+			<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_PROSPECT">A.ASSGNCLIAGE_C_POTZLE = <p>codPotenziale</p> and</IfEqual>
+			<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="CEPE_CLI_PROSPECT_RETE">A.ASSGNCLIAGE_C_POTZLE = <p>codPotenziale</p> and</IfEqual>
+			<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_ELETTR">A.ASSGNCLIAGE_C_POTZLE = <p>codPotenziale</p> and</IfEqual>
+			A.ASSGNCLIAGE_C_POTZLE = B.ASSGNCLIAGE_C_POTZLE (+) and
+		  </IfNull>
+	    </IfNotNull>
+	    <IfNull propertyName="codMediolanum">
+		    <IfNull propertyName="codPotenziale">A.ASSGNCLIAGE_C_POTZLE = B.ASSGNCLIAGE_C_POTZLE (+) and</IfNull>
+	    </IfNull>
+		<IfNotNull propertyName="partitaIva">A.CLI_N_PIVA = <p>partitaIva</p> and</IfNotNull>
+		<IfNotNull propertyName="codFiscale">A.CLI_X_CF = <p>codFiscale</p> and</IfNotNull>
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_ELETTR">A.CODIFCLIMEDL_C_CLI_MEDL is null and</IfEqual>
+		
+		<IfNull propertyName="codAgente">1 = 1</IfNull>
+ </Query> 
+ <Output>
+	<Parameter propertyName="codAgente"/>
+	<Parameter propertyName="codInforete"/>
+	<Parameter propertyName="codPotenziale"/>
+	<Parameter propertyName="codRete"/>
+	<Parameter propertyName="cognome"/>
+	<Parameter propertyName="nome"/>
+	<Parameter propertyName="statoProposta"/>
+	<Parameter propertyName="statoConfermato"/>
+	<Parameter propertyName="codMediolanum"/>
+ </Output> 
+</Access> 
+
+<Access name="trovaClienteTitolare" type="DAOQueryAccess" maxResultRows="2" queryType="1" 
+		connectionCacheReference="DBAZ_SOGG">
+ <Query>
+	select distinct 
+		A.AGE_C_AGE,
+		A.ASSGNCLIAGE_C_POTZLE,
+		A.RETEVEND_C_RETE,
+		
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI">'0',</IfEqual>
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_COINT">'0',</IfEqual>
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_ELETTR">A.STATO_CLI_ELETTR_C_STATO,</IfEqual>
+		
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI">null,</IfEqual>
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_COINT">null,</IfEqual>
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_ELETTR">null,</IfEqual>
+		B.CLI_C,
+		B.NAZ_C_NAZ_NASC,
+		B.CLI_X_COMU_NASC,
+		B.PROV_C_PROV_NASC
+	from
+        <IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI">CLL.V_CLI A, CLL.V_CLI B </IfEqual>
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_COINT">CLL.V_CLI_COINT A, CLL.V_CLI_COINT B </IfEqual>
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_ELETTR">CLL.INR_CLI_ELETTR_REP A, CLL.V_CLI B </IfEqual>		
+	where    
+	    <IfNotNull propertyName="codMediolanum">
+			<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI">A.CLI_C = <p>codMediolanum</p> and B.CLI_C = <p>codMediolanum</p> and</IfEqual>
+			<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_COINT">A.CLI_C = <p>codMediolanum</p> and B.CLI_C = <p>codMediolanum</p> and</IfEqual>
+			<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_ELETTR">1 = 2 and</IfEqual>
+	    </IfNotNull>
+	    <IfNotNull propertyName="codPotenziale">
+	      <IfNull propertyName="codMediolanum">
+			<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI">A.ASSGNCLIAGE_C_POTZLE_NEW = <p>codPotenziale</p> and</IfEqual>
+			<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_COINT">A.ASSGNCLIAGE_C_POTZLE_NEW = <p>codPotenziale</p> and</IfEqual>
+			<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_ELETTR">A.ASSGNCLIAGE_C_POTZLE = <p>codPotenziale</p> and</IfEqual>
+			A.ASSGNCLIAGE_C_POTZLE = B.ASSGNCLIAGE_C_POTZLE (+) and
+		  </IfNull>
+	    </IfNotNull>
+	    <IfNull propertyName="codMediolanum">
+		    <IfNull propertyName="codPotenziale">A.ASSGNCLIAGE_C_POTZLE = B.ASSGNCLIAGE_C_POTZLE (+) and</IfNull>
+	    </IfNull>
+		<IfNotNull propertyName="codFiscale">A.CLI_X_CF = <p>codFiscale</p> and</IfNotNull>
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_ELETTR">A.CODIFCLIMEDL_C_CLI_MEDL is null and</IfEqual>
+		(A.CLI_C_NATURA_GIURIDICA is null or A.CLI_C_NATURA_GIURIDICA in ('FMM','FFF')) and 
+		A.CLI_F_SESSO in ('M','F') and
+		A.AGE_C_AGE = <p>codAgente</p>
+ </Query> 
+ <Output>
+	<Parameter propertyName="codAgente"/>
+	<Parameter propertyName="codPotenziale"/>	
+	<Parameter propertyName="codRete"/>
+	<Parameter propertyName="statoProposta"/>
+	<Parameter propertyName="statoConfermato"/>
+	<Parameter propertyName="codMediolanum"/>
+	<Parameter propertyName="comuneNascita_codNazione"/>
+	<Parameter propertyName="comuneNascita_comune"/>
+	<Parameter propertyName="comuneNascita_provincia"/>
+ </Output> 
+</Access> 
+
+<Access name="loadIndirizzi" type="DAOQueryAccess" queryType="1" connectionCacheReference="DBAZ_SOGG"
+		OutputCommandDataModel="prgm.ita.anagraficaclienti.model.IndirizzoModel">
+ <Query>
+	select
+		A.AGE_C_AGE,
+		A.ASSGNCLIAGE_C_POTZLE,
+		A.RETEVEND_C_RETE,
+		A.STATOCLI_C_STATO,
+		A.INDCLI_N_PROGR_IND,
+		A.SERVER_C_REPLICA,
+		A.INDCLI_D_VARIAZIONE,
+		
+		A.TIPIND_C_TIP_IND,
+		A.CAP_C_AVVIAM_POSTL,
+		A.COMU_C_COMU,
+		A.PROV_C_PROV,
+		A.NAZ_C_NAZ,
+		A.INDCLI_X_RECAP_PRS,
+		A.INDCLI_X_IND, 
+		nvl(trim(A.INDCLI_X_LOC),A.INDCLI_X_COMU),
+		A.INDCLI_X_COMU,
+		A.INDCLI_X_TIPO_IND,
+		A.INDCLI_X_NUM_IND
+	from
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI">CLL.V_INDCLI</IfEqual>
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_COINT">CLL.V_INDCLI_COINT</IfEqual>
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_PROSPECT">CLL.V_INDCLI_PROSPECT</IfEqual>
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="CEPE_CLI_PROSPECT_RETE">CLL.CEPE_INDCLI_PROSPECT_RETE_REP</IfEqual>
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_ELETTR">CLL.INR_INDCLI_ELETTR_REP</IfEqual>
+	    A
+	where    
+	    <IfEqual propertyName="datiApplicativi_tipoElemento" propertyValue="ALL">A.TIPIND_C_TIP_IND not in ('02') and</IfEqual>
+	    <IfNotEqual propertyName="datiApplicativi_tipoElemento" propertyValue="ALL">
+		    <IfNotNull propertyName="datiApplicativi_tipoElemento">A.TIPIND_C_TIP_IND = <p>datiApplicativi_tipoElemento</p> and</IfNotNull>
+		    <IfNull    propertyName="datiApplicativi_tipoElemento">A.TIPIND_C_TIP_IND not in ('01','02') and</IfNull>
+	    </IfNotEqual>
+	    <IfNotNull propertyName="progressivo">
+			   A.CLI_ELETTR_N_PROGR = <p>progressivo</p> and
+		</IfNotNull>
+		A.ASSGNCLIAGE_C_POTZLE = <p>codPotenziale</p> and
+		A.AGE_C_AGE = <p>codAgente</p>		
+    <IfNull propertyName="datiApplicativi_tipoElemento">order by A.INDCLI_N_PROGR_IND asc</IfNull>
+	
+ </Query> 
+ <Output>
+	<Parameter propertyName="codAgente"/>
+	<Parameter propertyName="codPotenziale"/>	
+	<Parameter propertyName="codRete"/>
+	<Parameter propertyName="stato"/>
+	<Parameter propertyName="progressivo"/>
+	<Parameter propertyName="serverReplica"/>
+	<Parameter propertyName="dataVariazione"/>	
+
+	<Parameter propertyName="tipoIndirizzo"/>
+	<Parameter propertyName="cap"/>
+	<Parameter propertyName="codComune"/>
+	<Parameter propertyName="provincia"/>
+	<Parameter propertyName="codNazione"/>
+	<Parameter propertyName="presso"/>
+	<Parameter propertyName="descrizioneIndirizzo"/>
+	<Parameter propertyName="comune"/>
+	<Parameter propertyName="descrizioneComune"/>
+	<Parameter propertyName="toponimoIndirizzo"/>
+	<Parameter propertyName="numeroCivico"/>
+ </Output> 
+</Access> 
+
+<Access name="loadTelefoni" type="DAOQueryAccess" queryType="1" connectionCacheReference="DBAZ_SOGG"
+		OutputCommandDataModel="prgm.ita.anagraficaclienti.model.TelefonoModel">
+ <Query>
+	select
+		A.AGE_C_AGE,	
+		A.ASSGNCLIAGE_C_POTZLE,	
+		A.RETEVEND_C_RETE,	
+		A.STATOCLI_C_STATO,	
+		A.RECAPTELCLI_N_PROGR,	
+		A.SERVER_C_REPLICA,	
+		A.RECAPTELCLI_D_VARIAZIONE,	
+		
+		A.TIPRECAPTEL_C_TIP_RECAP,
+		A.RECAPTELCLI_X_LIBERA,
+		A.RECAPTELCLI_X_PREF_INTERN,
+		A.RECAPTELCLI_X_PREF_TEL,
+		A.RECAPTELCLI_X_NUM_TEL,
+		A.RECAPTELCLI_X_NON_REPER,
+		A.RECAPTELCLI_Q_REPER_A_H,
+		A.RECAPTELCLI_Q_REPER_DA_H,
+		A.RECAPTELCLI_D_REPER_A_DATA,
+		A.RECAPTELCLI_D_REPER_DA_DATA,
+		A.RECAPTELCLI_X_REPER_DESCR
+	from
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI">CLL.V_RECAPTELCLI</IfEqual>
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_COINT">CLL.V_RECAPTELCLI_COINT</IfEqual>
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_PROSPECT">CLL.V_RECAPTELCLI_PROSPECT</IfEqual>  
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="CEPE_CLI_PROSPECT_RETE">CLL.CEPE_RECAPCLI_PROS_RETE_REP</IfEqual>
+		<IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_ELETTR">CLL.INR_RECAPTELCLI_ELETTR_REP</IfEqual>	
+	    A
+	where    
+	    <IfNotNull propertyName="datiApplicativi_tipoElemento">A.TIPRECAPTEL_C_TIP_RECAP = <p>datiApplicativi_tipoElemento</p> and</IfNotNull>
+	    <IfNull    propertyName="datiApplicativi_tipoElemento">A.TIPRECAPTEL_C_TIP_RECAP not in ('01','02','13','14') and</IfNull>
+	    <IfNotNull propertyName="progressivo">
+	        A.CLI_ELETTR_N_PROGR = <p>progressivo</p> and
+	    </IfNotNull>
+		A.ASSGNCLIAGE_C_POTZLE = <p>codPotenziale</p> and
+		A.AGE_C_AGE = <p>codAgente</p>		
+    <IfNull propertyName="datiApplicativi_tipoElemento">order by A.RECAPTELCLI_N_PROGR asc</IfNull>
+ </Query> 
+ <Output>
+	<Parameter propertyName="codAgente"/>
+	<Parameter propertyName="codPotenziale"/>	
+	<Parameter propertyName="codRete"/>
+	<Parameter propertyName="stato"/>
+	<Parameter propertyName="progressivo"/>
+	<Parameter propertyName="serverReplica"/>
+	<Parameter propertyName="dataVariazione"/>	
+
+	<Parameter propertyName="tipoTelefono"/>
+	<Parameter propertyName="descrizioneTelefono"/>
+	<Parameter propertyName="prefissoInternazionale"/>
+	<Parameter propertyName="prefisso"/>
+	<Parameter propertyName="numeroTelefono"/>
+	<Parameter propertyName="noteNonReperibilita"/>
+	<Parameter propertyName="reperibileOraADB"/>
+	<Parameter propertyName="reperibileOraDaDB"/>
+	<Parameter propertyName="reperibileGiornoA"/>
+	<Parameter propertyName="reperibileGiornoDa"/>
+	<Parameter propertyName="note"/>
+ </Output> 
+</Access> 
+
+<Access name="loadDatiCliente" type="DAOQueryAccess" queryType="1" connectionCacheReference="DBAZ_SOGG"> 
+ <Query>
+ 	select	AGE_C_AGE
+	,		ASSGNCLIAGE_C_POTZLE
+	,		RETEVEND_C_RETE
+	,		CLI_F_DATORELAVORO
+	,		case CLI_F_DIP_MEDIOLANUM when '1' then 'S' else 'N' end
+	,		ASSGNCLIAGE_C_POTZLE_NEW
+	,		STATOCLI_C_STATO
+	,		SERVER_C_REPLICA
+	,		CLI_D_INS
+	,		CLI_D_VARIAZIONE
+	,		CLI_C_NATURA_GIURIDICA
+	,		case CLI_X_CF when '0000000000000000' then '' else CLI_X_CF end
+	,		case CLI_N_PIVA when '00000000000' then '' else CLI_N_PIVA end
+	,		CLI_M_COGN
+	,		CLI_M_NOME
+	,		CLI_M_SEC_NOME
+	,		CLI_X_SECONDA_INTEST
+	,		CLI_F_SESSO
+	,		CLI_D_NASC
+	,		NAZ_C_NAZ_NASC
+	,		COMU_C_COMU_NASC
+	,		PROV_C_PROV_NASC
+	,		nvl((select raccomu.DEN_COMU_DOM from CLL.DETT_RACCD_COMU_ANAG_DOM raccomu where raccomu.DEN_COMU_ANAG = trim(CLI_X_COMU_NASC) and raccomu.GSTD_F_ESIST='S' and rownum = 1),CLI_X_COMU_NASC)
+	,		CLI_C_NAZ_CITT
+	,		CLI_F_BSN_CLB
+	,		CLI_F_TOPBSN
+	,		TIPDOC_C_TIP_DOC
+	,		CLI_C_CAT_PATEN
+	,		CLI_X_NUM_DOC
+	,		nvl((select raccomu.DEN_COMU_DOM from CLL.DETT_RACCD_COMU_ANAG_DOM raccomu where raccomu.DEN_COMU_ANAG = trim(CLI_X_LUOGO_RIL_DOC) and raccomu.GSTD_F_ESIST='S' and rownum = 1),CLI_X_LUOGO_RIL_DOC)
+	,		CLI_D_RIL_DOC
+	,		CLI_D_SCAD_DOC
+	,		CLI_D_RINN_DOC
+	,		ENTERIL_C_ENTE_RIL
+	,		CLI_C_NUM_ISCRIZ_REA
+	,		CLI_D_ISCRIZ_REA
+	,		CLI_C_PROV_ISCRIZ_REA
+	,		CLI_X_IND_INTERNET
+	,		STATOCIVILE_C_STATO_CIVILE
+	,		TITSTUDIO_C_TIT_STUDIO
+	,		ORI_C_ORI
+	,		CLI_X_REFERRAL
+	,		CLI_C_CLIE_SEGN
+	,		CLI_Q_NUM_FAM
+	,		CLI_F_HA_FIGLI
+	,		PROFES_C_PROFES
+	,		CLI_C_EX_PROF
+	,		GRUATTIVECON_C_GRU_ATTIV
+	,		SGRUATTIVECON_C_SGRU_ATTIV
+	,		CLI_C_SETT_PROF
+	,		CLI_C_COO_UNIV
+	,		CLI_C_REDDITO_MENS
+	,		CLI_N_PERC_REDDITO
+	,		CLI_C_ABITAZIONE
+	,		CLI_F_MUTUO
+	,		CLI_C_LUOGO_PROF
+	,		CLI_F_PRIVACY
+	,		CLI_D_PRIVACY
+	,		CLI_F_PRIVACY_UE
+	,		CLI_D_PRIVACY_UE
+	,		CLI_F_PRIVACY_EXUE
+	,		CLI_D_PRIVACY_EXUE
+	,		CLI_F_CERTIF_NO_RESID
+	,		CLI_F_PEP
+	,		CLI_X_PEP_MOTIVAZ
+	,		CLI_C_TIP_POTZLE
+	,		CLI_F_SEGNAL_EVIDENTE
+	,		CLI_F_CLI_DA_ESTRA
+	,		NAZ_C_NAZL
+	,		CLI_D_SCAD_DOC_TAX_USA
+	,		CLI_C_NAZ_CITT2
+	,		CLI_C_NAZ_RES_FISC1
+	,		CLI_C_NAZ_RES_FISC2
+	,		CLI_C_DITTA
+	
+	<IfEqual propertyName="isPotenziale" propertyValue="true">,CLI_C_ORDINE</IfEqual><IfNotEqual propertyName="isPotenziale" propertyValue="true">,null</IfNotEqual>
+	
+ 	from <IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI">CLL.V_CLI</IfEqual>	
+ 		 <IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_COINT">CLL.V_CLI_COINT</IfEqual>	
+ 		 <IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="INR_CLI_ELETTR">CLL.INR_CLI_ELETTR_REP</IfEqual>	
+ 		 <IfEqual propertyName="datiApplicativi_nomeTabella" propertyValue="CEPE_CLI_PROSPECT_RETE">CLL.CEPE_CLI_PROSPECT_RETE_REP</IfEqual>	
+ 	
+ 	where 	AGE_C_AGE = <p>codAgente</p>
+ 	and		ASSGNCLIAGE_C_POTZLE = <p>codPotenziale</p>
+ 	and		RETEVEND_C_RETE = <p>codRete</p>
+ 	
+ </Query> 
+ <Output>
+	 <Parameter propertyName="codAgente"/>
+	 <Parameter propertyName="codPotenziale"/>
+	 <Parameter propertyName="codRete"/>	 
+	 <Parameter propertyName="isDatoreDiLavoro"/>
+	 <Parameter propertyName="isDipendente"/>
+	 <Parameter propertyName="codInforete"/>
+	 <Parameter propertyName="stato"/>
+	 <Parameter propertyName="serverReplica"/>
+	 <Parameter propertyName="dataInserimento"/>
+	 <Parameter propertyName="dataVariazione"/>
+	 <Parameter propertyName="naturaGiuridica"/>
+	 <Parameter propertyName="codFiscale"/>
+	 <Parameter propertyName="partitaIva"/>
+	 <Parameter propertyName="cognome"/>
+	 <Parameter propertyName="nome"/>
+	 <Parameter propertyName="secondoNome"/>
+	 <Parameter propertyName="secondaIntestazione"/>
+	 <Parameter propertyName="sesso"/>
+	 <Parameter propertyName="dataNascita"/>
+	 <Parameter propertyName="comuneNascita_codNazione"/>
+	 <Parameter propertyName="comuneNascita_codComune"/>
+	 <Parameter propertyName="comuneNascita_provincia"/>
+	 <Parameter propertyName="comuneNascita_comune"/>
+	 <Parameter propertyName="cittadinanza"/> 
+	 <Parameter propertyName="codCluster"/>
+	 <Parameter propertyName="isTopBusiness"/>
+	 <Parameter propertyName="documento_tipoDocumento"/>
+	 <Parameter propertyName="documento_categoriaPatente"/>
+	 <Parameter propertyName="documento_numeroDocumento"/>
+	 <Parameter propertyName="documento_luogoRilascio_comune"/>
+	 <Parameter propertyName="documento_dataRilascio"/>
+	 <Parameter propertyName="documento_dataScadenza"/>
+	 <Parameter propertyName="documento_dataRinnovo"/>
+	 <Parameter propertyName="documento_codEnteRilasciante"/>
+	 <Parameter propertyName="infoDitta_numeroIscrizioneREA"/>
+	 <Parameter propertyName="infoDitta_dataIscrizione"/>
+	 <Parameter propertyName="infoDitta_luogoRilascioCCIAA_provincia"/>
+	 <Parameter propertyName="recapiti_email"/>
+	 <Parameter propertyName="infoPersonali_codStatoCivile"/>
+	 <Parameter propertyName="infoPersonali_codTitoloStudio"/>
+	 <Parameter propertyName="infoPersonali_codOrigine"/>
+	 <Parameter propertyName="infoPersonali_referral"/>
+	 <Parameter propertyName="infoPersonali_codOrigineECodCliente"/>
+	 <Parameter propertyName="infoPersonali_numeroFamiliari"/>
+	 <Parameter propertyName="infoPersonali_haFigli"/>
+	 <Parameter propertyName="infoPersonali_codProfessione"/>
+	 <Parameter propertyName="infoPersonali_codProfessionePrecedente"/>
+	 <Parameter propertyName="infoPersonali_codGruppoAttivita"/>
+	 <Parameter propertyName="infoPersonali_codSottogruppoAttivita"/>
+	 <Parameter propertyName="infoPersonali_codSettoreEconomico"/>
+	 <Parameter propertyName="infoPersonali_universita_codUniversita"/>
+	 <Parameter propertyName="infoPersonali_fasciaReddMensile"/>
+	 <Parameter propertyName="infoPersonali_percettoriDiReddito"/>
+	 <Parameter propertyName="infoPersonali_attualeAbitazione"/>
+	 <Parameter propertyName="infoPersonali_flagMutuo"/>
+	 <Parameter propertyName="infoPersonali_nazOProvSvolgProf"/>
+	 <Parameter propertyName="datiPrivacy_flagLiberatoria"/>
+	 <Parameter propertyName="datiPrivacy_dataLiberatoria"/>
+	 <Parameter propertyName="datiPrivacy_flagCarte"/>
+	 <Parameter propertyName="datiPrivacy_dataCarte"/>
+	 <Parameter propertyName="datiPrivacy_flagExtraUE"/>
+	 <Parameter propertyName="datiPrivacy_dataExtraUE"/>
+	 <Parameter propertyName="residenza_flagCertificazioneResidenzaEstera"/>
+	 <Parameter propertyName="residenza_flagPep"/>
+	 <Parameter propertyName="residenza_motivazionePep"/>
+	 <Parameter propertyName="datiApplicativi_codiceFiscaleForzato"/>
+	 <Parameter propertyName="datiApplicativi_flagClienteSegnalato"/>
+	 <Parameter propertyName="statoConfermato"/>
+	 <Parameter propertyName="codNazl"/>
+	 <Parameter propertyName="scadenzaDocTaxUS"/>
+	 <Parameter propertyName="secondaCittadinanza"/>
+	 <Parameter propertyName="residenza_codNazioneResidenzaFiscale1"/>
+	 <Parameter propertyName="residenza_codNazioneResidenzaFiscale2"/>
+	 <Parameter propertyName="tipoDitta"/>
+	 <Parameter propertyName="numeroOrdine"/>
+ </Output> 
+</Access> 
+ 
+<Access name="loadDatiAggiuntiviCensimento" type="DAOQueryAccess" queryType="0" connectionCacheReference="DBAZ_SOGG">
+ <Query>
+ 	select	MODULO_FATCA
+	,		FATCA_IS_APPLIED_FOR
+	,		FATCA_TIN_US_PERSON
+ 	,		TIPO_CARTA
+	,		COD_ATECO
+	,		CLI_C_NAZ_RES_FISC3
+	,		COD_FISC_SECND_RESIDN_FISC
+	,		COD_FISC_TERZA_RESIDN_FISC
+	,		COD_COMBNE_PROVNZ_PATRIM
+	,		COD_FASC_REDDTO_ANNUAL
+	,		COD_FASC_PATRIM_COMPLVO
+
+	,		FLG_CONSNS_PROFLZ_CLI
+	,		DAT_PROFLZ_CLI
+		
+	,		COD_FORMA_GIURID_SOCI
+	,		COD_AMBITO_CAR_RICP
+	,		COD_DETT_CAR_RICP
+	,		COD_TIPO_RELZ_AFFA_SECON
+	,		COD_NAZ_RELZ_AFFA_1
+	,		COD_NAZ_RELZ_AFFA_2
+	,		COD_NAZ_RELZ_AFFA_3
+	,		FLG_LEGM_PARENT_PEP
+	,		COD_LEGM_PARENT
+	,		COD_MOTV_PEP_PARENT
+	,		FLG_LEGM_AFFA_PEP
+	,		COD_LEGM_AFFA_ALTRO_SOGG
+	,		COD_MOTV_PEP_AFFA
+	
+	,		COD_AGENT_OPERZ
+	,		GSTD_D_ULT_MODF_RECORD
+
+ 	from 	cll.CEPE_CLI_PROSPECT_RETE_REP
+ 	where 	AGE_C_AGE = ?
+ 	and		ASSGNCLIAGE_C_POTZLE = ?
+ </Query> 
+ <Input>
+	 <Parameter propertyName="codAgente"/>
+	 <Parameter propertyName="codPotenziale"/>
+ </Input>
+ <Output>
+	 <Parameter propertyName="moduloFatca"/>
+	 <Parameter propertyName="datiFatca_isAppliedFor"/>
+	 <Parameter propertyName="datiFatca_tin"/>
+	 <Parameter propertyName="tipoCarta"/>
+	 <Parameter propertyName="infoPersonali_codAteco"/>
+	 <Parameter propertyName="residenza_codNazioneResidenzaFiscale3"/>
+	 <Parameter propertyName="residenza_codFiscaleResidenzaFiscale2"/>
+	 <Parameter propertyName="residenza_codFiscaleResidenzaFiscale3"/>
+	 <Parameter propertyName="infoPersonali_combinazioneProvenienzaPatrimonio"/>
+	 <Parameter propertyName="infoPersonali_fasciaRedditoAnnuale"/>
+	 <Parameter propertyName="infoPersonali_fasciaPatrimonioComplessivo"/>
+
+	 <Parameter propertyName="datiPrivacy_flagProfilazione"/>
+	 <Parameter propertyName="datiPrivacy_dataProfilazione"/>
+
+	 <Parameter propertyName="adempimentiNormativi_formaGiuridicaSocietaAppartenenza"/>
+	 <Parameter propertyName="adempimentiNormativi_caricaPubblicaRicoperta"/>
+	 <Parameter propertyName="adempimentiNormativi_dettaglioCaricaPubblicaRicoperta"/>
+	 <Parameter propertyName="adempimentiNormativi_tipologiaLegameAffariDiversoDaAttivitaPrincipale"/>
+	 <Parameter propertyName="adempimentiNormativi_paeseLegameAffariDiversoDaAttivitaPrincipale1"/>
+	 <Parameter propertyName="adempimentiNormativi_paeseLegameAffariDiversoDaAttivitaPrincipale2"/>
+	 <Parameter propertyName="adempimentiNormativi_paeseLegameAffariDiversoDaAttivitaPrincipale3"/>
+	 <Parameter propertyName="adempimentiNormativi_haLegamiParentelaConPep"/>
+	 <Parameter propertyName="adempimentiNormativi_tipologiaLegameParentelaConPep"/>
+	 <Parameter propertyName="adempimentiNormativi_tipologiaFunzionePubblicaLegameParentelaConPep"/>
+	 <Parameter propertyName="adempimentiNormativi_haLegamiAffariConPep"/>
+	 <Parameter propertyName="adempimentiNormativi_tipologiaLegameAffariConPep"/>
+	 <Parameter propertyName="adempimentiNormativi_tipologiaFunzionePubblicaLegameAffariConPep"/>
+	 
+	 <Parameter propertyName="codAgenteUltimaModifica"/>
+	 <Parameter propertyName="dataOraUltimaModifica"/>
+ </Output> 
+</Access> 
+
+<Access name="loadVariazioni" type="DAOQueryAccess" queryType="1" connectionCacheReference="CEPE"
+		OutputCommandDataModel="prgm.ita.anagraficaclienti.model.ClienteModel">
+	<Query>
+		SELECT distinct
+			A.CLI_D_INS,
+			A.CLI_D_VARIAZIONE,
+			A.CODIFCLIMEDL_C_CLI_MEDL, 	
+			A.ASSGNCLIAGE_C_POTZLE, 
+			A.CLI_X_CF,
+			A.CLI_N_PIVA,		
+			A.CLI_M_COGN,
+			A.CLI_M_NOME, 
+			A.STATOCLI_C_STATO,
+			A.STATO_CLI_ELETTR_C_STATO,
+			A.AGE_C_AGE,
+			A.CLI_ELETTR_N_PROGR,
+			A.TIPO_CARTA			
+		FROM 
+			INR_CLI_ELETTR A 
+		WHERE 
+			A.AGE_C_AGE = <p>codAgente</p> and
+			A.ASSGNCLIAGE_C_POTZLE = <p>codPotenziale</p> and
+			A.STATO_CLI_ELETTR_C_STATO in ('2', '3')
+		order by A.CLI_ELETTR_N_PROGR asc
+	</Query>     
+	<Output>
+		<Parameter propertyName="dataInserimento"/>
+		<Parameter propertyName="dataVariazione"/>
+		<Parameter propertyName="codMediolanum"/>
+		<Parameter propertyName="codPotenziale"/>
+		<Parameter propertyName="codFiscale"/>
+		<Parameter propertyName="partitaIva"/>
+		<Parameter propertyName="cognome"/>
+		<Parameter propertyName="nome"/>
+		<Parameter propertyName="stato"/>
+		<Parameter propertyName="statoProposta"/>
+		<Parameter propertyName="codAgente"/>
+		<Parameter propertyName="progressivo"/>
+		<Parameter propertyName="tipoCarta"/>
+	</Output>
+</Access>  
+
+<Access name="loadComune" maxResultRows="1" type="DAOQueryAccess" queryType="1"
+		connectionCacheReference="DBAZ_SOGG">
+	<Query> 
+		SELECT DISTINCT 	
+					COMU.COMU_X_DENOM_COMU
+		,			CAP.CAP_C_CAP
+		,			PROV.PROV_C_PROV
+		,			COMU.COMU_C_COMU
+		FROM 		CLL.V_COMU COMU
+		,			CLL.CAP CAP
+		,			CLL.V_PROV PROV
+		WHERE		CAP.CAP_C_CAP BETWEEN COMU.CAP_C_AVVIAM_POSTL_MIN AND	COMU.CAP_C_AVVIAM_POSTL_MAX 
+		AND			COMU.PROV_C_PROV = PROV.PROV_C_PROV
+		<IfNotNull propertyName="comune">AND trim(COMU.COMU_X_DENOM_COMU) = nvl(trim((select raccomu.DEN_COMU_DOM from CLL.DETT_RACCD_COMU_ANAG_DOM raccomu where raccomu.DEN_COMU_ANAG = <p>comune</p> and raccomu.GSTD_F_ESIST='S' and rownum = 1)),<p>comune</p>)</IfNotNull>
+		<IfNotNull propertyName="provincia">AND trim(PROV.PROV_C_PROV) = <p>provincia</p></IfNotNull>
+		<IfNotNull propertyName="cap">AND trim(CAP.CAP_C_CAP) = <p>cap</p></IfNotNull>
+	</Query> 
+	<Output>  
+		<Parameter propertyName="comune"/> 
+		<Parameter propertyName="cap"/>
+		<Parameter propertyName="provincia"/>
+		<Parameter propertyName="codComune"/>
+	</Output> 
+</Access>  				
+
+<Access name="loadComuneIscrittoAlCatasto" maxResultRows="1" type="DAOQueryAccess" queryType="1"
+		connectionCacheReference="DBAZ_SOGG">
+	<Query> 
+		select distinct
+					CATASTO.DEN_COMU
+		,			null
+		,			PROV.PROV_C_PROV
+		,			CATASTO.COD_CATAS_COMU
+		from 		CLL.ANAG_CATAST_COMUN CATASTO, CLL.V_PROV PROV
+		where		CATASTO.COD_PROV = PROV.PROV_C_PROV
+		and			(CATASTO.COD_PROV != 'EE' OR (CATASTO.COD_PROV = 'EE' AND substr(CATASTO.COD_FISC_COMU,1) != 'Z'))
+		<IfNotNull propertyName="comune">AND trim(CATASTO.DEN_COMU) = nvl(trim((select raccomu.DEN_COMU_DOM from CLL.DETT_RACCD_COMU_ANAG_DOM raccomu where raccomu.DEN_COMU_ANAG = <p>comune</p> and raccomu.GSTD_F_ESIST='S' and rownum = 1)),<p>comune</p>)</IfNotNull>
+		<IfNotNull propertyName="provincia">AND trim(PROV.PROV_C_PROV) = <p>provincia</p></IfNotNull>
+	</Query> 
+	<Output>  
+		<Parameter propertyName="comune"/> 
+		<Parameter propertyName="cap"/>
+		<Parameter propertyName="provincia"/>
+		<Parameter propertyName="codComune"/>
+	</Output> 
+</Access>  				
+
+<Access name="propostaCliente" type="DAOTableAccess" tableName="%datiApplicativi_nomeTabella%"
+		connectionCacheReference="CEPE">
+   <Bindings>
+   
+	 <Parameter propertyName="statoProposta" 							dbColumnName="STATO_CLI_ELETTR_C_STATO"/>
+	 <Parameter propertyName="progressivo" 								dbColumnName="CLI_ELETTR_N_PROGR"	primaryKey="true"/>
+	 <Parameter propertyName="codAgente" 								dbColumnName="AGE_C_AGE"/>
+	 <Parameter propertyName="codPotenziale" 							dbColumnName="ASSGNCLIAGE_C_POTZLE" primaryKey="true"/>
+	 
+	 <Parameter propertyName="isDatoreDiLavoro" 						dbColumnName="CLI_F_DATORELAVORO"/>
+
+	 <Parameter propertyName="codInforete"								dbColumnName="ASSGNCLIAGE_C_POTZLE_NEW"/>
+	 <Parameter propertyName="codMediolanum" 							dbColumnName="CODIFCLIMEDL_C_CLI_MEDL"/>
+	 <Parameter propertyName="numeroOrdine" 							dbColumnName="CLI_C_ORDINE"/>
+	 <Parameter propertyName="codRete" 									dbColumnName="RETEVEND_C_RETE"/>	 
+	 <Parameter propertyName="stato" 									dbColumnName="STATOCLI_C_STATO"/>
+	 <Parameter propertyName="serverReplica" 							dbColumnName="SERVER_C_REPLICA"/>
+	 <Parameter propertyName="dataInserimento" 							dbColumnName="CLI_D_INS"/>
+	 <Parameter propertyName="dataVariazione" 							dbColumnName="CLI_D_VARIAZIONE"/>
+	 <Parameter propertyName="naturaGiuridica"							dbColumnName="CLI_C_NATURA_GIURIDICA"/>
+
+	 <Parameter propertyName="codFiscale" 								dbColumnName="CLI_X_CF" notNullValue="0000000000000000"/>
+	 <Parameter propertyName="partitaIva" 								dbColumnName="CLI_N_PIVA" notNullValue="00000000000"/>
+
+	 <Parameter propertyName="cognome" 									dbColumnName="CLI_M_COGN"/>
+	 <Parameter propertyName="nome" 									dbColumnName="CLI_M_NOME"/>
+	 <Parameter propertyName="secondoNome" 								dbColumnName="CLI_M_SEC_NOME"/>
+	 <Parameter propertyName="secondaIntestazione"						dbColumnName="CLI_X_SECONDA_INTEST"/>
+
+	 <Parameter propertyName="sesso" 									dbColumnName="CLI_F_SESSO"/>
+	 <Parameter propertyName="dataNascita"								dbColumnName="CLI_D_NASC"/>
+	 <Parameter propertyName="comuneNascita_codNazione"					dbColumnName="NAZ_C_NAZ_NASC"/>
+	 <Parameter propertyName="comuneNascita_codComune"					dbColumnName="COMU_C_COMU_NASC"/>
+	 <Parameter propertyName="comuneNascita_provincia"					dbColumnName="PROV_C_PROV_NASC"/>
+	 <Parameter propertyName="comuneNascita_comune"						dbColumnName="CLI_X_COMU_NASC"/>
+	 <Parameter propertyName="cittadinanza" 							dbColumnName="CLI_C_NAZ_CITT"/> 
+	 
+	 <Parameter propertyName="codCluster"								dbColumnName="CLI_F_BSN_CLB"/>
+	 <Parameter propertyName="isTopBusiness"							dbColumnName="CLI_F_TOPBSN"/>
+
+	 <Parameter propertyName="documento_tipoDocumento"					dbColumnName="TIPDOC_C_TIP_DOC"/>
+	 <Parameter propertyName="documento_categoriaPatente"				dbColumnName="CLI_C_CAT_PATEN"/>
+	 <Parameter propertyName="documento_numeroDocumento"				dbColumnName="CLI_X_NUM_DOC"/>
+	 <Parameter propertyName="documento_luogoRilascio_comune"			dbColumnName="CLI_X_LUOGO_RIL_DOC"/>
+	 <Parameter propertyName="documento_dataRilascio"					dbColumnName="CLI_D_RIL_DOC"/>
+	 <Parameter propertyName="documento_dataScadenza"					dbColumnName="CLI_D_SCAD_DOC"/>
+	 <Parameter propertyName="documento_dataRinnovo"					dbColumnName="CLI_D_RINN_DOC"/>
+	 <Parameter propertyName="documento_codEnteRilasciante"				dbColumnName="ENTERIL_C_ENTE_RIL"/>
+
+	 <Parameter propertyName="infoDitta_numeroIscrizioneREA"			dbColumnName="CLI_C_NUM_ISCRIZ_REA"/>
+	 <Parameter propertyName="infoDitta_dataIscrizione"					dbColumnName="CLI_D_ISCRIZ_REA"/>
+	 <Parameter propertyName="infoDitta_luogoRilascioCCIAA_provincia"	dbColumnName="CLI_C_PROV_ISCRIZ_REA"/>
+	 
+	 <Parameter propertyName="recapiti_email"							dbColumnName="CLI_X_IND_INTERNET"/>
+
+	 <Parameter propertyName="infoPersonali_codStatoCivile"				dbColumnName="STATOCIVILE_C_STATO_CIVILE"/>
+	 <Parameter propertyName="infoPersonali_codTitoloStudio"			dbColumnName="TITSTUDIO_C_TIT_STUDIO"/>
+	 <Parameter propertyName="infoPersonali_codOrigine"					dbColumnName="ORI_C_ORI"/>
+	 <Parameter propertyName="infoPersonali_referral"					dbColumnName="CLI_X_REFERRAL"/>
+	 <Parameter propertyName="infoPersonali_codOrigineECodCliente"		dbColumnName="CLI_C_CLIE_SEGN"/>
+	 <Parameter propertyName="infoPersonali_numeroFamiliari"			dbColumnName="CLI_Q_NUM_FAM"/>
+	 <Parameter propertyName="infoPersonali_haFigli"					dbColumnName="CLI_F_HA_FIGLI"/>
+	 <Parameter propertyName="infoPersonali_codProfessione"				dbColumnName="PROFES_C_PROFES"/>
+	 <Parameter propertyName="infoPersonali_codProfessionePrecedente"	dbColumnName="CLI_C_EX_PROF"/>
+	 <Parameter propertyName="infoPersonali_codGruppoAttivita"			dbColumnName="GRUATTIVECON_C_GRU_ATTIV"/>
+	 <Parameter propertyName="infoPersonali_codSottogruppoAttivita"		dbColumnName="SGRUATTIVECON_C_SGRU_ATTIV"/>
+	 <Parameter propertyName="infoPersonali_codSettoreEconomico"		dbColumnName="CLI_C_SETT_PROF"/>
+	 <Parameter propertyName="infoPersonali_universita_codUniversita"	dbColumnName="CLI_C_COO_UNIV"/>
+	 <Parameter propertyName="infoPersonali_fasciaReddMensile"			dbColumnName="CLI_C_REDDITO_MENS"/>
+	 <Parameter propertyName="infoPersonali_percettoriDiReddito"		dbColumnName="CLI_N_PERC_REDDITO"/>
+	 <Parameter propertyName="infoPersonali_attualeAbitazione"			dbColumnName="CLI_C_ABITAZIONE"/>
+	 <Parameter propertyName="infoPersonali_flagMutuo"					dbColumnName="CLI_F_MUTUO"/>
+	 <Parameter propertyName="infoPersonali_nazOProvSvolgProf"			dbColumnName="CLI_C_LUOGO_PROF"/>
+	 <Parameter propertyName="infoPersonali_codAteco"					dbColumnName="COD_ATECO"/>
+	 
+	 <Parameter propertyName="infoPersonali_combinazioneProvenienzaPatrimonio"		dbColumnName="COD_COMBNE_PROVNZ_PATRIM"/>
+	 <Parameter propertyName="infoPersonali_fasciaRedditoAnnuale"					dbColumnName="COD_FASC_REDDTO_ANNUAL"/>
+	 <Parameter propertyName="infoPersonali_fasciaPatrimonioComplessivo"			dbColumnName="COD_FASC_PATRIM_COMPLVO"/>
+
+	 <Parameter propertyName="datiPrivacy_flagLiberatoria"				dbColumnName="CLI_F_PRIVACY"/>
+	 <Parameter propertyName="datiPrivacy_dataLiberatoria"				dbColumnName="CLI_D_PRIVACY"/>
+	 <Parameter propertyName="datiPrivacy_flagCarte"					dbColumnName="CLI_F_PRIVACY_UE"/>
+	 <Parameter propertyName="datiPrivacy_dataCarte"					dbColumnName="CLI_D_PRIVACY_UE"/>
+	 <Parameter propertyName="datiPrivacy_flagExtraUE"					dbColumnName="CLI_F_PRIVACY_EXUE"/>
+	 <Parameter propertyName="datiPrivacy_dataExtraUE"					dbColumnName="CLI_D_PRIVACY_EXUE"/>
+	 <Parameter propertyName="datiPrivacy_flagProfilazione"				dbColumnName="FLG_CONSNS_PROFLZ_CLI"/>
+	 <Parameter propertyName="datiPrivacy_dataProfilazione"				dbColumnName="DAT_PROFLZ_CLI"/>
+
+	 <Parameter propertyName="adempimentiNormativi_formaGiuridicaSocietaAppartenenza"					dbColumnName="COD_FORMA_GIURID_SOCI"/>
+	 <Parameter propertyName="adempimentiNormativi_caricaPubblicaRicoperta"								dbColumnName="COD_AMBITO_CAR_RICP"/>
+	 <Parameter propertyName="adempimentiNormativi_dettaglioCaricaPubblicaRicoperta"					dbColumnName="COD_DETT_CAR_RICP"/>
+	 <Parameter propertyName="adempimentiNormativi_tipologiaLegameAffariDiversoDaAttivitaPrincipale"	dbColumnName="COD_TIPO_RELZ_AFFA_SECON"/>
+	 <Parameter propertyName="adempimentiNormativi_paeseLegameAffariDiversoDaAttivitaPrincipale1"		dbColumnName="COD_NAZ_RELZ_AFFA_1"/>
+	 <Parameter propertyName="adempimentiNormativi_paeseLegameAffariDiversoDaAttivitaPrincipale2"		dbColumnName="COD_NAZ_RELZ_AFFA_2"/>
+	 <Parameter propertyName="adempimentiNormativi_paeseLegameAffariDiversoDaAttivitaPrincipale3"		dbColumnName="COD_NAZ_RELZ_AFFA_3"/>
+	 <Parameter propertyName="adempimentiNormativi_haLegamiParentelaConPep"								dbColumnName="FLG_LEGM_PARENT_PEP"/>
+	 <Parameter propertyName="adempimentiNormativi_tipologiaLegameParentelaConPep"						dbColumnName="COD_LEGM_PARENT"/>
+	 <Parameter propertyName="adempimentiNormativi_tipologiaFunzionePubblicaLegameParentelaConPep"		dbColumnName="COD_MOTV_PEP_PARENT"/>
+	 <Parameter propertyName="adempimentiNormativi_haLegamiAffariConPep"								dbColumnName="FLG_LEGM_AFFA_PEP"/>
+	 <Parameter propertyName="adempimentiNormativi_tipologiaLegameAffariConPep"							dbColumnName="COD_LEGM_AFFA_ALTRO_SOGG"/>
+	 <Parameter propertyName="adempimentiNormativi_tipologiaFunzionePubblicaLegameAffariConPep"			dbColumnName="COD_MOTV_PEP_AFFA"/>
+
+	 <Parameter propertyName="datiApplicativi_codiceFiscaleForzato"		dbColumnName="CLI_C_TIP_POTZLE"/>
+	 <Parameter propertyName="datiApplicativi_flagClienteSegnalato"		dbColumnName="CLI_F_SEGNAL_EVIDENTE"/>
+	 
+	 <Parameter propertyName="residenza_flagCertificazioneResidenzaEstera"	dbColumnName="CLI_F_CERTIF_NO_RESID"/>
+	 <Parameter propertyName="residenza_flagPep"							dbColumnName="CLI_F_PEP"/>
+	 <Parameter propertyName="residenza_motivazionePep"						dbColumnName="CLI_X_PEP_MOTIVAZ"/>
+
+	 <Parameter propertyName="statoConfermato"							dbColumnName="CLI_F_CLI_DA_ESTRA"/>
+	 <Parameter propertyName="codNazl"									dbColumnName="NAZ_C_NAZL"/>
+	 <Parameter propertyName="scadenzaDocTaxUS"							dbColumnName="CLI_D_SCAD_DOC_TAX_USA"/>
+
+	 <Parameter propertyName="secondaCittadinanza"						dbColumnName="CLI_C_NAZ_CITT2"/>
+	 <Parameter propertyName="residenza_codNazioneResidenzaFiscale1"	dbColumnName="CLI_C_NAZ_RES_FISC1"/>
+	 <Parameter propertyName="residenza_codNazioneResidenzaFiscale2"	dbColumnName="CLI_C_NAZ_RES_FISC2"/>
+	 <Parameter propertyName="residenza_codFiscaleResidenzaFiscale2"	dbColumnName="COD_FISC_SECND_RESIDN_FISC"/>
+	 <Parameter propertyName="residenza_codNazioneResidenzaFiscale3"	dbColumnName="CLI_C_NAZ_RES_FISC3"/>
+	 <Parameter propertyName="residenza_codFiscaleResidenzaFiscale3"	dbColumnName="COD_FISC_TERZA_RESIDN_FISC"/>
+	 <Parameter propertyName="tipoDitta"								dbColumnName="CLI_C_DITTA"/>
+
+	 <Parameter propertyName="moduloFatca"								dbColumnName="MODULO_FATCA"/>
+	 <Parameter propertyName="datiFatca_resultingFatcaStatus"			dbColumnName="FATCA_STATUS"/>
+	 <Parameter propertyName="datiFatca_isAppliedFor"					dbColumnName="FATCA_IS_APPLIED_FOR"/>
+	 <Parameter propertyName="datiFatca_tin"							dbColumnName="FATCA_TIN_US_PERSON"/>
+	 
+	 <Parameter propertyName="contestoApplicativo"						dbColumnName="CONTESTO_APPLICATIVO"/>
+	 
+	 <Parameter propertyName="codAgenteUltimaModifica"				dbColumnName="COD_AGENT_OPERZ"/>
+	 <Parameter propertyName="codAgenteUltimaModifica"				dbColumnName="GSTD_M_NOM_ULT_MODF"/>
+	 <Parameter propertyName="codAgenteUltimaModifica"				dbColumnName="GSTD_X_USER"/>
+	 <Parameter propertyName="dataOraUltimaModifica"				dbColumnName="GSTD_D_ULT_MODF_RECORD"/>
+	 <Parameter propertyName="tipoModifica"							propertyType="StringType" propertyValue="I" dbColumnName="GSTD_X_TIP_MODF"/>
+
+   </Bindings>
+</Access>
+
+<Access name="propostaIndirizzo" type="DAOTableAccess" tableName="%datiApplicativi_nomeTabella%"
+		connectionCacheReference="CEPE">
+   <Bindings>
+	 <Parameter propertyName="codAgente" 				dbColumnName="AGE_C_AGE"/>
+	 <Parameter propertyName="codPotenziale"			dbColumnName="ASSGNCLIAGE_C_POTZLE"	primaryKey="true" foreignKey="codPotenziale"/>
+	 <Parameter propertyName="codRete" 					dbColumnName="RETEVEND_C_RETE"/>
+	 <Parameter propertyName="stato" 					dbColumnName="STATOCLI_C_STATO"/>
+	 <Parameter propertyName="statoProposta" 			dbColumnName="STATO_CLI_ELETTR_C_STATO"/>
+	 <Parameter propertyName="progressivo" 				dbColumnName="INDCLI_N_PROGR_IND" 	primaryKey="true"/>
+	 <Parameter propertyName="serverReplica" 			dbColumnName="SERVER_C_REPLICA"/>
+	 <Parameter propertyName="dataVariazione" 			dbColumnName="INDCLI_D_VARIAZIONE"/>
+
+	 <Parameter propertyName="progressivoProposta" 					dbColumnName="CLI_ELETTR_N_PROGR" 	primaryKey="true" foreignKey="progressivo"/>
+	 <Parameter propertyName="tipoIndirizzo" 						dbColumnName="TIPIND_C_TIP_IND"/>
+	 <Parameter propertyName="codComune" 							dbColumnName="COMU_C_COMU"/>
+	 <Parameter propertyName="provincia" 							dbColumnName="PROV_C_PROV"/>
+	 <Parameter propertyName="cap" 									dbColumnName="CAP_C_AVVIAM_POSTL"/>
+	 <Parameter propertyName="codNazione" 							dbColumnName="NAZ_C_NAZ"/>
+	 <Parameter propertyName="presso" 								dbColumnName="INDCLI_X_RECAP_PRS"/>
+	 <Parameter propertyName="descrizioneIndirizzo" 				dbColumnName="INDCLI_X_IND"/>
+	 <Parameter propertyName="comune" 								dbColumnName="INDCLI_X_LOC"/>
+	 <Parameter propertyName="descrizioneComune" 					dbColumnName="INDCLI_X_COMU"/>
+	 <Parameter propertyName="toponimoIndirizzo" 					dbColumnName="INDCLI_X_TIPO_IND"/>
+	 <Parameter propertyName="numeroCivico" 						dbColumnName="INDCLI_X_NUM_IND"/>
+
+	 <Parameter propertyName="statoConfermato"			dbColumnName="CLI_F_CLI_DA_ESTRA"/>
+   </Bindings>
+</Access>
+
+<Access name="propostaTelefono" type="DAOTableAccess" tableName="%datiApplicativi_nomeTabella%"
+		connectionCacheReference="CEPE">
+   <Bindings>
+	 <Parameter propertyName="codAgente" 				dbColumnName="AGE_C_AGE"/>
+	 <Parameter propertyName="codPotenziale" 			dbColumnName="ASSGNCLIAGE_C_POTZLE" 	primaryKey="true" foreignKey="codPotenziale"/>
+	 <Parameter propertyName="codRete" 					dbColumnName="RETEVEND_C_RETE"/>
+	 <Parameter propertyName="stato" 					dbColumnName="STATOCLI_C_STATO"/>
+	 <Parameter propertyName="statoProposta" 			dbColumnName="STATO_CLI_ELETTR_C_STATO"/>
+	 <Parameter propertyName="progressivo" 				dbColumnName="RECAPTELCLI_N_PROGR" 		primaryKey="true"/>
+	 <Parameter propertyName="serverReplica" 			dbColumnName="SERVER_C_REPLICA"/>
+	 <Parameter propertyName="dataVariazione" 			dbColumnName="RECAPTELCLI_D_VARIAZIONE"/>	
+	 
+	 <Parameter propertyName="progressivoProposta" 					dbColumnName="CLI_ELETTR_N_PROGR" 		primaryKey="true" foreignKey="progressivo"/>
+	 <Parameter propertyName="tipoTelefono" 						dbColumnName="TIPRECAPTEL_C_TIP_RECAP"/>
+	 <Parameter propertyName="descrizioneTelefono" 					dbColumnName="RECAPTELCLI_X_LIBERA"/>
+	 <Parameter propertyName="prefissoInternazionale" 				dbColumnName="RECAPTELCLI_X_PREF_INTERN"/>
+	 <Parameter propertyName="prefisso" 							dbColumnName="RECAPTELCLI_X_PREF_TEL"/>
+	 <Parameter propertyName="numeroTelefono" 						dbColumnName="RECAPTELCLI_X_NUM_TEL"/>
+	 <Parameter propertyName="noteNonReperibilita" 					dbColumnName="RECAPTELCLI_X_NON_REPER"/>
+	 <Parameter propertyName="reperibileOraADB" 					dbColumnName="RECAPTELCLI_Q_REPER_A_H"/>
+	 <Parameter propertyName="reperibileOraDaDB" 					dbColumnName="RECAPTELCLI_Q_REPER_DA_H"/>
+	 <Parameter propertyName="reperibileGiornoA"					dbColumnName="RECAPTELCLI_D_REPER_A_DATA"/>
+	 <Parameter propertyName="reperibileGiornoDa" 					dbColumnName="RECAPTELCLI_D_REPER_DA_DATA"/>
+	 <Parameter propertyName="note" 								dbColumnName="RECAPTELCLI_X_REPER_DESCR"/>
+	 	 
+	 <Parameter propertyName="statoConfermato"			dbColumnName="CLI_F_CLI_DA_ESTRA"/>
+   </Bindings>
+</Access>
+
+<Access name="impostaDatiInvioInSede" type="DAOTableAccess" tableName="%datiApplicativi_nomeTabella%">
+   <Bindings>
+	 <Parameter propertyName="progressivo" 					dbColumnName="CLI_ELETTR_N_PROGR"	primaryKey="true"/>
+	 <Parameter propertyName="codAgente" 					dbColumnName="AGE_C_AGE" 			primaryKey="true"/>
+	 <Parameter propertyName="codPotenziale" 				dbColumnName="ASSGNCLIAGE_C_POTZLE" primaryKey="true"/>
+	 <Parameter propertyName="dataVariazioneFirmaDigitale" 	dbColumnName="CLI_D_VAR"/>
+	 <Parameter propertyName="tipoCarta"					dbColumnName="TIPO_CARTA"/>
+	 <Parameter propertyName="isDaInviareAllaFabbrica"		dbColumnName="FLG_INVIO"/>
+	 <Parameter propertyName="codDisposizione"				dbColumnName="DISP_C_DISP"/>
+   </Bindings>	
+</Access>
+
+<Access name="loadAgente" type="DAOQueryAccess" queryType="0" 
+		connectionCacheReference="INR">
+	<Query>
+		select distinct A.AGE_C_AGE, 
+						A.RETEVEND_C_RETE, A.AGE_M_COGN_AGE, A.AGE_M_NOME_AGE,	A.AGE_X_IND_EMAIL, C.AGE_X_TELEFONO, A.AGE_X_TEL_CASA,
+				        A.AGE_C_AREA, A.AGZPI_C_AGZ, B.AGZPI_X_COMU, B.PROV_C_PROV,
+				        D.CICLOVITA_C_CICLO_VITA,  D.TIPCONTRAGE_T_CONTR_AGE, A.AGE_X_TIP_CONTR_AGE,
+				        A.CODIFCLIMEDL_C_CLI_MEDL, A.AGE_D_ABIL_ISVAP, A.AGE_X_NUM_ISCRIZ_ISVAP,
+				        A.AGE_X_CF_AGE
+		from INR_AGENTI A, INR_AGENZIE B, INR_AGENTI_RPLC C, INR_AGE D
+		where 	A.AGE_C_AGE = ?
+		and		A.AGZPI_C_AGZ *= B.AGZPI_C_AGZ
+		and		A.AGE_C_AGE *= C.AGE_C_AGE
+		and		A.AGE_C_AGE *= D.AGE_C_AGE
+	</Query>     
+	<Input>
+		<Parameter propertyName="codAgente"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="codAgente"/>
+		<Parameter propertyName="codRete"/>
+		<Parameter propertyName="cognomeAgente"/>
+		<Parameter propertyName="nomeAgente"/>
+		<Parameter propertyName="email"/>
+		<Parameter propertyName="cellulare"/>
+		<Parameter propertyName="telefono"/>
+		
+		<Parameter propertyName="areaAgente"/>
+		<Parameter propertyName="codAgenzia"/>
+		<Parameter propertyName="descrAgenzia"/>
+		<Parameter propertyName="codProvincia"/>
+		
+		<Parameter propertyName="cicloVitaAgente"/>
+		<Parameter propertyName="codiceContrattoAgente"/>
+		<Parameter propertyName="codiceArcContrattoAgente"/>
+
+		<Parameter propertyName="codMediolanum"/>
+		<Parameter propertyName="dataAbilitazioneIsvap"/>
+		<Parameter propertyName="numeroIscrizioneIsvap"/>
+		<Parameter propertyName="codiceFiscale"/>
+	</Output>
+</Access>  
+
+<Access name="loadAltroAgente" type="DAOQueryAccess" queryType="0" 
+		connectionCacheReference="INR">
+	<Query>
+		select distinct AGE_C_AGE, RETEVEND_C_RETE, AGE_M_COGN_AGE, AGE_M_NOME_AGE,	AGE_X_TELEFONO
+		from INR_AGENTI_RPLC
+		where AGE_C_AGE = ?
+	</Query>     
+	<Input>
+		<Parameter propertyName="codAgente"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="codAgente"/>
+		<Parameter propertyName="codRete"/>
+		<Parameter propertyName="cognomeAgente"/>
+		<Parameter propertyName="nomeAgente"/>
+		<Parameter propertyName="cellulare"/>
+	</Output>
+</Access>  
+
+<Access name="loadServerReplicaAgente" type="DAOQueryAccess" queryType="0" 
+		connectionCacheReference="INR">
+	<Query>
+		select SERVER_C_REPLICA from INR_AGENTI where AGE_C_AGE = ?
+	</Query>     
+	<Input>
+		<Parameter propertyName="codAgente"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="serverReplica"/>
+	</Output>
+</Access>  
+
+<Access name="getContatore" type="DAOCallableAccess" store="sp_get_progressivi"
+		connectionCacheReference="CEPE">
+   <Input>
+	<Parameter propertyName="nomeRisorsa"/>
+	<Parameter propertyName="utente"/>
+	<Parameter propertyName="incremento"/>
+	<Parameter propertyName="progressivo"/>
+   </Input>
+   <Output>
+	<Parameter propertyName=""/>
+	<Parameter propertyName=""/>
+	<Parameter propertyName=""/>
+	<Parameter propertyName="progressivo"/>
+   </Output>
+</Access>
+
+<Access name="getCodiceCatasto" type="DAOQueryAccess" queryType="0" connectionCacheReference="DBAZ_SOGG"
+		OutputCommandDataModel="com.atosorigin.wfem.types.StringType">
+	<Query>
+		SELECT COD_FISC_COMU  
+		FROM   CLL.ANAG_CATAST_COMUN  
+		WHERE RTRIM(LTRIM(DEN_COMU)) = RTRIM(LTRIM(?))
+			  AND RTRIM(LTRIM(COD_PROV)) = RTRIM(LTRIM(?))
+	</Query>     
+	<Input>
+		<Parameter propertyName="comune"/>
+		<Parameter propertyName="provincia"/>
+	</Input>
+</Access>  
+
+<Access name="verificaSeClienteDiAgente" type="DAOQueryAccess" queryType="1" maxResultRows="1"
+		connectionCacheReference="DBAZ_SOGG" OutputCommandDataModel="prgm.ita.anagraficaclienti.model.ClienteModel">
+ <Query>
+	SELECT
+		A.CLI_C, 	
+		A.ASSGNCLIAGE_C_POTZLE, 
+		A.CLI_M_COGN,
+		A.CLI_M_NOME, 
+		A.CLI_D_NASC,
+		A.STATOCLI_C_STATO,
+		A.CLI_C_NATURA_GIURIDICA,
+		A.CLI_X_SECONDA_INTEST,
+		'INR_CLI'
+	FROM 
+		CLL.V_CLI A
+	WHERE 
+		A.AGE_C_AGE = <p>codAgente</p> and
+		<IfEqual    propertyName="sesso" propertyValue="S">A.CLI_N_PIVA = <p>partitaIva</p></IfEqual>
+		<IfNotEqual propertyName="sesso" propertyValue="S">A.CLI_X_CF   = <p>codFiscale</p></IfNotEqual>
+
+  UNION
+	
+	SELECT
+		A.CLI_C, 		
+		A.ASSGNCLIAGE_C_POTZLE, 
+		A.CLI_M_COGN,
+		A.CLI_M_NOME, 
+		A.CLI_D_NASC,
+		A.STATOCLI_C_STATO,
+		A.CLI_C_NATURA_GIURIDICA,
+		A.CLI_X_SECONDA_INTEST,
+		'INR_CLI_COINT'
+	FROM
+		CLL.V_CLI_COINT A
+	WHERE			
+		A.AGE_C_AGE = <p>codAgente</p> and
+		A.STATOCLI_C_STATO in('5','6') and
+		<IfEqual    propertyName="sesso" propertyValue="S">A.CLI_N_PIVA = <p>partitaIva</p></IfEqual>
+		<IfNotEqual propertyName="sesso" propertyValue="S">A.CLI_X_CF   = <p>codFiscale</p></IfNotEqual>
+
+ UNION
+ 
+ 	SELECT
+		null, 	
+		A.ASSGNCLIAGE_C_POTZLE, 
+		A.CLI_M_COGN,
+		A.CLI_M_NOME, 
+		A.CLI_D_NASC,
+		A.STATOCLI_C_STATO,
+		A.CLI_C_NATURA_GIURIDICA,
+		A.CLI_X_SECONDA_INTEST,
+		'INR_CLI_ELETTR'
+	FROM CLL.INR_CLI_ELETTR_REP A
+	WHERE 
+		A.AGE_C_AGE = <p>codAgente</p> and
+		A.ASSGNCLIAGE_C_POTZLE not like '99999%' and
+		A.STATO_CLI_ELETTR_C_STATO in ('2','3') and
+		nvl(A.CLI_F_CLI_DA_ESTRA,' ') != 'P' and
+		<IfEqual    propertyName="sesso" propertyValue="S">A.CLI_N_PIVA = <p>partitaIva</p></IfEqual>
+		<IfNotEqual propertyName="sesso" propertyValue="S">A.CLI_X_CF   = <p>codFiscale</p></IfNotEqual>
+
+ </Query>
+ <Output>
+	<Parameter propertyName="codMediolanum"/>
+	<Parameter propertyName="codPotenziale"/>
+	<Parameter propertyName="cognome"/>
+	<Parameter propertyName="nome"/>
+	<Parameter propertyName="dataNascita"/>
+	<Parameter propertyName="stato"/>
+	<Parameter propertyName="naturaGiuridica"/>
+	<Parameter propertyName="secondaIntestazione"/>
+	<Parameter propertyName="datiApplicativi_nomeTabella"/>
+ </Output> 
+</Access> 
+
+<Access name="verificaSeClienteCensito" type="DAOQueryAccess" queryType="1" maxResultRows="1"
+		connectionCacheReference="DBAZ_SOGG" OutputCommandDataModel="prgm.ita.anagraficaclienti.model.ClienteModel">
+ <Query>
+	SELECT
+		A.AGE_C_AGE,
+		A.ASSGNCLIAGE_C_POTZLE, 
+		A.CLI_M_COGN,
+		A.CLI_M_NOME, 
+		A.CLI_D_NASC,
+		A.CLI_X_COMU_NASC,
+		A.STATOCLI_C_STATO,
+		A.CLI_C_NATURA_GIURIDICA,
+		A.CLI_X_SECONDA_INTEST,
+		'INR_CLI'
+	FROM CLL.V_CLI A
+	WHERE 
+		<IfEqual    propertyName="sesso" propertyValue="S">A.CLI_N_PIVA = <p>partitaIva</p></IfEqual>
+		<IfNotEqual propertyName="sesso" propertyValue="S">A.CLI_X_CF   = <p>codFiscale</p></IfNotEqual>
+
+ UNION
+		
+	SELECT
+		A.AGE_C_AGE,
+		A.ASSGNCLIAGE_C_POTZLE, 
+		A.CLI_M_COGN,
+		A.CLI_M_NOME, 
+		A.CLI_D_NASC,
+		A.CLI_X_COMU_NASC,
+		A.STATOCLI_C_STATO,
+		A.CLI_C_NATURA_GIURIDICA,
+		A.CLI_X_SECONDA_INTEST,
+		'INR_CLI_ELETTR'
+	FROM CLL.INR_CLI_ELETTR_REP A
+	WHERE 
+		<IfEqual    propertyName="sesso" propertyValue="S">A.CLI_N_PIVA = <p>partitaIva</p></IfEqual>
+		<IfNotEqual propertyName="sesso" propertyValue="S">A.CLI_X_CF   = <p>codFiscale</p></IfNotEqual>
+ </Query>
+ <Output>
+	<Parameter propertyName="codAgente"/>
+	<Parameter propertyName="codPotenziale"/>
+	<Parameter propertyName="cognome"/>
+	<Parameter propertyName="nome"/>
+	<Parameter propertyName="dataNascita"/>
+	<Parameter propertyName="comuneNascita_comune"/>
+	<Parameter propertyName="stato"/>
+	<Parameter propertyName="naturaGiuridica"/>
+	<Parameter propertyName="secondaIntestazione"/>
+	<Parameter propertyName="datiApplicativi_nomeTabella"/>
+ </Output> 
+</Access> 
+
+<Access name="getEnteRilasciante" type="DAOQueryAccess" queryType="0"
+		connectionCacheReference="DBAZ_SOGG" OutputCommandDataModel="com.atosorigin.wfem.types.StringType">
+ <Query>
+	SELECT COD
+	FROM DAICREF.CCB_ANAGRAFICA_DECOD
+	WHERE COD = ?
+	AND TIPO = 'DOCUMENTO-INFORETE'
+ </Query>
+ <Input>
+	<Parameter propertyName="documento_tipoDocumento"/>
+ </Input> 
+</Access> 
+
+<Access name="getProgressivoUltimaVariazione" type="DAOQueryAccess" queryType="0"
+                OutputCommandDataModel="com.atosorigin.wfem.types.IntegerType">
+ <Query>
+        SELECT max(CLI_ELETTR_N_PROGR)
+        FROM INR_CLI_ELETTR
+        WHERE AGE_C_AGE = ? and
+                  ASSGNCLIAGE_C_POTZLE = ?
+ </Query>
+ <Input>
+        <Parameter propertyName="codAgente"/>
+        <Parameter propertyName="codPotenziale"/>
+ </Input>
+</Access>
+
+<Access name="loadUniversita" type="DAOQueryAccess" queryType="0">
+ <Query>
+ 	select NOME_UNIVERSITA, FACOLTA, SIGLA_PROVINCIA
+ 	from CEPE_ATENEI_UNIVERSITARI
+ 	where PROGRESSIVO = ?
+ </Query>
+ <Input>
+	<Parameter propertyName="codUniversita"/>
+ </Input> 
+ <Output>
+	<Parameter propertyName="ateneo"/>
+	<Parameter propertyName="facolta"/>
+	<Parameter propertyName="provincia"/>
+ </Output>
+</Access> 
+
+<Access name="elencoFotografieCliente" type="DAOQueryAccess" queryType="0" 
+		OutputCommandDataModel="prgm.ita.anagraficaclienti.model.FotografiaModel">
+ <Query>
+ 	select FOTO_FILE_NAME, DATA_UPLOAD, DATA_INVIO_REPOSITORY, IS_INVIATA_REPOSITORY, ID_REPOSITORY
+ 	from CEPE_CLI_FOTO
+ 	where AGE_C_AGE = ? and CLI_X_CF = ?
+ 	order by DATA_UPLOAD desc
+ </Query>
+ <Input>
+	<Parameter propertyName="codAgente"/>
+	<Parameter propertyName="codFiscale"/>
+ </Input> 
+ <Output>
+	<Parameter propertyName="nomeFile"/>
+	<Parameter propertyName="dataUpload"/>
+	<Parameter propertyName="dataInvioRepository"/>
+	<Parameter propertyName="isInviataRepository"/>
+	<Parameter propertyName="idRepository"/>
+ </Output>
+</Access> 
+
+<Access name="fotografia" type="DAOTableAccess" tableName="CEPE_CLI_FOTO">
+   <Bindings>
+	 <Parameter propertyName="fotografia_idInforete"  	dbColumnName="ID_INFORETE"			 	primaryKey="true"/>
+	 <Parameter propertyName="fotografia_dataUpload"	dbColumnName="DATA_UPLOAD"/>
+	 <Parameter propertyName="fotografia_immagine"		dbColumnName="FOTO" 					fileTypeDataPart="image"/>
+	 <Parameter propertyName="fotografia_immagine"		dbColumnName="FOTO_IS_VIRUS_EXAMINED" 	fileTypeDataPart="virusExamined"/>
+ 	 <Parameter propertyName="fotografia_immagine"		dbColumnName="FOTO_CONTENT_TYPE"  	 	fileTypeDataPart="contentType"/>
+     <Parameter propertyName="fotografia_immagine"		dbColumnName="FOTO_FILE_NAME"  		 	fileTypeDataPart="fileName"/>
+	 <Parameter propertyName="codAgente"  				dbColumnName="AGE_C_AGE"/>
+	 <Parameter propertyName="serverReplica"			dbColumnName="SERVER_C_REPLICA"/>
+	 <Parameter propertyName="codFiscale"  				dbColumnName="CLI_X_CF"/>
+   </Bindings>
+</Access>
+
+<Access name="loadInfoPrit" type="DAOQueryAccess" queryType="0">
+	<Query>
+		SELECT PRIT_C_PRODOTTO , PRIT_C_OPERAZIONE , NOME_PROPRIETA_IMPORTO
+		FROM   CEPE_INFO_PRIT
+		WHERE  PROD_C_PROD_DISPO = ?
+		AND		CHIAVE = ?
+	</Query>   
+	<Input>
+	<Parameter propertyName="codiceProdottoDispo"/>
+	<Parameter propertyName="chiave"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="pritCodProdotto"/>
+		<Parameter propertyName="pritCodOperazione"/>
+		<Parameter propertyName="nomeProprietaImporto"/>
+	</Output>
+</Access> 
+
+<Access name="verificaSeDocumentoDiAgente" type="DAOQueryAccess" queryType="1" maxResultRows="1"
+		connectionCacheReference="DBAZ_SOGG" OutputCommandDataModel="prgm.ita.anagraficaclienti.model.ClienteModel">
+ <Query>
+	SELECT
+		A.CLI_C,	
+		A.ASSGNCLIAGE_C_POTZLE, 
+		A.CLI_M_COGN,
+		A.CLI_M_NOME, 
+		A.CLI_D_NASC,
+		A.STATOCLI_C_STATO,
+		A.CLI_C_NATURA_GIURIDICA,
+		A.CLI_X_SECONDA_INTEST,
+		A.CLI_X_CF,
+		'INR_CLI'
+	FROM 
+		CLL.V_CLI A 
+	WHERE 
+		A.AGE_C_AGE 		= <p>codAgente</p> and		 
+		A.TIPDOC_C_TIP_DOC  = <p>documento_tipoDocumento</p> and 
+		A.CLI_X_NUM_DOC 	= <p>documento_numeroDocumento</p>
+
+  UNION
+	
+	SELECT
+		A.CLI_C, 	
+		A.ASSGNCLIAGE_C_POTZLE, 
+		A.CLI_M_COGN,
+		A.CLI_M_NOME, 
+		A.CLI_D_NASC,
+		A.STATOCLI_C_STATO,
+		A.CLI_C_NATURA_GIURIDICA,
+		A.CLI_X_SECONDA_INTEST,
+		A.CLI_X_CF,
+		'INR_CLI_COINT'
+	FROM
+		CLL.V_CLI_COINT A
+	WHERE			
+		A.AGE_C_AGE = <p>codAgente</p> and
+		A.STATOCLI_C_STATO in('5','6') and	 
+		A.TIPDOC_C_TIP_DOC  = <p>documento_tipoDocumento</p> and 
+		A.CLI_X_NUM_DOC 	= <p>documento_numeroDocumento</p>
+
+ UNION
+ 
+ 	SELECT
+		null, 	
+		A.ASSGNCLIAGE_C_POTZLE, 
+		A.CLI_M_COGN,
+		A.CLI_M_NOME, 
+		A.CLI_D_NASC,
+		A.STATOCLI_C_STATO,
+		A.CLI_C_NATURA_GIURIDICA,
+		A.CLI_X_SECONDA_INTEST,
+		A.CLI_X_CF,
+		'INR_CLI_ELETTR'
+	FROM CLL.INR_CLI_ELETTR_REP A
+	WHERE 
+		A.AGE_C_AGE = <p>codAgente</p> and
+		A.ASSGNCLIAGE_C_POTZLE not like '99999%' and
+		A.STATO_CLI_ELETTR_C_STATO in ('2','3') and
+		nvl(A.CLI_F_CLI_DA_ESTRA,' ') != 'P' and
+		A.TIPDOC_C_TIP_DOC  = <p>documento_tipoDocumento</p> and 
+		A.CLI_X_NUM_DOC 	= <p>documento_numeroDocumento</p>
+ </Query>
+ <Output>
+	<Parameter propertyName="codMediolanum"/>
+	<Parameter propertyName="codPotenziale"/>
+	<Parameter propertyName="cognome"/>
+	<Parameter propertyName="nome"/>
+	<Parameter propertyName="dataNascita"/>
+	<Parameter propertyName="stato"/>
+	<Parameter propertyName="naturaGiuridica"/>
+	<Parameter propertyName="secondaIntestazione"/>
+	<Parameter propertyName="codFiscale"/>
+	<Parameter propertyName="datiApplicativi_nomeTabella"/>
+ </Output> 
+</Access> 
+
+<Access name="verificaDataRilascioFestivo" type="DAOQueryAccess" queryType="0" 
+		OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType">
+	<Query>
+		SELECT CASE WHEN COUNT (*) = 0 THEN 'N' ELSE 'S' END
+		FROM CEPE_FESTIVITA_CD 
+		WHERE convert(datetime,convert(varchar(4),FESTE_N_ANNO) + 
+		right('00' + convert(varchar(2),FESTE_N_MESE), 2) + 
+		right('00' + convert(varchar(2),FESTE_N_GIORNO), 2)) = ?
+		and FESTE_C_FILTRO = 'ALL'
+		and GSTD_F_ESIST = 'S'
+	</Query>     
+	<Input>
+		<Parameter propertyName="dataRilascio"/>
+	</Input>
+</Access>  
+
+<Access name="clienteSegnalatoreFB" type="DAOQueryAccess" OutputCommandDataModel="com.atosorigin.wfem.types.StringType" queryType="0">
+	<Query>
+	select AGE_C_AGE  from INR_AGENTI 
+	where  CODIFCLIMEDL_C_CLI_MEDL  = ? 
+	and    AGE_X_CICLO_VITA = 'ATTIVO' 
+	</Query>
+	<Input>
+		<Parameter propertyName="codMediolanum"/>
+	</Input>
+</Access>
+
+<Access name="aggiornaContrattiElettronici" type="DAOTableAccess" tableName="CEPE_CONTRATTI_ELETTRONICI" connectionCacheReference="CEPE">
+   <Bindings>
+	 <Parameter propertyName="codiceVariazione" dbColumnName="DISP_C_DISP" primaryKey="true"/>
+	 <Parameter propertyName="statoVariazione" dbColumnName="TIPDISPSTATO_C_TIPDISPSTATO"/>
+	 <Parameter propertyName="dataValidazione" dbColumnName="DISP_D_VALIDAZIONE"/>
+   </Bindings>
+</Access>
+
+<Access name="getFatcaInformation" type="DAOOSBAccess" serviceName="arch-be-osb-fatca-prj/PS/ps_fatca" operationName="getFatcaInformation">
+<Input>
+	<![CDATA[	
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:head="http://bmed.nmon/mw/header" xmlns:api="http://api.wsclient.FatcaService.osb.be.it">
+		   <soapenv:Body>
+		      <api:getFatcaInformationRequest>
+			     <tipoSoggetto 				propertyName="tipoSoggettoFatca"></tipoSoggetto>
+		         <codiceCliente 			propertyName="codiceClienteFatca" appInfo="true"></codiceCliente>
+		         <cittadinanza1 			propertyName="cittadinanza"></cittadinanza1>
+		         <cittadinanza2 			propertyName="secondaCittadinanza"></cittadinanza2>
+		         <nazioneResidenza 			propertyName="residenza_indirizzo_codNazione"></nazioneResidenza>
+		         <nazioneResidenzaFiscale1 	propertyName="residenza_codNazioneResidenzaFiscale1"></nazioneResidenzaFiscale1>
+		         <nazioneResidenzaFiscale2 	propertyName="residenza_codNazioneResidenzaFiscale2"></nazioneResidenzaFiscale2>
+		         <nazioneResidenzaFiscale3 	propertyName="residenza_codNazioneResidenzaFiscale3"></nazioneResidenzaFiscale3>
+		         <nazioneNascita 			propertyName="comuneNascita_codNazione"></nazioneNascita>
+		         <prefissoTelefInternaz 	propertyName="recapiti_telefonoResidenza_prefissoInternazionale"></prefissoTelefInternaz>
+		      </api:getFatcaInformationRequest>
+		   </soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+</Input>
+<Output>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+		   <soapenv:Header/>
+		   <soapenv:Body xmlns:api="http://api.wsclient.FatcaService.osb.be.it" xmlns:head="http://bmed.nmon/mw/header">
+		      <api:getFatcaInformationResponse>
+		         <fatcaStatus 				propertyName="datiFatca_resultingFatcaStatus"></fatcaStatus>
+		         <indizioForteNonSuperabile propertyName="datiFatca_indizioForteNonSuperabile"></indizioForteNonSuperabile>
+		         <indizioForteSuperabile 	propertyName="datiFatca_indizioForteSuperabile"></indizioForteSuperabile>
+		         <indizioDebole 			propertyName="datiFatca_indizioDebole"></indizioDebole>
+		      </api:getFatcaInformationResponse>
+		   </soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+</Output>
+</Access>	
+
+<Access name="loadStatoFotografiaCliente" type="DAOQASAccess" serviceName="QArc-DB-Oracle-SP_MON_CARTEBANCOMATPKG.SP_GET_STATO_FOTOCARTA">
+   <Input>
+   	<![CDATA[
+		<OFX>
+			<QArc-DB-Oracle-SP_MON_CARTEBANCOMATPKG.SP_GET_STATO_FOTOCARTAQARCMSGSRQV1>
+				<wpc version="1.1">
+					<In>
+						<UIDORIG propertyName="idRepository" appInfo="true"></UIDORIG>
+					</In>
+				</wpc>
+			</QArc-DB-Oracle-SP_MON_CARTEBANCOMATPKG.SP_GET_STATO_FOTOCARTAQARCMSGSRQV1>
+		</OFX>   	
+	]]>
+   </Input>
+   <Output>
+   	<![CDATA[
+		<OFX>
+			<QArc-DB-Oracle-SP_MON_CARTEBANCOMATPKG.SP_GET_STATO_FOTOCARTAQARCMSGSRSV1>
+				<DS>
+					<PS>
+						<STATO_FOTO propertyName="statoRepository"></STATO_FOTO>
+					</PS>
+				</DS>
+			</QArc-DB-Oracle-SP_MON_CARTEBANCOMATPKG.SP_GET_STATO_FOTOCARTAQARCMSGSRSV1>
+		</OFX>   	
+	]]>
+   </Output>
+</Access>
+
+<Access name="loadDescrStatoFotografiaCliente" type="DAOQueryAccess" queryType="0">
+	<Query>
+	select DESCR_TO from CEPE_CLI_FOTO_STATI
+	where  DESCR_FROM = ? 
+	</Query>
+	<Input>
+		<Parameter propertyName="statoRepository"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="statoRepository"/>
+	</Output>
+</Access>
+
+<Access name="loadInfoCodiceFiscale2" type="DAOQueryAccess" queryType="0" connectionCacheReference="DBAZ_SOGG">
+	<Query>
+	   SELECT   CASE WHEN COD_TRATT_FISC_CRS = 'N'  OR COD_NAZ_UIC_CDCRI = '069'
+						  THEN 'N'
+						  ELSE 'S'
+		   		END VISIBILE,
+		   		CASE WHEN QTA_MAX_CARTT_COD_FISC = 0
+						  THEN 30
+						  ELSE QTA_MAX_CARTT_COD_FISC
+		   		END LUNGHEZZA,
+		   		CASE WHEN COD_TRATT_FISC_CRS = 'S'
+						  THEN 'S'
+						  ELSE 'N'
+		   		END OBBLIGATORIO
+	   FROM UTLY.DOM_NAZ
+	   WHERE COD_NAZ_UIC_CDCRI = ?
+	   and GSTD_F_ESIST = 'S'
+	   and SYSDATE BETWEEN DAT_INIZ_VALID and DAT_FINE_VALID
+	</Query>
+	<Input>
+		<Parameter propertyName="residenza_codNazioneResidenzaFiscale2"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="residenza_codFiscaleResidenza2Released"/>
+		<Parameter propertyName="residenza_codFiscaleResidenza2Digits"/>
+		<Parameter propertyName="residenza_codFiscaleResidenza2Required"/>
+	</Output>
+</Access>
+
+<Access name="loadInfoCodiceFiscale3" type="DAOQueryAccess" queryType="0" connectionCacheReference="DBAZ_SOGG">
+	<Query>
+	   SELECT   CASE WHEN COD_TRATT_FISC_CRS = 'N'  OR COD_NAZ_UIC_CDCRI = '069'
+						  THEN 'N'
+						  ELSE 'S'
+		   		END VISIBILE,
+		   		CASE WHEN QTA_MAX_CARTT_COD_FISC = 0
+						  THEN 30
+						  ELSE QTA_MAX_CARTT_COD_FISC
+		   		END LUNGHEZZA,
+		   		CASE WHEN COD_TRATT_FISC_CRS = 'S'
+						  THEN 'S'
+						  ELSE 'N'
+		   		END OBBLIGATORIO
+	   FROM UTLY.DOM_NAZ
+	   WHERE COD_NAZ_UIC_CDCRI = ?
+	   and GSTD_F_ESIST = 'S'
+	   and SYSDATE BETWEEN DAT_INIZ_VALID and DAT_FINE_VALID
+	</Query>
+   <Input>
+	<Parameter propertyName="residenza_codNazioneResidenzaFiscale3"/>
+   </Input>
+	<Output>
+		<Parameter propertyName="residenza_codFiscaleResidenza3Released"/>
+		<Parameter propertyName="residenza_codFiscaleResidenza3Digits"/>
+		<Parameter propertyName="residenza_codFiscaleResidenza3Required"/>
+	</Output>
+</Access>
+
+<Access name="loadDatiAggiuntiviEffettivo" type="DAOQueryAccess" queryType="0" connectionCacheReference="DBAZ_SOGG">
+	<Query>
+		select  CLS.COD_ATECO
+		
+		,		CLA1.DATO    
+		,		CLA2.DATO 
+		,		CLA3.DATO
+		
+		,		CLA4.DATO
+		,		substr(CLA5.DATO,1,5)
+		,		substr(CLA6.DATO,1,5)
+
+		,		CLA7.DATO
+		          
+		,		CLA8.DATO
+		,		CLA9.DATO
+
+		,		CLA10.DATO
+		,		CLA11.DATO
+		,		CLA12.DATO
+		,		CLA13.DATO
+
+		,		CLA14.DATO
+		,		CLA15.DATO
+		,		CLA16.DATO
+
+		,		CLA17.DATO
+		,		CLA18.DATO
+		,		CLA19.DATO
+		
+		,		substr(CLA20.DATO,1,1)
+		,		to_date(substr(CLA21.DATO,2,8),'DDMMYYYY')
+
+		from      CLL.CLI CLI left join CLL.CLI_SOC CLS on CLI.CLI_C = CLS.CLI_C and CLS.GSTD_F_ESIST = 'S'
+		left join CLL.CLI_DATIAGGIUNTIVI CLA1  on CLI.CLI_C = CLA1.CLI_C  and CLA1.CODICE_DATO =  18506 and CLA1.GSTD_F_ESIST = 'S'
+		left join CLL.CLI_DATIAGGIUNTIVI CLA2  on CLI.CLI_C = CLA2.CLI_C  and CLA2.CODICE_DATO =  18507 and CLA2.GSTD_F_ESIST = 'S'
+		left join CLL.CLI_DATIAGGIUNTIVI CLA3  on CLI.CLI_C = CLA3.CLI_C  and CLA3.CODICE_DATO =  18510 and CLA3.GSTD_F_ESIST = 'S'
+		left join CLL.CLI_DATIAGGIUNTIVI CLA4  on CLI.CLI_C = CLA4.CLI_C  and CLA4.CODICE_DATO =  10178 and CLA4.GSTD_F_ESIST = 'S'
+		left join CLL.CLI_DATIAGGIUNTIVI CLA5  on CLI.CLI_C = CLA5.CLI_C  and CLA5.CODICE_DATO =  9104  and CLA5.GSTD_F_ESIST = 'S'
+		left join CLL.CLI_DATIAGGIUNTIVI CLA6  on CLI.CLI_C = CLA6.CLI_C  and CLA6.CODICE_DATO =  9105  and CLA6.GSTD_F_ESIST = 'S'
+
+		left join CLL.CLI_DATIAGGIUNTIVI CLA7  on CLI.CLI_C = CLA7.CLI_C  and CLA7.CODICE_DATO =  10303 and CLA7.GSTD_F_ESIST = 'S'
+
+		left join CLL.CLI_DATIAGGIUNTIVI CLA8  on CLI.CLI_C = CLA8.CLI_C  and CLA8.CODICE_DATO =  10304 and CLA8.GSTD_F_ESIST = 'S'
+		left join CLL.CLI_DATIAGGIUNTIVI CLA9  on CLI.CLI_C = CLA9.CLI_C  and CLA9.CODICE_DATO =  10305 and CLA9.GSTD_F_ESIST = 'S'
+
+		left join CLL.CLI_DATIAGGIUNTIVI CLA10 on CLI.CLI_C = CLA10.CLI_C and CLA10.CODICE_DATO = 10306  and CLA10.GSTD_F_ESIST = 'S'
+		left join CLL.CLI_DATIAGGIUNTIVI CLA11 on CLI.CLI_C = CLA11.CLI_C and CLA11.CODICE_DATO = 802	 and CLA11.GSTD_F_ESIST = 'S'
+		left join CLL.CLI_DATIAGGIUNTIVI CLA12 on CLI.CLI_C = CLA12.CLI_C and CLA12.CODICE_DATO = 803	 and CLA12.GSTD_F_ESIST = 'S'
+		left join CLL.CLI_DATIAGGIUNTIVI CLA13 on CLI.CLI_C = CLA13.CLI_C and CLA13.CODICE_DATO = 804	 and CLA13.GSTD_F_ESIST = 'S'
+
+		left join CLL.CLI_DATIAGGIUNTIVI CLA14 on CLI.CLI_C = CLA14.CLI_C and CLA14.CODICE_DATO = 10314  and CLA14.GSTD_F_ESIST = 'S'
+		left join CLL.CLI_DATIAGGIUNTIVI CLA15 on CLI.CLI_C = CLA15.CLI_C and CLA15.CODICE_DATO = 10310  and CLA15.GSTD_F_ESIST = 'S'
+		left join CLL.CLI_DATIAGGIUNTIVI CLA16 on CLI.CLI_C = CLA16.CLI_C and CLA16.CODICE_DATO = 10311  and CLA16.GSTD_F_ESIST = 'S'
+
+		left join CLL.CLI_DATIAGGIUNTIVI CLA17 on CLI.CLI_C = CLA17.CLI_C and CLA17.CODICE_DATO = 10315  and CLA17.GSTD_F_ESIST = 'S'
+		left join CLL.CLI_DATIAGGIUNTIVI CLA18 on CLI.CLI_C = CLA18.CLI_C and CLA18.CODICE_DATO = 10316  and CLA18.GSTD_F_ESIST = 'S'
+		left join CLL.CLI_DATIAGGIUNTIVI CLA19 on CLI.CLI_C = CLA19.CLI_C and CLA19.CODICE_DATO = 10312  and CLA19.GSTD_F_ESIST = 'S'
+
+		left join CLL.CLI_DATIAGGIUNTIVI CLA20 on CLI.CLI_C = CLA20.CLI_C and CLA20.CODICE_DATO = 6023    and CLA20.GSTD_F_ESIST = 'S'
+		left join CLL.CLI_DATIAGGIUNTIVI CLA21 on CLI.CLI_C = CLA21.CLI_C and CLA21.CODICE_DATO = 6023    and CLA21.GSTD_F_ESIST = 'S'
+		
+		where     CLI.CLI_C = ?
+		and       CLI.GSTD_F_ESIST = 'S'
+	</Query> 
+	 <Input>
+		<Parameter propertyName="codMediolanum"/>
+	 </Input>
+	 <Output>
+		<Parameter propertyName="infoPersonali_codAteco"/>
+		
+		<Parameter propertyName="residenza_codFiscaleResidenzaFiscale2"/>
+		<Parameter propertyName="residenza_codFiscaleResidenzaFiscale3"/>
+		<Parameter propertyName="residenza_codNazioneResidenzaFiscale3"/>
+		
+		<Parameter propertyName="infoPersonali_combinazioneProvenienzaPatrimonio"/>
+		<Parameter propertyName="infoPersonali_fasciaRedditoAnnuale"/>
+		<Parameter propertyName="infoPersonali_fasciaPatrimonioComplessivo"/>
+		
+		<Parameter propertyName="adempimentiNormativi_formaGiuridicaSocietaAppartenenza"/>
+		
+		<Parameter propertyName="adempimentiNormativi_caricaPubblicaRicoperta"/>
+		<Parameter propertyName="adempimentiNormativi_dettaglioCaricaPubblicaRicoperta"/>
+
+		<Parameter propertyName="adempimentiNormativi_tipologiaLegameAffariDiversoDaAttivitaPrincipale"/>
+		<Parameter propertyName="adempimentiNormativi_paeseLegameAffariDiversoDaAttivitaPrincipale1"/>
+		<Parameter propertyName="adempimentiNormativi_paeseLegameAffariDiversoDaAttivitaPrincipale2"/>
+		<Parameter propertyName="adempimentiNormativi_paeseLegameAffariDiversoDaAttivitaPrincipale3"/>
+
+		<Parameter propertyName="adempimentiNormativi_haLegamiParentelaConPep"/>
+		<Parameter propertyName="adempimentiNormativi_tipologiaLegameParentelaConPep"/>
+		<Parameter propertyName="adempimentiNormativi_tipologiaFunzionePubblicaLegameParentelaConPep"/>
+
+		<Parameter propertyName="adempimentiNormativi_haLegamiAffariConPep"/>
+		<Parameter propertyName="adempimentiNormativi_tipologiaLegameAffariConPep"/>
+		<Parameter propertyName="adempimentiNormativi_tipologiaFunzionePubblicaLegameAffariConPep"/>
+		
+		<Parameter propertyName="datiPrivacy_flagProfilazione"/>
+		<Parameter propertyName="datiPrivacy_dataProfilazione"/>
+	</Output> 
+</Access> 
+
+<Access name="loadCodiceSaePersonaFisica" type="DAOQueryAccess" queryType="0"
+		OutputCommandDataModel="prgm.ita.anagraficaclienti.model.DominioModel"
+		connectionCacheReference="DBAZ_SOGG">
+	<Query>
+		SELECT COD, DESCR
+		FROM DAICREF.CCB_ANAGRAFICA_DECOD
+		WHERE TIPO = 'SAE'
+		AND COD = '600'
+	</Query>
+	<Output>
+		<Parameter propertyName="cod"/>
+		<Parameter propertyName="descr"/>
+	</Output>
+</Access>
+<Access name="loadCodiceAtecoPersonaFisica" type="DAOQueryAccess" queryType="0"
+		OutputCommandDataModel="prgm.ita.anagraficaclienti.model.DominioModel"
+		connectionCacheReference="DBAZ_SOGG">
+	<Query>
+		SELECT COD, DESCR
+		FROM DAICREF.CCB_ANAGRAFICA_DECOD
+		WHERE TIPO = 'ATECO'
+		AND COD = '0' 
+	</Query>
+	<Output>
+		<Parameter propertyName="cod"/>
+		<Parameter propertyName="descr"/>
+	</Output>
+</Access>
+<Access name="loadSettoriEconomiciPersonaFisica" type="DAOQueryAccess" queryType="0" connectionCacheReference="DBAZ_SOGG"
+	OutputCommandDataModel="prgm.ita.anagraficaclienti.model.DominioModel">
+	<Query>
+		select 	s.COD,
+				s.DESCR,
+				CASE WHEN s.GSTD_F_ESIST = 'S' then 'S' else 'N' END VALIDITA 
+		from DAICREF.CCB_ANAGRAFICA_DECOD s, CLL.RACCORDO_PROFESS_TAE r
+		where s.COD = r.SETT_ECON_C_SETT_ECON
+		and s.TIPO = 'TAE-INFORETE'
+		and r.PROFESS_TAE_C_PROFESS = ?
+		order by s.COD
+	</Query>
+	<Input>
+		<Parameter propertyName="infoPersonali_codProfessione"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="cod"/>
+		<Parameter propertyName="descr"/>
+		<Parameter propertyName="validita"/>
+	</Output>
+</Access>
+
+<Access name="loadCodiciSaeDitta" type="DAOQueryAccess" queryType="0"
+		OutputCommandDataModel="prgm.ita.anagraficaclienti.model.DominioModel"
+		connectionCacheReference="DBAZ_SOGG">
+	<Query>
+		SELECT COD, DESCR
+		FROM DAICREF.CCB_ANAGRAFICA_DECOD
+		WHERE TIPO = 'SAE'
+		AND TRIM(COD) IN ('614','615')
+	</Query>
+	<Output>
+		<Parameter propertyName="cod"/>
+		<Parameter propertyName="descr"/>
+	</Output>
+</Access>
+<Access name="loadCodiciAtecoDitta" type="DAOQueryAccess" queryType="1"
+		OutputCommandDataModel="prgm.ita.anagraficaclienti.model.DominioModel"
+		connectionCacheReference="DBAZ_SOGG">
+	<Query>
+		SELECT     DISTINCT(A.COD), A.DESCR
+		FROM       DAICREF.CCB_ANAGRAFICA_DECOD A
+		JOIN       CLL.LEGM_ATECO_SAE B ON SUBSTR(A.COD , 1, 4) = TRIM(B.COD_ATECO)
+		<IfNotNull propertyName="infoPersonali_codSottogruppoAttivita">AND TRIM(B.COD_SAE) = <p>infoPersonali_codSottogruppoAttivita</p></IfNotNull>
+		<IfNull propertyName="infoPersonali_codSottogruppoAttivita">AND TRIM(B.COD_SAE) IN ('614','615')</IfNull>
+		WHERE      A.TIPO = 'ATECO'
+		AND		   A.ATTIVO = 'S'
+		<IfNotNull propertyName="infoPersonali_codAteco">AND TRIM(A.COD) = <p>infoPersonali_codAteco</p></IfNotNull>
+		ORDER BY   A.COD
+	</Query>
+	<Output>
+		<Parameter propertyName="cod"/>
+		<Parameter propertyName="descr"/>
+	</Output>
+</Access>
+<Access name="loadSettoriEconomiciDitta" type="DAOQueryAccess" queryType="0" connectionCacheReference="DBAZ_SOGG"
+	OutputCommandDataModel="prgm.ita.anagraficaclienti.model.DominioModel">
+	<Query>
+		select	COD,
+				DESCR,
+				CASE WHEN GSTD_F_ESIST = 'S' then 'S' else 'N' END VALIDITA 
+		from 	DAICREF.CCB_ANAGRAFICA_DECOD
+		where 	TIPO = 'TAE-INFORETE'
+		and 	nvl(trim(COD),' ') != ' ' 
+		order by COD
+	</Query>
+	<Output>
+		<Parameter propertyName="cod"/>
+		<Parameter propertyName="descr"/>
+		<Parameter propertyName="validita"/>
+	</Output>
+</Access>
+
+<Access name="controllaCodiceAteco" type="DAOQueryAccess" queryType="0"
+		OutputCommandDataModel="prgm.ita.anagraficaclienti.model.DominioModel"
+		connectionCacheReference="DBAZ_SOGG">
+	<Query>
+		SELECT COD, DESCR
+		FROM DAICREF.CCB_ANAGRAFICA_DECOD
+		WHERE TIPO = 'ATECO'
+		AND TRIM(COD) = ?
+		AND ATTIVO = 'S'
+	</Query>
+	<Input>
+		<Parameter propertyName="infoPersonali_codAteco"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="cod"/>
+		<Parameter propertyName="descr"/>
+	</Output>
+</Access>
+
+<Access name="isAssegnatoAdAltroAgenteImpersonale" type="DAOQueryAccess" connectionCacheReference="IQ"
+ 			OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType" queryType="0">
+	<Query>
+		SELECT
+			CASE WHEN AGE.AGE_F_PERS_FISI_GIUR_AGE = 'I' THEN 'S' ELSE 'N' END 
+		FROM
+			INR_ASSGNCLIAGE CLIAGE,
+			INR_AGENTI AGE
+		WHERE
+			CLIAGE.AGE_C_AGE = AGE.AGE_C_AGE 
+			AND CLIAGE.ASSGNCLIAGE_D_FINE_ASSGN IS NULL
+			AND CLIAGE.ASSGNCLIAGE_C_POTZLE = ?
+	</Query>
+	<Input>
+		<Parameter propertyName="codPotenziale"/>
+	</Input>
+</Access>
+
+<Access name="isClienteDisinvestito" type="DAOQueryAccess" connectionCacheReference="IQ"
+			OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType" queryType="0">
+	<Query>
+		SELECT
+			CASE WHEN DISINVESTITO = 'S' THEN 'S' ELSE 'N' END 
+		FROM
+			S_CLIENTI
+		WHERE
+			ASSGNCLIAGE_C_POTZLE = ?
+	</Query>
+	<Input>
+		<Parameter propertyName="codPotenziale"/>
+	</Input>
+</Access>
+
+<Access name="loadInfoSocietariePGiuridica" type="DAOQueryAccess" queryType="0" connectionCacheReference="DBAZ_SOGG">
+	<Query>
+		SELECT	A.CLI_N_PIVA
+		,		A.CLI_C_REA_PR
+		,		A.CLI_C_REA_LEG
+		,		CASE WHEN  A.CLI_D_REA_DATA = TO_DATE('01011753','DDMMYYYY') THEN NULL ELSE A.CLI_D_REA_DATA END AS REA_DATA
+		,		CASE WHEN  B.NR_DIPENDENTI = ' ' THEN NULL ELSE B.NR_DIPENDENTI END AS DIPENDENTI
+		,		(select case when count(*) > 0 then 'S' else 'N' end from CLL.CLI_DATIAGGIUNTIVI DA where DA.CLI_C = ? and DA.CODICE_DATO = 9108 and DA.DATO = '00003' and DA.GSTD_F_ESIST = 'S')
+		,		(select case when substr(trim(DA.DATO),1,1) != '-' then DA.DATO else '' end from CLL.CLI_DATIAGGIUNTIVI DA where DA.CLI_C = ? and DA.CODICE_DATO = 10300 and DA.GSTD_F_ESIST = 'S')
+		,		(select case when substr(trim(DA.DATO),1,1)  = '-' then DA.DATO else '' end from CLL.CLI_DATIAGGIUNTIVI DA where DA.CLI_C = ? and DA.CODICE_DATO = 10300 and DA.GSTD_F_ESIST = 'S')
+		,		(select case when substr(trim(DA.DATO),1,1) != '-' then DA.DATO else '' end from CLL.CLI_DATIAGGIUNTIVI DA where DA.CLI_C = ? and DA.CODICE_DATO = 10301 and DA.GSTD_F_ESIST = 'S')
+		,		(select case when substr(trim(DA.DATO),1,1)  = '-' then DA.DATO else '' end from CLL.CLI_DATIAGGIUNTIVI DA where DA.CLI_C = ? and DA.CODICE_DATO = 10301 and DA.GSTD_F_ESIST = 'S')
+		,		(select case when substr(trim(DA.DATO),1,1) != '-' then DA.DATO else '' end from CLL.CLI_DATIAGGIUNTIVI DA where DA.CLI_C = ? and DA.CODICE_DATO = 10302 and DA.GSTD_F_ESIST = 'S')
+		,		(select case when substr(trim(DA.DATO),1,1)  = '-' then DA.DATO else '' end from CLL.CLI_DATIAGGIUNTIVI DA where DA.CLI_C = ? and DA.CODICE_DATO = 10302 and DA.GSTD_F_ESIST = 'S')
+		,		(select listagg(DA.DATO) within group(order by DA.PROGR_DATO) from CLL.CLI_DATIAGGIUNTIVI DA where DA.CLI_C = ? and DA.CODICE_DATO = 10313 and DA.GSTD_F_ESIST = 'S')
+		FROM	CLL.CLI A, CLL.CLI_SOC B
+		WHERE	A.CLI_C = ?
+		AND		B.CLI_C = A.CLI_C
+	</Query> 
+	<Input>
+		<Parameter propertyName="codMediolanum"/>
+		<Parameter propertyName="codMediolanum"/>
+		<Parameter propertyName="codMediolanum"/>
+		<Parameter propertyName="codMediolanum"/>
+		<Parameter propertyName="codMediolanum"/>
+		<Parameter propertyName="codMediolanum"/>
+		<Parameter propertyName="codMediolanum"/>
+		<Parameter propertyName="codMediolanum"/>
+		<Parameter propertyName="codMediolanum"/>
+	</Input>
+	<Output>
+		<Parameter propertyName="infoSocietarie_partitaIVA"/>
+		<Parameter propertyName="infoSocietarie_reaPr"/>
+		<Parameter propertyName="infoSocietarie_reaLeg"/>
+		<Parameter propertyName="infoSocietarie_dataIscrizioneREA"/>
+		<Parameter propertyName="infoSocietarie_nDipendenti"/>
+		<Parameter propertyName="infoSocietarie_utileUltimoEsercizioNonDisponibile"/>
+		<Parameter propertyName="infoSocietarie_utileUltimoEsercizio"/>
+		<Parameter propertyName="infoSocietarie_perditaUltimoEsercizio"/>
+		<Parameter propertyName="infoSocietarie_utilePenultimoEsercizio"/>
+		<Parameter propertyName="infoSocietarie_perditaPenultimoEsercizio"/>
+		<Parameter propertyName="infoSocietarie_utileTerzultimoEsercizio"/>
+		<Parameter propertyName="infoSocietarie_perditaTerzultimoEsercizio"/>
+		<Parameter propertyName="recapiti_emailPec"/>
+	</Output> 
+</Access>
+
+<Access name="loadLegaleRappresentantePGiuridica" type="DAOQueryAccess" queryType="1" connectionCacheReference="DBAZ_SOGG">
+	<Query>
+		SELECT	CLI_M_COGN,
+				CLI_M_NOM,
+				CLI_C,
+				CLI_X_CF
+		FROM	CLL.CLI WHERE CLI_C = (select CLI_C_COD_LEGALRAPP from CLL.CLI WHERE CLI_C = <p>codMediolanum</p>)
+	</Query> 
+	 <Output>
+		<Parameter propertyName="infoSocietarie_legRapCognome"/>
+		<Parameter propertyName="infoSocietarie_legRapNome"/>
+		<Parameter propertyName="infoSocietarie_legRapCodiceCliente"/>
+		<Parameter propertyName="infoSocietarie_legCodiceFiscale"/>
+	</Output> 
+</Access>
+
+<Access name="loadCodiceMotivazionePepStampa" type="DAOQueryAccess" connectionCacheReference="DBAZ_SOGG" queryType="0" maxResultRows="1"
+		OutputCommandDataModel="com.atosorigin.wfem.types.StringType">
+	<Query> 
+		select COD from DAICREF.CCB_ANAGRAFICA_DECOD 
+		where TIPO = 'MOTIVAZIONE_PEP'
+		and ATTIVO = 'S'
+		and upper(DESCR_CSC) = upper(?)	
+	</Query> 
+	<Input>  
+		<Parameter propertyName="residenza_motivazionePep"/> 
+	</Input>
+</Access>
+
+<Access name="mail" type="DAOTableAccess" tableName="INFO_MAIL_QUEUE" identityProperty="mailId" connectionCacheReference="INFO">
+  	<Bindings>
+	   	<Parameter propertyName="mailId" 			dbColumnName="MAIL_ID" primaryKey="true"/>
+	   	<Parameter propertyName="mailStatus" 		dbColumnName="MAIL_STATUS"/>
+	   	<Parameter propertyName="schedTime" 		dbColumnName="D_SCHED_TIME"/>
+	   	<Parameter propertyName="from" 				dbColumnName="X_MAIL_FROM"/>
+	   	<Parameter propertyName="fromAlias" 		dbColumnName="X_MAIL_FROM_ALIAS"/>
+	   	<Parameter propertyName="to" 				dbColumnName="X_MAIL_TO"/>
+	   	<Parameter propertyName="subject" 			dbColumnName="X_MAIL_SUBJECT"/>
+	   	<Parameter propertyName="body" 				dbColumnName="X_MAIL_BODY"/>
+	   	<Parameter propertyName="contentType" 		dbColumnName="X_MAIL_CONTENT_TYPE"/>
+	   	<Parameter propertyName="userIns"	 		dbColumnName="C_USER"/>
+	</Bindings>
+</Access>
+
+<Access name="isNazioneExtraUE" type="DAOQueryAccess" connectionCacheReference="DBAZ_SOGG" queryType="0"
+		OutputCommandDataModel="com.atosorigin.wfem.types.BooleanType">
+	<Query>
+		select case when count(*) = 0 then 'S' else 'N' end as isExtraUE
+		from UTLY.DOM_NAZ NAZ
+		inner join UTLY.DOM_NAZ_ESTES DETT on NAZ.COD_NAZ_CLI = DETT.COD_NAZ_CLI
+		where 	DETT.COD_TIPO_DATO='ORG'
+		and 	DETT.VAL_DATO='UE'
+		and 	DETT.GSTD_F_ESIST = 'S' 
+		and 	SYSDATE BETWEEN DETT.DAT_INIZ_VALID AND DETT.DAT_FINE_VALID
+		and 	NAZ.COD_NAZ_UIC_CDCRI = ?
+	</Query> 
+	<Input>  
+		<Parameter propertyName="codNazione"/> 
+	</Input>
+</Access>
+
+<Access name="verificaAddendumAMLCliente" type="DAOOSBAccess" serviceName="fd-be-osb-cliente-prj/inbound/PS_WS_ClienteBusinessIntegration" operationName="verificaAddendumAMLCliente">
+<Input>
+	<![CDATA[	
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://ClienteAppDom.service.bmed.it/v1" xmlns:v3="http://common.schema.bmed.it/v3">
+		   <soapenv:Header/>
+		   <soapenv:Body>
+		      <v1:verificaAddendumAMLCliente>
+		         <codiceResidenzaFiscale1 propertyName="codiceResidenzaFiscale1"></codiceResidenzaFiscale1>
+		         <codiceResidenzaFiscale2 propertyName="codiceResidenzaFiscale2"></codiceResidenzaFiscale2>
+		         <codiceResidenzaFiscale3 propertyName="codiceResidenzaFiscale3"></codiceResidenzaFiscale3>
+		         <flagPep propertyName="flagPep"></flagPep>
+		         <flagRelazioneAffari propertyName="flagRelazioneAffari"></flagRelazioneAffari>
+		      </v1:verificaAddendumAMLCliente>
+		   </soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+</Input>
+<Output>
+	<![CDATA[
+		<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+		   <soapenv:Header xmlns:v1="http://ClienteAppDom.service.bmed.it/v1" xmlns:v3="http://common.schema.bmed.it/v3"/>
+		   <soapenv:Body xmlns:v1="http://ClienteAppDom.service.bmed.it/v1" xmlns:v3="http://common.schema.bmed.it/v3">
+		      <v1:verificaAddendumAMLClienteResponse>
+		         <flagAddendum propertyName="flagAddendum"></flagAddendum>
+		      </v1:verificaAddendumAMLClienteResponse>
+		   </soapenv:Body>
+		</soapenv:Envelope>
+	]]>
+</Output>
+</Access>	
+
+</DAO-Object>

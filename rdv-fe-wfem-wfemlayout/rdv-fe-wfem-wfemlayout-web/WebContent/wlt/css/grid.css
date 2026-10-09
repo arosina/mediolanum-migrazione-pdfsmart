@@ -1,0 +1,112 @@
+.gridNoRows {
+	font-size: 10pt;
+	font-weight: bold;
+	text-align: center;
+	vertical-align: top;
+	background-color: #FCFCFC;
+	border: solid 1px darkgray;
+	-moz-border-radius: 5px; 
+	-webkit-border-radius: 5px; 
+	border-radius: 5px;
+}
+.gridPanel {
+	background-color: #F8F8F8;
+}
+.gridTopArea {
+	background-color: #FEFEFE;
+}
+.gridBottomArea {
+	background-color: #FEFEFE;
+}
+.gridHeader {
+}
+.gridHeader td{
+	background: url(/wfemlayout/wlt/images/grid/header.png) 50% 50% repeat-x; 
+	font-size: 8pt;
+	background-color: lightgrey;
+	border-color: darkgray;
+	border-width: 1px;
+	border-top: solid 1px darkgray;
+	border-bottom-style: solid;
+	border-right-style: solid;
+	text-align: center;
+	font-weight: bold;
+	vertical-align: middle;
+	overflow:hidden;
+}
+.gridCounter{
+}
+.gridCounter td{
+	background: url(/wfemlayout/wlt/images/grid/counter.png) 50% 50% repeat-y; 
+	border-color: darkgray;
+	border-width: 1px;
+	border-bottom-style: solid;
+	border-right-style: solid;
+	background-color: lightgrey;
+	text-align: center;
+}
+.gridOverRow {
+	font-family: Arial;
+	font-size: 8pt;
+	color: #1A458F;
+	font-weight: normal;
+	background-color: #DBDBDB;
+}
+.gridSelectedRow {
+	font-family: Arial;
+	font-size: 8pt;
+	font-weight: normal;
+	color: #DBDBDB;
+	background-color: #1A458F;
+}
+.gridBody{
+	color: #1A458F;
+	background-color: white;
+	font-family: Arial;
+	font-size: 8pt;
+}
+.gridBodyCell{
+	border-color: darkgray;
+	border-width: 1px;
+	border-bottom-style: dotted;
+	border-right-style: solid;
+	padding-left: 2px;
+	padding-right: 2px;
+	overflow:hidden;
+}
+.gridBodyCellDisabled{
+	border-color: darkgray;
+	border-width: 1px;
+	border-bottom-style: dotted;
+	border-right-style: solid;
+	padding-left: 2px;
+	padding-right: 2px;
+	overflow:hidden;
+	color: gray;
+}
+.pageLabel{
+	font-family: Arial;
+	font-size: 8pt;
+	cursor:pointer;
+	color:#1A458F;
+}
+.disabledPageLabel {
+	font-family: Arial;
+	font-size: 8pt;
+	color:darkgray;	
+}
+.gridSelectedRow{
+	color: #DBDBDB !important;
+	background-color: #1A458F  !important;
+}
+.gridOveredRow{
+	color: #1A458F !important;
+	background-color: #DBDBDB !important;
+}
+.gridSelectedCounter{
+	text-decoration: underline !important;
+	font-weight: bold !important;
+}
+.gridOveredCounter{
+	font-weight: bold !important;
+}

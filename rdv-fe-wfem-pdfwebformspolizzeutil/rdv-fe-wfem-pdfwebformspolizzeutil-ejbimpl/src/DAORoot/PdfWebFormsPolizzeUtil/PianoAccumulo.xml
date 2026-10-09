@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="PianoAccumulo">
+	<Access name="recuperaSituazioniPianiAccumulo" type="DAOOSBAccess"
+		serviceName="service/soggetto/posizioneinformativa/PianiAccumuloService/v1"
+		operationName="recuperaSituazioniPianiAccumulo" markNillable="true" keepAttrs="true"
+		dataFormatter="prgm.pdfwebformsutil.drivers.dao.XmlFormatter">
+		<Input>
+		<![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://posizioneinformativa.soggetto.be.schema.bmed.it/PianiAccumulo/v1">
+	   <soapenv:Header/>
+	   <soapenv:Body>
+	      <v1:recuperaSituazioniPianiAccumuloRequest>
+	         <v1:metadata xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />         
+	         <v1:codProdotto propertyName="codProdotto"></v1:codProdotto>
+	         <v1:codContratto propertyName="codContratto"></v1:codContratto>
+	         <v1:canale propertyName="canale"></v1:canale>
+	         <v1:importoAggiuntivo propertyName="importoAggiuntivo"></v1:importoAggiuntivo>
+	         <!--1 or more repetitions:-->
+	         <v1:dettaglioFondi propertyName="dettaglioFondi">
+	            <v1:codFondo propertyName="codFondo"></v1:codFondo>
+	            <v1:importo propertyName="importo"></v1:importo>
+	            <v1:percentuale propertyName="percentuale"></v1:percentuale>
+	         </v1:dettaglioFondi>	         
+	      </v1:recuperaSituazioniPianiAccumuloRequest>
+	   </soapenv:Body>
+	</soapenv:Envelope>]]>
+		</Input>
+		<Output>
+		<![CDATA[<S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/">
+			   <S:Body>
+			      <recuperaSituazioniPianiAccumuloResponse xmlns:ns3="http://fault.common.schema.bmed.it/v1" xmlns:ns2="http://common.schema.bmed.it/v1" xmlns="http://posizioneinformativa.soggetto.be.schema.bmed.it/PianiAccumulo/v1">
+			         <metadata xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+			         <codProdotto propertyName="result_codProdotto"></codProdotto>
+			         <codContratto propertyName="result_codContratto"></codContratto>
+			         <canale propertyName="result_canale"></canale>
+			         <importoAggiuntivo propertyName="result_importoAggiuntivo"></importoAggiuntivo>
+			         <dettaglioFondi propertyName="result_dettaglioFondi">
+			            <codFondo propertyName="codFondo"></codFondo>
+			            <importo propertyName="importo"></importo>
+			            <percentuale propertyName="percentuale"></percentuale>
+			         </dettaglioFondi>			         
+			      </recuperaSituazioniPianiAccumuloResponse>
+			   </S:Body>
+			</S:Envelope>]]>
+		</Output>
+	</Access>
+</DAO-Object>

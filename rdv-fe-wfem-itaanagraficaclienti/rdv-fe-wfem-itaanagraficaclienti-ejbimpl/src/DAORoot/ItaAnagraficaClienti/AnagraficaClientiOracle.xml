@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="AnagraficaClientiOracle" connectionCacheReference="DBAZ_SOGG">
+
+<Access name="propostaCliente" type="DAOTableAccess" tableName="CLL.%datiApplicativi_nomeTabellaOracle%">
+   <Bindings>
+   
+	 <Parameter propertyName="statoProposta" 							dbColumnName="STATO_CLI_ELETTR_C_STATO"/>
+	 <Parameter propertyName="progressivo" 								dbColumnName="CLI_ELETTR_N_PROGR"	primaryKey="true"/>
+	 <Parameter propertyName="codAgente" 								dbColumnName="AGE_C_AGE"/>
+	 <Parameter propertyName="codPotenziale" 							dbColumnName="ASSGNCLIAGE_C_POTZLE" primaryKey="true"/>
+	 
+	 <Parameter propertyName="isDatoreDiLavoro" 						dbColumnName="CLI_F_DATORELAVORO"/>
+
+	 <Parameter propertyName="codInforete"								dbColumnName="ASSGNCLIAGE_C_POTZLE_NEW"/>
+	 <Parameter propertyName="codMediolanum" 							dbColumnName="CODIFCLIMEDL_C_CLI_MEDL"/>
+	 <Parameter propertyName="numeroOrdine" 							dbColumnName="CLI_C_ORDINE"/>
+	 <Parameter propertyName="codRete" 									dbColumnName="RETEVEND_C_RETE"/>	 
+	 <Parameter propertyName="stato" 									dbColumnName="STATOCLI_C_STATO"/>
+	 <Parameter propertyName="serverReplica" 							dbColumnName="SERVER_C_REPLICA"/>
+	 <Parameter propertyName="dataInserimento" 							dbColumnName="CLI_D_INS"/>
+	 <Parameter propertyName="dataVariazione" 							dbColumnName="CLI_D_VARIAZIONE"/>
+	 <Parameter propertyName="naturaGiuridica"							dbColumnName="CLI_C_NATURA_GIURIDICA"/>
+
+	 <Parameter propertyName="codFiscale" 								dbColumnName="CLI_X_CF" notNullValue="0000000000000000"/>
+	 <Parameter propertyName="partitaIva" 								dbColumnName="CLI_N_PIVA" notNullValue="00000000000"/>
+
+	 <Parameter propertyName="cognome" 									dbColumnName="CLI_M_COGN"/>
+	 <Parameter propertyName="nome" 									dbColumnName="CLI_M_NOME"/>
+	 <Parameter propertyName="secondoNome" 								dbColumnName="CLI_M_SEC_NOME"/>
+	 <Parameter propertyName="secondaIntestazione"						dbColumnName="CLI_X_SECONDA_INTEST"/>
+
+	 <Parameter propertyName="sesso" 									dbColumnName="CLI_F_SESSO"/>
+	 <Parameter propertyName="dataNascita"								dbColumnName="CLI_D_NASC"/>
+	 <Parameter propertyName="comuneNascita_codNazione"					dbColumnName="NAZ_C_NAZ_NASC"/>
+	 <Parameter propertyName="comuneNascita_codComune"					dbColumnName="COMU_C_COMU_NASC"/>
+	 <Parameter propertyName="comuneNascita_provincia"					dbColumnName="PROV_C_PROV_NASC"/>
+	 <Parameter propertyName="comuneNascita_comune"						dbColumnName="CLI_X_COMU_NASC"/>
+	 <Parameter propertyName="cittadinanza" 							dbColumnName="CLI_C_NAZ_CITT"/> 
+	 
+	 <Parameter propertyName="codCluster"								dbColumnName="CLI_F_BSN_CLB"/>
+	 <Parameter propertyName="isTopBusiness"							dbColumnName="CLI_F_TOPBSN"/>
+
+	 <Parameter propertyName="documento_tipoDocumento"					dbColumnName="TIPDOC_C_TIP_DOC"/>
+	 <Parameter propertyName="documento_categoriaPatente"				dbColumnName="CLI_C_CAT_PATEN"/>
+	 <Parameter propertyName="documento_numeroDocumento"				dbColumnName="CLI_X_NUM_DOC"/>
+	 <Parameter propertyName="documento_luogoRilascio_comune"			dbColumnName="CLI_X_LUOGO_RIL_DOC"/>
+	 <Parameter propertyName="documento_dataRilascio"					dbColumnName="CLI_D_RIL_DOC"/>
+	 <Parameter propertyName="documento_dataScadenza"					dbColumnName="CLI_D_SCAD_DOC"/>
+	 <Parameter propertyName="documento_dataRinnovo"					dbColumnName="CLI_D_RINN_DOC"/>
+	 <Parameter propertyName="documento_codEnteRilasciante"				dbColumnName="ENTERIL_C_ENTE_RIL"/>
+
+	 <Parameter propertyName="infoDitta_numeroIscrizioneREA"			dbColumnName="CLI_C_NUM_ISCRIZ_REA"/>
+	 <Parameter propertyName="infoDitta_dataIscrizione"					dbColumnName="CLI_D_ISCRIZ_REA"/>
+	 <Parameter propertyName="infoDitta_luogoRilascioCCIAA_provincia"	dbColumnName="CLI_C_PROV_ISCRIZ_REA"/>
+	 
+	 <Parameter propertyName="recapiti_email"							dbColumnName="CLI_X_IND_INTERNET"/>
+
+	 <Parameter propertyName="infoPersonali_codStatoCivile"				dbColumnName="STATOCIVILE_C_STATO_CIVILE"/>
+	 <Parameter propertyName="infoPersonali_codTitoloStudio"			dbColumnName="TITSTUDIO_C_TIT_STUDIO"/>
+	 <Parameter propertyName="infoPersonali_codOrigine"					dbColumnName="ORI_C_ORI"/>
+	 <Parameter propertyName="infoPersonali_referral"					dbColumnName="CLI_X_REFERRAL"/>
+	 <Parameter propertyName="infoPersonali_codOrigineECodCliente"		dbColumnName="CLI_C_CLIE_SEGN"/>
+	 <Parameter propertyName="infoPersonali_numeroFamiliari"			dbColumnName="CLI_Q_NUM_FAM"/>
+	 <Parameter propertyName="infoPersonali_haFigli"					dbColumnName="CLI_F_HA_FIGLI"/>
+	 <Parameter propertyName="infoPersonali_codProfessione"				dbColumnName="PROFES_C_PROFES"/>
+	 <Parameter propertyName="infoPersonali_codProfessionePrecedente"	dbColumnName="CLI_C_EX_PROF"/>
+	 <Parameter propertyName="infoPersonali_codGruppoAttivita"			dbColumnName="GRUATTIVECON_C_GRU_ATTIV"/>
+	 <Parameter propertyName="infoPersonali_codSottogruppoAttivita"		dbColumnName="SGRUATTIVECON_C_SGRU_ATTIV"/>
+	 <Parameter propertyName="infoPersonali_codSettoreEconomico"		dbColumnName="CLI_C_SETT_PROF"/>
+	 <Parameter propertyName="infoPersonali_universita_codUniversita"	dbColumnName="CLI_C_COO_UNIV"/>
+	 <Parameter propertyName="infoPersonali_fasciaReddMensile"			dbColumnName="CLI_C_REDDITO_MENS"/>
+	 <Parameter propertyName="infoPersonali_percettoriDiReddito"		dbColumnName="CLI_N_PERC_REDDITO"/>
+	 <Parameter propertyName="infoPersonali_attualeAbitazione"			dbColumnName="CLI_C_ABITAZIONE"/>
+	 <Parameter propertyName="infoPersonali_flagMutuo"					dbColumnName="CLI_F_MUTUO"/>
+	 <Parameter propertyName="infoPersonali_nazOProvSvolgProf"			dbColumnName="CLI_C_LUOGO_PROF"/>
+	 <Parameter propertyName="infoPersonali_codAteco"					dbColumnName="COD_ATECO"/>
+
+	 <Parameter propertyName="infoPersonali_combinazioneProvenienzaPatrimonio"		dbColumnName="COD_COMBNE_PROVNZ_PATRIM"/>
+	 <Parameter propertyName="infoPersonali_fasciaRedditoAnnuale"					dbColumnName="COD_FASC_REDDTO_ANNUAL"/>
+	 <Parameter propertyName="infoPersonali_fasciaPatrimonioComplessivo"			dbColumnName="COD_FASC_PATRIM_COMPLVO"/>
+
+	 <Parameter propertyName="datiPrivacy_flagLiberatoria"				dbColumnName="CLI_F_PRIVACY"/>
+	 <Parameter propertyName="datiPrivacy_dataLiberatoria"				dbColumnName="CLI_D_PRIVACY"/>
+	 <Parameter propertyName="datiPrivacy_flagCarte"					dbColumnName="CLI_F_PRIVACY_UE"/>
+	 <Parameter propertyName="datiPrivacy_dataCarte"					dbColumnName="CLI_D_PRIVACY_UE"/>
+	 <Parameter propertyName="datiPrivacy_flagExtraUE"					dbColumnName="CLI_F_PRIVACY_EXUE"/>
+	 <Parameter propertyName="datiPrivacy_dataExtraUE"					dbColumnName="CLI_D_PRIVACY_EXUE"/>
+	 <Parameter propertyName="datiPrivacy_flagProfilazione"				dbColumnName="FLG_CONSNS_PROFLZ_CLI"/>
+	 <Parameter propertyName="datiPrivacy_dataProfilazione"				dbColumnName="DAT_PROFLZ_CLI"/>
+
+	 <Parameter propertyName="adempimentiNormativi_formaGiuridicaSocietaAppartenenza"					dbColumnName="COD_FORMA_GIURID_SOCI"/>
+	 <Parameter propertyName="adempimentiNormativi_caricaPubblicaRicoperta"								dbColumnName="COD_AMBITO_CAR_RICP"/>
+	 <Parameter propertyName="adempimentiNormativi_dettaglioCaricaPubblicaRicoperta"					dbColumnName="COD_DETT_CAR_RICP"/>
+	 <Parameter propertyName="adempimentiNormativi_tipologiaLegameAffariDiversoDaAttivitaPrincipale"	dbColumnName="COD_TIPO_RELZ_AFFA_SECON"/>
+	 <Parameter propertyName="adempimentiNormativi_paeseLegameAffariDiversoDaAttivitaPrincipale1"		dbColumnName="COD_NAZ_RELZ_AFFA_1"/>
+	 <Parameter propertyName="adempimentiNormativi_paeseLegameAffariDiversoDaAttivitaPrincipale2"		dbColumnName="COD_NAZ_RELZ_AFFA_2"/>
+	 <Parameter propertyName="adempimentiNormativi_paeseLegameAffariDiversoDaAttivitaPrincipale3"		dbColumnName="COD_NAZ_RELZ_AFFA_3"/>
+	 <Parameter propertyName="adempimentiNormativi_haLegamiParentelaConPep"								dbColumnName="FLG_LEGM_PARENT_PEP"/>
+	 <Parameter propertyName="adempimentiNormativi_tipologiaLegameParentelaConPep"						dbColumnName="COD_LEGM_PARENT"/>
+	 <Parameter propertyName="adempimentiNormativi_tipologiaFunzionePubblicaLegameParentelaConPep"		dbColumnName="COD_MOTV_PEP_PARENT"/>
+	 <Parameter propertyName="adempimentiNormativi_haLegamiAffariConPep"								dbColumnName="FLG_LEGM_AFFA_PEP"/>
+	 <Parameter propertyName="adempimentiNormativi_tipologiaLegameAffariConPep"							dbColumnName="COD_LEGM_AFFA_ALTRO_SOGG"/>
+	 <Parameter propertyName="adempimentiNormativi_tipologiaFunzionePubblicaLegameAffariConPep"			dbColumnName="COD_MOTV_PEP_AFFA"/>
+
+	 <Parameter propertyName="datiApplicativi_codiceFiscaleForzato"		dbColumnName="CLI_C_TIP_POTZLE"/>
+	 <Parameter propertyName="datiApplicativi_flagClienteSegnalato"		dbColumnName="CLI_F_SEGNAL_EVIDENTE"/>
+	 
+	 <Parameter propertyName="residenza_flagCertificazioneResidenzaEstera"	dbColumnName="CLI_F_CERTIF_NO_RESID"/>
+	 <Parameter propertyName="residenza_flagPep"							dbColumnName="CLI_F_PEP"/>
+	 <Parameter propertyName="residenza_motivazionePep"						dbColumnName="CLI_X_PEP_MOTIVAZ"/>
+
+	 <Parameter propertyName="statoConfermato"							dbColumnName="CLI_F_CLI_DA_ESTRA"/>
+	 <Parameter propertyName="codNazl"									dbColumnName="NAZ_C_NAZL"/>
+	 <Parameter propertyName="scadenzaDocTaxUS"							dbColumnName="CLI_D_SCAD_DOC_TAX_USA"/>
+
+	 <Parameter propertyName="secondaCittadinanza"						dbColumnName="CLI_C_NAZ_CITT2"/>
+	 <Parameter propertyName="residenza_codNazioneResidenzaFiscale1"	dbColumnName="CLI_C_NAZ_RES_FISC1"/>
+	 <Parameter propertyName="residenza_codNazioneResidenzaFiscale2"	dbColumnName="CLI_C_NAZ_RES_FISC2"/>
+	 <Parameter propertyName="residenza_codFiscaleResidenzaFiscale2"	dbColumnName="COD_FISC_SECND_RESIDN_FISC"/>
+	 <Parameter propertyName="residenza_codNazioneResidenzaFiscale3"	dbColumnName="CLI_C_NAZ_RES_FISC3"/>
+	 <Parameter propertyName="residenza_codFiscaleResidenzaFiscale3"	dbColumnName="COD_FISC_TERZA_RESIDN_FISC"/>
+	 <Parameter propertyName="tipoDitta"								dbColumnName="CLI_C_DITTA"/>
+
+	 <Parameter propertyName="moduloFatca"								dbColumnName="MODULO_FATCA"/>
+	 <Parameter propertyName="datiFatca_resultingFatcaStatus"			dbColumnName="FATCA_STATUS"/>
+	 <Parameter propertyName="datiFatca_isAppliedFor"					dbColumnName="FATCA_IS_APPLIED_FOR"/>
+	 <Parameter propertyName="datiFatca_tin"							dbColumnName="FATCA_TIN_US_PERSON"/>
+	 
+	 <Parameter propertyName="contestoApplicativo"						dbColumnName="CONTESTO_APPLICATIVO"/>
+	 
+	 <Parameter propertyName="codAgenteUltimaModifica"				dbColumnName="COD_AGENT_OPERZ"/>
+	 <Parameter propertyName="codAgenteUltimaModifica"				dbColumnName="GSTD_M_NOM_ULT_MODF"/>
+	 <Parameter propertyName="codAgenteUltimaModifica"				dbColumnName="GSTD_X_USER"/>
+	 <Parameter propertyName="dataOraUltimaModifica"				dbColumnName="GSTD_D_ULT_MODF_RECORD"/>
+	 <Parameter propertyName="tipoModifica"							propertyType="StringType" propertyValue="I" dbColumnName="GSTD_X_TIP_MODF"/>
+
+   </Bindings>
+</Access>
+
+<Access name="propostaIndirizzo" type="DAOTableAccess" tableName="CLL.%datiApplicativi_nomeTabellaOracle%">
+   <Bindings>
+	 <Parameter propertyName="codAgente" 				dbColumnName="AGE_C_AGE"/>
+	 <Parameter propertyName="codPotenziale"			dbColumnName="ASSGNCLIAGE_C_POTZLE"	primaryKey="true" foreignKey="codPotenziale"/>
+	 <Parameter propertyName="codRete" 					dbColumnName="RETEVEND_C_RETE"/>
+	 <Parameter propertyName="stato" 					dbColumnName="STATOCLI_C_STATO"/>
+	 <Parameter propertyName="statoProposta" 			dbColumnName="STATO_CLI_ELETTR_C_STATO"/>
+	 <Parameter propertyName="progressivo" 				dbColumnName="INDCLI_N_PROGR_IND" 	primaryKey="true"/>
+	 <Parameter propertyName="serverReplica" 			dbColumnName="SERVER_C_REPLICA"/>
+	 <Parameter propertyName="dataVariazione" 			dbColumnName="INDCLI_D_VARIAZIONE"/>
+
+	 <Parameter propertyName="progressivoProposta" 					dbColumnName="CLI_ELETTR_N_PROGR" 	primaryKey="true" foreignKey="progressivo"/>
+	 <Parameter propertyName="tipoIndirizzo" 						dbColumnName="TIPIND_C_TIP_IND"/>
+	 <Parameter propertyName="codComune" 							dbColumnName="COMU_C_COMU"/>
+	 <Parameter propertyName="provincia" 							dbColumnName="PROV_C_PROV"/>
+	 <Parameter propertyName="cap" 									dbColumnName="CAP_C_AVVIAM_POSTL"/>
+	 <Parameter propertyName="codNazione" 							dbColumnName="NAZ_C_NAZ"/>
+	 <Parameter propertyName="presso" 								dbColumnName="INDCLI_X_RECAP_PRS"/>
+	 <Parameter propertyName="descrizioneIndirizzo" 				dbColumnName="INDCLI_X_IND"/>
+	 <Parameter propertyName="comune" 								dbColumnName="INDCLI_X_LOC"/>
+	 <Parameter propertyName="descrizioneComune" 					dbColumnName="INDCLI_X_COMU"/>
+	 <Parameter propertyName="toponimoIndirizzo" 					dbColumnName="INDCLI_X_TIPO_IND"/>
+	 <Parameter propertyName="numeroCivico" 						dbColumnName="INDCLI_X_NUM_IND"/>
+
+	 <Parameter propertyName="statoConfermato"			dbColumnName="CLI_F_CLI_DA_ESTRA"/>
+   </Bindings>
+</Access>
+
+<Access name="propostaTelefono" type="DAOTableAccess" tableName="CLL.%datiApplicativi_nomeTabellaOracle%">
+   <Bindings>
+	 <Parameter propertyName="codAgente" 				dbColumnName="AGE_C_AGE"/>
+	 <Parameter propertyName="codPotenziale" 			dbColumnName="ASSGNCLIAGE_C_POTZLE" 	primaryKey="true" foreignKey="codPotenziale"/>
+	 <Parameter propertyName="codRete" 					dbColumnName="RETEVEND_C_RETE"/>
+	 <Parameter propertyName="stato" 					dbColumnName="STATOCLI_C_STATO"/>
+	 <Parameter propertyName="statoProposta" 			dbColumnName="STATO_CLI_ELETTR_C_STATO"/>
+	 <Parameter propertyName="progressivo" 				dbColumnName="RECAPTELCLI_N_PROGR" 		primaryKey="true"/>
+	 <Parameter propertyName="serverReplica" 			dbColumnName="SERVER_C_REPLICA"/>
+	 <Parameter propertyName="dataVariazione" 			dbColumnName="RECAPTELCLI_D_VARIAZIONE"/>	
+	 
+	 <Parameter propertyName="progressivoProposta" 					dbColumnName="CLI_ELETTR_N_PROGR" 		primaryKey="true" foreignKey="progressivo"/>
+	 <Parameter propertyName="tipoTelefono" 						dbColumnName="TIPRECAPTEL_C_TIP_RECAP"/>
+	 <Parameter propertyName="descrizioneTelefono" 					dbColumnName="RECAPTELCLI_X_LIBERA"/>
+	 <Parameter propertyName="prefissoInternazionale" 				dbColumnName="RECAPTELCLI_X_PREF_INTERN"/>
+	 <Parameter propertyName="prefisso" 							dbColumnName="RECAPTELCLI_X_PREF_TEL"/>
+	 <Parameter propertyName="numeroTelefono" 						dbColumnName="RECAPTELCLI_X_NUM_TEL"/>
+	 <Parameter propertyName="noteNonReperibilita" 					dbColumnName="RECAPTELCLI_X_NON_REPER"/>
+	 <Parameter propertyName="reperibileOraADB" 					dbColumnName="RECAPTELCLI_Q_REPER_A_H"/>
+	 <Parameter propertyName="reperibileOraDaDB" 					dbColumnName="RECAPTELCLI_Q_REPER_DA_H"/>
+	 <Parameter propertyName="reperibileGiornoA"					dbColumnName="RECAPTELCLI_D_REPER_A_DATA"/>
+	 <Parameter propertyName="reperibileGiornoDa" 					dbColumnName="RECAPTELCLI_D_REPER_DA_DATA"/>
+	 <Parameter propertyName="note" 								dbColumnName="RECAPTELCLI_X_REPER_DESCR"/>
+	 	 
+	 <Parameter propertyName="statoConfermato"			dbColumnName="CLI_F_CLI_DA_ESTRA"/>
+   </Bindings>
+</Access>
+
+<Access name="impostaDatiInvioInSede" type="DAOTableAccess" tableName="CLL.%datiApplicativi_nomeTabellaOracle%">
+   <Bindings>
+	 <Parameter propertyName="progressivo" 					dbColumnName="CLI_ELETTR_N_PROGR"	primaryKey="true"/>
+	 <Parameter propertyName="codAgente" 					dbColumnName="AGE_C_AGE" 			primaryKey="true"/>
+	 <Parameter propertyName="codPotenziale" 				dbColumnName="ASSGNCLIAGE_C_POTZLE" primaryKey="true"/>
+	 <Parameter propertyName="dataVariazioneFirmaDigitale" 	dbColumnName="CLI_D_VAR"/>
+	 <Parameter propertyName="tipoCarta"					dbColumnName="TIPO_CARTA"/>
+	 <Parameter propertyName="isDaInviareAllaFabbrica"		dbColumnName="FLG_INVIO"/>
+	 <Parameter propertyName="codDisposizione"				dbColumnName="DISP_C_DISP"/>
+   </Bindings>	
+</Access>
+
+<Access name="recuperaDifferenziali" type="DAOQueryAccess" queryType="1" 
+	OutputCommandDataModel="prgm.ita.anagraficaclienti.model.DifferenzialeClienteModel">
+	<Query>
+		select  COD_DIFFZL,
+        		VAL_DIFFZL,
+        		FLG_DIFFZL_LEVA
+		from PROCCRM_MOTRDECIS.VW_DETT_DIFFZL_MOSER_ATTIV_CLI
+		where to_char(CLI_C)=<p>codMediolanum</p>
+	</Query>
+	<Output>
+		<Parameter propertyName="codiceDifferenziale"/>
+		<Parameter propertyName="valoreDifferenziale"/>
+		<Parameter propertyName="flagLeva"/>
+	</Output>
+</Access>
+
+<Access name="tracciaAzioneSalvataggio" type="DAOTableAccess" tableName="CLL.DETT_TRACC_OPERZ_ANAG">
+   <Bindings>
+	 <Parameter propertyName="codPotenziale" 			dbColumnName="ASSGNCLIAGE_C_POTZLE"	primaryKey="true"/>
+	 <Parameter propertyName="#contextUserCode"		 	dbColumnName="COD_UTE_OPERZ"		primaryKey="true"/>
+	 <Parameter propertyName="mockTipoOperz" 			dbColumnName="COD_TIPO_OPERZ"		primaryKey="true" propertyType="StringType" propertyValue="CA"/>
+	 <Parameter propertyName="mockTipoModifica" 		dbColumnName="GSTD_X_TIP_MODF"		primaryKey="true" propertyType="StringType" propertyValue="M"/>
+	 
+	 <Parameter propertyName="dataOraUltimaModifica" 	dbColumnName="DAT_OPERZ_ANAG"/>
+	 
+	 <Parameter propertyName="#contextUserCode"			dbColumnName="GSTD_M_NOM_ULT_MODF"/>	 
+	 <Parameter propertyName="#contextUserCode"			dbColumnName="GSTD_X_USER"/>	 
+   </Bindings>	
+</Access>
+
+<Access name="tracciaAzioneCancellazione" type="DAOTableAccess" tableName="CLL.DETT_TRACC_OPERZ_ANAG">
+   <Bindings>
+	 <Parameter propertyName="codPotenziale" 			dbColumnName="ASSGNCLIAGE_C_POTZLE"	primaryKey="true"/>
+	 <Parameter propertyName="#contextUserCode"		 	dbColumnName="COD_UTE_OPERZ"		primaryKey="true"/>
+	 <Parameter propertyName="mockTipoOperz" 			dbColumnName="COD_TIPO_OPERZ"		primaryKey="true" propertyType="StringType" propertyValue="CA"/>
+	 <Parameter propertyName="mockTipoModifica" 		dbColumnName="GSTD_X_TIP_MODF"		primaryKey="true" propertyType="StringType" propertyValue="D"/>
+	 
+	 <Parameter propertyName="dataOraUltimaModifica" 	dbColumnName="DAT_OPERZ_ANAG"/>
+	 
+	 <Parameter propertyName="#contextUserCode"			dbColumnName="GSTD_M_NOM_ULT_MODF"/>	 
+	 <Parameter propertyName="#contextUserCode"			dbColumnName="GSTD_X_USER"/>	 
+   </Bindings>	
+</Access>
+
+<Access name="tracciaCreazioneProfilo" type="DAOTableAccess" tableName="CLL.DETT_TRACC_OPERZ_ANAG">
+   <Bindings>
+	 <Parameter propertyName="codMediolanum" 			dbColumnName="CLI_C"				primaryKey="true"/>
+	 <Parameter propertyName="codPotenziale" 			dbColumnName="ASSGNCLIAGE_C_POTZLE"	primaryKey="true"/>
+	 <Parameter propertyName="#contextUserCode"		 	dbColumnName="COD_UTE_OPERZ"		primaryKey="true"/>
+	 <Parameter propertyName="mockTipoOperz" 			dbColumnName="COD_TIPO_OPERZ"		primaryKey="true" propertyType="StringType" propertyValue="PCP"/>
+	 <Parameter propertyName="mockTipoModifica" 		dbColumnName="GSTD_X_TIP_MODF"		primaryKey="true" propertyType="StringType" propertyValue="I"/>
+	 
+	 <Parameter propertyName="dataOraUltimaModifica" 	dbColumnName="DAT_OPERZ_ANAG"/>
+	 
+	 <Parameter propertyName="#contextUserCode"			dbColumnName="GSTD_M_NOM_ULT_MODF"/>	 
+	 <Parameter propertyName="#contextUserCode"			dbColumnName="GSTD_X_USER"/>	 
+   </Bindings>	
+</Access>
+
+</DAO-Object>

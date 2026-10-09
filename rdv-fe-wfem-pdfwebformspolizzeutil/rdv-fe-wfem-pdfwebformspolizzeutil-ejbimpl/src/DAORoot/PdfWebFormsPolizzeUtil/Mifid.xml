@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="Mifid" connectionCacheReference="CEPE">
+	<Access name="recuperaDescrizioneTariffa" type="DAOQueryAccess" queryType="0" connectionCacheReference="SER_MIFID" OutputCommandDataModel="com.atosorigin.wfem.types.StringType">
+		<Query>
+			SELECT 
+				DES_COMMRC_PROD 
+			FROM 
+				CAT_PROD.VW_LEGM_APS_MIFID
+			WHERE				
+				COD_CHIAV_NAT_PROD = ?
+		</Query>   
+		<Input>			
+			<Parameter propertyName="tariffa"/>
+		</Input>
+	</Access>
+</DAO-Object>

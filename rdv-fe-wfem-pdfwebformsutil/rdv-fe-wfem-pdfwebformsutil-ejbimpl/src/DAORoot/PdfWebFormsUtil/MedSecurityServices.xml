@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="MedSecurityServices">	
+<Access name="NuovaSessioneTecnica" type="DAOOSBAccess" serviceName="med-be-osb-security-services-prj/proxy/med-be-token-mngr" operationName="NuovaSessioneTecnica" 
+		contentType="application/soap+xml;charset=UTF-8;action=NuovaSessioneTecnica" markNillable="true" keepAttrs="true" dataFormatter="prgm.pdfwebformsutil.drivers.dao.XmlFormatter">
+	<Input>
+		<![CDATA[			
+			<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:me="http://ME/">
+			   <soap:Header/>
+			   <soap:Body>
+			      <me:NuovaSessione>
+			         <APPLID propertyName="applicationId"></APPLID>
+			         <USERID propertyName="userId"></USERID>
+			      </me:NuovaSessione>
+			   </soap:Body>
+			</soap:Envelope>			
+		]]>
+	</Input>
+	<Output>
+		<![CDATA[
+			<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope">
+			   <soap:Body>
+			      <me:NuovaSessioneResponse xmlns:me="http://ME/">
+			         <RCODE propertyName="resultCode"></RCODE>
+			         <EXPIRTIME propertyName="expirationTime"></EXPIRTIME>
+			         <USERKEY propertyName="userKey"></USERKEY>
+			      </me:NuovaSessioneResponse>
+			   </soap:Body>
+			</soap:Envelope>
+		]]>
+	</Output>
+</Access>
+</DAO-Object>

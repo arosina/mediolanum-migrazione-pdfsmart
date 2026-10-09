@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DAO-Object name="Agente" connectionCacheReference="CEPE">
+<Access name="loadDatiAgente" type="DAOQueryAccess" queryType="1" OutputCommandDataModel="prgm.pdfwebformsutil.drivers.dao.agente.AgenteModel" connectionCacheReference="CEPE">
+	<Query>
+			select 
+				AGE_C_AGE
+				, AGE_D_ABIL_ISVAP
+			from 
+				INR_AGENTI 
+			where 
+				AGE_C_AGE = <p>codAgente</p>
+	</Query>   
+	<Output>
+		<Parameter propertyName="codAgente"/>
+		<Parameter propertyName="dataAbilitazioneIsvap"/>
+	</Output>
+</Access>
+</DAO-Object>

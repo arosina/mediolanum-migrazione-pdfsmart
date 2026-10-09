@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DAO-Object name="PdfSendProcess" connectionCacheReference="CEPE">
+
+<Access name="updateSendDigitalPdfInstanceCompilationMode" type="DAOTableAccess" tableName="PDF_INSTANCE">
+   <Bindings>
+	<Parameter propertyName="pdfInstanceId"					dbColumnName="PDF_INSTANCE_ID" primaryKey="true"/>
+	<Parameter propertyName="pdfCompilationMode"		 	dbColumnName="MODALITA_DI_SOTTOSCRIZIONE"/>
+	<Parameter propertyName="putOnSignedProcessBatchQueue"  dbColumnName="ON_SIGNED_PROC_QUEUE"/>
+   </Bindings>
+</Access>
+
+</DAO-Object>
+
